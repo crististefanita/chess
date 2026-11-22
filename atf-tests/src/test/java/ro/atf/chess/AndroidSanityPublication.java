@@ -534,10 +534,17 @@ class AndroidSanityPublication {
     private static void publishMatchMenu(Path receipt, String scope, String scenarioTitle, List<MenuCheckpoint> checkpoints) throws Exception {
         Path report = receipt.resolveSibling("android-" + scope + ".html");
         if (Files.exists(report)) throw new IllegalArgumentException("Use a fresh Android evidence folder");
-        var evidence = readPhase(receipt, scope, checkpoints.size());
-        String receiptHash = Files.isRegularFile(receipt) ? sha256(Files.readAllBytes(receipt)) : "";
         var execution = readExecution(receipt.resolveSibling("execution.json"));
-        var identity = menuIdentity(execution, scope, receiptHash, checkpoints.size());
+        String runId = execution.path("runId").asText("");
+        var evidence = readPhase(receipt, scope, checkpoints.size(), List.of(), runId);
+        String receiptHash = Files.isRegularFile(receipt) ? sha256(Files.readAllBytes(receipt)) : "";
+        boolean paired = sameMenuRun(receipt, scope, runId);
+        var identity = runId.matches("[a-f0-9]{32}") && paired
+                ? menuIdentity(execution, scope, receiptHash, checkpoints.size()) : List.<ReportField>of();
+        if (!identity.isEmpty()) {
+            identity = new ArrayList<>(identity);
+            identity.add(new ReportField("Run ID", runId));
+        }
         boolean complete = evidence.passed() && !identity.isEmpty();
         var acceptedCaptures = new HashSet<String>();
         try (var session = new ExtentReportSession(report, AtfReportConfigurationLoader.load().reportingSettings());
@@ -548,7 +555,8 @@ class AndroidSanityPublication {
             audit.add(new ReportField("Receipt SHA-256", receiptHash));
             phase.observation(new ReportObservation("Android execution identity", audit, List.of(), List.of()));
             if (!complete) publish(phase, "Native execution evidence", evidence.passed()
-                    ? List.of(receiptFailure(scope, "Missing or mismatched execution identity")) : evidence.rows(), false);
+                    ? List.of(receiptFailure(scope, paired ? "Missing or mismatched execution identity"
+                            : "Saved and finished menu phases have different run IDs")) : evidence.rows(), false);
             for (var checkpoint : checkpoints) {
                 var row = evidence.rows().stream().filter(assertion -> assertion.name().equals(checkpoint.assertion())).findFirst()
                         .orElseGet(() -> receiptFailure(scope, "Missing check: " + checkpoint.assertion()));
@@ -589,6 +597,15 @@ class AndroidSanityPublication {
         } catch (IOException invalid) {
             return MissingNode.getInstance();
         }
+    }
+
+    private static boolean sameMenuRun(Path receipt, String scope, String runId) {
+        Path companion = "match-slots".equals(scope) ? receipt.resolveSibling("match-archive/execution.json")
+                : receipt.getParent().getParent() == null ? null : receipt.getParent().getParent().resolve("execution.json");
+        if (companion == null || !Files.isRegularFile(companion)) return true;
+        JsonNode other = readExecution(companion);
+        String expectedScope = "match-slots".equals(scope) ? "match-archive" : "match-slots";
+        return expectedScope.equals(other.path("scope").asText()) && runId.equals(other.path("runId").asText());
     }
 
     private static List<ReportField> menuIdentity(JsonNode identity, String scope, String receiptHash, int count) {

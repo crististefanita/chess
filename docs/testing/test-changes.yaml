@@ -1,4 +1,78 @@
 testChanges:
+  - id: CHESS-0162-ANDROID-VERSION-RO
+    base: "0a2d5b1487d9652aade04ea7903c304376e3acc2"
+    from: android/app/build.gradle
+    replacement: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
+    test: ro.atf.chess.DocumentationGovernanceTest#projectReadmeArchitectureMatchesTheExecutableBuild
+    contract: "Crește versiunea de corecție fără schimbarea SDK-ului, semnării sau limitei surselor comune"
+    allowDelete: false
+
+  - id: CHESS-0162-ROOT-POM-RO
+    base: "0a2d5b1487d9652aade04ea7903c304376e3acc2"
+    from: pom.xml
+    replacement: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
+    test: ro.atf.chess.DocumentationGovernanceTest#projectReadmeArchitectureMatchesTheExecutableBuild
+    contract: "Aliniază reactorul JVM cu ediția Android de corecție"
+    allowDelete: false
+
+  - id: CHESS-0162-TEST-POM-RO
+    base: "0a2d5b1487d9652aade04ea7903c304376e3acc2"
+    from: atf-tests/pom.xml
+    replacement: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
+    test: ro.atf.chess.DocumentationGovernanceTest#projectReadmeArchitectureMatchesTheExecutableBuild
+    contract: "Păstrează suita auditabilă la aceeași ediție de corecție ca APK-ul"
+    allowDelete: false
+
+  - id: CHESS-MENU-RUN-RUNNER-RO
+    base: "0a2d5b1487d9652aade04ea7903c304376e3acc2"
+    from: scripts/run-android-sanity.ps1
+    replacement: atf-tests/src/test/java/ro/atf/chess/ExtentGovernanceTest.java
+    test: ro.atf.chess.ExtentGovernanceTest#nativeMenuRejectsMissingOrSubstitutedRunIdentity
+    contract: "Leagă fazele native Saved și Finished de un singur ID generat și respinge marcajele lipsă sau substituite"
+    allowDelete: false
+
+  - id: CHESS-MENU-RUN-PUBLICATION-RO
+    base: "0a2d5b1487d9652aade04ea7903c304376e3acc2"
+    from: atf-tests/src/test/java/ro/atf/chess/AndroidSanityPublication.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ExtentGovernanceTest.java
+    test: ro.atf.chess.ExtentGovernanceTest#nativeMenuRejectsMissingOrSubstitutedRunIdentity
+    contract: "Cere marcajul nativ, identitatea execuției și rularea comună a meniurilor înainte de PASS în Extent"
+    allowDelete: false
+
+  - id: CHESS-MENU-RUN-NEGATIVE-RO
+    base: "0a2d5b1487d9652aade04ea7903c304376e3acc2"
+    from: atf-tests/src/test/java/ro/atf/chess/ExtentGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ExtentGovernanceTest.java
+    test: ro.atf.chess.ExtentGovernanceTest#nativeMenuRejectsMissingOrSubstitutedRunIdentity
+    contract: "Păstrează recepțiile negative și cauzele lor vizibile când ID-ul meniului lipsește sau este substituit"
+    allowDelete: false
+
+  - id: CHESS-MATCH-HISTORY-NATIVE-RO
+    base: "0a2d5b1487d9652aade04ea7903c304376e3acc2"
+    from: android/app/src/androidTest/java/ro/atf/chess/android/BoardSanity.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/MatchHistorySelectionTest.java
+    test: ro.atf.chess.MatchHistorySelectionTest#sharedFixturesDescribeOnlyTheMoveProducingTheSelectedPosition
+    contract: "Folosește eticheta mutării curente la pregătirea jocului AI și păstrează fiecare copil selectat în istoricul tablei de analiză"
+    allowDelete: false
+    nativePath: android/app/src/androidTest/java/ro/atf/chess/android/BoardSanity.java
+    nativeProbe: "The reopened match analyzes its live position with the hint hidden"
+
+  - id: CHESS-REVIEW-HEADER-FOCUS-RO
+    base: "0a2d5b1487d9652aade04ea7903c304376e3acc2"
+    from: atf-tests/src/test/java/ro/atf/chess/ChessWebReviewFocusPublication.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/NavigationGovernanceTest.java
+    test: ro.atf.chess.NavigationGovernanceTest#titleAndBackFollowTheOpeningHeaderWithoutReplacingContextualMenus
+    contract: "Păstrează recepția de focus și cere titlul Analizei pe întreaga lățime lângă Înapoi la text mărit"
+    allowDelete: false
+
+  - id: CHESS-REVIEW-HEADER-GOVERNANCE-RO
+    base: "0a2d5b1487d9652aade04ea7903c304376e3acc2"
+    from: atf-tests/src/test/java/ro/atf/chess/NavigationGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/NavigationGovernanceTest.java
+    test: ro.atf.chess.NavigationGovernanceTest#titleAndBackFollowTheOpeningHeaderWithoutReplacingContextualMenus
+    contract: "Păstrează contractul comun al antetului și leagă lățimea Review Web de marginea inițială nativă"
+    allowDelete: false
+
   - id: CHESS-OPENING-LANDSCAPE-NATIVE-RO
     base: "fe21dbac4cbdbd8741e42cc12a30efae14c79acf"
     from: atf-tests/src/test/java/ro/atf/chess/OpeningLessonTest.java

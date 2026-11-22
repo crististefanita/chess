@@ -30,6 +30,13 @@ class NavigationGovernanceTest {
                 source("game-review.mjs").contains("find(id).setAttribute('aria-label', words[id])"));
         check.same("The game header reserves separate slots for Back, title, options and automation", true,
                 source("game-review.css").contains("grid-template-columns: auto minmax(0, 1fr) auto auto"));
+        check.same("Game Review gives its title the full header width instead of centering a shrink-wrapped toolbar", true,
+                source("game-review.css").contains(".review-active main > [data-chess-header] { inline-size: 100%; max-inline-size: none; margin-inline: 0; }"));
+        String nativeReview = Files.readString(ProjectRoot.locate().resolve(
+                "android/app/src/main/java/ro/atf/chess/android/GameReviewDialog.java"));
+        check.same("Both adapters start the Review title at the leading inset", true,
+                nativeReview.contains("header.setPadding(dp(16), 0, dp(4), 0)")
+                        && source("game-review.css").contains(".review-active header { min-height: 48px; padding-inline: 16px 4px;"));
         check.same("Continuation reserves space even while hidden so browsing cannot shift the document", true,
                 source("chess-controls.css").contains(".match-actions { min-block-size: var(--play-action-size); }"));
         String game = source("game-review.mjs");

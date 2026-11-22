@@ -56,6 +56,17 @@ export async function exerciseReviewFocus({ evaluate, until, wait, touch, pressK
     const scaledFonts = await measureFonts();
     check('font-enlarged', true, baseFonts.every((value, index) => value >= 12 &&
         Math.abs(scaledFonts[index] - value * 1.3) < .1));
+    const header = await evaluate(`(() => {
+        const bar = document.querySelector('main > [data-chess-header]').getBoundingClientRect();
+        const back = document.querySelector('#archive-review-back').getBoundingClientRect();
+        const title = document.querySelector('#title').getBoundingClientRect();
+        return { left: bar.left, right: bar.right, width: bar.width, backLeft: back.left,
+            titleLeft: title.left, titleRight: title.right, viewport: innerWidth };
+    })()`);
+    check('review-title-left-aligned', true, header.left >= -.5 && header.left <= 1 &&
+        header.right >= header.viewport - 1 && header.right <= header.viewport + .5 &&
+        header.backLeft >= header.left && header.titleLeft > header.backLeft &&
+        header.titleLeft < Math.min(96, header.viewport * .3) && header.titleRight <= header.viewport);
 
     const focusEvidence = [];
     async function focused(id) {
@@ -152,6 +163,6 @@ export async function exerciseReviewFocus({ evaluate, until, wait, touch, pressK
         entry.board.every((value, index) => Math.abs(value - right.board[index]) < 1)));
     const analysisRequests = await evaluate('window.chessWebAudit.requests.length');
     check('cached-review-used', 0, analysisRequests);
-    return { archiveId, baseFonts, scaledFonts, normalOrder, reverseOrder, whyOrder, focusEvidence, analysisRequests,
+    return { archiveId, baseFonts, scaledFonts, header, normalOrder, reverseOrder, whyOrder, focusEvidence, analysisRequests,
         accessibility: accessibility?.evidence() };
 }

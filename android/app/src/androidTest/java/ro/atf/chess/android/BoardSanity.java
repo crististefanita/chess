@@ -2752,7 +2752,7 @@ public final class BoardSanity extends Instrumentation {
             if (compact) checkCompactDisplay(activity, locale);
             var saved = store.matches().readMatch();
             compare("The enabled setting and two moves survive a process restart", true, saved != null && saved.analysisEnabled() && MATCH_ANALYSIS_FIXTURE.equals(saved.checkpoint()));
-            compare("The reopened match analyzes its live position with the hint hidden", true, awaitHiddenAnalysis(activity, 2));
+            compare("The reopened match analyzes its live position with the hint hidden", true, awaitHiddenAnalysis(activity, 2, saved));
             if (compact) {
                 var board = findBoard(viewsOf(activity));
                 checkCompactMatchBoard(activity, board);
@@ -2779,9 +2779,9 @@ public final class BoardSanity extends Instrumentation {
         tap(activity.findViewById(R.id.match_history_previous));
         var bounds = screenBounds(board);
         compare("The saved game opens analysis at the selected historical position", true,
-                awaitHiddenAnalysis(activity, 1) && hasPawn(activity, board, "e4") && !hasPawn(activity, board, "e5"));
+                awaitHiddenAnalysis(activity, 1, saved) && hasPawn(activity, board, "e4") && !hasPawn(activity, board, "e5"));
         if (compact) {
-            checkCompactMatchNavigation(activity, board, liveGeometry);
+            checkCompactMatchNavigation(activity, board, liveGeometry, saved);
             checkCompactOpponent(activity, board, true);
         }
         var hint = saved.hintAt(1);
@@ -2842,13 +2842,13 @@ public final class BoardSanity extends Instrumentation {
         return geometry;
     }
 
-    private void checkCompactMatchNavigation(Activity activity, BoardView board, MatchGeometry live) {
+    private void checkCompactMatchNavigation(Activity activity, BoardView board, MatchGeometry live, ChessMatch match) {
         var history = matchGeometry(activity, board);
         tap(activity.findViewById(R.id.match_history_next));
         var forward = matchGeometry(activity, board);
         boolean atLive = hasPawn(activity, board, "e5");
         tap(activity.findViewById(R.id.match_history_previous));
-        boolean atHistory = awaitHiddenAnalysis(activity, 1) && !hasPawn(activity, board, "e5");
+        boolean atHistory = awaitHiddenAnalysis(activity, 1, match) && !hasPawn(activity, board, "e5");
         var backward = matchGeometry(activity, board);
         receipt.putString("compactArrowGeometry", String.join(" / ", history.coordinates(), forward.coordinates(), backward.coordinates()));
         compare("Back and Next preserve the board, evaluation bar and bulb while selecting the correct move", true,
@@ -2994,18 +2994,37 @@ public final class BoardSanity extends Instrumentation {
         return hasColor(image, boardCell(board, square, blackBelow), BoardSquare.isLight(square) ? 0xfff4ef86 : 0xffbec953, 24);
     }
     private boolean awaitHiddenAnalysis(Activity activity, int ply) {
+        return awaitHiddenAnalysis(activity, ply, null);
+    }
+
+    private boolean awaitHiddenAnalysis(Activity activity, int ply, ChessMatch match) {
         TextView panel = activity.findViewById(R.id.match_analysis);
         View bulb = activity.findViewById(R.id.match_hint);
         ViewGroup moves = activity.findViewById(R.id.match_history_moves);
         if (panel == null || bulb == null || moves == null) return false;
+        String current = match == null ? null : ply == 0 ? activity.getString(R.string.match_history_start)
+                : ro.atf.chess.MatchHistorySelection.at(match, ply).compact();
         boolean[] matches = {false};
         long deadline = SystemClock.uptimeMillis() + 12_000;
         do {
-            runOnMainSync(() -> matches[0] = ply < moves.getChildCount() && moves.getChildAt(ply).isSelected()
-                    && bulb.isEnabled() && !bulb.isSelected() && !panel.getText().toString().contains("\n"));
+            runOnMainSync(() -> {
+                boolean selected = current == null ? ply < moves.getChildCount() && moves.getChildAt(ply).isSelected()
+                        : moves.getChildCount() == 1 && moves.getChildAt(0) instanceof TextView label
+                        && current.contentEquals(label.getText());
+                matches[0] = selected && bulb.isEnabled() && !bulb.isSelected()
+                        && !panel.getText().toString().contains("\n");
+            });
             if (matches[0]) return true;
             SystemClock.sleep(40);
         } while (SystemClock.uptimeMillis() < deadline);
+        if (current != null) {
+            String[] observed = {""};
+            runOnMainSync(() -> observed[0] = moves.getChildCount() == 1 && moves.getChildAt(0) instanceof TextView label
+                    ? label.getText().toString() : "history children=" + moves.getChildCount());
+            if (!current.equals(observed[0])) {
+                throw new AssertionError("Current move differs from displayed history: expected " + current + ", observed " + observed[0]);
+            }
+        }
         return false;
     }
 

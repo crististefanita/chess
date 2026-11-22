@@ -32,6 +32,7 @@ import static org.junit.platform.engine.discovery.DiscoverySelectors.selectMetho
 @Tag("governance")
 @ExtendWith(ExtentAudit.class)
 class ExtentGovernanceTest {
+    private static final String MENU_RUN_ID = "c".repeat(32);
     @TempDir Path folder;
 
     @Test void publishingAComparisonDoesNotEvaluateItTwice(Checks check) {
@@ -138,6 +139,37 @@ class ExtentGovernanceTest {
         check.same("Only the capture matched to its checkpoint remains", 1, report.select("a[data-atf-screenshot=base64]").size());
     }
 
+    @Test void nativeMenuRejectsMissingOrSubstitutedRunIdentity(Checks check) throws Exception {
+        Path missing = menuReceipt(Files.createDirectory(folder.resolve("missing-run")));
+        String oldHash = ReleaseEvidence.digest(missing);
+        Files.writeString(missing, Files.readString(missing).replace("INSTRUMENTATION_RESULT: runId=" + MENU_RUN_ID + "\n", ""));
+        Path execution = missing.resolveSibling("execution.json");
+        Files.writeString(execution, Files.readString(execution).replace(oldHash, ReleaseEvidence.digest(missing)));
+        check.rejects("A receipt without its native run marker cannot publish PASS", AssertionError.class,
+                () -> AndroidSanityPublication.publishMatchSlots(missing));
+        check.same("The missing marker is explained in Extent", true,
+                Jsoup.parse(missing.resolveSibling("android-match-slots.html"), "UTF-8").text().contains("Expected native run ID"));
+
+        Path substituted = menuReceipt(Files.createDirectory(folder.resolve("substituted-run")));
+        Path otherExecution = substituted.resolveSibling("execution.json");
+        Files.writeString(otherExecution, Files.readString(otherExecution).replace(MENU_RUN_ID, "d".repeat(32)));
+        check.rejects("An execution record from another run cannot publish PASS", AssertionError.class,
+                () -> AndroidSanityPublication.publishMatchSlots(substituted));
+        check.same("The substituted marker is explained in Extent", true,
+                Jsoup.parse(substituted.resolveSibling("android-match-slots.html"), "UTF-8").text().contains("Expected native run ID"));
+    }
+
+    @Test void nativeMenuRejectsPhasesFromDifferentRuns(Checks check) throws Exception {
+        Path receipt = menuReceipt(Files.createDirectory(folder.resolve("paired-run")));
+        Path archive = Files.createDirectory(receipt.resolveSibling("match-archive"));
+        Files.writeString(archive.resolve("execution.json"), "{\"scope\":\"match-archive\",\"runId\":\"" + "e".repeat(32) + "\"}");
+        check.rejects("The saved and finished menus cannot claim one run with different IDs", AssertionError.class,
+                () -> AndroidSanityPublication.publishMatchSlots(receipt));
+        check.same("The cross-phase mismatch remains visible in Extent", true,
+                Jsoup.parse(receipt.resolveSibling("android-match-slots.html"), "UTF-8").text()
+                        .contains("Saved and finished menu phases have different run IDs"));
+    }
+
     @Test void twoDifferentScreensCannotQualifyWithAnIdenticalCapture(Checks check) throws Exception {
         Path receipt = menuReceipt(Files.createDirectory(folder.resolve("repeated")));
         Path list = receipt.resolveSibling("saved-games.png");
@@ -174,11 +206,12 @@ class ExtentGovernanceTest {
         Path receipt = Files.writeString(directory.resolve("match-slots.txt"), """
                 INSTRUMENTATION_RESULT: pid=1234
                 INSTRUMENTATION_RESULT: phase=match-slots
+                INSTRUMENTATION_RESULT: runId=%s
                 INSTRUMENTATION_RESULT: result=PASS
                 INSTRUMENTATION_RESULT: check_01=The last game shows its title, moves and local time with Back visible\ttrue\ttrue\ttrue
                 INSTRUMENTATION_RESULT: check_02=Selecting a saved row restores the recorded position\ttrue\ttrue\ttrue
                 INSTRUMENTATION_CODE: -1
-                """);
+                """.formatted(MENU_RUN_ID));
         Path list = directory.resolve("saved-games.png");
         Path match = directory.resolve("match-slots.png");
         var image = new BufferedImage(2, 2, BufferedImage.TYPE_INT_RGB);
@@ -186,10 +219,10 @@ class ExtentGovernanceTest {
         image.setRGB(0, 0, 0xffffff);
         ImageIO.write(image, "png", match.toFile());
         Files.writeString(directory.resolve("execution.json"), """
-                {"status":"PASS","scope":"match-slots","variant":"release","api":"28","device":"fixture",
+                {"status":"PASS","scope":"match-slots","variant":"release","api":"28","device":"fixture","runId":"%s",
                  "sourceCommit":"%s","apkSha256":"%s","receiptSha256":"%s","assertions":2,
                  "captureSha256":{"saved-games.png":"%s","match-slots.png":"%s"}}
-                """.formatted("a".repeat(40), "b".repeat(64), ReleaseEvidence.digest(receipt),
+                """.formatted(MENU_RUN_ID, "a".repeat(40), "b".repeat(64), ReleaseEvidence.digest(receipt),
                 ReleaseEvidence.digest(list), ReleaseEvidence.digest(match)));
         return receipt;
     }

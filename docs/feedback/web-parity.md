@@ -50,14 +50,14 @@ de 48 dp. Cereți dreptunghiuri în componente RO/EN și capturi native înainte
 de schimbarea contractului actual fără salturi.
 [Controalele explicației](../../atf-tests/src/test/java/ro/atf/chess/PuzzleExplainLayoutTest.java)
 
-**P2 · Identitatea execuției meniurilor native.** Propagați un ID de execuție generat prin instrumentarea meniurilor Salvate/Încheiate, recepții și Extent. Observațiile focalizate actuale au trecut pe sursele și APK-ul calificate, dar le lipsește această legătură și rămân în afara calificării suplimentare stricte. Adăugați cazuri negative pentru ID lipsă sau înlocuit înaintea admiterii lor în acea poartă.
+**Implementat · Identitatea execuției meniurilor native; proba semnată rămâne de verificat.** Runnerul Salvate/Încheiate generează acum un ID comun pentru fazele pereche și ID-uri distincte pentru execuțiile izolate. Extent verifică marcajul nativ, recepția de execuție și faza pereche; componentele negative resping ID-uri lipsă, înlocuite sau diferite între faze. Observațiile anterioare rămân în afara calificării suplimentare stricte până la o recepție nouă a APK-ului semnat.
 
-**P2 · Oracolele vechi ale istoricului nativ.** `awaitHiddenAnalysis` încă
-verifică un copil de istoric per semimutare. Aliniați `analysis-prepare/restore`
-și variantele compacte la cursorul comun cu o singură mutare afișată în joc.
-Păstrați lista completă a Tablei de analiză și oracolul său separat. Verificați
-independent indiciul/evaluarea finalizate și poziția afișată; un timeout nu
-trebuie să înlocuiască diagnosticul unui oracol UI greșit.
+**Implementat · Oracolul nativ al istoricului; proba semnată rămâne de verificat.**
+`awaitHiddenAnalysis` compară acum eticheta mutării selectate din partida cu AI
+cu `MatchHistorySelection`, inclusiv după reluare și în profilul compact. Tabla
+manuală de analiză păstrează oracolul listei complete. O etichetă greșită
+raportează separat textul așteptat și cel observat, fără a confunda eroarea
+cu pregătirea indiciului. Verificați ambele fluxuri pe APK-ul semnat.
 [Cursorul curent](../../chess-core/src/main/java/ro/atf/chess/MatchHistorySelection.java)
 
 **P2 · Pregătirea accesibilității native compacte.** Proba compactă veche se oprește la comanda Game Review vizibilă, deoarece instantaneul nodului de accesibilitate o raportează indisponibilă. Păstrați observația eșuată; actualizați și verificați nodul real înaintea apăsării, fără creșterea timeout-ului. Game Review la 360 × 640 dp și text 1,3×, precum și proba separată de rotație RO/EN, au trecut pe același APK semnat. Aceste verificări nu închid eșecul helperului vechi.
@@ -116,6 +116,8 @@ reluare, inclusiv după reîncărcare și într-o filă deja deschisă.
 [Procesul de release](../release/README.md#calificare-și-publicare)
 
 ## WEB-05 · Meniuri și opțiuni ancorate
+
+**Închis · alinierea titlului Analiza partidei pe Web compact.** Titlul din captura în română era centrat deoarece pagina flex permitea antetului să se micșoreze până la butonul Înapoi și titlu. Regula de lățime completă, limitată la acest ecran, păstrează titlul lângă Înapoi. La 390 pixeli CSS și text 130%, recepția randată măsoară antetul de 390 pixeli și titlul începând la 70 pixeli; antetul nativ păstrează marginea inițială de 16 dp. `NavigationGovernanceTest` și fluxul de focus în browser păzesc contractul adaptoarelor și limitele reale. Se închide doar alinierea titlului, nu și matricea de meniu și focus de mai jos.
 
 **P2 · Focus, text mărit și contexte rămase.** Tabla de analiză compactă publicată are un meniu ancorat observat și o tablă neschimbată, fără derularea documentului. Aceasta nu încheie matricea RO/EN la 130% pentru Puzzles, Game Review și De ce.
 

@@ -808,6 +808,8 @@ mvn test '-Dmaven.repo.local=target/maven-repo' '-Dtest=AndroidSanityPublication
 
 `ChessMatchTest` verifică reconstrucția înainte și după replica botului, accesul la pozițiile din istoric, matul, rocada, en passant și repetarea. După fazele de probleme, runnerul pornește cu date proaspete și execută `match-prepare`, `match-restore` și `match-settled` în procese distincte, păstrând partida între ele. Verifică poziția inițială, săgețile, selecția directă, revenirea la ultima mutare, blocarea mutărilor în istoric și identitatea partidei salvate.
 
+Partida nativă cu AI afișează o singură etichetă a mutării selectate. Oracolul sanity o compară cu `MatchHistorySelection.at(match, ply).compact()` după navigare și reluare; valoarea greșită raportează textul așteptat și pe cel observat. Tabla manuală de analiză păstrează oracolul listei complete. Pregătirea indiciului, poziția selectată și textul istoricului rămân verificări distincte.
+
 </details>
 
 ## Tablă de analiză
@@ -835,7 +837,7 @@ mvn test '-Dmaven.repo.local=target/maven-repo' '-Dtest=AndroidSanityPublication
 
 - `-MatchMenusOnly` rulează cele două meniuri pe aceeași instalare. Pentru probe separate de dezvoltare, folosiți `-MatchSlotsOnly` sau `-MatchArchiveOnly`.
 - Publicați cu `AndroidSanityPublication#publishMatchSlotsSanity` sau `#publishMatchArchiveSanity` și recepția fazei. Extent leagă aserțiunea, captura încorporată și amprenta ei de același pas Android.
-- Identitatea execuției include procesul, commitul și amprenta APK-ului pentru distribuție. [Partide salvate și încheiate](../board/README.md#partidă-cu-calculatorul)
+- Identitatea execuției include procesul, commitul, amprenta APK-ului pentru distribuție și un ID nativ de rulare. `-MatchMenusOnly` folosește același ID pentru Saved și Finished; probele separate generează fiecare un ID. Extent respinge marcajul nativ lipsă sau substituit și fazele din rulări diferite. [Partide salvate și încheiate](../board/README.md#partidă-cu-calculatorul)
 
 ## Redare comună pe ecran compact
 
@@ -894,6 +896,8 @@ la scopurile runtime nerezolvate.
 ## Antet și navigare comune
 
 Politica Java `UiChrome` deține dimensiunile logice ale comenzilor, destinațiile contextuale Înapoi și zona centrată de navigare. `ChessHeader` și `CenteredControls` o aplică pe Android; `GenerateUiChrome` exportă constantele și destinațiile către adapterul Web. Titlurile încep lângă Înapoi, ocupă cel mult două rânduri și păstrează ținta Înapoi de 48 dp/pixeli CSS. Opțiunile stau în dreapta, iar meniul urmărește butonul în interiorul ferestrei. Un meniu scund are propria derulare.
+
+Analiza partidei folosește pe Web un antet cât lățimea ecranului în pagina flex. Fără această lățime, antetul se micșorează până la titlu și butonul Înapoi, iar grupul apare centrat. La 390 pixeli CSS și text 130%, recepția din browser verifică marginea stângă și limitele titlului. Antetul Android păstrează marginea inițială de 16 dp. `NavigationGovernanceTest` verifică declarațiile ambelor adaptoare; recepția din browser verifică geometria randată și include capturile în Extent.
 
 Bifa din joc afișează **AI** pe lățimi compacte și păstrează numele accesibil complet și starea selectată. Navigarea mutărilor este centrată și limitată la 384 de pixeli logici. Ecranele păstrează comenzile, varianta selectată, cursorul fiecărei linii și partida salvată. Mărirea textului nu micșorează ținta tactilă. Înapoi din reluare revine la sursă; din problemă revine la capitole; din lista capitolelor revine acasă.
 
