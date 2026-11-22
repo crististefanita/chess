@@ -186,6 +186,14 @@ Compare the same checkpoint and ply in the JVM and worker. Use native and browse
 
 `MatchCapturesTest` verifies the selected ply, both board orientations, seat ownership, AI captures, and restored history. The mocked `match-captures.test.mjs` checks all five capturable kinds, shared 48-unit silhouettes, APK-matched capture palette and 82% icon scale, grouped counts, RO/EN accessible labels, fixed top/bottom rows, and invalid or stale capture data. The style contract reads the native capture painter as its reference. These component checks run without an emulator.
 
+`match-capture-rows.json` records one legal, manually played API 28 match
+through two AI captures and one human capture. The JVM projection, mocked Web
+renderer, and packaged TeaVM worker consume the same frame expectations at
+plies 13–16. The worker also checks board flip and reload;
+`ChessWebParityPublication#packagedWorkerProjectsRecordedApkCaptureFrames`
+writes a separate Extent assertion for each frame. This shared component
+evidence does not claim that the currently served Pages bundle renders the same UI.
+
 `MatchHistorySelectionTest` verifies the single game-move cursor against fourteen shared cases. The Web component covers both wire formats, unchanged live announcements, history growth, branching and stale cursors. The compiled worker checks projection parity and orientation. In Browser MCP, step from Start through the first, intermediate and latest move at compact, landscape and desktop sizes; verify one label between the arrows, boundary cues and an unchanged board rectangle. The APK adapter uses the shared cursor in game mode and preserves the Analysis board's history strip.
 
 `NavigationGovernanceTest` registers the shared title, Back and navigation styling, the adapters that consume the line projection and the variant collections that must remain available. Component probes retain the Analysis board's complete history, both opening and calculated-line branches, and puzzle hint/Danger controls. A rendered Web check visits Games, Puzzles, Openings and Analysis board, including their contextual Back path; it must not infer Android rendering from Web captures.

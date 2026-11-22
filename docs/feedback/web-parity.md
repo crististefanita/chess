@@ -70,6 +70,28 @@ not stand in for a wrong UI oracle.
 
 **Captured-piece component fix · 2026-11-22.** Web now uses the shared 48-unit silhouette, the APK capture fill and outline colors, and the same 82% icon-to-caption scale. Mocked DOM and Extent component checks cover all five capturable kinds, invalid entries, side ownership and the stable capture rows. This closes the adapter-style mismatch; it does not replace the paired rendered receipt required above.
 
+**Recorded capture sequence · 2026-11-22.** On the API 28 emulator, the
+installed 0.15.2 APK showed the AI's two captured white pawns and +1 above the
+board, and the human's captured black pawn below it after
+`7...Nxe5 8.dxe6 fxe6`. The current capture painter retains those silhouettes,
+colors and scale. `match-capture-rows.json` now drives the JVM, mocked DOM and
+packaged TeaVM worker at plies 13–16, including return in history, flip and
+reload. The focused Extent checks pass. The emulator's 0.15.2 certificate
+differs from the signed 0.16.1 APK, so this observation is a capture-painter
+reference, not a 0.16.1 release receipt.
+
+**Rendered Web gap remains open.** GitHub Pages currently serves runtime
+`1d252b7ada67238062c5f7370d1012ffd342e38d04cb40d1f9d8714c617b512d`,
+which has no captured-piece rows. The staged static candidate
+`2f50a25b41fffc50c4fb2ae483958ca73e5322fd3a135cb419144954fc6ff9db`
+contains them but is not deployed. Browser MCP fails while writing kernel
+assets before the tab opens; an attempt to open a browser on the emulator was
+rejected by automatic policy review. Recheck the full worker gate below,
+deploy the exact static commit through the Pages workflow, then collect an
+APK/Web visual comparison on the same captured frame. The current native source
+already places match options on the right side of the header, matching Web;
+the installed 0.15.2 menu is older.
+
 **Worker qualification remains open · 2026-11-22.** `ChessWebParityPublication#packagedWorkerProjectsInlineMatchAnalysis` timed out on `active-historical-replay` at the existing 55-second child-process limit in three attempts. The other four cases in the first publication run passed, and both the worker entry and compiled engine are byte-identical to the prior candidate runtime. Keep this gate open; investigate the bounded runtime without increasing the limit or changing chess/AI behavior as part of the capture-style work.
 
 - Use the opening-history and mating-review cases from the [shared testing contract](../testing/README.md#shared-screen-chrome).

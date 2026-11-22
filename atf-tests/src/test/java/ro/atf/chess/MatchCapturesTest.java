@@ -1,6 +1,8 @@
 package ro.atf.chess;
 
 import atf.testkit.AtfComponentTest;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,6 +21,31 @@ class MatchCapturesTest {
     private static final Pattern PASSED = Pattern.compile("^ok [0-9]+ - (.+)$");
 
     @TempDir Path output;
+
+    @Test void recordedApkCapturesAgreeWithTheSharedWebFrames(Checks check) throws IOException {
+        var fixture = new ObjectMapper().readTree(ProjectRoot.locate()
+                .resolve("atf-tests/src/test/resources/match-capture-rows.json").toFile());
+        var match = ChessMatch.start(new MatchSetup(Side.WHITE, Level.BASIC, false));
+        for (var move : fixture.path("moves")) match = match.play(ChessPosition.Move.fromUci(move.asText()));
+        for (var frame : fixture.path("frames")) {
+            int ply = frame.path("ply").asInt();
+            var rows = MatchCaptures.at(match, ply, false);
+            check.same("APK top captures at ply " + ply, expected(frame.path("top")), rows.top());
+            check.same("APK bottom captures at ply " + ply, expected(frame.path("bottom")), rows.bottom());
+        }
+        var last = fixture.path("frames").get(fixture.path("frames").size() - 1);
+        var flipped = MatchCaptures.at(ChessMatch.restore(match.checkpoint()), last.path("ply").asInt(), true);
+        check.same("Flipping the restored game preserves the human captures", expected(last.path("bottom")), flipped.top());
+        check.same("Flipping the restored game preserves the AI captures", expected(last.path("top")), flipped.bottom());
+    }
+
+    private static MatchCaptures.Player expected(JsonNode row) {
+        var pieces = new java.util.ArrayList<MatchMaterial.Captured>();
+        for (var piece : row.path("pieces")) pieces.add(new MatchMaterial.Captured(
+                ChessPosition.Kind.valueOf(piece.path("kind").asText()), piece.path("count").asInt()));
+        return new MatchCaptures.Player(Side.valueOf(row.path("side").asText()),
+                new MatchMaterial.Seat(List.copyOf(pieces), row.path("advantage").asInt()));
+    }
 
     @Test void captureRowsFollowAiMatchHistoryAndBoardOrientation(Checks check) {
         var match = ChessMatch.start(new MatchSetup(Side.WHITE, Level.BASIC, false));
@@ -67,6 +94,7 @@ class MatchCapturesTest {
                 "every capturable kind uses the shared silhouette and the captured side color",
                 "capture rows provide the same accessible contract in Romanian",
                 "captured pieces match the APK silhouette, palette, and icon scale",
-                "match markup keeps the board between stable top and bottom capture rows"), passed);
+                "match markup keeps the board between stable top and bottom capture rows",
+                "recorded APK capture frames render identically in Web history"), passed);
     }
 }
