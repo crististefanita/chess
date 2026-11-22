@@ -16,6 +16,8 @@ class OpeningLessonTest {
         check.same("The compact lesson stacks the controls", false, compact);
         check.same("The wide lesson places controls beside the board", true, landscape);
         check.same("A narrow landscape window still stacks the lesson", false, OpeningLessonLayout.sideBySide(703, 440));
+        check.same("A compact landscape window places the explanation beside the board", true,
+                OpeningLessonLayout.sideBySide(740, 420));
         check.same("A wide portrait window still stacks the lesson", false, OpeningLessonLayout.sideBySide(820, 1280));
 
         int compactLimit = OpeningLessonLayout.boardLimit(360, compact);
@@ -29,6 +31,10 @@ class OpeningLessonTest {
         int shortHeight = OpeningLessonLayout.panelHeight(360, 13, 52, compactLimit, 250);
         check.same("Less height shrinks the square while preserving both seats and the evaluation gutter",
                 new BoardPanelLayout(87, 0, 198), BoardPanelLayout.fit(360, shortHeight, 26, 26, 13));
+        int adjacentHeight = OpeningLessonLayout.panelHeight(370, 13, 56,
+                OpeningLessonLayout.boardLimit(370, true), 314);
+        check.same("Compact landscape reserves both captions and leaves a square board beside the explanation",
+                new BoardPanelLayout(62, 0, 258), BoardPanelLayout.fit(370, adjacentHeight, 28, 28, 13));
     }
 
     @Test void stepsThroughEveryAuthoredLineAndBackFromBothSeats(Checks check) {

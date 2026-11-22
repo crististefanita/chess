@@ -1,4 +1,28 @@
 testChanges:
+  - id: CHESS-OPENING-LANDSCAPE-NATIVE-RO
+    base: "fe21dbac4cbdbd8741e42cc12a30efae14c79acf"
+    from: atf-tests/src/test/java/ro/atf/chess/OpeningLessonTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/OpeningLessonTest.java
+    test: ro.atf.chess.OpeningLessonTest#lessonBoardUsesLogicalProfilesAndFitsAfterLabelsAtEnlargedText
+    contract: "Păstrează profilurile native portret și larg; adaugă încadrarea tablei și a celor două etichete în peisaj compact"
+    allowDelete: false
+
+  - id: CHESS-OPENING-LANDSCAPE-WEB-RO
+    base: "fe21dbac4cbdbd8741e42cc12a30efae14c79acf"
+    from: atf-tests/src/test/java/ro/atf/chess/BoardSizingGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/BoardSizingGovernanceTest.java
+    test: ro.atf.chess.BoardSizingGovernanceTest#compactLandscapeOpeningUsesTheNativeBreakpointAndAnInternalDetailsScroller
+    contract: "Păstrează proprietarul unic al dimensionării și cere pragul nativ și derularea internă pentru lecția Web alăturată"
+    allowDelete: false
+
+  - id: CHESS-OPENING-LANDSCAPE-SUITE-RO
+    base: "fe21dbac4cbdbd8741e42cc12a30efae14c79acf"
+    from: atf-tests/src/test/java/ro/atf/chess/SuiteGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/SuiteGovernanceTest.java
+    test: ro.atf.chess.SuiteGovernanceTest#everyJvmTestHasExactlyOnePrimarySuiteAndAnExtentAudit
+    contract: "Descoperă proba unică de browser pentru peisaj compact numai la intrarea explicită E2E"
+    allowDelete: false
+
   - id: CHESS-WEB-PLAYWRIGHT-POM-RO
     base: "19567f248ed143975740c144211b534bf5bb017c"
     from: atf-tests/pom.xml

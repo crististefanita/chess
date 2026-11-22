@@ -220,3 +220,27 @@
 }
 .opening-history { display: grid; }
 .opening-history button { text-align: start; white-space: normal; }
+
+/* Mirror OpeningLessonLayout's side-by-side compact landscape policy. The board
+   keeps both seat captions; only the explanation column may scroll. */
+@media (min-width: 704px) and (max-height: 480px) and (orientation: landscape) {
+  #study-openings.study-surface { max-inline-size: 100%; }
+  .opening-study:not([hidden]):has(.opening-workspace:not([hidden])) {
+    inline-size: 100%;
+    max-inline-size: 100%;
+    block-size: calc(100dvh - var(--chess-page-insets));
+    min-block-size: 0;
+  }
+  .opening-columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+  }
+  .opening-panel { align-content: center; }
+  .opening-panel > * {
+    --opening-board-side: max(0px, min(
+      calc(100cqw - var(--opening-meter-gutter) - 48px),
+      calc(100dvh - var(--chess-page-insets) - 2 * var(--chess-control-size) - 2 * var(--opening-seat-height))));
+  }
+  .opening-controls { max-block-size: 100%; overflow: auto; }
+}

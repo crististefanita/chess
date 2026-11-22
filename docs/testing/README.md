@@ -724,6 +724,11 @@ mvn -B -ntp -pl atf-tests -am test '-Dtest=AnalysisLineTest,ChessWebAnalysisStud
 - În Catalană și Alapin, comparația pornește cu albul la mutare după ultima replică din lecție.
 
 - Pentru paritatea vizuală APK–Web, `OpeningLessonTest` verifică latura tablei, pragul pentru două coloane și încadrarea după măsurarea etichetelor. `ChessWebOpeningStudyTest` verifică treptele indiciului și contractul de afișare fără browser.
+- `BoardSizingGovernanceTest` leagă pragul compact Web de `OpeningLessonLayout.sidePanelBreakpoint()` și cere derularea internă a detaliilor. Un singur E2E Playwright verifică apoi lecția reală EN/RO la 740 × 420 și text 130%: fără depășirea documentului, ambele etichete, detalii alăturate, pătrat la cel mult 2 px de modelul nativ, geometrie stabilă la Următoarea/Anterioara și capturi incluse. Raportul consemnează browserul, commitul, hashul bundle-ului, acțiunile și aserțiunile punctuale. Acest control Web nu înlocuiește captura separată a APK-ului semnat.
+
+```powershell
+mvn -B -ntp -pl atf-tests -am test '-Dtest=OpeningLessonTest,BoardSizingGovernanceTest,ChessWebOpeningStudyTest,ChessWebOpeningLandscapePlaywrightE2e' '-Dsurefire.failIfNoSpecifiedTests=false' "-Dchess.web.bundle=$site" "-Dchess.web.playwright.browser=$edge" "-Dchess.web.playwright.source=$sourceCommit" "-Dchess.web.opening.extent=$openingExtent" "-Dchess.extent=$componentExtent"
+```
 - În sanity, deschideți Italiana C54 cu albele la `0 / 12`, apoi dezvăluiți `e2–e4`. Repetați la font 1,3× pe profilul compact de 360 × 640 unități logice și pe cel orizontal de 1280 × 900.
 - Laturile țintă sunt 288 și 592 de unități. Comparați poziția tablei înainte și după indiciu, conturul lui `e2`, textul complet și comenzile de minimum 48 de unități.
 - În Extent consemnați densitatea și zona utilă de pe Android, viewportul Web și capturile pereche. [Lecțiile](../board/openings.md) · [Probele Studiu](../../web/README.md#studiu)

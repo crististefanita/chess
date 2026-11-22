@@ -7,6 +7,9 @@ public final class OpeningLessonLayout {
 
     private OpeningLessonLayout() { }
 
+    /** The same logical width at which the Web lesson may use adjacent panels. */
+    public static int sidePanelBreakpoint() { return SIDE_PANEL_BREAKPOINT; }
+
     public static boolean sideBySide(int width, int height) {
         return width >= SIDE_PANEL_BREAKPOINT && width > height;
     }
