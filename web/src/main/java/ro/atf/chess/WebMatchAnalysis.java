@@ -7,6 +7,7 @@ import static ro.atf.chess.WebBoardState.quote;
 /** Analyzes one displayed match position without access to the match ledger. */
 final class WebMatchAnalysis {
     private final WebHintReplay replay = new WebHintReplay();
+    private final MatchAnalysisCache cache = new MatchAnalysisCache();
     private Frame frame;
 
     String open(String checkpoint, int ply, int revision) {
@@ -23,10 +24,18 @@ final class WebMatchAnalysis {
             if (ply == match.ply() && match.result() != Result.IN_PROGRESS) {
                 evaluation = WebBoardState.terminalEvaluation(match.result());
             } else {
-                var analyzed = match.hintAt(ply);
-                evaluation = WebBoardState.evaluation(analyzed.evaluation(position));
-                if (analyzed.count() > 0) hint = analyzed;
+                var cached = cache.find(checkpoint, ply).orElse(null);
+                if (cached != null) position = cached.position();
+                var analyzed = cached == null ? match.hintAt(ply) : cached.hint();
+                var analyzedEvaluation = analyzed.evaluation(position);
+                evaluation = WebBoardState.evaluation(analyzedEvaluation);
+                if (analyzed.count() > 0 && analyzedEvaluation != null) {
+                    hint = analyzed;
+                    if (cached == null) cache.remember(checkpoint, ply, position, analyzed);
+                }
             }
+        } else {
+            cache.clear();
         }
         replay.close();
         frame = new Frame(checkpoint, ply, revision, position, hint, evaluation);

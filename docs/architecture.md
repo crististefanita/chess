@@ -112,6 +112,7 @@ flowchart LR
 | Geometria comună a tablei și săgeții | `BoardPanelLayout`, `HintArrow` | `BoardPanelLayoutTest`, `HintArrowTest`, `MatchAnalysisParityTest` |
 | Rezultatul și publicarea componentelor | `Checks`, `ExtentAudit`, `ComponentQualification` | `ExtentGovernanceTest`, `ReleaseGovernanceTest` |
 | Rute consultative și livrare | `ReleaseRag`, `ReleaseGate` | `GeometryRagGovernanceTest`, `ReleaseGovernanceTest` |
+| Responsabilitatea codului și direcția dependențelor | [Contractul de calitate a codului](code-quality.md) | `SourceBoundaryGovernanceTest`, `DocumentationGovernanceTest` |
 | Forma și sensul documentației | Ghidul ariei, `MarkdownVisualContract`, `DocumentationPair` | `MarkdownDiagramGovernanceTest`, `DocumentationGovernanceTest`, revizuirea perechii |
 
 ## Lista schimbării

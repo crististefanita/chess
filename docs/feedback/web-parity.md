@@ -22,10 +22,7 @@ care necesită decizii echivalente în `ChessActivity`, `AnalysisActivity`
 și adaptorul Web. Începeți cu reluarea, anularea și primirea unei replici
 AI întârziate. [Motor și proiecție](../testing/README.md#motor-și-proiecție)
 
-**P1 · Compilare Web · Digestul dovezii Hard.** La sursa `9f4fff3`, compilarea Web completă eșuează în
-[`PawnPushProof.hash`](../../chess-core/src/main/java/ro/atf/chess/PawnPushProof.java): TeaVM nu poate compila calea JCA accesibilă prin `MessageDigest.getInstance("SHA-256")`.
-Clasele JVM se compilează, iar adaptorul Android se compilează separat. Păstrați motorul publicat și calificat pentru bundle-uri care modifică doar interfața.
-Înaintea publicării unui motor nou, folosiți un digest determinist portabil și verificați aceleași ID-uri ale dovezilor în JVM și TeaVM, apoi repetați buildul Web complet și martorii Hard. Compilarea JVM reușită nu califică motorul Web eșuat.
+**Rezolvat la 22.11.2026 · Compilare Web · Digestul dovezii Hard.** `PortableSha256` produce aceiași octeți SHA-256 standard fără căutare de furnizori JCA. `PawnPushProof` și `GameReviewCodec` îl folosesc, păstrând identificatorii existenți în hex minuscul și Base64. `PortableSha256Test` acoperă vectori standard, limite de padding, paritatea cu JDK-ul și ambele contracte de identificatori persistenți. `TeaVmPortabilityGovernanceTest` respinge căutarea furnizorilor sau a claselor prin class-loader în sursele nucleului de producție. Buildul TeaVM complet și testul de paritate al workerului împachetat rămân poarta de calificare; compilarea Java singură nu este suficientă.
 
 **Verificări de închidere**
 
@@ -91,3 +88,12 @@ reluare, inclusiv după reîncărcare și într-o filă deja deschisă.
 **P2 · Focus, text mărit și contexte rămase.** Tabla de analiză compactă publicată are un meniu ancorat observat și o tablă neschimbată, fără derularea documentului. Aceasta nu încheie matricea RO/EN la 130% pentru Puzzles, Game Review și De ce.
 
 Verificați ultima opțiune, închiderea prin tastatură, revenirea focusului și sursa/cursorul păstrate în aceste contexte, la dimensiuni compacte și desktop. Păstrați recepția driverului și capturile pentru fiecare profil lipsă; verdictul componentelor nu implică paritate randată completă. [Reperul compact observat](https://github.com/crististefanita/chess/blob/b51e17e7752cc0c0a3ec7be9500a362f4d3b20d2/release/0.16.1/reports/web-rendered-observation.json) · [Contractul meniului](../../web/README.md#meniul-principal-și-piesele)
+
+## WEB-06 · Culorile, acțiunea de final și reutilizarea analizei
+
+**Componentele trec; calificarea randată pereche rămâne deschisă.** Web atribuie fiecărei mutări grupul de culori din APK și arată acțiunea localizată **📊 Analiza partidei** la poziția finală. La redeschiderea unei semimutări deja analizate în aceeași partidă neschimbată se reutilizează doar analiza completă, cu dovadă. Cache-ul păstrează obiectul poziției sursă pentru identitatea liniei jucabile, resetează cursorul becului la reutilizare, reține cel mult 64 de poziții și se golește la schimbarea identificatorului partidei. Analiza incompletă și lucrul altei partide nu sunt reutilizate. Cache-ul există doar în proces; după reload poate fi necesar un nou calcul. `MatchAnalysisCacheComponentTest` și `ChessWebReviewPresentationTest` califică acum contractele cache-ului și prezentării prin aserțiuni de componentă și Extent; `NavigationGovernanceTest` verifică folosirea aceluiași contract în adaptoarele Android și Web.
+
+`PortableSha256` rezolvă blocajul de compilare TeaVM urmărit mai sus. Bundle-ul TeaVM complet și porțile de paritate ale workerului împachetat trec acum. Cache-ul și prezentarea au încă nevoie de recepții vizuale APK/Web pereche pentru un rezultat terminat în RO/EN și reluarea istoricului; codul comun și paritatea workerului nu demonstrează singure paritatea vizuală.
+
+- Poarta de componentă acoperă fiecare grup de clasificare, etichetele textuale, vizibilitatea doar la final, blocajele din timpul analizei, accesarea aceleiași perechi identificator/semimutare, redarea liniei cu obiectul de poziție exact, resetarea becului, evacuarea LRU la 64 de poziții, invalidarea la schimbarea partidei și respingerea lucrului incomplet.
+- Închideți doar cu recepții pereche APK/Web pentru rezultatul final și lista colorată în RO/EN, plus o secvență observată Înapoi/Înainte care arată revenirea imediată la o semimutare AI memorată, fără o căutare nouă. Sursa comună singură nu dovedește paritatea randată.

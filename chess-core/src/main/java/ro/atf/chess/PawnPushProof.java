@@ -111,7 +111,6 @@ final class PawnPushProof {
         var text=new StringBuilder();for(var board:history)text.append(board.searchKey()).append('\n');return hash(text.toString());
     }
     private static String hash(String text) {
-        try{var bytes=java.security.MessageDigest.getInstance("SHA-256").digest(text.getBytes(java.nio.charset.StandardCharsets.UTF_8));var hex=new StringBuilder();for(byte value:bytes){hex.append(Character.forDigit((value&255)>>>4,16));hex.append(Character.forDigit(value&15,16));}return hex.toString();}
-        catch(java.security.NoSuchAlgorithmException failure){throw new IllegalStateException(failure);}
+        return PortableSha256.hex(text.getBytes(java.nio.charset.StandardCharsets.UTF_8));
     }
 }

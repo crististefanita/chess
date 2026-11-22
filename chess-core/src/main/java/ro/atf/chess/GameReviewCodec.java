@@ -6,8 +6,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.EnumMap;
@@ -104,12 +102,7 @@ public final class GameReviewCodec {
     }
 
     static String checkpointDigest(ChessMatch match) {
-        try {
-            var digest = MessageDigest.getInstance("SHA-256").digest(match.checkpoint().getBytes(StandardCharsets.UTF_8));
-            return Base64.getEncoder().encodeToString(digest);
-        } catch (NoSuchAlgorithmException failure) {
-            throw new IllegalStateException("SHA-256 unavailable", failure);
-        }
+        return Base64.getEncoder().encodeToString(PortableSha256.digest(match.checkpoint().getBytes(StandardCharsets.UTF_8)));
     }
 
     private static void writeProof(DataOutputStream out,CoachingProof.Work p)throws IOException {

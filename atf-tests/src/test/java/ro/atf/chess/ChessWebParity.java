@@ -18,6 +18,7 @@ public final class ChessWebParity {
             row(rows, "yaml:" + name, encoded);
         }
         boardCases(rows);
+        digestCases(rows);
         openingCases(rows);
         quests(rows, "mate-in-one", QuestCatalog.load(), "mate-001");
         quests(rows, "mate-in-two", QuestCatalog.loadMateInTwo(), "mate2-0042j");
@@ -26,6 +27,18 @@ public final class ChessWebParity {
         quests(rows, "training", QuestCatalog.loadTraining(), "training-001");
         quests(rows, "intermezzo", QuestCatalog.loadIntermezzo(), "intermezzo-001");
         return rows.toString();
+    }
+
+    private static void digestCases(StringBuilder rows) {
+        var match = ChessMatch.start(new MatchSetup(ChessPosition.Side.WHITE, MatchSetup.Level.BASIC, false));
+        var history = new ArrayList<ChessPosition>();
+        history.add(match.positionAt(0));
+        for (String uci : List.of("e2e4", "d7d5", "e4d5")) {
+            match = match.play(move(uci));
+            history.add(match.positionAt(match.ply()));
+        }
+        row(rows, "sha256:proof-history", PawnPushProof.historyHash(history));
+        row(rows, "sha256:review-checkpoint", GameReviewCodec.checkpointDigest(match));
     }
 
     private static void boardCases(StringBuilder rows) {

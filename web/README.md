@@ -17,6 +17,8 @@ Buildul Web compilează motorul Java 17 cu TeaVM 0.15.0 într-un modul ES. Worke
 
 - În codul verificat, folosirea SnakeYAML în browser bloca inițializarea regulilor la `System.getLogger`. Generarea rezolvă dependența la build. Serializarea checkpointului păstrează formatul existent printr-un `StringBuilder`, care funcționează și în runtime-ul TeaVM. Aceleași cazuri verifică poziția inițială, rocada, en passant, promovarea, rezultatele partidei, restaurarea checkpointului, deschiderile și puzzle-urile.
 
+- Nucleul portabil folosește `PortableSha256` pentru ID-urile dovezilor Hard și identitatea checkpointurilor Game Review. Produce octeți SHA-256 standard fără descoperirea dinamică a furnizorilor JCA și păstrează valorile hex și Base64 existente. `PortableSha256Test` verifică vectori cunoscuți, limitele paddingului și paritatea cu JDK-ul; `ChessWebParityPublication` compară ambele ID-uri din workerul compilat cu ieșirea JVM. `TeaVmPortabilityGovernanceTest` respinge căutarea furnizorilor sau a claselor prin class-loader în sursele nucleului de producție. Compilarea Java nu înseamnă că Web-ul a trecut: compilați bundle-ul TeaVM și rulați `ChessWebParityPublication` înainte de calificarea workerului.
+
 </details>
 
 ## Motor comun și adaptoare de platformă
@@ -84,6 +86,8 @@ fișierelor runtime produce o adresă nouă. Adresa jocului rămâne aceeași.
 
 Culoarea, dificultatea și automatizarea aparțin slotului salvat. Schimbarea numelui, a limbii sau a orientării tablei păstrează poziția curentă.
 
+MatchCaptures furnizează rândurile de capturi de sus și de jos pentru semimutarea selectată și orientarea tablei. Web reutilizează piesele SVG Staunton, grupează piesele repetate, arată +N pentru avantajul material și păstrează rândurile goale în pagină, astfel încât replica AI sau navigarea în istoric să nu deplaseze tabla.
+
 <details>
 <summary>Configurare, preferințe locale și probă de reîncărcare</summary>
 
@@ -130,14 +134,21 @@ mvn -B -ntp -pl atf-tests test '-Dtest=ChessWebBotPublication' "-Dchess.web.bund
 - Alegerea aparține slotului și se păstrează la redeschidere. În orice partidă poți studia poziția separat și muta ambele culori în **Tablă de analiză** din opțiunile partidei.
 
 - Bara ocupă toată înălțimea laturii stângi a tablei. Scorul apare deasupra istoricului, iar becul stă lângă săgeți, inclusiv la poziția de start.
-- Culoarea din bară urmează orientarea tablei și scorul folosește perspectiva albului. Urmărirea istoricului recalculează evaluarea pentru poziția afișată.
-- Poziția finală arată rezultatul partidei.
+- Culoarea din bară urmează orientarea tablei și scorul folosește perspectiva albului. Istoricul reutilizează evaluarea completă pentru o semimutare deja analizată; o poziție nouă se calculează o singură dată.
+- Se păstrează în memorie doar analizele complete, cu dovadă, într-un cache limitat la 64 de poziții pentru partida neschimbată. Schimbarea identificatorului partidei îl golește, iar revenirea la o poziție memorată resetează cursorul becului. Reîncărcarea aplicației pornește cu un cache gol.
+- La poziția finală, rezultatul oferă aceeași acțiune **📊 Analiza partidei** ca APK-ul. Acțiunea apare doar la final; navigarea la o semimutare anterioară arată starea poziției fără această acțiune.
 
 - Becul eliberează selecția curentă și arată mutarea recomandată. Butonul sugestiei deschide linia pe tabla de previzualizare, unde săgețile parcurg mutările fără să modifice partida.
 - **Linie calculată**, **Linia de mat** și previzualizările din Tabla de analiză preiau latura tablei vizibile înainte de deschidere. Pașii și schimbările de variantă păstrează pătratul; redeschiderea măsoară sursa din nou. Rânduri fixe pentru antet și navigare încadrează tabla. Explicația se derulează în spațiul rămas, fără suprapuneri sau derularea întregului dialog.
 - Închiderea revine la semimutarea din istoric, iar redeschiderea slotului revine la capătul partidei cu indiciul ascuns. Tabla de analiză oferă și teoria deschiderilor.
 - La poziția curentă, atingerea destinației marcate joacă indiciul legal când selecția tablei este liberă. Browserul calculează analiza într-un worker separat.
 - Schimbarea poziției sau ieșirea din partidă invalidează rezultatul anterior. [Probele de componentă și interfață](../docs/testing/README.md#analiza-în-partida-cu-ai)
+
+### Culorile mutărilor din analiza partidei
+
+Lista mutărilor păstrează denumirea localizată a clasificării și folosește culorile din APK: Strălucită, Excelentă tactic și Cea mai bună folosesc accentul analizei; Greșeală, Ocazie ratată și Greșeală gravă folosesc culoarea de avertizare. Celelalte clasificări păstrează textul principal. Clasificarea rămâne în eticheta accesibilă, deci culoarea nu este singurul indiciu.
+
+`review-presentation.mjs` deține gruparea culorilor și eligibilitatea acțiunii finale. Testele de componentă verifică toate clasificările, condițiile de vizibilitate și blocarea acțiunii în timpul analizei; testul de prezentare controlează și legătura cu acțiunea comună din meniu. Aceasta nu înlocuiește recepția randată APK/Web.
 
 ### Tabla din Probleme și din partidă
 

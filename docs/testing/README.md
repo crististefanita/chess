@@ -132,6 +132,8 @@ Fiecare semimutare, inclusiv replica adversarului, cere analiza efectivă Hard c
 
 `ChessWebRulesComponentTest` verifică motorul și cataloagele pe JVM. `ChessWebParityPublication` execută aceleași cazuri în workerul TeaVM pentru toate resursele folosite. Rulați proba explicit cu pachetul din TMP. [Build și probe Web](../../web/README.md)
 
+`PortableSha256Test` verifică vectorii SHA-256 standard, limitele blocurilor de padding și păstrarea ID-urilor identice pentru istoricul dovezii și checkpointul Game Review, comparate cu JDK-ul. `ChessWebParityPublication` trimite ambele ID-uri prin workerul compilat și le compară cu ieșirea JVM. `TeaVmPortabilityGovernanceTest` respinge descoperirea furnizorilor și încărcarea dinamică de clase în sursele nucleului de producție, inclusiv printr-un fixture negativ. Procesul de release trebuie să compileze bundle-ul TeaVM real și să ruleze `ChessWebParityPublication`; trecerea JVM singură nu califică rularea Web.
+
 ### Intrarea în meniul Web
 
 `ChessWebShellTest` compară titlul și grupurile din Web cu resursele APK. Componentele de navigare simulează istoricul browserului, accesul direct la o secțiune și revenirea la meniu. Guvernanța verifică adresa publică din README, iar sanity-ul pornește din acel link într-un profil nou. [Contractul meniului](../../web/README.md#meniul-principal-și-piesele)
@@ -181,6 +183,8 @@ Panoul nativ, SVG-ul de studiu, Canvas-ul analizei și analiza AI inline au un s
 ### Analiza în partida cu AI
 
 Comparați același checkpoint și aceeași semimutare în JVM și în worker. Folosiți probele native și de browser pentru bara randată, bec și tabla fixă.
+
+MatchCapturesTest verifică semimutarea curentă, ambele orientări, locurile AI/jucător, capturile calculatorului și istoricul restaurat. match-captures.test.mjs verifică piesele Staunton, gruparea numărului, textul accesibil, rândurile fixe de sus și jos și eliminarea capturilor vechi la navigarea în istoric. Aceste componente rulează fără emulator.
 
 `MatchHistorySelectionTest` verifică cursorul pentru o singură mutare prin paisprezece cazuri comune. Componenta Web acoperă ambele formate de transport, anunțurile neschimbate, creșterea istoricului, ramificarea și cursoarele expirate. Workerul compilat verifică paritatea proiecției și orientarea. În Browser MCP, parcurgeți Start, prima mutare, o mutare intermediară și ultima pe profil compact, landscape și desktop; verificați o singură etichetă între săgeți, indiciile limitelor și dreptunghiul tablei neschimbat. Adaptorul APK folosește cursorul comun în partidă și păstrează banda istoricului din Tabla de analiză.
 
@@ -415,6 +419,7 @@ Folosiți componentele pentru starea sloturilor și a arhivei, continuare, selec
 - [Graficul Game Review](../../web/README.md#graficul-analizei-partidei)
 
 - `ChessWebReviewAccessibilityTest` verifică în Node destinațiile de focus, limitele istoricului și derularea necesară. `GameReviewSessionTest` verifică revenirea la poziția jucată după **De ce?**.
+- `MatchAnalysisCacheComponentTest` verifică reutilizarea exclusiv a analizei complete, identitatea exactă a sursei pentru indiciile jucabile, resetarea cursorului, invalidarea, respingerea lucrului incomplet și evacuarea LRU fără browser sau emulator. `ChessWebReviewPresentationTest` rulează în Node contractele pentru culorile clasificărilor și acțiunea finală, iar aserțiunile sunt raportate prin Extent. `NavigationGovernanceTest` verifică în adaptoarele Web și Android consultarea cache-ului înaintea unei noi analize, păstrarea poziției-sursă pentru indiciile jucabile și eliberarea ei la limita corectă.
 - Sanity-ul Edge păstrează proba Tab, săgeți și revenirea cu focus vizibil la font 1,3×. Reperul Android compact RO/EN verifică încadrarea și păstrarea poziției.
 - [Tastatura în Game Review](../../web/README.md#tastatura-în-analiza-partidei) · [Redarea compactă](#redare-comună-pe-ecran-compact)
 
@@ -541,7 +546,7 @@ nu exista; citirea nu fabrică o calificare curentă. O frontieră tactică înc
 | Intrare JUnit | Ce verifică |
 |---|---|
 | `ChessComponentSuite` | Regulile, pozițiile și problemele, progresul, partida, deschiderile, indiciile și geometria verificată în JVM. Include contractele de accesibilitate Web rulate prin Node.js. Rulează offline. |
-| `ChessGovernanceSuite` | Inventarul suitelor, rezultatele și diagnosticul din Extent, legăturile locale din documentație, politica AI și calificarea release-ului. |
+| `ChessGovernanceSuite` | Boundary-urile surselor de producție, inventarul suitelor, rezultatele și diagnosticul din Extent, legăturile locale din documentație, politica AI și calificarea release-ului. |
 | `ChessBenchmarkSuite` | Stockfish, liga offline și ancora Elo. Fiecare probă pornește când primește intrările documentate. |
 | `ChessJvmSuite` | Intrarea Maven implicită. Reunește cele trei selecții într-un raport. |
 

@@ -190,6 +190,7 @@ public final class ReleaseRag {
             new Route("atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java", RELEASE.document(), RELEASE.heading(), RELEASE.check()),
             new Route("docs/testing/README.md", "docs/testing/README.md", "## Suite JVM", "ChessJvmSuite și ChessGovernanceSuite"),
             new Route("docs/README.md", "docs/README.md", "## Verificarea documentației", "DocumentationGovernanceTest și ReleaseGovernanceTest"),
+            new Route("docs/code-quality.md", "docs/code-quality.md", "## Guvernanță executabilă", "SourceBoundaryGovernanceTest și DocumentationGovernanceTest"),
             new Route("docs/architecture.md", "docs/architecture.md", "## Pe scurt", "DocumentationGovernanceTest, MarkdownDiagramGovernanceTest and DocumentationPairGovernanceTest"),
             new Route("docs/board/", "docs/testing/README.md", "## Motor și proiecție", "BoardPanelLayoutTest și QuestHintTest"),
             new Route("docs/feedback/", "docs/feedback/README.md", "# Feedback · Chess Lab",

@@ -4,6 +4,7 @@ import atf.testkit.AtfComponentTest;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,11 @@ class ChessWebRulesComponentTest {
     }
 
     static void verifyExpectations(Checks check, Map<String, String> observed) {
+        String proofHash = observed.get("sha256:proof-history");
+        check.same("The Web worker exercises a lowercase 64-digit Hard proof history digest",
+                true, proofHash != null && proofHash.matches("[0-9a-f]{64}"));
+        check.same("The Web worker exercises the 32-byte Base64 Game Review checkpoint digest",
+                true, isSha256Base64(observed.get("sha256:review-checkpoint")));
         check.same("Initial board has 20 legal moves", "20", observed.get("initial-legal-moves"));
         check.same("Castling moves both kings and rooks to their destination squares",
                 "WHITE-KING/WHITE-ROOK/WHITE-KING/WHITE-ROOK", observed.get("castling-moves-king-and-rook"));
@@ -76,5 +82,14 @@ class ChessWebRulesComponentTest {
                 List.of(observed.get("count:mate-in-one"), observed.get("count:mate-in-two"), observed.get("count:mate-in-three")));
         check.same("Training retains the authored rook move", "h1h6", observed.get("anchor:training"));
         check.same("Intermezzo retains the payoff sequence", "a8f8,g8f8,b1b5", observed.get("anchor:intermezzo"));
+    }
+
+    private static boolean isSha256Base64(String value) {
+        if (value == null) return false;
+        try {
+            return Base64.getDecoder().decode(value).length == 32;
+        } catch (IllegalArgumentException invalidBase64) {
+            return false;
+        }
     }
 }

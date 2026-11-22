@@ -247,7 +247,7 @@ flowchart LR
 
 ### Material și rezultate
 
-- Sub fiecare nume apar piesele capturate, cu un număr lângă simbol când sunt mai multe de același fel. Jucătorul cu avantaj material vede `+N` în același rând. Capturile și avantajul urmează semimutarea afișată, inclusiv în istoric și după reluare. [Referința de afișare Chess.com](https://support.chess.com/en/articles/8708638-how-can-i-see-the-captured-pieces-and-material-count)
+- Piesele capturate și avantajul material +N urmează semimutarea afișată, inclusiv în istoric și după redeschidere. În APK, fiecare rând rămâne lângă numele jucătorului; în Web, rândurile cu înălțime fixă stau imediat deasupra și dedesubtul tablei. Rândurile urmăresc locul jucătorului când tabla se întoarce, grupează piesele repetate cu un număr și își păstrează înălțimea când sunt goale, astfel încât tabla să nu sară. [Referința Chess.com](https://support.chess.com/en/articles/8708638-how-can-i-see-the-captured-pieces-and-material-count)
 
 - Motorul aplică rocada, en passant și alegerea la promovare. Partida se oprește la mat, pat, configurațiile uzuale de material insuficient, a cincea apariție a poziției sau 75 de mutări de fiecare parte fără captură ori mutare de pion. Remizele la cerere fac parte din regulile de competiție. [Regulile FIDE](https://handbook.fide.com/chapter/e012023)
 

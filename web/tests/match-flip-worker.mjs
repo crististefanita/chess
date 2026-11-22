@@ -26,6 +26,12 @@ async function request(type, data) {
     return result;
 }
 
+function capturesForOrientation(captures, blackBelow) {
+    const bySide = new Map([captures.top, captures.bottom].map(seat => [seat.side, seat]));
+    const bottom = blackBelow ? 'BLACK' : 'WHITE';
+    return { top: bySide.get(bottom === 'BLACK' ? 'WHITE' : 'BLACK'), bottom: bySide.get(bottom) };
+}
+
 let reopened;
 for (const example of cases) {
     const archived = example.result !== 'IN_PROGRESS';
@@ -45,7 +51,10 @@ for (const example of cases) {
     const flipped = await request('match-flip', { expectedRevision });
     assert.equal(flipped.outcome, 'APPLIED', example.id);
     const { blackBelow } = flipped.match;
-    assert.deepEqual(flipped.match, { ...before.match, revision: expectedRevision + 1, blackBelow: example.flippedBlackBelow }, example.id);
+    assert.deepEqual(flipped.match, {
+        ...before.match, revision: expectedRevision + 1, blackBelow: example.flippedBlackBelow,
+        captures: capturesForOrientation(before.match.captures, example.flippedBlackBelow),
+    }, example.id);
     assert.equal(flipped.ledger === before.ledger, archived, example.id);
     assert.deepEqual([flipped.saved, flipped.finished], [before.saved, before.finished], example.id);
     assert.deepEqual([flipped.match.mode, flipped.match.reviewCheckpoint, flipped.match.result, flipped.match.ply,

@@ -7,6 +7,7 @@ Porniți de la ghidul care răspunde întrebării. Verificați afirmațiile desp
 | Întrebare | Ghid |
 |---|---|
 | Cum se leagă motorul, aplicația și testele? | [Arhitectura Chess](../README.md#arhitectura-chess) · [Atlas de context](architecture.md) · [Motor și adaptoare](../web/README.md#motor-comun-și-adaptoare-de-platformă) · [Bibliotecile ATF](../lib/README.md) |
+| Cum păstrez clare responsabilitățile și dependențele codului? | [Contractul de calitate a codului](code-quality.md) · [Harta ownerilor și testelor](architecture.md#harta-ownerilor-și-a-testelor) |
 | Cum se joacă și cum se configurează problemele? | [Tabla și jocul](board/README.md) · [Catalogul](board/quest-curation.md) |
 | Cum se măsoară adversarii AI și cum se interpretează analiza unei partide? | [Protocolul AI](board/ai-quality.md#control-la-fiecare-schimbare) · [Analiza partidei](board/game-review.md) |
 | Ce trebuie verificat înaintea unei schimbări? | [Alegerea nivelului de testare](testing/README.md#alegerea-nivelului) · [Raportare Extent](testing/README.md#raportare-extent) |
@@ -42,13 +43,15 @@ Rulați din copia TMP, cu JDK 21. Dacă folosiți `-o`, depozitul Maven ales
 trebuie să conțină deja dependențele și pluginurile.
 
 ```powershell
-mvn test '-Dtest=DocumentationGovernanceTest,ReleaseGovernanceTest' '-Dchess.extent=target/doc-governance.html'
+mvn -pl atf-tests -am test '-Dtest=ChessGovernanceSuite' '-Dsurefire.failIfNoSpecifiedTests=false' '-Dchess.extent=target/doc-governance.html'
 ```
 
-`DocumentationGovernanceTest` verifică harta README-ului, navigarea locală,
-destinațiile ediției curente, structura feedback-ului și regulile Markdown pentru ghiduri și diagrame.
-Aceleași verificări se aplică ghidului Web și matricei de paritate.
-`ReleaseGovernanceTest` verifică regulile de publicare și traseele RAG.
+`ChessGovernanceSuite` include `SourceBoundaryGovernanceTest` pentru limitele
+importurilor de producție, plus `DocumentationGovernanceTest`,
+`DocumentationPairGovernanceTest`, `MarkdownDiagramGovernanceTest`,
+`SuiteGovernanceTest`, `ExtentGovernanceTest` și guvernanța release-ului.
+Împreună verifică rutele README, navigarea locală, structura bilingvă,
+Markdown-ul, auditarea rapoartelor și regulile de publicare.
 
 La revizie, comparați afirmațiile cu sursele și declarațiile de build.
 Verificați proprietarul informației, fidelitatea exemplelor, randarea și
