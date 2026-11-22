@@ -17,6 +17,24 @@ Start with the guide that answers your question. Verify claims about behavior ag
 
 Ordinary Hard and puzzle-goal solvers have separate evidence: [native puzzle studies](testing/hard-puzzle-study.md).
 
+
+```mermaid
+%%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
+flowchart LR
+    Question["Change or question"] -->|locate owner| Guide["Area guide"]
+    Guide -->|traces to| Source["Code and<br/>configuration"]
+    Source -->|observed by| Check["Adequate test layer"]
+    Check -->|updates contract| Guide
+    Check -->|remaining gap| Feedback["Active feedback"]
+```
+
+<details>
+<summary>Legend — find the owner before choosing evidence</summary>
+
+This is a reading and maintenance map, not a build dependency graph. The owner guide connects a claim to current code and the test layer that observes it; unresolved acceptance stays in feedback. The module, architecture, testing and release links above lead to the detailed contracts.
+
+</details>
+
 ## Maintenance Rules
 
 - **Main README.** Purpose, APK and browser links under Play, the architecture map,

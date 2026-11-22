@@ -6,6 +6,14 @@
 - **Checks.** `BoardPanelLayoutTest` checks geometry, `QuestHintTest` checks hints, and `MatchActionsTest` checks game commands. `ChessWebQuestStudyTest` checks the study controls without Android.
 - **Start here.** [Puzzles](#tactics-and-points) · [Analysis board](#analysis-board) · [Game against the computer](#game-against-the-computer).
 
+
+| Reader goal | Owner guide |
+|---|---|
+| Understand puzzle identity and curation | [Catalog contract](quest-curation.md) |
+| Interpret AI choices and evidence limits | [AI evaluation](ai-quality.md) |
+| Follow review state and navigation | [Game Review](game-review.md) |
+| Choose component or platform proof | [Test strategy](../testing/README.md) |
+
 ## Tactics and points
 
 - In **Tactics**, look for the move that wins material or starts a combination. When the exercise has a playable continuation, the opponent replies on the board and you play through to the last move. **Tactic explained** shows the line, captured pieces, and material change. In exercises that end after the key move, **Defense study** can show what follows the reply chosen by Stockfish.
@@ -49,15 +57,16 @@ the preview as a new source. Reopening captures the current source again.
 and windows up to 480 dp high, leaving more height for the same square.
 
 ```mermaid
+%%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
 flowchart LR
-    Source[Visible source square] -->|measure current side| Capture[Capture once at opening]
-    Capture -->|CSS pixels| Web[Web CSS side in pixels]
-    Capture -->|native pixels| APK[APK ReplayBoardLayout]
-    Web -->|bounded rows| Frame[Fixed board and control rows]
+    Source["Visible source<br/>square"] -->|measure current side| Capture["Capture once at<br/>opening"]
+    Capture -->|CSS pixels| Web["Web CSS side in<br/>pixels"]
+    Capture -->|native pixels| APK["APK<br/>ReplayBoardLayout"]
+    Web -->|bounded rows| Frame["Fixed board and<br/>control rows"]
     APK -->|measured bounds| Frame
-    Frame -->|remaining area| Details[Remaining height for scrolling explanation]
-    Step[Step or branch] -->|reuse captured side| Position[Position and text]
-    Position -->|update pieces and captions| Frame
+    Frame -->|remaining area| Details["Remaining height<br/>for scrolling<br/>explanation"]
+    Step["Step or branch"] -->|reuse captured side| Position["Position and text"]
+    Position -->|update pieces and<br/>captions| Frame
 ```
 
 <details>
@@ -85,12 +94,13 @@ APK source captures its new board side before reopening the same continuation.
 An inline AI hint stays inline; Back closes the replay and restores its source.
 
 ```mermaid
+%%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
 flowchart LR
-    Open[Open replay] -->|pause| Save[Save source, full lines and cursors]
-    Save -->|rotation| Recreate[Recreate source and recompute analysis]
+    Open["Open replay"] -->|pause| Save["Save source, full<br/>lines and cursors"]
+    Save -->|rotation| Recreate["Recreate source and<br/>recompute analysis"]
     Recreate -->|validate| Match{Exact source and lines?}
-    Match -->|yes| Restore[Restore branch and cursors]
-    Match -->|no| Reject[Discard stale replay]
+    Match -->|yes| Restore["Restore branch and<br/>cursors"]
+    Match -->|no| Reject["Discard stale<br/>replay"]
 ```
 
 <details>

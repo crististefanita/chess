@@ -12,9 +12,6 @@ describes the behavior, and the [release catalog](../../release/README.md) point
 - [APK/Web parity and rendered evidence](web-parity.md)
 - [Game Review colors, end-of-game action and reusable analysis (WEB-06)](web-parity.md#web-06--game-review-color-result-action-and-analysis-reuse)
 
-<details>
-<summary>Priority register and closure criteria</summary>
-
 | Priority | Area | Observation | Closure Criterion |
 |---|---|---|---|
 | P2 | Coaching · bounded completion | The Slav hint after 52 actual plies reaches the existing 5M proof limit; a Vienna final review also remains incomplete. Safety rejects an unproved score. | Optimize the measured proof expansion with free replies and counterexamples, preserving the node cap, sound sacrifices and independent native decision. Keep completion FAIL and explicit typed errors until the actual contexts complete. [Snapshot](../testing/hard-status.md) |
@@ -47,9 +44,10 @@ describes the behavior, and the [release catalog](../../release/README.md) point
 | P2 | Puzzle calibration | Imported difficulty bands overlap. | Check attempts and time on a separate shuffled set. |
 | P2 | Android · separating screen transitions | The Android screen owns several session transitions. | Move transitions into a JVM-tested owner. |
 
-</details>
-
 ## Weak opposing replies inside public hints
+
+<details>
+<summary>Witness, open claim and closure criteria — Weak opposing replies inside public hints</summary>
 
 The new maximum-hint journal `learning-max-hint-20261118`, producer
 `8d564655b554d817fea4e3a04723a538ae5f3864`, records every actual White/Black move
@@ -74,7 +72,12 @@ Historical game bodies without current admission are retired. Source fixtures,
 release evidence, unresolved problem definitions and original oracle references
 are separate from the active learning corpus.
 
+</details>
+
 ## Full-review calibration on the admitted corpus
+
+<details>
+<summary>Witness, open claim and closure criteria — Full-review calibration on the admitted corpus</summary>
 
 All five games now retain `review.json`, readable `analysis.json` and a per-game
 README. The added review has its own producer `87ccb91bb169ed95ed7c0dc4b3e58ab67ce7e6df`;
@@ -106,7 +109,12 @@ Integrity, exposed-tail quality and review-recommendation quality are separate
 Extent verdicts. The first passes; the latter two fail. Local review ratings are
 not measured Elo, and three capped paths have no rating. [Contract and components](../testing/learning-archive.md#post-game-review-and-hint-endpoints)
 
+</details>
+
 ## Complete-game findings retained as component targets
+
+<details>
+<summary>Witness, open claim and closure criteria — Complete-game findings retained as component targets</summary>
 
 The two full games (Queen's Gambit and French) and the mating control belong to
 producer `242d6fe21d6fbe625f628cb3f677f9618f588674`: 130 pre-move Hard/maximum-hint
@@ -136,6 +144,8 @@ have been replayed historically. Keep those source-bound observations unchanged;
 current-source hint comparisons are explicit replays with original teacher
 identities, never newly invented historical pre-move journals.
 [Reusable admission and reproduction](../testing/learning-archive.md)
+
+</details>
 
 ## Evidence and Closure Checks
 
@@ -308,6 +318,9 @@ receipts with their real producer; never patch their headers to manufacture pari
 
 ## Finished-game native losses and frontier controls
 
+<details>
+<summary>Witness, open claim and closure criteria — Finished-game native losses and frontier controls</summary>
+
 The current batch uses producer `37c5f65`, not the later Native PVS consumer. English
 ends in 51 plies and Scandinavian in 52, both lost by native Hard to full-strength
 Stockfish; the sound queen-offer control ends in three. All 106 actual plies retain
@@ -334,7 +347,12 @@ The [admission contract](../testing/learning-archive.md#finished-game-continuati
 explains original identities and automatic versus claimable draws. Evidence stays in
 `C:\work\sah\.studii\experiments\2026-11-19-hard-continuation`.
 
+</details>
+
 ## Tactical proof and displayed lines
+
+<details>
+<summary>Witness, open claim and closure criteria — Tactical proof and displayed lines</summary>
 
 Requested on November 19: keep the final verification reply out of the normal hint
 preview when it is only needed to establish the result of an exchange. This requires
@@ -402,7 +420,12 @@ Do not infer Elo or broad independent transfer from the composed forcing control
 Fresh complete games still need every pre-move maximum hint, post-game review and cold
 teacher phases under their actual producer, with the reserve receipt retained.
 
+</details>
+
 ## New-opening audit after the French repair
+
+<details>
+<summary>Witness, open claim and closure criteria — New-opening audit after the French repair</summary>
 
 The corrected evaluator played a complete Ruy López game, with maximum hints recorded
 before all 55 actual plies, including theory and oracle moves. Native Hard supplied
@@ -444,7 +467,12 @@ quality debt, with an executable benchmark and raw teacher phases. A new complet
 game must retain every pre-move hint and its full final analysis under the actual
 producer; do not relabel the previous 55-ply Ruy game as current play.
 
+</details>
+
 ## Scotch winning check and opposing mate
+
+<details>
+<summary>Witness, open claim and closure criteria — Scotch winning check and opposing mate</summary>
 
 The narrowed source `e4bdd31af382297360e825bb1a47729e20c5cbbc` passed the 106-position
 historical root gate: three changed recommendations, 18 fresh oracle phases, zero
@@ -506,7 +534,12 @@ an overvalued rook sacrifice. Even an isolated H9 comparison at 20M nodes stoppe
 without a score; more work alone did not qualify this repair. The runtime keeps
 its existing budgets and evaluation. Evidence: `C:\work\sah\.studii\experiments\2026-11-19-scotch-re8`.
 
+</details>
+
 ## Nimzo public hint witness
+
+<details>
+<summary>Witness, open claim and closure criteria — Nimzo public hint witness</summary>
 
 The original game `nimzo-indian-hard-black`, producer `3a1b0dbc01da1617d5eca29983f8f86056a7f8e0`,
 records 63 actual plies from the initial board, with Hard and the maximum public
@@ -533,7 +566,12 @@ Opening variety itself is covered by
 and documented in the [AI guide](../board/ai-quality.md). It does not randomize
 hint ranking, change search budgets or prove any increase in Hard's Elo.
 
+</details>
+
 ## King's Indian audit after the Nimzo correction
+
+<details>
+<summary>Witness, open claim and closure criteria — King's Indian audit after the Nimzo correction</summary>
 
 New game `kings-indian-hard-black`, producer `c8247d386bc922aefbc7d7c46838e32fc00c7e96`, reaches actual checkmate at ply 79. Every White/Black move has its pre-move Native Hard calculation and maximum ordinary hint, and every saved move has complete native final review. All 109 offered hints and 568 hypothetical plies were independently graded at H17/H19. There are 45 stable large PV losses, five offered-root losses (three first choices) and 21 weak opposing replies. Seven exposed important-piece endpoints have no stable large oracle loss; Game Review still has five bad recommendations, 40 bad hypothetical review plies, five error labels on small independent losses and one missed large loss. Integrity passes; global chess quality does not.
 
@@ -541,7 +579,12 @@ The first actual loss is 8…Bd7, also shown by the hint, at H5 after 200k addit
 
 This is a different opening family, not a paired comparison with the original Nimzo game and not a new Elo estimate. The corrected Nimzo entry is absent from these actual King’s Indian root positions. The known Nimzo Bxc5/Ne5 and Scotch Re8+ defects remain open. Complete evidence is in `C:\work\sah\.studii\experiments\2026-11-19-nimzo-free-replies` and `corpus\2026-11-19-kings-indian-qualified`.
 
+</details>
+
 ## Outside-pawn closure and score calibration
+
+<details>
+<summary>Witness, open claim and closure criteria — Outside-pawn closure and score calibration</summary>
 
 The training-051 initial choice and pawn-race handoff are complete at the unchanged ordinary
 allowance, with both actual composed games won. The broad geometric discount and rook-cache
@@ -552,3 +595,5 @@ its independent winning outcome as approximately equal is not calibrated analysi
 from the first confirmed weak native, hint or review reply in the complete cold-oracle audit.
 Require free defenses and reachable-king/opposition counterexamples; do not install a FEN key,
 erase a rejected trial or infer Elo from the two composed games. Historical league goals remain open.
+
+</details>

@@ -28,12 +28,13 @@ Android and Web use the same rules, catalogs, and Java match contracts from
 navigation.
 
 ```mermaid
+%%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
 flowchart LR
-    Core["chess-core · Java and YAML"] -->|Gradle compiles sources and bundles resources| Native["APK · Android UI"]
-    Core -->|generator produces data and TeaVM compiles Java| Bundle["Web bundle · manifest-based runtime"]
-    Bundle -->|page loads the module and worker| Browser["Browser · DOM and CSS"]
-    Native -->|adapter writes checkpoints| Prefs["Android · SharedPreferences"]
-    Browser -->|adapter writes checkpoints| Local["Browser · localStorage"]
+    Core["Java and YAML"] -->|packages| Native["Android APK"]
+    Core -->|compiles| Bundle["TeaVM bundle"]
+    Bundle -->|loads worker| Browser["Web UI"]
+    Native -->|persists| Prefs["SharedPreferences"]
+    Browser -->|persists| Local["localStorage"]
 ```
 
 <details>

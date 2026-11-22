@@ -13,6 +13,24 @@ Opening variety is governed by [OpeningVarietyTest](../../atf-tests/src/test/jav
 
 Repertoire changes need their own scope check: freeze the independently verified root and all offered PV plies, compare free opposing replies at H17/H19, preserve the existing horizon and node allowance, and include a context where the same piece move is sound. An exact-position correction must not be reported as a general search or Elo gain. [Native example and independent evidence](../../atf-tests/src/test/java/ro/atf/chess/NimzoRepertoireTest.java)
 
+
+```mermaid
+%%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
+flowchart LR
+    Contract["Changed contract"] -->|selects| JVM["JVM components"]
+    Contract -->|requires platform| Platform["Android or Web<br/>probe"]
+    JVM -->|assertions| Extent["Extent HTML"]
+    Platform -->|observed receipts| Extent
+    Extent -->|review scope| Review["Evidence acceptance"]
+```
+
+<details>
+<summary>Legend — test level and evidence are separate choices</summary>
+
+Components exercise production contracts through controlled inputs. Device, packaged-worker and rendered-browser probes observe their own boundaries; importing a receipt does not execute that probe again. Extent retains actual comparisons and captures, while acceptance reviews the source, selection and observed scope.
+
+</details>
+
 ## Choosing the Test Level
 
 - **Component** for rules, progress, persistence, ordering, and measurable layout. Use the real store with in-memory preferences and assert observable values.
@@ -25,6 +43,9 @@ JVM, and verify native integration and an actual process restart on Android.
 In Extent, follow the assertion, diagnostic, and checkpoint capture where needed.
 
 ## Engine and projection
+
+<details>
+<summary>Checks and limits — Engine and projection</summary>
 
 Check move legality, board projections, and catalog solutions in the JVM. Compare move sets against the independent chess.js oracle.
 
@@ -128,7 +149,12 @@ compared variants, reply facts, actual depths and nodes. [Run and interpretation
 
 Every ply, including an opposing reply, requires the actual history-aware Hard analysis. Components reject missing or foreign receipts; the benchmark publisher replays evidence before Elo and Extent. [Protocol, command and interpretation](hard-audit.md)
 
+</details>
+
 ## Web engine parity
+
+<details>
+<summary>Checks and limits — Web engine parity</summary>
 
 `ChessWebRulesComponentTest` checks the engine and catalogs on the JVM. `ChessWebParityPublication` executes the same cases in the TeaVM worker for all resources used. Run the probe explicitly with the bundle from TMP. [Web build and probes](../../web/README.md)
 
@@ -460,7 +486,12 @@ The component tests simulate the board, storage, and timer. They check arrow geo
 - Edge probes use the compiled bundle for import, new analysis, and a real reload. The Extent publisher verifies moves, the analysis cache, bundle identity, and captures.
 - [Run commands](../../web/README.md#game-review)
 
+</details>
+
 ## Tactics and scoring
+
+<details>
+<summary>Checks and limits — Tactics and scoring</summary>
 
 - `QuestRewardsTest` checks the streak across chapters, the bonus cap, restoration of an assisted attempt, previous scores, and totals. `TacticsCatalogTest` checks the unique key move, absence of an immediate mate, continuity of IDs, and gains that withstand legal replies at the end of the line.
 - `QuestPayoffTest` checks resuming from intermediate stages, captures, the alternative ending, and restoring older solutions. The YAML gives the provenance of the positions.
@@ -481,7 +512,12 @@ Publish `android-tactics-explanation.html` with `-Dtest=AndroidSanityPublication
 node scripts/verify-tactics.cjs $chessJs chess-core/src/main/resources/tactics.yaml chess-core/src/main/resources/tactics.sha256
 ```
 
+</details>
+
 ## Resuming puzzle explanations
+
+<details>
+<summary>Checks and limits — Resuming puzzle explanations</summary>
 
 [QuestReplayTest](../../atf-tests/src/test/java/ro/atf/chess/QuestReplayTest.java)
 uses catalog positions to verify the saved ply in Mate in 2, every frame in
@@ -496,7 +532,12 @@ piece positions distinguish the defense from the final frame.
 - At native 1080 × 1920, it uses UI Automation. Both runs use a 1.3× font scale.
 - The replayDisplay receipt records the profile and capture source. [Geometry test](../../atf-tests/src/test/java/ro/atf/chess/ScreenCaptureGeometryTest.java)
 
+</details>
+
 ## Puzzle progress
+
+<details>
+<summary>Checks and limits — Puzzle progress</summary>
 
 Check scoring, navigation, saved progress, and chapter geometry in the JVM. Keep native probes for the rendered board, controls, and saved state across process restart.
 
@@ -550,6 +591,8 @@ node scripts/verify-tactics.cjs $chessJs chess-core/src/main/resources/training.
 node scripts/verify-tactics.cjs $chessJs atf-tests/src/test/resources/tactical-transfer-holdout.yaml atf-tests/src/test/resources/tactical-transfer-holdout.sha256
 node scripts/verify-tactics.cjs $chessJs chess-core/src/main/resources/intermezzo.yaml chess-core/src/main/resources/intermezzo.sha256
 ```
+
+</details>
 
 </details>
 
@@ -687,6 +730,9 @@ When changing instrumentation, synchronize the `prepare` inventory and per-phase
 
 ## Upgrading saved progress
 
+<details>
+<summary>Checks and limits — Upgrading saved progress</summary>
+
 - The distribution sanity run starts from a clean installation. For the separate upgrade probe, start with a clean emulator, confirm that both APKs have the same certificate, and install the published release first.
 - Create progress, stop the process, and install the candidate using `adb install -r`. Verify `versionCode`, first-install time, PIDs, and puzzle IDs, then compare the points, streak, and pending defense.
 
@@ -703,7 +749,12 @@ On API 28, a test profile saved by 0.9.0 kept 105 solved IDs, 1,072 points, the 
 - Also verify a previously completed mate chapter. `mate-129`, `mate2-024nn`, and `mate3-02YEp` remain last in their chapters, and every new position in these chapters appears before them.
 - In the published 0.10.0 APK, Mate in 1 displayed `500/500` with `102/500` solved and **Next** disabled. **Previous** opened the puzzle at `499/500`.
 
+</details>
+
 ## Analysis board from a game
+
+<details>
+<summary>Checks and limits — Analysis board from a game</summary>
 
 - `AnalysisLineTest` and the TeaVM worker read `contextual-analysis.json`. The cases fix the checkpoint, visible ply, and orientation for an AI game, an archive entry after resignation, and a checkmate position.
 - They check branching, rejection of an invalid cursor, and retention of the source. The component test with mocks checks returning to the game and opening control, keeping the independent study bookmark, and ignoring replies delayed until after exit.
@@ -717,7 +768,12 @@ mvn -B -ntp -pl atf-tests -am test '-Dtest=AnalysisLineTest,ChessWebAnalysisStud
 
 In sanity, open a game at a historical move, open the Analysis board, and return. Check the cursor, orientation, and focus. Legality and persistence cases remain in components. [Analysis board on the Web](../../web/README.md#study)
 
+</details>
+
 ## Openings
+
+<details>
+<summary>Checks and limits — Openings</summary>
 
 - `OpeningCatalogTest` checks playthrough for both colors, distinct final positions, and recognition of new lines in the ECO index. `OpeningLessonTest` checks a single ply per press, the pause before a reply, and replay from history.
 - `MatchAiGovernanceTest` checks Stockfish comparison positions for every lesson. In the English and Nimzo-Indian, the new positions measure Black's reply before the knight retreat and the exchange on c3, respectively.
@@ -745,7 +801,12 @@ Set `$receipt` to `openings.txt` in the TMP directory printed by the runner. The
 
 For the signed APK, use `-Distribution -IncludeOpenings -SourceCommit <sha>`. The probe uses the same APK installed for the base sanity run and saves the receipt and captures in the `openings` subdirectory.
 
+</details>
+
 ## Game and History
+
+<details>
+<summary>Checks and limits — Game and History</summary>
 
 Verify matches, storage, and review in components. Use Android sanity for process restarts, native navigation, and rendered evidence.
 
@@ -814,7 +875,12 @@ The native AI-match probe waits for a completed verified hint rather than treati
 
 </details>
 
+</details>
+
 ## Analysis Board
+
+<details>
+<summary>Checks and limits — Analysis Board</summary>
 
 - `AnalysisLineTest` checks navigation, branching, special moves, and prefix export. A cursor in history can open review of the finished source game if the whole line preserves its moves.
 - A different branch, in-progress game, or manually played mate uses study analysis. `GameReviewTest` checks analysis of all moves and the Elo criteria.
@@ -846,7 +912,12 @@ The native AI-match probe waits for a completed verified hint rather than treati
 - Publish with `AndroidSanityPublication#publishMatchSlotsSanity` or `#publishMatchArchiveSanity` and the phase receipt. Extent ties the assertion, embedded capture, and fingerprint to the same Android step.
 - Execution identity includes the process, commit, distribution APK fingerprint, and a native run ID. `-MatchMenusOnly` uses one ID across Saved and Finished; separate probes generate their own ID. Extent rejects a missing or substituted native marker and a pair from different runs. [Saved and finished games](../board/README.md#game-against-the-computer)
 
+</details>
+
 ## Shared replay on a compact screen
+
+<details>
+<summary>Checks and limits — Shared replay on a compact screen</summary>
 
 Run `scripts/run-android-sanity.ps1 -Distribution -ReplayCompactOnly -SourceCommit <sha>` after the signed build in TMP. The probe sets the portrait profile to 720 × 1280, 320 dpi, and a 1.3× font scale, starts the app in Romanian and then English with independent test data, and restores the emulator profile at the end.
 
@@ -855,7 +926,12 @@ In each language, it opens an Opening theory path and both **Why?** variations, 
 - Publish the report with `-Dtest=AndroidSanityPublication#publishReplayCompactSanity` and `-Dchess.android.receipt=<RO receipt>`. `android-replay-compact.html` includes the 12 assertions and four captures.
 - The report requires both languages and the same APK, commit, profile, device, and run ID, with distinct processes. [Release qualification](../release/README.md#qualification-and-publication)
 
+</details>
+
 ## TalkBack probe
+
+<details>
+<summary>Checks and limits — TalkBack probe</summary>
 
 1. Enable TalkBack on the emulator. In **Mate in 1**, open **Hint**, then **Show move**. Touch the side to move and swipe right twice through emulator touch input. After each gesture, capture the Android `TYPE_VIEW_ACCESSIBILITY_FOCUSED` event and the frame with the focus. Repeat after **Flip board**. [Emulator touch input](https://developer.android.com/studio/run/emulator-console)
 2. In the first 0.3.1 puzzle, the route is Black to move → black queen on d8 → h4 with either color at the bottom. The API 33 probe with TalkBack 14.2 confirmed all four swipes through `EmulatorController/sendTouch`. The [historical Extent report](https://github.com/crististefanita/chess/blob/v0.4.0/release/0.3.1/reports/talkback-gestures-extent.html) remains in the Git tag outside the short release-retention window.
@@ -898,7 +974,12 @@ offline, using all 28 raw H17/H19 phases of a rejected repair. It shares
 adds the actual one-turn review classification to the unresolved runtime goals.
 [Root and full-line admission](learning-archive.md#root-and-full-line-admission)
 
+</details>
+
 ## Shared screen chrome
+
+<details>
+<summary>Checks and limits — Shared screen chrome</summary>
 
 One Java policy, `UiChrome`, owns the logical control sizes, contextual Back destinations and centered navigation rail. `ChessHeader` and `CenteredControls` apply it on Android; `GenerateUiChrome` exports its constants and destinations to the Web adapter. Titles start beside Back, wrap to two lines and retain a 48 dp/CSS px Back target. Options stay at the right end, and the popup follows its trigger within the viewport. A short popup uses its own scroll area.
 
@@ -915,6 +996,7 @@ For paired rendering, use `1.e4 c5 2.c3 h5` to return from opening history to th
 `GenerateUiChrome` must reproduce the tracked module exactly before qualification. An engine compilation failure cannot be hidden by a successful UI package: for UI-only reuse, record the qualified engine commit and digest separately. [APK–Web matrix](../../web/parity.md) · [Release process](../release/README.md)
 
 ```mermaid
+%%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
 flowchart LR
     Policy["Java chrome policy"] -->|native bounds| Android["Android views"]
     Policy -->|generated constants| Web["Web DOM and CSS"]
@@ -926,5 +1008,7 @@ flowchart LR
 <summary>Legend — shared policy and adapter evidence</summary>
 
 The policy supplies dimensions and destinations. Shared cases check both projections; native and MCP captures verify the rendered result. Game rules, AI budgets and storage remain with their existing owners.
+
+</details>
 
 </details>

@@ -5,6 +5,25 @@
 This guide ties the commit, signed APK, Android probe, and verified download together.
 The [release catalog](../../release/README.md) identifies the available version and its evidence.
 
+
+```mermaid
+%%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
+flowchart LR
+    Source["Pinned source"] -->|builds| APK["Identified APK"]
+    Source -->|selects checks| Tests["Required probes"]
+    Tests -->|records| Evidence["Receipts and Extent"]
+    APK -->|binds identity| Gate["ReleaseGate"]
+    Evidence -->|reconciles| Gate
+    Gate -->|admits publication| Publish["Release and<br/>download"]
+```
+
+<details>
+<summary>Legend — candidate identity, qualification and publication</summary>
+
+The gate reconciles the candidate and required evidence; a successful build or existing report alone does not qualify a release. RAG selects affected checks and documentation, while the immutable EN/RO pair gate checks the reviewed editions. The procedure below owns signing, installation exceptions, access verification and the exact publication sequence.
+
+</details>
+
 ## Qualification and Publication
 
 Check the available version in the README from `origin/main`. If the local branch contains parallel work, start the candidate from `origin/main` in TMP and transfer only the files reviewed for the release.
