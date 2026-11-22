@@ -1,12 +1,12 @@
-# Console — Execution Diagnostics
+# Console — execution diagnostics
 
 ## Overview
 
-`atf-console` projects ATF events to stdout and stderr with lifecycle, timing, and configurable details. Use it to follow a Maven or IntelliJ run. [Reporting](README.Reporting.md) produces the HTML artifact.
+`atf-console` projects ATF events to stdout/stderr: lifecycle events, durations, and configurable details. It is useful for monitoring a Maven or IntelliJ run; the HTML artifact is produced by [Reporting](README.Reporting.md).
 
-## Minimal Example
+## Minimal example
 
-This method fragment sets an explicit policy and leaves the stream in the adapter.
+Snippet inside a method; the policy is explicit, and the stream remains in the adapter:
 
 ```java
 import atf.console.AtfConsoleReporter;
@@ -14,10 +14,10 @@ import atf.console.ConsoleSettings;
 
 var console = AtfConsoleReporter.configuredStdout(
         new ConsoleSettings(true, false));
-console.info("The scenario catalog has been loaded");
+console.info("Catalogul de scenarii a fost încărcat");
 ```
 
-`configuredStdout()` reads `atf.report.config` → `ATF_REPORT_CONFIG` → `atf.yaml/yml`. The available options are shown below.
+`configuredStdout()` reads `atf.report.config` → `ATF_REPORT_CONFIG` → `atf.yaml/yml`; the options are:
 
 ```yaml
 reporting:
@@ -26,25 +26,23 @@ reporting:
     detailsEnabled: false
 ```
 
-## Integration and Options
+## Integration and options
 
 | Intent | Choice |
 |---|---|
-| Message independent of detail settings | `info(...)` |
-| Typed events with lifecycle and duration | `publish(AtfConsoleEvent)` through the Core port `AtfConsoleSink` |
-| Disable console output entirely | `enabled: false` or `ConsoleSettings.disabled()` |
-| Print the final report path in the console | Constructor with `reportPathEnabled: true` and the `REPORT_PUBLISHED` event |
-| JUnit policy per class | The Console JUnit adapter and Test Kit annotations. Declare Kit explicitly. |
+| Message independent of details | `info(...)` |
+| Typed events with lifecycle and duration | `publish(AtfConsoleEvent)` through the Core `AtfConsoleSink` port |
+| Console fully disabled | `enabled: false` or `ConsoleSettings.disabled()` |
+| Final report path in the console | Constructor with `reportPathEnabled: true` and the `REPORT_PUBLISHED` event |
+| Per-class JUnit policy | JUnit Console adapter and Test Kit annotations; declare Kit explicitly |
 
-- Printing the path requires opt-in, an enabled console, and a confirmed artifact event. `detailsEnabled` controls detail visibility only.
-- Console depends on Core. The JUnit adapter uses Kit when declared.
-- Console renders diagnostics. The invoking test owns the comparison and verdict.
+The path requires opt-in, an enabled console, and an event with a confirmed artifact; `detailsEnabled` controls details only.
+
+Console depends on Core; Kit is optional for JUnit integration. The projection is diagnostic: the comparison and verdict belong to the test.
 
 ---
 
-Before adopting a new version, check local compatibility with `PlatformLibraryProvenanceTest` and diagnostic rendering with `ExtentGovernanceTest`. Keep coordinates, hashes, and integration notes aligned with `library-provenance.json`.
-
-[Verify the library integration in Chess and the examples in J0](README.md#verification)
+Before a new release, verify local compatibility with `PlatformLibraryProvenanceTest` and diagnostic rendering with `ExtentGovernanceTest`. Keep coordinates, hashes and integration notes aligned with `library-provenance.json`.
 
 <a id="shared-library-source"></a>
 
