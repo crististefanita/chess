@@ -104,6 +104,13 @@ before opening the tab, so this rendered receipt remains open.
 
 ## WEB-04 · Qualification and Publication
 
+**Verified 0.16.2 site bytes.** A fresh Pages dispatch deployed the qualified
+site commit after the first push run could not fetch artifact metadata. Rerunning
+that run created duplicate `github-pages` artifacts; the new run succeeded.
+The served index and Game Review CSS match the tagged Git blobs. This confirms
+publication identity, while the APK/Web rendered parity matrix remains open.
+[Deployment receipt](../../release/0.16.2/reports/web-publication.json)
+
 **P2 · Release qualification.** In RAG, tie the commit, catalogs, and APK and Web hashes to receipts from the same release. [Update criterion](../testing/README.md#updating-the-web-bundle)
 
 **Closure criterion.** Start the check from **Play in your browser**, below

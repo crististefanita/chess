@@ -11,6 +11,7 @@ The [strict qualification](qualification.json) binds source commit `a109db7`, th
 | [Android match analysis](android-match-analysis.html) · [initial execution](match-analysis-execution.json) · [restored execution](match-analysis-restore-execution.json) | Focused signed-APK check of the selected history label and hint after restart; supplementary evidence outside strict qualification. |
 | [Saved games](android-match-slots.html) · [execution](match-slots-execution.json) · [Finished games](android-match-archive.html) · [execution](match-archive-execution.json) | Two signed-APK assertions per menu, shared native run ID, capture hashes and paired-phase identity; supplementary evidence. |
 | [Web review focus](web-review-focus.html) · [browser receipt](web-review-focus.json) | Automated local browser check of compact 130% title alignment; a served-site manual MCP check remains separate. |
+| [Web publication](web-publication.json) | Fresh Pages deployment succeeded; the served index and Game Review CSS match the qualified Git blobs. |
 | [Governance](governance.html) · [test-change review](test-change-review.html) · [review proof](test-change-review.html.proof.html) | Release, documentation and test-movement checks. |
 | [Publication governance](publication-governance.html) | Rechecked the published README, qualified archive, public and authenticated download receipts. |
 | [RAG context](rag.txt) · [signing transition](signing-transition.json) | Affected guidance and certificate continuity. |

@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "observedUtc": "2026-11-22T18:40:47.6163782Z",
+  "workflowRun": "https://github.com/crististefanita/chess/actions/runs/45056354132",
+  "workflowConclusion": "success",
+  "siteCommit": "54cf5854f094fa7821deacf7a36f4172797f701a",
+  "manifestSha256": "741990cd4714a37219a859140e4fd1a68049347e05acdfea2ad5b732e2cb718a",
+  "servedUrl": "https://crististefanita.github.io/chess/",
+  "indexHttpStatus": 200,
+  "indexSha256": "44ffa6d930eb40e21b9a446a74675576fb64f0b05eedb227706842141bc9217a",
+  "indexGitBlob": "86b45ce4601ed9d4a8093857fe38beb830ae40ec",
+  "cssPath": "runtime/98e0e5947276cbb76fb46fd1e14ddca53780938c54860d3d1ab7076190c04e99/game-review.css",
+  "cssHttpStatus": 200,
+  "cssSha256": "5ef01fbb71e8aad1bee430dfd77d72619444ae13212b056bb2bdba7e33915bda",
+  "cssGitBlob": "7c995665344b663d296d9b30a30e629788f19a9c",
+  "byteIdentity": "PASS",
+  "browserVisualScope": "local automated Game Review focus only"
+}
