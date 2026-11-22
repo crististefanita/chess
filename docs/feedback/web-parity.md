@@ -66,6 +66,10 @@ trebuie să înlocuiască diagnosticul unui oracol UI greșit.
 
 ## WEB-03 · Componente și E2E pe contractul comun
 
+**Verificat local la 22.11.2026 · Fluxul browser Salvate/Încheiate.** O probă Chromium reală a găsit că deschiderea unei partide migrate cu AI în Salvate ridica `ReferenceError: levels is not defined` și lăsa lista goală. Rândul citește acum nivelul din textele localizate ale meniului. O componentă fără browser verifică toate cele trei niveluri în RO/EN și respinge un nivel invalid. Proba Playwright cu un singur flux și raport Extent verifică separarea listelor, matul, reîncărcarea, încadrarea tablei arhivate, istoricul și geometria tablei de analiză; imaginile și acțiunile sunt incluse în raport. Acest control închide fluxul Web Salvate/Încheiate pentru profilul compact EN testat, fără a închide matricea de randare APK/Web la 130% de mai jos. [Strategia de testare](../testing/README.md#partide-salvate-arhivă-și-continuare)
+
+**Limita distribuției.** Chess consumă perechile JAR/POM publicate J0 Reporting și Test Kit. `atf-ui` și `atf-debug-ui` din J1 sunt module sursă; copierea unui JAR necalificat în Chess ar ascunde proveniența. Dacă după această probă locală este nevoie de un adaptor browser reutilizabil, cerem proprietarului J1 un pachet binar versionat și acceptare la consumator; un contract neutru Reporting defect se raportează separat proprietarului J0, cu raportul eșuat și coordonata exactă.
+
 **P2 · Dovezi pereche ale adaptoarelor.** Antetul comun și cursorul unic au deja cazuri comune de componentă. Lipsește o recepție randată reutilizabilă pentru aceeași poziție sursă, variantă, cursor și secvență Înapoi pe APK și Web. Motorul Web mai vechi păstrat nu trebuie prezentat ca paritate cu un motor nativ mai nou.
 
 **P2 · Locurile și capturile randate.** Identitatea comună a adversarului,

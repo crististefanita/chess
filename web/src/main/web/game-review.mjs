@@ -13,6 +13,7 @@ import { bindInlineMatchAnalysis, guidedMatchMove } from './match-inline-analysi
 import { renderMatchHistory } from './match-history.mjs';
 import { renderMatchCaptures } from './match-captures.mjs';
 import { matchSeatLabels, renderMatchSeat } from './match-seats.mjs';
+import { matchListOpponent } from './match-list-row.mjs';
 import { attachOptionsMenu, followOptionsMenu } from './options-menu.mjs';
 import { createReviewImport } from './review-import.mjs';
 import { matchReviewActionState, reviewGradeTone } from './review-presentation.mjs';
@@ -768,7 +769,7 @@ function renderMatchList() {
         button.dataset.result = entry.result;
         button.dataset.ply = entry.ply;
         const title = document.createElement('strong');
-        const opponent = entry.mode === 'AI' ? `AI · ${levels[entry.level]}` : words['open-match'];
+        const opponent = matchListOpponent(entry, words);
         title.textContent = archived ? opponent : `${entry.slot} · ${opponent}`;
         const details = document.createElement('span');
         details.className = 'match-subtitle';

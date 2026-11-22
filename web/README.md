@@ -199,6 +199,12 @@ mvn -B -ntp -pl atf-tests test '-Dtest=ChessWebLedgerPublication' "-Dchess.web.b
 
 Pentru destinația publică, transmiteți URL-ul din README ca ultim argument Node și adăugați `-Dchess.web.ledger.public=true` la publicarea Extent.
 
+Proba scurtă `ChessWebMatchListPlaywrightE2e` rulează site-ul împachetat într-un browser Chromium real. Migrează o partidă locală și una cu AI, verifică ambele liste, încheie partida locală, reîncarcă tabla arhivată și verifică geometria și istoricul tablei de analiză. Raportul Extent include imaginile, acțiunile de clic, aserțiunile punctuale, commitul sursă, versiunea browserului și amprenta pachetului. `ChessWebMatchListPresentationTest` verifică toate nivelurile AI în RO și EN fără browser; `MatchListsProjectionTest` acoperă ambele limite de zece intrări. Transmiteți probei Playwright o cale nouă pentru raport, site-ul împachetat, executabilul Chromium și commitul sursă complet. [Strategia de testare](../docs/testing/README.md#partide-salvate-arhivă-și-continuare)
+
+```powershell
+mvn -B -ntp -pl atf-tests test '-Dtest=ChessWebMatchListPlaywrightE2e' "-Dchess.web.bundle=$site" "-Dchess.web.playwright.browser=$edge" "-Dchess.web.playwright.source=$sourceCommit" "-Dchess.web.playwright.extent=$extent"
+```
+
 </details>
 
 ### Reluarea analizei unei partide arhivate

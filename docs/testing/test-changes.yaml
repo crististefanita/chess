@@ -1,4 +1,20 @@
 testChanges:
+  - id: CHESS-WEB-PLAYWRIGHT-POM-RO
+    base: "19567f248ed143975740c144211b534bf5bb017c"
+    from: atf-tests/pom.xml
+    replacement: atf-tests/src/test/java/ro/atf/chess/SuiteGovernanceTest.java
+    test: ro.atf.chess.SuiteGovernanceTest#everyJvmTestHasExactlyOnePrimarySuiteAndAnExtentAudit
+    contract: "Păstrează dependența browserului numai pentru teste și proba reală în afara suitelor offline"
+    allowDelete: false
+
+  - id: CHESS-WEB-PLAYWRIGHT-SUITES-RO
+    base: "19567f248ed143975740c144211b534bf5bb017c"
+    from: atf-tests/src/test/java/ro/atf/chess/SuiteGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/SuiteGovernanceTest.java
+    test: ro.atf.chess.SuiteGovernanceTest#everyJvmTestHasExactlyOnePrimarySuiteAndAnExtentAudit
+    contract: "Descoperă proba Playwright la intrarea explicită pentru browser și păstrează o singură suită primară pentru fiecare metodă offline"
+    allowDelete: false
+
   - id: CHESS-ANALYSIS-CAPTURE-INVENTORY-RO
     base: "7e9eba6520e595abd706bd284c992bd831ff199a"
     from: atf-tests/src/test/java/ro/atf/chess/ChessWebAnalysisStudyTest.java

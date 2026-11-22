@@ -80,6 +80,7 @@ class SuiteGovernanceTest {
         check.same("Browser publishers require explicit driver receipts",
                 Set.of(ChessWebReviewPublication.class.getName(), ChessWebGamePublication.class.getName(),
                         ChessWebBotPublication.class.getName(), ChessWebLedgerPublication.class.getName(),
+                        ChessWebMatchListPlaywrightE2e.class.getName(),
                         ChessWebArchiveReviewsPublication.class.getName(), ChessWebArchiveContinuationPublication.class.getName(),
                         ChessWebReviewGraphPublication.class.getName(), ChessWebReviewFocusPublication.class.getName(),
                         ChessWebReviewAccessibilityPublication.class.getName(), ChessWebStudyPublication.class.getName(),
