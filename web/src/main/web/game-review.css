@@ -264,6 +264,10 @@ dialog::backdrop { background: #121613a8; }
   --match-meter-width: 0px;
   --match-meter-gap: 0px;
 }
+.match[data-mode="AI"]:has(.match-inline-meter:not([hidden])) > .match-seat {
+  inline-size: min(100%, calc(var(--play-board-limit) + var(--board-meter-gutter)));
+  padding-inline-start: var(--board-meter-gutter);
+}
 .match[data-mode="AI"] .match-inline-meter { position: relative; inset: auto; inline-size: 100%; }
 .match[data-mode="AI"] #match-board { grid-column: 2; inline-size: 100%; }.match-inline-meter { position: relative; inset: auto; inline-size: 100%; }
 .match[data-mode="AI"] #match-board { grid-column: 2; inline-size: 100%; }
