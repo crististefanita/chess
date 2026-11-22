@@ -156,3 +156,27 @@ test('match markup keeps the board between stable top and bottom capture rows', 
     assert.match(css, /\.match-captures\s*\{[^}]*min-block-size:\s*var\(--board-seat-size\)/);
     assert.match(css, /\.match-captures\[aria-hidden="true"\]\s*\{\s*visibility:\s*hidden/);
 });
+
+test('recorded APK capture frames render identically in Web history', async () => {
+    const fixture = JSON.parse(await readFile(new URL('../../atf-tests/src/test/resources/match-capture-rows.json', import.meta.url), 'utf8'));
+    const top = element();
+    const bottom = element();
+    for (const frame of fixture.frames) {
+        for (const [row, tray] of [['top', top], ['bottom', bottom]]) {
+            const expected = frame[row];
+            const visible = renderMatchCaptures(tray, expected, artwork, words);
+            assert.equal(visible, expected.pieces.length > 0 || expected.advantage > 0, `ply ${frame.ply} ${row} visibility`);
+            assert.equal(tray.dataset.side, expected.side, `ply ${frame.ply} ${row} owner`);
+            assert.deepEqual(tray.children.filter(child => child.dataset.captured).map(child => child.dataset.captured),
+                expected.pieces.map(piece => piece.kind), `ply ${frame.ply} ${row} captured kinds`);
+            assert.equal(tray.children.find(child => child.className === 'captured-piece-count')?.textContent,
+                expected.pieces.find(piece => piece.count > 1)?.count?.toString(), `ply ${frame.ply} ${row} repeated pieces`);
+            assert.equal(tray.children.find(child => child.className === 'match-material-advantage')?.textContent,
+                expected.advantage > 0 ? `+${expected.advantage}` : undefined, `ply ${frame.ply} ${row} advantage`);
+        }
+    }
+    const previous = fixture.frames.at(-2);
+    renderMatchCaptures(top, previous.top, artwork, words);
+    assert.equal(top.children.some(child => child.className === 'captured-piece-count'), false,
+        'returning to the previous move removes the future second captured pawn');
+});

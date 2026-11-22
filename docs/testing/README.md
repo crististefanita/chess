@@ -186,6 +186,14 @@ Comparați același checkpoint și aceeași semimutare în JVM și în worker. F
 
 `MatchCapturesTest` verifică semimutarea selectată, ambele orientări, locul fiecărui jucător, capturile AI și istoricul restaurat. Mock-ul `match-captures.test.mjs` acoperă toate cele cinci tipuri capturabile, siluetele comune pe grila de 48 de unități, paleta și scara pictogramei din APK, gruparea, textele accesibile RO/EN, rândurile fixe de sus și jos și datele invalide sau vechi. Contractul stilistic citește desenatorul nativ drept reper. Aceste componente rulează fără emulator.
 
+`match-capture-rows.json` păstrează o partidă legală, jucată manual pe API 28,
+cu două capturi ale AI-ului și una a omului. Proiecția JVM, randarea Web simulată
+și workerul TeaVM împachetat folosesc aceleași așteptări pentru semimutările
+13–16. Workerul verifică și întoarcerea tablei și reluarea;
+`ChessWebParityPublication#packagedWorkerProjectsRecordedApkCaptureFrames`
+scrie câte o aserțiune Extent pentru fiecare cadru. Aceste componente nu
+dovedesc randarea identică a bundle-ului servit acum de Pages.
+
 `MatchHistorySelectionTest` verifică cursorul pentru o singură mutare prin paisprezece cazuri comune. Componenta Web acoperă ambele formate de transport, anunțurile neschimbate, creșterea istoricului, ramificarea și cursoarele expirate. Workerul compilat verifică paritatea proiecției și orientarea. În Browser MCP, parcurgeți Start, prima mutare, o mutare intermediară și ultima pe profil compact, landscape și desktop; verificați o singură etichetă între săgeți, indiciile limitelor și dreptunghiul tablei neschimbat. Adaptorul APK folosește cursorul comun în partidă și păstrează banda istoricului din Tabla de analiză.
 
 `NavigationGovernanceTest` înregistrează stilurile comune pentru titlu, Back și navigare, adaptoarele care consumă proiecția liniei și colecțiile de variante care trebuie păstrate. Probele de componentă păstrează istoricul complet din Tabla de analiză, ramurile din deschideri și linia calculată și comenzile indiciu/Pericol ale problemelor. Proba Web randată vizitează Partide, Probleme, Deschideri și Tabla de analiză, inclusiv revenirea contextuală prin Back; capturile Web nu dovedesc randarea Android.

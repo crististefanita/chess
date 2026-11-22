@@ -88,6 +88,34 @@ class ChessWebParityPublication {
                 cases.size() + 2, rows.size());
     }
 
+    @Test void packagedWorkerProjectsRecordedApkCaptureFrames(Checks check) throws Exception {
+        var configured = System.getProperty("chess.web.bundle", "");
+        check.same("The packaged worker is supplied for captured-piece parity", true, !configured.isBlank());
+        var root = ProjectRoot.locate();
+        var fixture = root.resolve("atf-tests/src/test/resources/match-capture-rows.json");
+        var rows = ChessWebRulesComponentTest.rows(runWorker(root, "match-captures-worker.mjs",
+                packagedWorker(configured), fixture).strip());
+        var frames = new ObjectMapper().readTree(fixture.toFile()).path("frames");
+        check.same("The worker reported every historical capture frame plus flip and restore",
+                frames.size() + 2, rows.size());
+        for (var frame : frames) {
+            String key = frame.path("ply").asText();
+            var expected = new ObjectMapper().createObjectNode();
+            expected.set("top", frame.path("top"));
+            expected.set("bottom", frame.path("bottom"));
+            check.same("The Web worker matches APK captures at ply " + key,
+                    expected, new ObjectMapper().readTree(rows.get(key)));
+        }
+        var last = frames.get(frames.size() - 1);
+        var flipped = new ObjectMapper().createObjectNode();
+        flipped.set("top", last.path("bottom"));
+        flipped.set("bottom", last.path("top"));
+        check.same("Web flip exchanges rows without changing ownership", flipped,
+                new ObjectMapper().readTree(rows.get("flipped")));
+        check.same("Web reload preserves the selected capture frame", flipped,
+                new ObjectMapper().readTree(rows.get("restored")));
+    }
+
     @Test void packagedWorkerPreservesTheMatchWhenFlipping(Checks check) throws Exception {
         var configured = System.getProperty("chess.web.bundle", "");
         check.same("The bundled worker is supplied for the board orientation cases", true, !configured.isBlank());

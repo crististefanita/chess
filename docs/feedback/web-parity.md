@@ -70,6 +70,28 @@ trebuie să înlocuiască diagnosticul unui oracol UI greșit.
 
 **Corecție de componentă pentru piesele capturate · 2026-11-22.** Web folosește acum silueta comună de 48 de unități, culorile de umplere și contur din APK și aceeași scară de 82% între icon și textul rândului. Componentele DOM simulate și Extent verifică toate cele cinci tipuri capturabile, intrările invalide, culoarea piesei și rândurile stabile. Neconcordanța de stil între adaptoare este închisă; aceasta nu înlocuiește recepția vizuală pereche cerută mai sus.
 
+**Secvență de capturi observată · 2026-11-22.** Pe emulatorul API 28, APK-ul
+instalat 0.15.2 a arătat cei doi pioni albi capturați de AI și +1 deasupra
+tablei, respectiv pionul negru capturat de om dedesubt, după
+`7...Nxe5 8.dxe6 fxe6`. Desenatorul actual păstrează siluetele, culorile și
+scara. `match-capture-rows.json` alimentează acum JVM, DOM-ul simulat și
+workerul TeaVM împachetat pentru semimutările 13–16, inclusiv întoarcerea în
+istoric, rotirea tablei și reluarea. Verificările focalizate Extent trec.
+Certificatul ediției instalate 0.15.2 diferă de cel al APK-ului semnat 0.16.1;
+observația este un reper pentru desenator, nu o recepție de release 0.16.1.
+
+**Diferența randată Web rămâne deschisă.** GitHub Pages servește încă runtime-ul
+`1d252b7ada67238062c5f7370d1012ffd342e38d04cb40d1f9d8714c617b512d`,
+fără rândurile pieselor capturate. Candidatul static pregătit
+`2f50a25b41fffc50c4fb2ae483958ca73e5322fd3a135cb419144954fc6ff9db`
+le conține, dar nu este publicat. Browser MCP eșuează la scrierea resurselor
+kernelului înaintea deschiderii tabului; încercarea de a deschide un browser
+în emulator a fost respinsă de revizuirea automată a politicii. Reverificați
+poarta completă a workerului, publicați commitul static exact prin workflow-ul
+Pages, apoi comparați vizual APK și Web pe același cadru de captură. Sursa nativă
+actuală are deja meniul partidei în dreapta antetului, ca Web; meniul instalării
+0.15.2 este mai vechi.
+
 **Poarta workerului rămâne deschisă · 2026-11-22.** `ChessWebParityPublication#packagedWorkerProjectsInlineMatchAnalysis` a depășit limita existentă de 55 de secunde pentru procesul copil în cazul `active-historical-replay`, în trei încercări. Celelalte patru cazuri din prima rulare de publicare au trecut, iar intrarea workerului și motorul compilat sunt identice octet cu octet cu runtime-ul candidat anterior. Păstrați poarta deschisă; investigați durata limitată fără a mări timeout-ul și fără a modifica regulile sau comportamentul AI în cadrul lucrării pentru stilul pieselor capturate.
 
 - Folosiți cazurile de istoric al deschiderii și analiză a matului din [contractul comun de testare](../testing/README.md#antet-și-navigare-comune).
