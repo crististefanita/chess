@@ -315,7 +315,7 @@ W, D, L, and U denote wins, draws, losses, and unfinished games for the first pr
 | Hard – Advanced | 14 / 7 / 2 / 1 | +191 | +104 … +307 |
 | Hard – Basic | 22 / 0 / 1 / 1 | +470 | +191 … ∞ |
 
-Hard won all eight Pirc and Benoni games from both sides against Basic and Advanced. In the Alekhine Hard–Advanced game, it played `Nc3` after ply 44 and left the cycle that had previously led to a draw at 52. Stockfish reports +6.71 for the exit, with game history and a WDL loss of 0‰. The game reached the 160-ply cap. Stockfish shows −5.19 for White at the end of the check. In the reversed-color game, Hard won at ply 108. The [historical 0.7.0 replay](https://github.com/crististefanita/chess/blob/6889d5c927635a8c83ddef28db985bc2fc6efec5/release/0.7.0/reports/league.tsv) stays in the Git tag, outside the short release catalog.
+Hard won all eight Pirc and Benoni games from both sides against Basic and Advanced. In the Alekhine Hard–Advanced game, it played `Nc3` after ply 44 and left the cycle that had previously led to a draw at 52. Stockfish reports +6.71 for the exit, with game history and a WDL loss of 0‰. The game reached the 160-ply cap. Stockfish shows −5.19 for White at the end of the check. In the reversed-color game, Hard won at ply 108. Current league inputs and procedures are maintained with the active benchmark rather than linked to a single archived replay.
 
 </details>
 
@@ -563,7 +563,7 @@ We ran the same league on 12 new openings with both colors and 24 games for ever
 
 These conversions report relative scores within the Chess league. External Elo uses the separate anchor protocol. On the existing frozen set, the improvement was smaller: one draw became a win in Hard–Advanced. Transfer floors stayed unchanged: M1 500/500, M2 300/300, M3 194/200, tactics 87/100, training 39/48, and Intermezzo 24/24. The governance test checks the factor, cap, and disabled state and rejects out-of-range values.
 
-Extent reports and TSV replays for the candidate, baseline, and doubled capacity stayed in `C:\Users\Cristi\AppData\Local\Temp\j7-hard-tt-*`, outside the release artifacts. [Official Stockfish terminology for transpositions and search](https://official-stockfish.github.io/docs/stockfish-wiki/Terminology.html) explains how a transposition table reuses positions. Elo improvement for this implementation remains unverified.
+[Official Stockfish terminology for transpositions and search](https://official-stockfish.github.io/docs/stockfish-wiki/Terminology.html) explains how a transposition table reuses positions. Elo improvement for this implementation remains unverified.
 
 The app's configured benchmarks come from the source preceding Hard6 search. Verification of the Advanced ceiling and Hard's progress uses games with the local Stockfish 19 executable identified by the hash in `ai-anchor-observations.yaml`. Estimates depend on the opponent, budget, and protocol. [Stockfish UCI Elo calibration](https://official-stockfish.github.io/docs/stockfish-wiki/Stockfish-FAQ.html#the-elo-rating-of-stockfish)
 

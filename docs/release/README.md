@@ -99,7 +99,7 @@ If Pages cannot find freshly uploaded artifact metadata, start a fresh manual
 dispatch with the same site commit and tree digest. Do not rerun failed jobs
 within the same workflow run: a second upload can create two `github-pages`
 artifacts and make deployment ambiguous. Confirm the served index and runtime
-assets against the qualified Git blobs. [Observed recovery](../../release/0.16.2/reports/web-publication.json)
+assets against the qualified Git blobs.
 Permanent branches are limited to `main` and `main_RO`. Keep Git tags of
 published editions and deployed site bundles. [Web publication](../../web/parity.md#publishing-the-link)
 

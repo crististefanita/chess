@@ -876,7 +876,7 @@ mvn test '-Dmaven.repo.local=target/maven-repo' '-Dtest=AndroidSanityPublication
 
 The native AI match shows one selected-move label. Its history sanity oracle compares that label with `MatchHistorySelection.at(match, ply).compact()` after navigation and restore; a wrong value reports expected and observed text. The manual Analysis board retains its full move-list oracle. Hint readiness, selected position and history text remain separate checks.
 
-The native AI-match probe waits for a completed verified hint rather than treating the short UI-transition window as an engine deadline. On the fixed two-ply fixture, `hintAt(1)` took 16 seconds on the JVM during the 0.16.2 investigation. The signed Android probe allows up to 90 seconds, reports the actual panel and bulb state on timeout, and still requires the exact selected position, hidden hint, legal recommendation, and unchanged saved game. The shorter 12-second window remains for ordinary UI transitions.
+The native AI-match probe waits for a completed verified hint rather than treating the short UI-transition window as an engine deadline. The signed Android probe allows up to 90 seconds, reports the actual panel and bulb state on timeout, and still requires the exact selected position, hidden hint, legal recommendation, and unchanged saved game. The shorter 12-second window remains for ordinary UI transitions.
 
 </details>
 
@@ -939,13 +939,13 @@ In each language, it opens an Opening theory path and both **Why?** variations, 
 <summary>Checks and limits — TalkBack probe</summary>
 
 1. Enable TalkBack on the emulator. In **Mate in 1**, open **Hint**, then **Show move**. Touch the side to move and swipe right twice through emulator touch input. After each gesture, capture the Android `TYPE_VIEW_ACCESSIBILITY_FOCUSED` event and the frame with the focus. Repeat after **Flip board**. [Emulator touch input](https://developer.android.com/studio/run/emulator-console)
-2. In the first 0.3.1 puzzle, the route is Black to move → black queen on d8 → h4 with either color at the bottom. The API 33 probe with TalkBack 14.2 confirmed all four swipes through `EmulatorController/sendTouch`. The [historical Extent report](https://github.com/crististefanita/chess/blob/v0.4.0/release/0.3.1/reports/talkback-gestures-extent.html) remains in the Git tag outside the short release-retention window.
+2. Use a deterministic position with Black to move and a black queen on d8, then navigate to h4 with either color at the bottom. Record the current device, API, focus events, and captures in the Extent run. Do not reuse a result from another run.
 3. `QuestHintTest` checks projection in both orientations. The sanity run checks updates to native links. The swipe probe has its own report and uses focus events as evidence.
 
 To republish, run `TalkBackPublication#publishTalkBackGestures` from the TMP copy and specify the log through `-Dchess.talkback.gestures`. The single-probe log contains `J7FocusProbe` events and `J7ProbeMarker` markers from `BLACK_ANCHOR_START` to `WHITE_DESTINATION_END`. Put `emulator.json`, the `BLACK-color.png`, `BLACK-PIECE.png`, and `BLACK-DESTINATION.png` captures, and their `WHITE-*` counterparts in the same directory.
 
 - For speech, enable **Display speech output**. On the fifth solve, compare the single mate and milestone announcement with what is announced after flipping, returning from the menu, and restarting.
-- The previous probe compares release 0.3.0 with the corrected build and records TalkBack requests and synthesized PCM audio. The [historical Extent report](https://github.com/crististefanita/chess/blob/v0.3.1/docs/feedback/talkback-extent.html) is retained in the Git tag.
+- Keep synthesized PCM only when diagnosing speech output; record the announced text and focus transitions with the current Extent run.
 
 ### Game Review
 

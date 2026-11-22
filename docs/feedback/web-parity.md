@@ -22,7 +22,7 @@ equivalent decisions in `ChessActivity`, `AnalysisActivity`, and the Web
 adapter. Start with resuming, canceling, and receiving a delayed AI reply.
 [Engine and projection](../testing/README.md#engine-and-projection)
 
-**Resolved 2026-11-22 · Web compilation · Hard proof digest.** `PortableSha256` emits the same standard SHA-256 bytes without JCA provider lookup. `PawnPushProof` and `GameReviewCodec` use it, preserving their existing lowercase-hex and Base64 identifiers. `PortableSha256Test` covers standard vectors, padding boundaries, JDK parity, and both persisted identifier contracts. `TeaVmPortabilityGovernanceTest` rejects provider discovery or class-loader lookup from production core sources. The complete TeaVM build and packaged-worker parity test remain the qualification gate; Java compilation by itself is not.
+**Closed · Web compilation · Portable proof digest.** `PortableSha256` emits the same standard SHA-256 bytes without JCA provider lookup. `PawnPushProof` and `GameReviewCodec` use it, preserving their existing lowercase-hex and Base64 identifiers. `PortableSha256Test` covers standard vectors, padding boundaries, JDK parity, and both persisted identifier contracts. `TeaVmPortabilityGovernanceTest` rejects provider discovery or class-loader lookup from production core sources. The complete TeaVM build and packaged-worker parity test remain the qualification gate; Java compilation by itself is not.
 
 **Closure checks**
 
@@ -50,18 +50,18 @@ with explanation beside the board, keeping source/replay sizing aligned and
 changing the current no-jump contract.
 [Puzzle explanation controls](../../atf-tests/src/test/java/ro/atf/chess/PuzzleExplainLayoutTest.java)
 
-**Closed · Native menu run identity on the signed APK.** The Saved/Finished runner generates one run ID for the paired phases and separate IDs for isolated runs. Extent checks the native marker, execution receipt and companion phase; negative component cases reject missing, substituted and cross-phase IDs. Both 0.16.2 menu phases passed on the signed APK with the same run ID and two assertions each. They remain supplementary to the strict 30-assertion Game Review qualification. [Menu reports and executions](../../release/0.16.2/reports/README.md)
+**Closed · Native menu run identity.** The Saved/Finished runner generates one run ID for paired phases and separate IDs for isolated runs. Extent checks the native marker, execution receipt and companion phase; negative component cases reject missing, substituted and cross-phase IDs. The phase checks remain supplementary to the stricter Game Review qualification.
 
 **Closed · Native match history oracle on the signed APK.**
 `awaitHiddenAnalysis` compares the AI match's single selected-move label
 against `MatchHistorySelection`; the manual Analysis board retains its
 full-list oracle. A wrong label reports expected and observed values separately
-from hint readiness. The signed 0.16.2 APK passed five assertions before and
-two after a real restart, with the same run ID and source identity.
-[Extent and executions](../../release/0.16.2/reports/README.md)
+from hint readiness. The native runner validates the selected move before and
+after process restart against one run and source identity. The release archive
+retains receipts for each qualified edition.
 [Current cursor](../../chess-core/src/main/java/ro/atf/chess/MatchHistorySelection.java)
 
-**P2 · Native compact accessibility readiness.** The legacy compact replay stops at a visible Game Review command because its accessibility-node snapshot reports it unavailable. Retain that failed observation; refresh and verify the actual node before any click, without increasing the timeout. Game Review at 360 × 640 dp and 1.3× text, and the separate RO/EN rotation probe, passed on the same signed APK. These checks do not close the legacy helper's failure.
+**P2 · Native compact accessibility readiness.** The legacy compact replay stops at a visible Game Review command because its accessibility-node snapshot reports it unavailable. Retain that failed observation; refresh and verify the actual node before any click, without increasing the timeout. Keep compact large-text Game Review and the separate RO/EN rotation probe as regression controls. These checks do not close the legacy helper's failure.
 
 **Closed Web Openings overflow at 740 × 420, EN/RO text 130%.** The measured pre-fix document was 447 px high with a 153 px board. The adjacent layout now fits within 420 px and yields a 257 px square, within 2 px of the native compact model. `OpeningLessonTest` and `BoardSizingGovernanceTest` bind the threshold and seat reserve; `ChessWebOpeningLandscapePlaywrightE2e` checks the rendered document and board through Next/Previous with embedded Extent captures. This closes the Web scroll defect only. The separate mating source/replay width item above and a signed-APK paired rendered receipt remain open.
 
@@ -69,7 +69,7 @@ two after a real restart, with the same run ID and source identity.
 
 ## WEB-03 · Component and E2E Tests for the Shared Contract
 
-**Verified locally 2026-11-22 · Saved/Finished browser flow.** A real Chromium probe found that opening a migrated AI game in Saved games raised `ReferenceError: levels is not defined` and left the list empty. The row now resolves the level through the localized menu copy. A browser-independent component checks all three levels in RO/EN and rejects a malformed level. The one-flow Playwright Extent proof checks list separation, mate, reload, archived board fit, and Analysis board history and geometry; screenshots and actions are embedded. This closes the Saved/Finished Web control for the tested compact English profile, not the paired APK/Web 130% rendering matrix below. [Test strategy](../testing/README.md#saved-games-archive-and-continuation)
+**Verified · Saved/Finished browser flow.** A real Chromium probe found that opening a migrated AI game in Saved games raised `ReferenceError: levels is not defined` and left the list empty. The row now resolves the level through the localized menu copy. A browser-independent component checks all three levels in RO/EN and rejects a malformed level. The one-flow Playwright Extent proof checks list separation, mate, reload, archived board fit, and Analysis board history and geometry; screenshots and actions are embedded. This closes the Saved/Finished Web control for the tested compact English profile, not the paired APK/Web 130% rendering matrix below. [Test strategy](../testing/README.md#saved-games-archive-and-continuation)
 
 **Packaging boundary.** Chess consumes the released J0 Reporting and Test Kit JAR/POM pairs. J1's `atf-ui` and `atf-debug-ui` are source modules, so copying an unqualified JAR into Chess would conceal provenance. If a reusable browser adapter is needed after this local proof, request a versioned binary and consumer acceptance from the J1 owner; if a neutral Reporting contract fails, file a separate J0 owner case with a failing report and exact coordinate.
 
@@ -84,7 +84,7 @@ names are in the [AI match guide](../../web/README.md#ai-match) and
 [publication request](../../web/publication.request) identifies the qualified
 bundle; byte identity and component assertions do not establish visual parity.
 
-**Analysis board and lists, 2026-11-22.** The study board now projects the same
+**Analysis board and lists.** The study board now projects the same
 capture rows as the AI match at its selected ply on both adapters. The two
 ten-entry menus use one `MatchStore` and `MatchListEntry` contract; component
 checks cross the eleventh active game and result after serialization. Keep the
@@ -104,13 +104,6 @@ before opening the tab, so this rendered receipt remains open.
 
 ## WEB-04 · Qualification and Publication
 
-**Verified 0.16.2 site bytes.** A fresh Pages dispatch deployed the qualified
-site commit after the first push run could not fetch artifact metadata. Rerunning
-that run created duplicate `github-pages` artifacts; the new run succeeded.
-The served index and Game Review CSS match the tagged Git blobs. This confirms
-publication identity, while the APK/Web rendered parity matrix remains open.
-[Deployment receipt](../../release/0.16.2/reports/web-publication.json)
-
 **P2 · Release qualification.** In RAG, tie the commit, catalogs, and APK and Web hashes to receipts from the same release. [Update criterion](../testing/README.md#updating-the-web-bundle)
 
 **Closure criterion.** Start the check from **Play in your browser**, below
@@ -126,7 +119,7 @@ including after a reload and in an already open tab.
 
 **P2 · Focus, large text and remaining contexts.** The published compact Analysis board has an observed anchored menu and unchanged board without document scrolling. This does not complete the RO/EN 130% matrix for Puzzles, Game Review and Why.
 
-Verify the last option, keyboard dismissal, focus return and the preserved source/cursor in those contexts at compact and desktop sizes. Retain a driver receipt and captures for each missing profile; no full rendered-parity claim follows from the existing component verdict. [Observed compact baseline](https://github.com/crististefanita/chess/blob/b51e17e7752cc0c0a3ec7be9500a362f4d3b20d2/release/0.16.1/reports/web-rendered-observation.json) · [Menu contract](../../web/README.md#main-menu-and-pieces)
+Verify the last option, keyboard dismissal, focus return and the preserved source/cursor in those contexts at compact and desktop sizes. Retain a driver receipt and captures for each missing profile; no full rendered-parity claim follows from the existing component verdict. [Menu contract](../../web/README.md#main-menu-and-pieces)
 
 ## WEB-06 · Game Review color, result action and analysis reuse
 
