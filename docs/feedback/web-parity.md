@@ -66,6 +66,10 @@ not stand in for a wrong UI oracle.
 
 ## WEB-03 · Component and E2E Tests for the Shared Contract
 
+**Verified locally 2026-11-22 · Saved/Finished browser flow.** A real Chromium probe found that opening a migrated AI game in Saved games raised `ReferenceError: levels is not defined` and left the list empty. The row now resolves the level through the localized menu copy. A browser-independent component checks all three levels in RO/EN and rejects a malformed level. The one-flow Playwright Extent proof checks list separation, mate, reload, archived board fit, and Analysis board history and geometry; screenshots and actions are embedded. This closes the Saved/Finished Web control for the tested compact English profile, not the paired APK/Web 130% rendering matrix below. [Test strategy](../testing/README.md#saved-games-archive-and-continuation)
+
+**Packaging boundary.** Chess consumes the released J0 Reporting and Test Kit JAR/POM pairs. J1's `atf-ui` and `atf-debug-ui` are source modules, so copying an unqualified JAR into Chess would conceal provenance. If a reusable browser adapter is needed after this local proof, request a versioned binary and consumer acceptance from the J1 owner; if a neutral Reporting contract fails, file a separate J0 owner case with a failing report and exact coordinate.
+
 **P2 · Paired adapter evidence.** Shared chrome and the single-move cursor already have common component cases. The gap is a reusable rendered receipt for the same source position, variant, cursor and Back sequence on APK and Web. The retained older Web engine must not be presented as parity with a newer native engine.
 
 **P2 · Rendered seats and captures.** The shared opponent identity, capture

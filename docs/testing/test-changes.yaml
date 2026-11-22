@@ -1,4 +1,20 @@
 testChanges:
+  - id: CHESS-WEB-PLAYWRIGHT-POM-EN
+    base: "f62a1e7755e87bd8560f7e65da9cde0665ef262a"
+    from: atf-tests/pom.xml
+    replacement: atf-tests/src/test/java/ro/atf/chess/SuiteGovernanceTest.java
+    test: ro.atf.chess.SuiteGovernanceTest#everyJvmTestHasExactlyOnePrimarySuiteAndAnExtentAudit
+    contract: "Preserve the test-only browser dependency and keep the new real-browser proof outside the offline suites"
+    allowDelete: false
+
+  - id: CHESS-WEB-PLAYWRIGHT-SUITES-EN
+    base: "f62a1e7755e87bd8560f7e65da9cde0665ef262a"
+    from: atf-tests/src/test/java/ro/atf/chess/SuiteGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/SuiteGovernanceTest.java
+    test: ro.atf.chess.SuiteGovernanceTest#everyJvmTestHasExactlyOnePrimarySuiteAndAnExtentAudit
+    contract: "Discover the Playwright E2E at its explicit browser entry point while retaining one primary suite per offline method"
+    allowDelete: false
+
   - id: CHESS-ANALYSIS-CAPTURE-INVENTORY-EN
     base: "01f48f99b8c4daea74da97d93642991019ce4832"
     from: atf-tests/src/test/java/ro/atf/chess/ChessWebAnalysisStudyTest.java

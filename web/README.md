@@ -198,6 +198,12 @@ mvn -B -ntp -pl atf-tests test '-Dtest=ChessWebLedgerPublication' "-Dchess.web.b
 
 For the public destination, pass the URL from the README as the last Node argument and add `-Dchess.web.ledger.public=true` when publishing to Extent.
 
+The short `ChessWebMatchListPlaywrightE2e` runs the packaged site in a real Chromium browser. It migrates one local and one AI game, checks both lists, completes the local game, reloads its archived board, and checks the Analysis board's geometry and history. Its Extent report embeds the screenshots, click actions, point assertions, source commit, browser version, and bundle fingerprint. `ChessWebMatchListPresentationTest` checks every supported AI level in RO and EN without a browser; `MatchListsProjectionTest` owns both ten-entry limits. Give the Playwright test a fresh report path, the packaged site, the Chromium executable, and the full source commit. [Test strategy](../docs/testing/README.md#saved-games-archive-and-continuation)
+
+```powershell
+mvn -B -ntp -pl atf-tests test '-Dtest=ChessWebMatchListPlaywrightE2e' "-Dchess.web.bundle=$site" "-Dchess.web.playwright.browser=$edge" "-Dchess.web.playwright.source=$sourceCommit" "-Dchess.web.playwright.extent=$extent"
+```
+
 </details>
 
 ### Resuming an archived match review
