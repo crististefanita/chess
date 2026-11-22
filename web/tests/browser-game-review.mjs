@@ -276,7 +276,9 @@ try {
             mode: match.dataset.mode, level: match.dataset.level, humanSide: match.dataset.humanSide, awaitingBot: match.dataset.awaitingBot === 'true',
             readOnly: match.dataset.readOnly === 'true', id: match.dataset.matchId, slot: Number(match.dataset.slot),
             orientation: board.dataset.orientation, upperLeft: board.firstElementChild.dataset.square,
-            lowerRight: board.lastElementChild.dataset.square, profile: document.querySelector('#match-profile').textContent,
+            lowerRight: board.lastElementChild.dataset.square,
+            profile: [...document.querySelectorAll('.match-player')].find(seat => seat.dataset.side === match.dataset.humanSide).textContent
+                + ' · ' + [...document.querySelectorAll('.match-player')].find(seat => seat.dataset.side !== match.dataset.humanSide).textContent,
             announcing: document.querySelector('#match-turn').textContent, urlPath: location.pathname,
             analyzing: !document.querySelector('#analysis-progress').hidden, analyzeDisabled: document.querySelector('#analyze').disabled,
             checkpoint: match.dataset.checkpoint, route: location.hash, automatic: automation.checked, automaticVisible: !automation.parentElement.hidden };

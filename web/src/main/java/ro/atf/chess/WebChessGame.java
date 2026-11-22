@@ -256,6 +256,7 @@ final class WebChessGame {
                 + ",\"sideToMove\":" + quote(position.turn().name()) + ",\"checkpoint\":" + quote(checkpoint)
                 + ",\"reviewCheckpoint\":" + quote(raw) + ",\"mode\":" + quote(mode.name())
                 + ",\"humanSide\":" + quote(match.setup().humanSide().name()) + ",\"level\":" + quote(match.setup().level().name())
+                + ",\"opponentName\":" + quote(MatchOpponentName.forLevel(match.setup().level()))
                 + ",\"analysisEnabled\":" + match.analysisEnabled()
                 + ",\"automatic\":" + session.automatic() + ",\"manualUsed\":" + manualUsed + ",\"rated\":" + (isAi && !manualUsed)
                 + ",\"manualAiTurn\":" + manualAiTurn + ",\"automation\":{\"visible\":" + showAutomation

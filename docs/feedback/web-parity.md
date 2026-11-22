@@ -93,13 +93,15 @@ captured frame remains necessary. The current native source already places
 match options on the right side of the header, matching Web; the installed
 0.15.2 menu is older.
 
-**P2 · Visible capture ownership.** The APK places the opponent name above
-the top capture row and the human name below the bottom row. Web currently
-shows the capture rows around the board but keeps the combined player summary
-below it. Add compact, localized seat labels next to their own captured pieces
-without reducing the board or making the document scroll at 130% text. Govern
-normal and flipped orientation, long profile names and history in components;
-close visual parity with a paired rendered receipt once Browser MCP is available.
+**P2 · Visible capture ownership · component contract implemented 2026-11-22.**
+`MatchOpponentName` now gives both adapters the same Alex/Mira/Atlas identity.
+The Web places each player's name and captured pieces in one reserved seat row,
+with the AI level beside the opponent name. Compact and wide geometry, flip,
+history, RO/EN labels and long names have mocked component coverage. The old
+combined summary below the board is removed. Close this item only after paired
+APK/Web captures at compact 130% text and a wide window confirm the board and
+menus remain aligned without clipping or page scrolling; Browser MCP is still
+unavailable before the tab opens.
 
 **Worker gate rechecked · 2026-11-22.** `active-historical-replay` completed in 26 seconds with the unchanged 55-second limit. The full `ChessWebParityPublication` class then exposed a contradictory oracle: it rejected historical root worker/engine aliases that the publishing contract explicitly preserves for older open tabs. The assertion now verifies that legacy aliases form a pair and the current entry loads its worker and engine from the versioned runtime. All six publication tests pass together with Extent. No chess or AI behavior or time limit changed.
 

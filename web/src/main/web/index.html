@@ -119,15 +119,14 @@
       </div>
     </form>
     <section id="match" class="match" aria-busy="false" hidden>
-      <div id="match-captures-top" class="match-captures" data-seat="top" aria-hidden="true"></div>
+      <div class="match-seat" data-seat="top"><span id="match-player-top" class="match-player"></span><div id="match-captures-top" class="match-captures" data-seat="top" aria-hidden="true"></div></div>
       <div class="match-board-frame">
         <div id="match-inline-meter" class="match-inline-meter chess-evaluation-meter" role="meter" aria-label="Evaluation for White" aria-valuemin="0" aria-valuemax="100" hidden><span></span></div>
         <div id="match-board" class="board match-board study-board" role="group"></div>
       </div>
-      <div id="match-captures-bottom" class="match-captures" data-seat="bottom" aria-hidden="true"></div>
+      <div class="match-seat" data-seat="bottom"><span id="match-player-bottom" class="match-player"></span><div id="match-captures-bottom" class="match-captures" data-seat="bottom" aria-hidden="true"></div></div>
       <div class="match-caption">
         <p id="match-turn" class="turn" aria-live="polite"><span id="match-result"></span><button id="match-review-result" type="button" hidden><span aria-hidden="true">📊</span><span id="match-review-label">Game review</span></button></p>
-        <p id="match-profile" class="turn" hidden></p>
       </div>
       <div id="match-inline-analysis" class="match-inline-analysis" hidden>
         <output id="match-inline-score" aria-live="polite"></output>

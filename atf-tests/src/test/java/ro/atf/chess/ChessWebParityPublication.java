@@ -102,8 +102,10 @@ class ChessWebParityPublication {
         var rows = ChessWebRulesComponentTest.rows(runWorker(root, "match-captures-worker.mjs",
                 packagedWorker(configured), fixture).strip());
         var frames = new ObjectMapper().readTree(fixture.toFile()).path("frames");
-        check.same("The worker reported every historical capture frame plus flip and restore",
-                frames.size() + 2, rows.size());
+        check.same("The worker reported the named AI seat, every historical capture frame, flip and restore",
+                frames.size() + 3, rows.size());
+        check.same("The compiled Web worker projects Alex for Basic as Android",
+                MatchOpponentName.forLevel(MatchSetup.Level.BASIC), rows.get("opponent-name"));
         for (var frame : frames) {
             String key = frame.path("ply").asText();
             var expected = new ObjectMapper().createObjectNode();

@@ -23,6 +23,8 @@ async function request(type, data = {}) {
 
 let state = await request('ledger-open', { ledger: null, legacy: {} });
 state = await request('match-open', { setup: { mode: 'AI', humanSide: 'WHITE', level: 'BASIC', analysis: false } });
+assert.equal(state.match.opponentName, 'Alex');
+console.log(`opponent-name\t${state.match.opponentName}`);
 for (let index = 0; index < fixture.moves.length; index++) {
     const type = index % 2 === 0 ? 'match-play' : 'match-bot-apply';
     state = await request(type, { expectedRevision: state.match.revision, move: fixture.moves[index] });
@@ -41,4 +43,5 @@ const saved = state.ledger;
 await request('ledger-open', { ledger: saved });
 state = await request('match-open', { route: 'AI' });
 assert.deepEqual(state.match.captures, { top: last.bottom, bottom: last.top });
+assert.equal(state.match.opponentName, 'Alex', 'the named AI player survives reload');
 console.log(`restored\t${JSON.stringify(state.match.captures)}`);

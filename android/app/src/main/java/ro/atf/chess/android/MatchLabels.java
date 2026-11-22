@@ -1,17 +1,14 @@
 package ro.atf.chess.android;
 
 import android.content.Context;
+import ro.atf.chess.MatchOpponentName;
 import ro.atf.chess.MatchSetup;
 
 final class MatchLabels {
     private MatchLabels() { }
 
     static String opponentName(MatchSetup.Level level) {
-        return switch (level) {
-            case BASIC -> "Alex";
-            case ADVANCED -> "Mira";
-            case HARD -> "Atlas";
-        };
+        return MatchOpponentName.forLevel(level);
     }
 
     static String botName(Context context, MatchSetup.Level level) {

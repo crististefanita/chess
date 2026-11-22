@@ -186,6 +186,8 @@ Compare the same checkpoint and ply in the JVM and worker. Use native and browse
 
 `MatchCapturesTest` verifies the selected ply, both board orientations, seat ownership, AI captures, and restored history. The mocked `match-captures.test.mjs` checks all five capturable kinds, shared 48-unit silhouettes, APK-matched capture palette and 82% icon scale, grouped counts, RO/EN accessible labels, fixed top/bottom rows, and invalid or stale capture data. The style contract reads the native capture painter as its reference. These component checks run without an emulator.
 
+`MatchSeatParityTest` checks the three shared opponent names and executes the mocked Web seat cases under Extent. They verify the human and AI labels beside their own capture rows, normal and flipped orientation, historical turn markers, RO/EN descriptions, long-name truncation, and fixed compact/wide row geometry. The packaged TeaVM worker must project the same opponent name; this keeps name mapping out of the JavaScript adapter. Rendered compact and wide receipts are still needed to close visual parity.
+
 `match-capture-rows.json` records one legal, manually played API 28 match
 through two AI captures and one human capture. The JVM projection, mocked Web
 renderer, and packaged TeaVM worker consume the same frame expectations at
