@@ -82,12 +82,10 @@ observația este un reper pentru desenator, nu o recepție de release 0.16.1.
 
 **Octeții publicați sunt verificați; comparația randată rămâne deschisă.**
 Workflow-ul Pages
-[45020801534](https://github.com/crististefanita/chess/actions/runs/45020801534)
-a publicat commitul static `3995e535606ebf7be2339ae5a4ce80a75c72f1b3` la a doua
-încercare. Încărcarea a reușit prima dată, dar GitHub Pages nu și-a găsit
-temporar propriul artifact `github-pages`; reluarea doar a jobului eșuat a
-reușit. Indexul servit indică acum runtime-ul
-`880be9163f22f7211561679fa78480ed048c04ae7900626e12dad28b207cbdd0`.
+[45021819859](https://github.com/crististefanita/chess/actions/runs/45021819859)
+a publicat commitul static `4da2e7ef47cca6767efd66ba4be58b0c0cf11dc4`.
+Indexul servit indică runtime-ul
+`db3b111fcbeb87c9178c5ba3dde6cdca567ee5c44e34e794b198f616d4c75763`.
 Indexul, intrarea partidei, adaptorul locurilor numite, CSS-ul, motorul și
 workerul descărcate coincid octet cu octet cu fișierele pregătite. Browser MCP
 eșuează încă la scrierea resurselor kernelului înaintea deschiderii tabului.
@@ -98,7 +96,8 @@ partidei în dreapta antetului, ca Web; meniul instalării 0.15.2 este mai vechi
 `MatchOpponentName` dă acum ambelor adaptoare aceeași identitate Alex/Mira/Atlas.
 Web pune numele și capturile fiecărui jucător într-un rând rezervat, cu nivelul
 AI lângă numele adversarului. Geometria compactă și largă, întoarcerea tablei,
-istoricul, etichetele RO/EN și numele lungi au verificări de componentă simulate.
+istoricul, etichetele RO/EN, numele lungi și alinierea cu bara de evaluare au
+verificări de componentă simulate.
 Vechiul rezumat comun de sub tablă a fost eliminat. Închideți punctul doar după
 ce capturile pereche APK/Web, la text 130% în fereastră compactă și într-o
 fereastră largă, confirmă alinierea tablei și meniurilor fără decupare sau
