@@ -11,6 +11,7 @@
 | [Analiza partidei Android](android-match-analysis.html) · [execuție inițială](match-analysis-execution.json) · [execuție restaurată](match-analysis-restore-execution.json) | Proba țintită pe APK-ul semnat pentru eticheta din istoric și indiciul după restart; dovadă suplimentară în afara calificării stricte. |
 | [Partide salvate](android-match-slots.html) · [execuție](match-slots-execution.json) · [Partide încheiate](android-match-archive.html) · [execuție](match-archive-execution.json) | Câte două aserțiuni pe APK-ul semnat pentru fiecare meniu, ID nativ comun, amprentele capturilor și identitatea fazelor pereche; dovezi suplimentare. |
 | [Focusul analizei Web](web-review-focus.html) · [recepția browserului](web-review-focus.json) | Verificarea automată în browserul local a alinierii titlului la text 130%; proba manuală MCP pe site-ul servit rămâne separată. |
+| [Publicarea Web](web-publication.json) | Deployul Pages nou a reușit; indexul și CSS-ul Game Review servite corespund octet cu octet obiectelor Git calificate. |
 | [Guvernanță](governance.html) · [revizuirea mutării testelor](test-change-review.html) · [dovada revizuirii](test-change-review.html.proof.html) | Controalele de release, documentație și mutare a testelor. |
 | [Guvernanța publicării](publication-governance.html) | Reverifică README-ul publicat, arhiva calificată și recepțiile descărcărilor publică și autentificată. |
 | [Context RAG](rag.txt) · [continuitatea semnării](signing-transition.json) | Ghidurile afectate și continuitatea certificatului. |

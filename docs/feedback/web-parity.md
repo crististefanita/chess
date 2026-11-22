@@ -107,6 +107,13 @@ randată rămâne deschisă.
 
 ## WEB-04 · Calificare și publicare
 
+**Octeții site-ului 0.16.2 verificați.** O declanșare Pages nouă a livrat
+commitul calificat după ce execuția inițială nu a găsit metadatele artefactului.
+Reluarea acelei execuții a creat artefacte `github-pages` duplicate; execuția
+nouă a reușit. Indexul și CSS-ul Game Review servite corespund obiectelor Git
+din tag. Aceasta confirmă identitatea publicării; matricea de paritate randată
+APK/Web rămâne deschisă. [Recepția deployului](../../release/0.16.2/reports/web-publication.json)
+
 **P2 · Calificarea ediției.** Legați în RAG commitul, cataloagele și amprentele APK și Web de recepțiile aceleiași ediții. [Criteriul de actualizare](../testing/README.md#actualizarea-pachetului-web)
 
 **Criteriu de închidere.** Porniți proba din **Joacă în browser**, sub

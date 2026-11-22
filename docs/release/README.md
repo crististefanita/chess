@@ -77,6 +77,11 @@ GitHub Actions livrează artefactul Web calificat dintr-un commit Git imuabil
 când [cererea de publicare](../../web/publication.request), cu două linii, se
 schimbă pe `main`. [Workflow-ul Pages](../../.github/workflows/chess-pages.yml)
 validează cererea și amprenta arborelui static; declanșarea manuală rămâne disponibilă.
+Dacă Pages nu găsește metadatele artefactului abia încărcat, porniți o declanșare
+manuală nouă cu același commit al site-ului și aceeași amprentă a arborelui.
+Nu reluați joburile eșuate în aceeași execuție: un al doilea upload poate crea
+două artefacte `github-pages` și face deployul ambiguu. Comparați indexul și
+resursele servite cu obiectele Git calificate. [Recuperarea observată](../../release/0.16.2/reports/web-publication.json)
 Ramurile permanente sunt `main` și `main_RO`. Păstrați tagurile Git ale
 edițiilor publicate și pachetelor Web servite. [Publicarea Web](../../web/parity.md#publicarea-linkului)
 
