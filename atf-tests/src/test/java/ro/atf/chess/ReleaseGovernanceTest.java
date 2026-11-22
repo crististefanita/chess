@@ -8,6 +8,7 @@ import atf.reporting.contract.AtfReportStatus;
 import atf.reporting.extent.session.ExtentReportSession;
 import atf.testkit.AtfComponentTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -34,6 +35,40 @@ import ro.atf.chess.release.ReleaseRag;
 @Tag("governance")
 @ExtendWith(ExtentAudit.class)
 class ReleaseGovernanceTest {
+    @Test void committedProjectCertificateMatchesPublishedIdentityAndRejectsTampering(Checks check) throws Exception {
+        Path root = ProjectRoot.locate();
+        var mapper = new ObjectMapper();
+        var catalog = mapper.readTree(root.resolve("release/index.json").toFile());
+        String version = catalog.path("currentVersion").asText();
+        Path reports = root.resolve("release").resolve(version).resolve("reports");
+        Path published = Files.isRegularFile(reports.resolve("qualification.json"))
+                ? reports.resolve("qualification.json") : reports.resolve("build-artifact.json");
+        var identity = mapper.readTree(root.resolve(".atf-signing/identity.json").toFile());
+        var baseline = mapper.readTree(published.toFile());
+        Path certificate = root.resolve(".atf-signing/certificate.der");
+        check.same("The committed certificate identifies the published signer", true,
+                projectCertificateMatches(certificate, identity, baseline));
+
+        byte[] alteredBytes = Files.readAllBytes(certificate);
+        alteredBytes[alteredBytes.length - 1] ^= 1;
+        Path alteredCertificate = folder.resolve("altered-certificate.der");
+        Files.write(alteredCertificate, alteredBytes);
+        check.same("A substituted certificate blocks the release gate", false,
+                projectCertificateMatches(alteredCertificate, identity, baseline));
+
+        ObjectNode alteredIdentity = identity.deepCopy();
+        alteredIdentity.put("certificateSha256", "0".repeat(64));
+        check.same("An out-of-date signing manifest blocks the release gate", false,
+                projectCertificateMatches(certificate, alteredIdentity, baseline));
+    }
+
+    private static boolean projectCertificateMatches(Path certificate, JsonNode identity, JsonNode published) throws IOException {
+        String actual = ReleaseEvidence.digest(certificate);
+        String current = published.path("signingCertificateSha256").asText(
+                published.path("certificateSha256").asText());
+        return actual.equals(identity.path("certificateSha256").asText()) && actual.equals(current);
+    }
+
     @Test void ragReportsCoverageForEveryPathInAMixedDiff(Checks check) throws Exception {
         var root = ProjectRoot.locate();
         var pom = ReleaseRag.inspect(root, List.of("pom.xml"));

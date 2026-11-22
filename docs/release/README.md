@@ -121,6 +121,8 @@ Dot-source scriptul în sesiunea de build pentru a încărca `J7_SIGNING_STORE` 
   Alt cont Windows cere recuperare separată, fără rotație implicită.
   Ambele forme păstrează comparația certificatelor și cerința `CLEAN_INSTALL`.
 
+- `ReleaseGovernanceTest#committedProjectCertificateMatchesPublishedIdentityAndRejectsTampering` compară certificatul public din `.atf-signing` cu manifestul său și cu semnatarul ediției publicate curente în preflight. Respinge octeții schimbați sau un manifest depășit. Cheia criptată și credențialul DPAPI rămân în înregistrarea protejată a proiectului; build-ul verifică separat semnătura APK-ului rezultat.
+
 - Fără un baseline explicit, `verify-signing-continuity.ps1` caută dovada
   certificatului în dosarul ediției curente. La recuperarea unei chei absente,
   inițializarea citește și ea catalogul și oprește rotația dacă dovada ediției curente lipsește.

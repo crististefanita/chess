@@ -1,4 +1,12 @@
 testChanges:
+  - id: CHESS-SIGNER-CERTIFICATE-RO
+    base: "0a2d5b1487d9652aade04ea7903c304376e3acc2"
+    from: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java
+    test: ro.atf.chess.ReleaseGovernanceTest#committedProjectCertificateMatchesPublishedIdentityAndRejectsTampering
+    contract: "Păstrează certificatul proiectului egal cu manifestul și semnatarul APK-ului publicat; respinge certificatul sau manifestul substituit"
+    allowDelete: false
+
   - id: CHESS-0162-ANDROID-VERSION-RO
     base: "0a2d5b1487d9652aade04ea7903c304376e3acc2"
     from: android/app/build.gradle
