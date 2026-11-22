@@ -80,17 +80,26 @@ reload. The focused Extent checks pass. The emulator's 0.15.2 certificate
 differs from the signed 0.16.1 APK, so this observation is a capture-painter
 reference, not a 0.16.1 release receipt.
 
-**Rendered Web gap remains open.** GitHub Pages currently serves runtime
-`1d252b7ada67238062c5f7370d1012ffd342e38d04cb40d1f9d8714c617b512d`,
-which has no captured-piece rows. The staged static candidate
-`2f50a25b41fffc50c4fb2ae483958ca73e5322fd3a135cb419144954fc6ff9db`
-contains them but is not deployed. Browser MCP fails while writing kernel
+**Published bytes verified; rendered comparison remains open.** Pages workflow
+[45018215357](https://github.com/crististefanita/chess/actions/runs/45018215357)
+published static commit `fc97cb4b2dc7f6673b51669e775db70d0762290c`.
+The served index names runtime
+`2f50a25b41fffc50c4fb2ae483958ca73e5322fd3a135cb419144954fc6ff9db`.
+The downloaded index, match entry, captured-piece adapter, CSS and worker match
+the staged files byte for byte. Browser MCP still fails while writing kernel
 assets before the tab opens; an attempt to open a browser on the emulator was
-rejected by automatic policy review. Recheck the full worker gate below,
-deploy the exact static commit through the Pages workflow, then collect an
-APK/Web visual comparison on the same captured frame. The current native source
-already places match options on the right side of the header, matching Web;
-the installed 0.15.2 menu is older.
+rejected by automatic policy review. A paired visual receipt for the same
+captured frame remains necessary. The current native source already places
+match options on the right side of the header, matching Web; the installed
+0.15.2 menu is older.
+
+**P2 · Visible capture ownership.** The APK places the opponent name above
+the top capture row and the human name below the bottom row. Web currently
+shows the capture rows around the board but keeps the combined player summary
+below it. Add compact, localized seat labels next to their own captured pieces
+without reducing the board or making the document scroll at 130% text. Govern
+normal and flipped orientation, long profile names and history in components;
+close visual parity with a paired rendered receipt once Browser MCP is available.
 
 **Worker gate rechecked · 2026-11-22.** `active-historical-replay` completed in 26 seconds with the unchanged 55-second limit. The full `ChessWebParityPublication` class then exposed a contradictory oracle: it rejected historical root worker/engine aliases that the publishing contract explicitly preserves for older open tabs. The assertion now verifies that legacy aliases form a pair and the current entry loads its worker and engine from the versioned runtime. All six publication tests pass together with Extent. No chess or AI behavior or time limit changed.
 
