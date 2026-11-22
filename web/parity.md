@@ -49,6 +49,11 @@ The game guides own the product rules and platform behavior. [Matches, puzzles, 
 4. Open **Play in your browser**. Verify the declared versioned files and reload with the cache intact. Check checkpoint resumption and offline play after the first load; an open tab may keep the previous runtime until it reloads.
 5. Record the source revision, deployed static commit, runtime hash, and Extent receipts. Verify the served bytes independently of the browser cache.
 
+If upload succeeds but GitHub Pages temporarily cannot find its `github-pages`
+artifact, keep the validated static commit and request unchanged. Rerun only the
+failed deployment job, then verify the served bytes against the qualified site.
+Treat a failed retry or a byte mismatch as an open publication failure.
+
 [Bundle structure](README.md#web-bundle-identity) ·
 [Test strategy](../docs/testing/README.md#updating-the-web-bundle) ·
 [Release process](../docs/release/README.md)
