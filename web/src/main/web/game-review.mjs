@@ -208,7 +208,7 @@ const studyPanels = Object.fromEntries(Object.entries(studyRoutes).map(([route, 
     const root = find('study-' + route);
     return [route, create({
         root, locale, home: leaveStudy, board: createStudyBoard,
-        openReview: openStudyReview, continueGame: continueStudyGame,
+        openReview: openStudyReview, continueGame: continueStudyGame, captureArtwork: () => pieceArtwork,
         call: async (action, { value = '', index = 0, saved = '', option = '' } = {}) =>
             (await call('study', { feature: route, action, value, index, saved, option, locale })).study,
     })];

@@ -77,6 +77,14 @@ names are in the [AI match guide](../../web/README.md#ai-match) and
 [publication request](../../web/publication.request) identifies the qualified
 bundle; byte identity and component assertions do not establish visual parity.
 
+**Analysis board and lists, 2026-11-22.** The study board now projects the same
+capture rows as the AI match at its selected ply on both adapters. The two
+ten-entry menus use one `MatchStore` and `MatchListEntry` contract; component
+checks cross the eleventh active game and result after serialization. Keep the
+paired rendered APK/Web receipt open for compact and wide capture-row fit,
+including study history and orientation. Web's separate hint replay deliberately
+hides study captures so it cannot present them as belonging to another board.
+
 Close only with paired captures from the qualified APK and served Web bundle
 at compact 130% text and a wide window. Check each name, level, captured
 piece, board edge and menu without clipping or page scrolling. Bind both

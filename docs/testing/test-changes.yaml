@@ -1,4 +1,12 @@
 testChanges:
+  - id: CHESS-ANALYSIS-CAPTURE-INVENTORY-EN
+    base: "01f48f99b8c4daea74da97d93642991019ce4832"
+    from: atf-tests/src/test/java/ro/atf/chess/ChessWebAnalysisStudyTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ChessWebAnalysisStudyTest.java
+    test: ro.atf.chess.ChessWebAnalysisStudyTest#analysisStudyUsesMockWorkersWithoutABrowser
+    contract: "Retain every previously inventoried Web Analysis board assertion and require the new selected-ply capture and replay-clearing component case"
+    allowDelete: false
+
   - id: J7-ENLARGED-REPLAY-NATIVE-EN
     base: "975139ec679367789c964c28200f291c7e6f62a5"
     from: android/app/src/androidTest/java/ro/atf/chess/android/BoardSanity.java

@@ -1,6 +1,7 @@
 import { attachOptionsMenu } from './options-menu.mjs';
 import { rememberBoardSize } from './study-board-size.mjs';
 import { renderLinePosition } from './line-navigation.mjs';
+import { renderMatchCaptures } from './match-captures.mjs';
 
 const copy = {
     en: {
@@ -208,8 +209,15 @@ export function analysisStudySession({ call, render, failed, storage }) {
 }
 
 export function createAnalysisStudy({ root, locale, call, home, board, openReview, continueGame,
-    storage = () => globalThis.sessionStorage }) {
+    captureArtwork = () => null, storage = () => globalThis.sessionStorage }) {
     const words = copy[language(locale)];
+    const captureWords = { ...words,
+        'white-choice': words.white, 'black-choice': words.black,
+        pieces: Object.fromEntries(Object.entries(words.pieces).filter(([kind]) => kind !== 'k').map(([kind, name]) => [
+            { p: 'PAWN', n: 'KNIGHT', b: 'BISHOP', r: 'ROOK', q: 'QUEEN' }[kind], name.toLowerCase()])),
+        captured: (side, pieces, advantage) => side + (locale === 'ro' ? ' a capturat ' : ' captured ') + pieces
+            + (advantage ? (locale === 'ro' ? ' · Material +' : ' · Material +') + advantage : ''),
+    };
     const document = root.ownerDocument;
     let state;
     let controls;
@@ -283,8 +291,15 @@ export function createAnalysisStudy({ root, locale, call, home, board, openRevie
         const flip = button(words.flip, () => { options.close(true); void request('flip'); });
         actions.append(toggler, review, saveGame, flip);
         header.append(backButton, title, reset, menu);
-        const top = text('p', '', 'analysis-study-side');
-        const bottom = text('p', '', 'analysis-study-side');
+        const seat = () => {
+            const row = text('div', '', 'analysis-study-side');
+            const name = text('span', '', 'analysis-study-side-name');
+            const captures = text('span', '', 'match-captures');
+            row.append(name, captures);
+            return { row, name, captures };
+        };
+        const top = seat();
+        const bottom = seat();
         const stage = text('div', '', 'analysis-study-stage');
         const stack = text('div', '', 'analysis-study-stack');
         const panel = text('div', '', 'analysis-study-panel');
@@ -298,7 +313,7 @@ export function createAnalysisStudy({ root, locale, call, home, board, openRevie
         const fill = text('div', '', 'analysis-study-meter-fill');
         meter.append(fill);
         panel.append(meter, host);
-        stack.append(top, panel, bottom);
+        stack.append(top.row, panel, bottom.row);
         stage.append(stack);
         const status = text('p', '', 'analysis-study-status');
         status.setAttribute('aria-live', 'polite');
@@ -391,11 +406,13 @@ export function createAnalysisStudy({ root, locale, call, home, board, openRevie
         const frame = preview ?? next;
         controls.widget.render({ ...frame, blackBelow: next.blackBelow, locked: !!preview || next.result !== 'IN_PROGRESS' });
         const lower = next.blackBelow ? 'BLACK' : 'WHITE';
-        for (const [label, side] of [[controls.top, other(lower)], [controls.bottom, lower]]) {
+        for (const [seat, side] of [[controls.top, other(lower)], [controls.bottom, lower]]) {
             const active = frame.sideToMove === side && (preview || next.result === 'IN_PROGRESS');
-            label.textContent = active ? words.toMove(sideName(words, side)) : sideName(words, side);
-            label.classList.toggle('active', !!active);
+            seat.name.textContent = active ? words.toMove(sideName(words, side)) : sideName(words, side);
+            seat.row.classList.toggle('active', !!active);
         }
+        renderMatchCaptures(controls.top.captures, preview ? null : next.captures?.top, captureArtwork(), captureWords);
+        renderMatchCaptures(controls.bottom.captures, preview ? null : next.captures?.bottom, captureArtwork(), captureWords);
         controls.title.textContent = preview ? preview.kind === 'THEORY' ? words.theory : words.variation : words.title;
         controls.back.setAttribute('aria-label', preview ? words.return : words.back);
         controls.reset.hidden = controls.menu.hidden = !!preview;

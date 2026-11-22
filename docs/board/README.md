@@ -124,6 +124,8 @@ flowchart LR
 
 ## Analysis board
 
+- The rows immediately above and below the square show the selected position's captured pieces and material advantage. They use the same owner, silhouettes and fixed space as the AI game. Seeking, flipping and restoring recalculate the rows from the study line; a different hint replay hides them until returning to the study position.
+
 - From the main menu you start from the initial position. In a game, the magnifier next to history opens the exact displayed position and keeps the game's moves available for navigation.
 - You play both White and Black manually. Evaluation updates locally for each position, and the lightbulb shows a continuation. The arrows and moves in the strip select positions. A different move replaces the board's continuation, while **Reset line** restores the position and continuation from entry.
 - While the position has theory continuations, the lightbulb offers up to three complete lines. Below the board you can see **Theory**, the line number, and the opening name. Tap the label for full-screen replay. The arrows navigate moves by both colors, the board keeps its position, and each step's explanation scrolls separately. Two lines can start with the same move. The YAML lessons take priority, and the ECO index supplies continuations when the lessons do not cover the position. When a position has no documented continuations, the lightbulb returns to engine analysis. A transposition or going back in history may bring theory back.

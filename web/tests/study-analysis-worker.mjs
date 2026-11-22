@@ -61,6 +61,22 @@ assert.deepEqual([restored.checkpoint, restored.ply, restored.blackBelow, restor
     [durable.checkpoint, durable.ply, false, false]);
 assert.equal(request(restoredModule.studyCommand, 'reset').checkpoint, source);
 
+const captureGame = '1|e2e4 d7d5 e4d5 d8d5';
+const captureAtThree = execute('open', { value: captureGame, index: 3 });
+assert.equal(captureAtThree.captures.bottom.side, 'WHITE');
+assert.deepEqual(captureAtThree.captures.bottom.pieces, [{ kind: 'PAWN', count: 1 }]);
+assert.deepEqual(captureAtThree.captures.top.pieces, []);
+const captureAtFour = execute('seek', { index: 4 });
+assert.deepEqual(captureAtFour.captures.top.pieces, [{ kind: 'PAWN', count: 1 }]);
+const captureFlipped = execute('flip');
+assert.equal(captureFlipped.captures.top.side, 'WHITE');
+assert.deepEqual(captureFlipped.captures.top.pieces, captureAtFour.captures.bottom.pieces);
+const captureRestored = request(restoredModule.studyCommand, 'resume', { saved: captureFlipped.saved });
+assert.deepEqual(captureRestored.captures, captureFlipped.captures);
+const captureAtStart = execute('seek', { index: 0 });
+assert.deepEqual(captureAtStart.captures.top.pieces, []);
+assert.deepEqual(captureAtStart.captures.bottom.pieces, []);
+
 const outsideBook = '1|a2a3 h7h6 b2b3 g7g6 h2h3 c7c6 e2e4 d7d6';
 const tactical = execute('open', { value: outsideBook, index: 8 });
 const ready = execute('evaluate', { index: tactical.revision });

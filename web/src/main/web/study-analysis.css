@@ -94,11 +94,16 @@
 }
 
 .analysis-study-side {
-  margin: 0 0 0 var(--analysis-meter-gutter);
+  margin-inline-start: var(--analysis-meter-gutter);
   block-size: var(--analysis-caption-height);
-  overflow-wrap: anywhere;
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  min-inline-size: 0;
   font-size: .94rem;
 }
+.analysis-study-side-name { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.analysis-study-side .match-captures { flex: 0 0 auto; }
 
 .analysis-study-side.active { color: #b8d88a; }
 .analysis-study-panel {

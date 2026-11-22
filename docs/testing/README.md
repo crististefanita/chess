@@ -186,6 +186,8 @@ Compare the same checkpoint and ply in the JVM and worker. Use native and browse
 
 `MatchCapturesTest` verifies the selected ply, both board orientations, seat ownership, AI captures, and restored history. The mocked `match-captures.test.mjs` checks all five capturable kinds, shared 48-unit silhouettes, APK-matched capture palette and 82% icon scale, grouped counts, RO/EN accessible labels, fixed top/bottom rows, and invalid or stale capture data. The style contract reads the native capture painter as its reference. These component checks run without an emulator.
 
+`AnalysisCaptureParityTest` applies that same capture projection to the manual study line and executes the mocked Web analysis controls under Extent. It checks the exact historical ply, opposing reply, flip, start, reload and replay clearing. Native `AnalysisActivity` uses `MatchCapturesView`, while the Web adapter uses `renderMatchCaptures`. The separate rendered APK/Web comparison still owns visual fit.
+
 `MatchSeatParityTest` checks the three shared opponent names and executes the mocked Web seat cases under Extent. They verify the human and AI labels beside their own capture rows, normal and flipped orientation, historical turn markers, RO/EN descriptions, long-name truncation, and fixed compact/wide row geometry. The packaged TeaVM worker must project the same opponent name; this keeps name mapping out of the JavaScript adapter. Rendered compact and wide receipts are still needed to close visual parity.
 
 `match-capture-rows.json` records one legal, manually played API 28 match
@@ -419,6 +421,8 @@ Use components for slot and archive state, continuation, graph selection, and lo
 <summary>Storage, navigation, and focus checks</summary>
 
 `MatchStoreTest`, `MatchLedgerTest`, and `MatchLedgerPreferencesTest` check migration, order, retention, and slot selection. Cases cover overwriting the active slot, a separate continuation from the archive, and refusal when all slots are occupied. `ChessWebLedgerPublication` checks the library after reloading, checkpoints, and Edge captures. [Web probes](../../web/README.md#saved-and-finished-matches)
+
+`MatchListsProjectionTest` crosses both ten-entry limits in one durable snapshot: the eleventh active game replaces the oldest slot, a completed game leaves Saved, and the eleventh result removes only the oldest archive. It reopens storage and checks the shared list entries without an emulator. With `chess.web.bundle`, a packaged-worker test repeats both eleven-entry boundaries and verifies the Web Saved and Finished projections after reload.
 
 `MatchLedgerReviewTest` checks persistence of analysis and the resume position per archive entry, rejection of a checkpoint or cache from another game, migration of a single result, and complete eviction. `ChessWebArchiveReviewsPublication` validates two worker-calculated reviews, the positions restored after reload, and captures from the same run. [Resuming archived analysis](../../web/README.md#resuming-an-archived-match-review)
 

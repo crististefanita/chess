@@ -44,6 +44,22 @@ final class WebBoardState {
         return suggested == null ? "[]" : "[" + quote(BoardSquare.name(suggested.from())) + "," + quote(BoardSquare.name(suggested.to())) + "]";
     }
 
+    static String captures(MatchCaptures rows) {
+        return "{\"top\":" + capture(rows.top()) + ",\"bottom\":" + capture(rows.bottom()) + "}";
+    }
+
+    private static String capture(MatchCaptures.Player player) {
+        var material = player.material();
+        var pieces = new StringBuilder("[");
+        for (var piece : material.captured()) {
+            if (pieces.length() > 1) pieces.append(',');
+            pieces.append("{\"kind\":").append(quote(piece.kind().name()))
+                    .append(",\"count\":").append(piece.count()).append('}');
+        }
+        return "{\"side\":" + quote(player.side().name()) + ",\"pieces\":" + pieces.append(']')
+                + ",\"advantage\":" + material.advantage() + "}";
+    }
+
     static String text(Text label) {
         return label == null ? "null" : "{\"en\":" + quote(label.en()) + ",\"ro\":" + quote(label.ro()) + "}";
     }
