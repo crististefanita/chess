@@ -1798,3 +1798,11 @@ testChanges:
     test: ro.atf.chess.UiChromeParityTest#generatedWebPolicyAndExecutableAdapterUseTheSameCases
     contract: "Keep generation from the actual Java contract, byte-identical Web policy and all five executable adapter assertions; resolve the loaded class location rather than assuming Maven output inside the checkout"
     allowDelete: false
+
+  - id: CHESS-EDITION-SHARED-FILES-EN
+    base: "1a74c0979c88976df93fc2a9c00194fad4f3d0cd"
+    from: atf-tests/src/test/java/ro/atf/chess/DocumentationPairGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/DocumentationPairGovernanceTest.java
+    test: ro.atf.chess.DocumentationPairGovernanceTest#pairedGateRejectsInventoryStructureLinksAndEvidenceDrift
+    contract: "Preserve Markdown and release-evidence negatives; reject changed or missing shared source while allowing only declared language-specific governance files"
+    allowDelete: false

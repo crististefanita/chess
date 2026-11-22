@@ -64,7 +64,11 @@ git push --atomic origin "${enCommit}:refs/heads/main" "${roCommit}:refs/heads/m
 
 The pair gate verifies the tracked Markdown inventory, ordered structure,
 corresponding links and heading destinations, and byte-identical published
-evidence. Review every prose block and visible diagram label for its language
+evidence. It also compares every shared non-Markdown file by Git object and
+mode; only the six explicit language-specific governance and RAG files differ.
+Missing or changed shared source fails the gate. [Pair contract](../../release-tools/src/main/java/ro/atf/chess/release/DocumentationPair.java)
+
+Review every prose block and visible diagram label for its language
 and translated meaning; a passing structural gate alone does not establish
 language completeness or translation fidelity. [Testing strategy](../testing/README.md#choosing-the-test-level)
 

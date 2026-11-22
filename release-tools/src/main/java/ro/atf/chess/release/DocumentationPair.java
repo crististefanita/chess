@@ -24,6 +24,13 @@ final class DocumentationPair {
     private static final Pattern EXTERNAL = Pattern.compile("^(?:[a-zA-Z][a-zA-Z0-9+.-]*:|//)");
     private static final String README = "README.md";
     private static final String RELEASE_GUIDE = "docs/release/README.md";
+    private static final Set<String> LOCALIZED_NON_MARKDOWN = Set.of(
+            "atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java",
+            "atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java",
+            "atf-tests/src/test/java/ro/atf/chess/TestChangePolicyTest.java",
+            "docs/testing/test-changes.yaml",
+            "release-tools/src/main/java/ro/atf/chess/release/ReleaseEvidence.java",
+            "release-tools/src/main/java/ro/atf/chess/release/ReleaseRag.java");
     private static final Role ENGLISH = new Role("main", "## Play", "## Published Release", "## Overview", "## Qualification and Publication");
     private static final Role ROMANIAN = new Role("main_RO", "## Jocul", "## Ediția publicată", "## Pe scurt", "## Calificare și publicare");
 
@@ -61,7 +68,7 @@ final class DocumentationPair {
         validateRole(romanian, ROMANIAN, ENGLISH);
         require(ReleaseEvidence.gameLinks(english.document(README).text()).equals(ReleaseEvidence.gameLinks(romanian.document(README).text())),
                 "English and Romanian README release routes differ");
-        verifyReleaseFiles(english, romanian);
+        verifySharedFiles(english, romanian);
 
         int links = 0;
         int anchored = 0;
@@ -114,14 +121,15 @@ final class DocumentationPair {
         }
     }
 
-    private static void verifyReleaseFiles(Tree en, Tree ro) throws IOException {
+    private static void verifySharedFiles(Tree en, Tree ro) throws IOException {
         var paths = new TreeSet<String>();
         paths.addAll(en.files().keySet());
         paths.addAll(ro.files().keySet());
         for (String path : paths) {
-            if (!path.startsWith("release/") || isMarkdown(path)) continue;
+            if (isMarkdown(path) || LOCALIZED_NON_MARKDOWN.contains(path)) continue;
             Entry first = en.files().get(path);
-            require(first != null && first.equals(ro.files().get(path)), "Release evidence differs between branches: " + path);
+            String boundary = path.startsWith("release/") ? "Release evidence" : "Shared file";
+            require(first != null && first.equals(ro.files().get(path)), boundary + " differs between branches: " + path);
         }
     }
 
