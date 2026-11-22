@@ -46,6 +46,7 @@ descrie comportamentul, iar [catalogul edițiilor](../../release/README.md) indi
 | P2 | Progres · upgrade Android | Upgrade-ul semnat mai cere o probă de progres. | Păstrează ID-urile, rezolvările și punctele după upgrade și restart. |
 | P2 | Calibrarea problemelor | Benzile de dificultate importate se suprapun. | Verifică timpul și încercările pe un lot amestecat separat. |
 | P2 | Android · separarea tranzițiilor de ecran | Ecranul Android deține mai multe tranziții de sesiune. | Mută tranzițiile într-un responsabil testabil pe JVM. |
+| P2 | Documentația bibliotecilor · paritatea edițiilor | Ghidurile bibliotecilor nu au un gate EN/RO nativ fixat pe commit. | Respingeți un corespondent lipsă, un link ori bloc executabil schimbat și metadate de revizie vechi; acceptați proza tradusă fără schimbarea identității tehnice. |
 
 </details>
 

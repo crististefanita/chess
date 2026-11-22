@@ -2,7 +2,7 @@
 
 ## Pe scurt
 
-`atf-core` oferă vocabularul și mecanismele reutilizabile ale ATF. Folosiți-l pentru a compune adaptoare și execuții, păstrând regulile aplicației în consumator.
+`atf-core` oferă vocabularul și mecanismele reutilizabile ale ATF. Folosiți-l pentru a compune adaptoare și execuții, păstrând regulile aplicației în consumer.
 
 | Aveți nevoie de | API de pornire |
 |---|---|
@@ -10,11 +10,11 @@
 | Configurație capturată pentru o rulare | `AtfConfiguration`, `ApiSettingsSnapshot`, `AtfRuntimeSnapshot` |
 | JSON strict și redactarea datelor sensibile | `JsonDocuments`, `SensitiveDataRedactor` |
 | Eliberarea resurselor în ordine inversă | `CleanupRegistry` |
-| Sincronizare selectivă cu verificarea bazei de referință | `AtfPromotionManifest`, `AtfPromotionGuard` |
+| Sincronizare selectivă cu verificarea baseline-ului | `AtfPromotionManifest`, `AtfPromotionGuard` |
 
 ## Exemplu minim
 
-Fragment într-o metodă care poate propaga `IOException`; construiește datele fără a trimite o cerere:
+Fragment într-o metodă care poate propaga `IOException`; construiește datele fără a trimite un request:
 
 ```java
 import atf.core.http.request.ApiRequest;
@@ -34,16 +34,14 @@ var total = body.path("total").decimalValue();
 ## Utilizare în ATF
 
 - Injectați un `ApiTransport` în `ApiExecutor`; transportul real sau mock se alege explicit la compoziție.
-- `HttpClientTransport` și `UrlConnectionTransport` propagă anularea către operația deținută; transportul alternativ include citirea corpului răspunsului în termenul-limită. Anularea nu dovedește revenirea operației și nu autorizează repetarea cererii.
-- Reutilizați instantaneul configurației rulării; oracolul, aserțiunile și verdictul aplicației aparțin consumatorului.
-- Păstrați modelul original pentru comparație; redactarea și previzualizarea se aplică la publicarea diagnosticului.
+- `HttpClientTransport` și `UrlConnectionTransport` propagă anularea către operația deținută; fallback-ul include body-ul în deadline. Anularea nu dovedește rollback și nu autorizează replay.
+- Reutilizați snapshot-ul de configurație al rulării; oracolul, aserțiunile și verdictul de business aparțin consumerului.
+- Păstrați modelul original pentru comparație; redactarea și preview-ul se aplică la publicarea diagnosticului.
 - Core expune porturi neutre; [Console](README.Console.md), [Mock](README.Mock.md) și [Reporting](README.Reporting.md) au roluri distincte.
 
 ---
 
 Înainte de o versiune nouă, verificați compatibilitatea locală cu `PlatformLibraryProvenanceTest` și contractele folosite de Chess Lab. Păstrați coordonatele, hash-urile și notele de integrare sincronizate cu `library-provenance.json`.
-
-[Verificați integrarea în Chess și exemplele în J0](README.md#verificare)
 
 <a id="shared-library-source"></a>
 
