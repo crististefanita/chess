@@ -271,8 +271,8 @@ test('Analysis places evaluation to the left and all history controls in APK ord
     assert.equal(meter.attributes.get('aria-valuenow'), 55);
     assert.equal(meter.children[0].style.insetBlockStart, '0');
     assert.equal(board.className, 'analysis-study-board');
-    assert.equal(top.textContent, 'White');
-    assert.equal(bottom.textContent, 'Black to move');
+    assert.equal(top.children[0].textContent, 'White');
+    assert.equal(bottom.children[0].textContent, 'Black to move');
 
     const toolbar = root.children.find(item => item.className?.includes('analysis-study-toolbar'));
     assert.deepEqual(toolbar.children.filter(item => !item.hidden).map(item => item.attributes.get('aria-label')),
@@ -297,6 +297,36 @@ test('Analysis places evaluation to the left and all history controls in APK ord
     assert.equal(details.children.includes(replayToolbar), false);
     assert.equal(replayToolbar.children[2].hidden, true);
     assert.match(replayToolbar.children[1].textContent, /Step 0 of 4 · e7 → e5/);
+});
+
+test('Analysis uses the AI match capture trays at the selected ply and clears them in replay', async () => {
+    const rows = (blackBelow, humanCapture, replyCapture) => ({
+        top: { side: blackBelow ? 'WHITE' : 'BLACK', pieces: blackBelow ? humanCapture : replyCapture,
+            advantage: blackBelow && humanCapture.length && !replyCapture.length ? 1 : 0 },
+        bottom: { side: blackBelow ? 'BLACK' : 'WHITE', pieces: blackBelow ? replyCapture : humanCapture,
+            advantage: !blackBelow && humanCapture.length && !replyCapture.length ? 1 : 0 },
+    });
+    const pawn = [{ kind: 'PAWN', count: 1 }];
+    const opening = frame(1, 3, { total: 4, blackBelow: false, sideToMove: 'BLACK', analysis: false,
+        history: ['e2e4', 'd7d5', 'e4d5', 'd8d5'], promotions: [], captures: rows(false, pawn, []) });
+    const { root, view, setFrame } = await mountAnalysis(opening);
+    const [top, , bottom] = root.children.find(item => item.className === 'analysis-study-stage').children[0].children;
+    assert.equal(top.children[1].attributes.get('aria-hidden'), 'true');
+    assert.equal(bottom.children[1].attributes.get('aria-label'), 'White captured pawn · Material +1');
+
+    setFrame({ ...opening, captures: rows(false, pawn, pawn) });
+    await view.seek(4);
+    assert.equal(top.children[1].attributes.get('aria-label'), 'Black captured pawn');
+    assert.equal(bottom.children[1].attributes.get('aria-label'), 'White captured pawn');
+    setFrame({ ...opening, blackBelow: true, captures: rows(true, pawn, []) });
+    await view.seek(3);
+    assert.equal(top.children[1].attributes.get('aria-label'), 'White captured pawn · Material +1');
+    assert.equal(bottom.children[1].attributes.get('aria-hidden'), 'true');
+
+    setFrame({ ...opening, preview: { kind: 'THEORY', ply: 0, total: 1, branch: 0, branches: ['e7e5'] } });
+    await view.seek(3);
+    assert.equal(top.children[1].attributes.get('aria-hidden'), 'true', 'a different replay position must not inherit study captures');
+    assert.equal(bottom.children[1].attributes.get('aria-hidden'), 'true');
 });
 
 test('Selecting an offscreen analysis move scrolls only the strip in either direction', async () => {

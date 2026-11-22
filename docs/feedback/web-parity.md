@@ -78,6 +78,15 @@ Secvența legală a capturilor la semimutările 13–16 se află în
 [Cererea de publicare](../../web/publication.request) identifică pachetul
 calificat; identitatea octeților și aserțiunile componentelor nu dovedesc paritatea vizuală.
 
+**Tablă de analiză și liste, 2026-11-22.** Tabla de studiu proiectează acum
+aceleași rânduri de capturi ca partida cu AI, la semimutarea selectată, în ambele
+adaptoare. Cele două meniuri de câte zece intrări folosesc contractul comun
+`MatchStore` și `MatchListEntry`; componentele trec prin a unsprezecea partidă
+activă și a unsprezecea încheiere după serializare. Recepția randată pereche
+APK/Web rămâne deschisă pentru încadrarea rândurilor compacte și largi, inclusiv
+istoricul și orientarea studiului. Redarea unui indiciu separat pe Web ascunde
+intenționat capturile studiului, ca să nu le atribuie altei poziții.
+
 Închideți doar cu capturi pereche din APK-ul calificat și pachetul Web servit,
 la text 130% în fereastră compactă și într-o fereastră largă. Verificați fiecare
 nume, nivel, piesă capturată, margine a tablei și meniu, fără decupare sau

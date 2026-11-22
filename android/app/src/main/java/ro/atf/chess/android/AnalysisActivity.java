@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import ro.atf.chess.AnalysisEntry;
 import ro.atf.chess.AnalysisLine;
 import ro.atf.chess.ChessMatch;
+import ro.atf.chess.MatchCaptures;
 import ro.atf.chess.ChessPosition.Move;
 import ro.atf.chess.ChessPosition.Side;
 
@@ -55,6 +56,8 @@ public final class AnalysisActivity extends LocalizedActivity {
     private BoardView board;
     private TextView top;
     private TextView bottom;
+    private MatchCapturesView topCaptures;
+    private MatchCapturesView bottomCaptures;
     private TextView status;
     private MatchHistoryView history;
     private MatchAnalysisView analysis;
@@ -109,9 +112,12 @@ public final class AnalysisActivity extends LocalizedActivity {
         bottom = text(15);
         top.setId(View.generateViewId());
         bottom.setId(View.generateViewId());
+        topCaptures = new MatchCapturesView(this, View.generateViewId());
+        bottomCaptures = new MatchCapturesView(this, View.generateViewId());
         board = new BoardView(this, this::tap);
         analysis = new MatchAnalysisView(this, this::notation, () -> select(study), () -> board.getWidth());
-        screen.addView(new BoardPanel(this, top, board, bottom, analysis.evaluationBar()), new LinearLayout.LayoutParams(-1, 0, 1));
+        screen.addView(new BoardPanel(this, seat(top, topCaptures), board, seat(bottom, bottomCaptures),
+                analysis.evaluationBar()), new LinearLayout.LayoutParams(-1, 0, 1));
         status = text(14);
         status.setGravity(Gravity.CENTER);
         status.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
@@ -138,6 +144,14 @@ public final class AnalysisActivity extends LocalizedActivity {
         label.setTextSize(size);
         label.setTextColor(PRIMARY);
         return label;
+    }
+
+    private View seat(TextView name, MatchCapturesView captures) {
+        var row = new LinearLayout(this);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.addView(name, new LinearLayout.LayoutParams(0, -2, 1));
+        row.addView(captures, new LinearLayout.LayoutParams(-2, -2));
+        return row;
     }
 
     private void select(AnalysisLine line) {
@@ -254,6 +268,9 @@ public final class AnalysisActivity extends LocalizedActivity {
         boolean playable = study.result() == ChessMatch.Result.IN_PROGRESS;
         showSide(top, lower.other(), playable);
         showSide(bottom, lower, playable);
+        var captures = MatchCaptures.at(study.line(), study.ply(), blackBelow);
+        topCaptures.show(captures.top().side(), captures.top().material());
+        bottomCaptures.show(captures.bottom().side(), captures.bottom().material());
         String label = getString(R.string.manual_position, study.ply(), study.line().ply());
         int outcome = switch (study.result()) {
             case IN_PROGRESS -> 0;

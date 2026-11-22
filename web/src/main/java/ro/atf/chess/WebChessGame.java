@@ -265,23 +265,12 @@ final class WebChessGame {
                 + ",\"ply\":" + match.ply() + ",\"result\":" + quote(match.result().name()) + ",\"viewPly\":" + viewPly
                 + ",\"resigned\":" + match.resigned() + ",\"menu\":" + menu(match, latest)
                 + ",\"slot\":" + slot + ",\"archiveId\":" + quote(archiveId) + ",\"readOnly\":" + (archiveId != null)
-                + ",\"captures\":{\"top\":" + capture(captures.top()) + ",\"bottom\":" + capture(captures.bottom()) + "}"
+                + ",\"captures\":" + WebBoardState.captures(captures)
                 + ",\"canContinue\":" + !latest + ",\"history\":" + history.append(']')
                 + ",\"navigation\":" + navigation(navigation)
                 + ",\"legalMoves\":" + legal.append(']') + ",\"lastMove\":" + move(match.moveAt(viewPly)) + "}";
     }
 
-    static String capture(MatchCaptures.Player player) {
-        var material = player.material();
-        var captured = new StringBuilder("[");
-        for (var piece : material.captured()) {
-            if (captured.length() > 1) captured.append(',');
-            captured.append("{\"kind\":").append(quote(piece.kind().name()))
-                    .append(",\"count\":").append(piece.count()).append('}');
-        }
-        return "{\"side\":" + quote(player.side().name()) + ",\"pieces\":" + captured.append(']')
-                + ",\"advantage\":" + material.advantage() + "}";
-    }
     private static String navigation(MatchHistorySelection value) {
         return "{\"ply\":" + value.ply() + ",\"total\":" + value.total() + ",\"number\":" + value.number()
                 + ",\"side\":" + (value.side() == null ? "null" : quote(value.side().name())) + ",\"move\":" + move(value.move())

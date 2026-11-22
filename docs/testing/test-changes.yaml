@@ -1,4 +1,12 @@
 testChanges:
+  - id: CHESS-ANALYSIS-CAPTURE-INVENTORY-RO
+    base: "7e9eba6520e595abd706bd284c992bd831ff199a"
+    from: atf-tests/src/test/java/ro/atf/chess/ChessWebAnalysisStudyTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ChessWebAnalysisStudyTest.java
+    test: ro.atf.chess.ChessWebAnalysisStudyTest#analysisStudyUsesMockWorkersWithoutABrowser
+    contract: "Păstrează fiecare aserțiune inventariată anterior pentru tabla Web de analiză și cere noul caz de componentă pentru capturile semimutării selectate și golirea redării"
+    allowDelete: false
+
   - id: J7-ENLARGED-REPLAY-NATIVE-EN
     base: "975139ec679367789c964c28200f291c7e6f62a5"
     from: android/app/src/androidTest/java/ro/atf/chess/android/BoardSanity.java

@@ -124,6 +124,8 @@ flowchart LR
 
 ## Tablă de analiză
 
+- Rândurile imediat deasupra și dedesubtul tablei arată piesele capturate și avantajul material în poziția selectată. Folosesc același proprietar, aceleași siluete și același spațiu fix ca partida cu AI. Navigarea, întoarcerea tablei și restaurarea recalculează rândurile din linia de studiu; redarea separată a unui indiciu le ascunde până la revenirea la poziția studiului.
+
 - Din meniul principal pornești de la poziția inițială. Dintr-o partidă, lupa de lângă istoric deschide exact poziția afișată și păstrează mutările partidei disponibile pentru navigare.
 - Joci manual pentru alb și negru. Evaluarea se actualizează local după fiecare poziție, iar becul arată o continuare. Săgețile și mutările din bandă selectează poziții. O mutare diferită înlocuiește continuarea din tablă, iar **Resetează linia** readuce poziția și continuarea de la intrare.
 - Cât timp poziția are continuări de teorie, becul alege între cel mult trei trasee complete. Sub tablă vezi **Teorie**, numărul traseului și numele deschiderii. Atinge eticheta pentru redarea pe tot ecranul. Săgețile parcurg mutările ambelor culori, tabla își păstrează poziția, iar explicația fiecărui pas se poate derula separat. Două trasee pot începe prin aceeași mutare. Lecțiile YAML au prioritate, iar indexul ECO oferă continuări când lecțiile nu acoperă poziția. La o poziție fără continuări documentate, becul revine la analiza motorului. O transpoziție sau revenirea în istoric poate readuce teoria.

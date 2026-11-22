@@ -186,6 +186,8 @@ Comparați același checkpoint și aceeași semimutare în JVM și în worker. F
 
 `MatchCapturesTest` verifică semimutarea selectată, ambele orientări, locul fiecărui jucător, capturile AI și istoricul restaurat. Mock-ul `match-captures.test.mjs` acoperă toate cele cinci tipuri capturabile, siluetele comune pe grila de 48 de unități, paleta și scara pictogramei din APK, gruparea, textele accesibile RO/EN, rândurile fixe de sus și jos și datele invalide sau vechi. Contractul stilistic citește desenatorul nativ drept reper. Aceste componente rulează fără emulator.
 
+`AnalysisCaptureParityTest` aplică aceeași proiecție a capturilor liniei manuale de studiu și execută sub Extent comenzile simulate ale analizei Web. Verifică semimutarea exactă, replica adversarului, întoarcerea, începutul, restaurarea și golirea la redarea altei linii. `AnalysisActivity` folosește `MatchCapturesView`, iar adaptorul Web folosește `renderMatchCaptures`. Comparația randată APK/Web rămâne proprietara verificării vizuale.
+
 `MatchSeatParityTest` verifică cele trei nume comune ale adversarilor și execută cazurile Web simulate pentru locurile de la masă, cu Extent. Acestea verifică numele omului și AI-ului lângă capturile proprii, orientarea normală și întoarsă, marcajele turei în istoric, descrierile RO/EN, prescurtarea numelor lungi și geometria fixă a rândurilor compacte și largi. Workerul TeaVM împachetat trebuie să proiecteze același nume; astfel JavaScript nu păstrează o a doua mapare. Pentru închiderea parității vizuale rămân necesare recepții randate pereche, compacte și largi.
 
 `match-capture-rows.json` păstrează o partidă legală, jucată manual pe API 28,
@@ -423,6 +425,8 @@ Folosiți componentele pentru starea sloturilor și a arhivei, continuare, selec
 <summary>Verificări pentru stocare, navigare și focus</summary>
 
 `MatchStoreTest`, `MatchLedgerTest` și `MatchLedgerPreferencesTest` verifică migrarea, ordinea, retenția și selecția slotului. Cazurile acoperă rescrierea slotului activ, o continuare separată din arhivă și refuzul când toate sloturile sunt ocupate. `ChessWebLedgerPublication` verifică biblioteca după reîncărcare, checkpointurile și capturile din Edge. [Probe Web](../../web/README.md#partide-salvate-și-încheiate)
+
+`MatchListsProjectionTest` trece prin ambele limite de zece intrări într-un instantaneu durabil: a unsprezecea partidă activă înlocuiește cel mai vechi slot, o partidă încheiată părăsește Salvate, iar al unsprezecelea rezultat șterge numai cea mai veche arhivă. Redeschide stocarea și verifică intrările comune ale listelor fără emulator. Cu `chess.web.bundle`, un test al workerului împachetat repetă ambele limite de unsprezece intrări și verifică proiecțiile Web Salvate și Încheiate după reîncărcare.
 
 `MatchLedgerReviewTest` verifică persistența analizei și a poziției de reluare per arhivă, respingerea unui checkpoint sau cache din altă partidă, migrarea unui rezultat unic și evacuarea completă. `ChessWebArchiveReviewsPublication` validează două analize calculate de worker, pozițiile redeschise după reîncărcare și capturile din aceeași rulare. [Reluarea analizei arhivate](../../web/README.md#reluarea-analizei-unei-partide-arhivate)
 

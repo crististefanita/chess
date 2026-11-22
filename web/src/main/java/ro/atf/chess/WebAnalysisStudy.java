@@ -150,11 +150,13 @@ final class WebAnalysisStudy {
         for (int cursor = 1; cursor <= study.line().ply(); cursor++) past.add(study.line().moveAt(cursor));
         var targets = options.stream().map(candidate -> BoardSquare.name(candidate.to())).distinct().collect(Collectors.toList());
         var suggestion = hint == null ? null : hint.revealedMove();
+        var captures = MatchCaptures.at(study.line(), study.ply(), blackBelow);
         return "{" + frame(position, study.lastMove())
                 + ",\"revision\":" + revision + ",\"ply\":" + study.ply() + ",\"total\":" + study.line().ply()
                 + ",\"result\":" + quote(study.result().name()) + ",\"blackBelow\":" + blackBelow
                 + ",\"selected\":" + quote(selected < 0 ? null : BoardSquare.name(selected)) + ",\"targets\":" + json(targets, WebBoardState::quote)
                 + ",\"marks\":" + marks(suggestion) + ",\"history\":" + json(past, WebBoardState::move)
+                + ",\"captures\":" + WebBoardState.captures(captures)
                 + ",\"promotions\":" + json(promotions, WebBoardState::move) + ",\"analysis\":" + analysis
                 + ",\"evaluation\":" + evaluationState() + ",\"hint\":" + hintState() + ",\"preview\":" + replay.state()
                 + ",\"checkpoint\":" + quote(study.line().checkpoint()) + ",\"continuation\":" + quote(continuation)
