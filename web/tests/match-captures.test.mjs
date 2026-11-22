@@ -150,10 +150,13 @@ test('match markup keeps the board between stable top and bottom capture rows', 
         readFile(new URL('../src/main/web/game-review.css', import.meta.url), 'utf8'),
     ]);
     const top = html.indexOf('id="match-captures-top"');
+    const topName = html.indexOf('id="match-player-top"');
     const board = html.indexOf('id="match-board"');
+    const bottomName = html.indexOf('id="match-player-bottom"');
     const bottom = html.indexOf('id="match-captures-bottom"');
-    assert.ok(top >= 0 && top < board && board < bottom, 'top tray, board and lower tray remain in visual order');
-    assert.match(css, /\.match-captures\s*\{[^}]*min-block-size:\s*var\(--board-seat-size\)/);
+    assert.ok(topName >= 0 && topName < top && top < board && board < bottomName && bottomName < bottom,
+        'each capture tray follows its named seat without moving the board');
+    assert.match(css, /\.match-seat\s*\{[^}]*min-block-size:\s*var\(--board-seat-size\)/);
     assert.match(css, /\.match-captures\[aria-hidden="true"\]\s*\{\s*visibility:\s*hidden/);
 });
 

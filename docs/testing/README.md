@@ -186,6 +186,8 @@ Comparați același checkpoint și aceeași semimutare în JVM și în worker. F
 
 `MatchCapturesTest` verifică semimutarea selectată, ambele orientări, locul fiecărui jucător, capturile AI și istoricul restaurat. Mock-ul `match-captures.test.mjs` acoperă toate cele cinci tipuri capturabile, siluetele comune pe grila de 48 de unități, paleta și scara pictogramei din APK, gruparea, textele accesibile RO/EN, rândurile fixe de sus și jos și datele invalide sau vechi. Contractul stilistic citește desenatorul nativ drept reper. Aceste componente rulează fără emulator.
 
+`MatchSeatParityTest` verifică cele trei nume comune ale adversarilor și execută cazurile Web simulate pentru locurile de la masă, cu Extent. Acestea verifică numele omului și AI-ului lângă capturile proprii, orientarea normală și întoarsă, marcajele turei în istoric, descrierile RO/EN, prescurtarea numelor lungi și geometria fixă a rândurilor compacte și largi. Workerul TeaVM împachetat trebuie să proiecteze același nume; astfel JavaScript nu păstrează o a doua mapare. Pentru închiderea parității vizuale rămân necesare recepții randate pereche, compacte și largi.
+
 `match-capture-rows.json` păstrează o partidă legală, jucată manual pe API 28,
 cu două capturi ale AI-ului și una a omului. Proiecția JVM, randarea Web simulată
 și workerul TeaVM împachetat folosesc aceleași așteptări pentru semimutările

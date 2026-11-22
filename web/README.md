@@ -88,6 +88,8 @@ Culoarea, dificultatea și automatizarea aparțin slotului salvat. Schimbarea nu
 
 MatchCaptures furnizează rândurile de capturi de sus și de jos pentru semimutarea selectată și orientarea tablei. Ambele adaptoare folosesc aceleași siluete `ChessPieceArtwork` pe grila de 48 de unități. Web respectă desenarea capturilor din APK: numai silueta, aceeași umplere deschisă/închisă și același contur, iar pictograma are 82% din dimensiunea textului explicativ. Piesele repetate sunt grupate, avantajul material apare ca +N, iar rândurile goale rămân montate pentru ca replica AI sau navigarea în istoric să nu deplaseze tabla. Tabla folosește separat desenul detaliat al pieselor.
 
+`MatchOpponentName` furnizează ambelor adaptoare Alex, Mira sau Atlas pentru nivelurile Basic, Advanced și Hard. APK-ul și Web arată numele adversarului cu **AI + nivel** lângă piesele capturate de acesta și numele din profil lângă capturile omului. În ferestre compacte, ambele încap în rândul rezervat; în ferestre largi, numele stă deasupra capturilor. Rândurile rămân montate la întoarcerea tablei, navigarea în istoric și reîncărcare, astfel încât conținutul lor nu schimbă poziția tablei pătrate. Numele lungi sunt prescurtate doar vizual și rămân complete în eticheta accesibilă și în titlu.
+
 <details>
 <summary>Configurare, preferințe locale și probă de reîncărcare</summary>
 

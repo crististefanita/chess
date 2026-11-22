@@ -12,6 +12,7 @@ import { createMatchBotTimer } from './match-bot-timer.mjs';
 import { bindInlineMatchAnalysis, guidedMatchMove } from './match-inline-analysis.mjs';
 import { renderMatchHistory } from './match-history.mjs';
 import { renderMatchCaptures } from './match-captures.mjs';
+import { matchSeatLabels, renderMatchSeat } from './match-seats.mjs';
 import { attachOptionsMenu, followOptionsMenu } from './options-menu.mjs';
 import { createReviewImport } from './review-import.mjs';
 import { matchReviewActionState, reviewGradeTone } from './review-presentation.mjs';
@@ -54,7 +55,7 @@ const words = {
         'white-choice': 'White', 'black-choice': 'Black', 'random-choice': 'Random',
         'start-ai': 'Start game', 'cancel-setup': 'Cancel',
         'retry-bot': 'Retry AI move', botTurn: 'AI to move…', botFailure: 'The AI move could not be completed. You can retry from this position.',
-        aiProfile: (level, side) => `AI · ${level} · You play ${side.toLowerCase()}`,
+        levels: { BASIC: 'Basic', ADVANCED: 'Advanced', HARD: 'Hard' }, toMove: 'to move',
         analyze: 'Analyze game', 'cancel-analysis': 'Cancel analysis', 'progress-label': 'Analyzing game',
         'promote-label': 'Promote to', promotion: 'Choose a piece',
         matchFailure: 'Could not open or change the active game.', analysisFailure: 'Could not analyze the recorded moves.',
@@ -105,7 +106,7 @@ const words = {
         'white-choice': 'Alb', 'black-choice': 'Negru', 'random-choice': 'Aleatoriu',
         'start-ai': 'Începe partida', 'cancel-setup': 'Anulează',
         'retry-bot': 'Reîncearcă mutarea AI', botTurn: 'AI este la mutare…', botFailure: 'AI nu a terminat mutarea. Poți reîncerca din această poziție.',
-        aiProfile: (level, side) => `AI · ${level} · Joci cu ${side.toLowerCase()}`,
+        levels: { BASIC: 'Basic', ADVANCED: 'Advanced', HARD: 'Hard' }, toMove: 'la mutare',
         analyze: 'Analizează partida', 'cancel-analysis': 'Oprește analiza', 'progress-label': 'Analizăm partida',
         'promote-label': 'Promovează în', promotion: 'Alege piesa',
         matchFailure: 'Partida curentă nu a putut fi deschisă sau modificată.', analysisFailure: 'Mutările înregistrate nu au putut fi analizate.',
@@ -162,7 +163,6 @@ const glyphs = { p: '♟', n: '♞', b: '♝', r: '♜', q: '♛', k: '♚' };
 const kinds = { p: 'PAWN', n: 'KNIGHT', b: 'BISHOP', r: 'ROOK', q: 'QUEEN', k: 'KING' };
 const score = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
 const gameDate = new Intl.DateTimeFormat(locale, { dateStyle: 'short', timeStyle: 'short' });
-const levels = { BASIC: 'Basic', ADVANCED: 'Advanced', HARD: 'Hard' };
 const listRoutes = new Set(['saved', 'finished']);
 const localSetup = { mode: 'LOCAL', humanSide: 'WHITE', level: 'BASIC' };
 const worker = new Worker(new URL('./engine-worker.mjs', import.meta.url), { type: 'module' });
@@ -675,7 +675,6 @@ function renderMatch() {
         if (resignation.open) resignation.close('cancel');
         return;
     }
-    const isAi = match.mode === 'AI';
     const browsing = match.viewPly < match.ply;
     container.dataset.ply = match.ply;
     container.dataset.viewPly = match.viewPly;
@@ -689,6 +688,9 @@ function renderMatch() {
     container.dataset.level = match.level;
     container.dataset.awaitingBot = match.awaitingBot;
     orientBoard(matchBoard, matchSquares, match.blackBelow);
+    const seats = matchSeatLabels(match, homeMenu.name || homeLabels[locale].defaultName, words);
+    renderMatchSeat(find('match-player-top'), seats.top);
+    renderMatchSeat(find('match-player-bottom'), seats.bottom);
     renderMatchCaptures(find('match-captures-top'), match.captures.top, pieceArtwork, words);
     renderMatchCaptures(find('match-captures-bottom'), match.captures.bottom, pieceArtwork, words);
     drawBoard(matchBoard, matchSquares, match);
@@ -702,11 +704,6 @@ function renderMatch() {
     reviewResult.hidden = !matchReviewActionState(match, { browsing }).visible;
     reviewResult.setAttribute('aria-label', words['menu-review']);
     find('match-review-label').textContent = words['menu-review'];
-    find('match-profile').hidden = !isAi;
-    if (isAi) {
-        const summary = words.aiProfile(levels[match.level], words[`${match.humanSide.toLowerCase()}-choice`]);
-        find('match-profile').textContent = homeMenu.name ? `${homeMenu.name} · ${summary}` : summary;
-    }
     find('match-history').hidden = false;
     renderMatchHistory(find('match-ply'), match, locale);
     find('match-previous').disabled = match.viewPly === 0;

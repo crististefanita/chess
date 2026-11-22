@@ -256,6 +256,7 @@ final class WebChessGame {
                 + ",\"sideToMove\":" + quote(position.turn().name()) + ",\"checkpoint\":" + quote(checkpoint)
                 + ",\"reviewCheckpoint\":" + quote(raw) + ",\"mode\":" + quote(mode.name())
                 + ",\"humanSide\":" + quote(match.setup().humanSide().name()) + ",\"level\":" + quote(match.setup().level().name())
+                + ",\"opponentName\":" + quote(MatchOpponentName.forLevel(match.setup().level()))
                 + ",\"analysisEnabled\":" + match.analysisEnabled()
                 + ",\"automatic\":" + session.automatic() + ",\"manualUsed\":" + manualUsed + ",\"rated\":" + (isAi && !manualUsed)
                 + ",\"manualAiTurn\":" + manualAiTurn + ",\"automation\":{\"visible\":" + showAutomation
@@ -281,7 +282,6 @@ final class WebChessGame {
         return "{\"side\":" + quote(player.side().name()) + ",\"pieces\":" + captured.append(']')
                 + ",\"advantage\":" + material.advantage() + "}";
     }
-
     private static String navigation(MatchHistorySelection value) {
         return "{\"ply\":" + value.ply() + ",\"total\":" + value.total() + ",\"number\":" + value.number()
                 + ",\"side\":" + (value.side() == null ? "null" : quote(value.side().name())) + ",\"move\":" + move(value.move())

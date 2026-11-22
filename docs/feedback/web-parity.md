@@ -94,14 +94,15 @@ automată a politicii. Rămâne necesară recepția vizuală pereche pe același
 de captură. Sursa nativă actuală are deja meniul partidei în dreapta antetului,
 ca Web; meniul instalării 0.15.2 este mai vechi.
 
-**P2 · Proprietarul vizibil al capturilor.** APK-ul arată numele adversarului
-deasupra rândului de capturi de sus și numele omului sub rândul de jos. Web
-arată rândurile lângă tablă, dar rezumatul comun al jucătorilor rămâne sub ea.
-Adăugați etichete compacte și localizate lângă piesele capturate ale fiecărui
-jucător, fără micșorarea tablei sau derularea paginii la text 130%. Guvernați
-orientarea normală și întoarsă, numele lungi și istoricul în componente;
-închideți paritatea vizuală printr-o recepție randată pereche când Browser MCP
-devine disponibil.
+**P2 · Proprietarul vizibil al capturilor · contractul de componentă implementat la 2026-11-22.**
+`MatchOpponentName` dă acum ambelor adaptoare aceeași identitate Alex/Mira/Atlas.
+Web pune numele și capturile fiecărui jucător într-un rând rezervat, cu nivelul
+AI lângă numele adversarului. Geometria compactă și largă, întoarcerea tablei,
+istoricul, etichetele RO/EN și numele lungi au verificări de componentă simulate.
+Vechiul rezumat comun de sub tablă a fost eliminat. Închideți punctul doar după
+ce capturile pereche APK/Web, la text 130% în fereastră compactă și într-o
+fereastră largă, confirmă alinierea tablei și meniurilor fără decupare sau
+derularea paginii; Browser MCP rămâne indisponibil înaintea deschiderii tabului.
 
 **Poarta workerului reverificată · 2026-11-22.** `active-historical-replay` s-a încheiat în 26 de secunde, cu limita neschimbată de 55 de secunde. Clasa completă `ChessWebParityPublication` a arătat apoi un oracol contradictoriu: respingea aliasurile istorice ale workerului și motorului din rădăcină, deși contractul de publicare le păstrează pentru filele vechi. Aserțiunea verifică acum existența lor ca pereche și încărcarea workerului și motorului curent din runtime-ul versionat. Toate cele șase teste de publicare trec împreună, cu Extent. Nu s-au schimbat regulile de șah, comportamentul AI sau limita de timp.
 
