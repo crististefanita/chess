@@ -2,11 +2,11 @@
 
 ## Pe scurt
 
-`atf-console` proiectează evenimentele ATF în stdout/stderr: ciclul de execuție, durate și detalii configurabile. Este util pentru urmărirea unei rulări Maven sau IntelliJ; artefactul HTML este produs de [Reporting](README.Reporting.md).
+`atf-console` proiectează evenimentele ATF în stdout/stderr: lifecycle, durate și detalii configurabile. Este util pentru urmărirea unei rulări Maven sau IntelliJ; artifactul HTML este produs de [Reporting](README.Reporting.md).
 
 ## Exemplu minim
 
-Fragment într-o metodă; politica este explicită, iar fluxul de ieșire rămâne în adaptor:
+Fragment într-o metodă; politica este explicită, iar stream-ul rămâne în adaptor:
 
 ```java
 import atf.console.AtfConsoleReporter;
@@ -31,20 +31,18 @@ reporting:
 | Intenție | Alegere |
 |---|---|
 | Mesaj independent de detalii | `info(...)` |
-| Evenimente cu tip explicit, ciclu de execuție și durată | `publish(AtfConsoleEvent)` prin portul Core `AtfConsoleSink` |
+| Evenimente typed, cu lifecycle și durată | `publish(AtfConsoleEvent)` prin portul Core `AtfConsoleSink` |
 | Consolă complet oprită | `enabled: false` sau `ConsoleSettings.disabled()` |
 | Calea raportului final în consolă | Constructorul cu `reportPathEnabled: true` și evenimentul `REPORT_PUBLISHED` |
 | Politică JUnit per clasă | Adaptorul JUnit Console și adnotările Test Kit; declarați Kit explicit |
 
-- Afișarea căii cere activare explicită, consolă activă și un eveniment cu artefact confirmat. `detailsEnabled` controlează doar detaliile.
-- Console depinde de Core. Adaptorul JUnit folosește Kit când acesta este declarat.
-- Console afișează diagnosticul. Testul care îl invocă decide comparația și verdictul.
+Calea cere opt-in, consolă activă și eveniment cu artifact confirmat; `detailsEnabled` controlează doar detaliile.
+
+Console depinde de Core; Kit este opțional pentru legătura JUnit. Proiecția rămâne diagnostică: comparația și verdictul aparțin testului.
 
 ---
 
 Înainte de o versiune nouă, verificați compatibilitatea locală cu `PlatformLibraryProvenanceTest` și randarea diagnosticelor cu `ExtentGovernanceTest`. Păstrați coordonatele, hash-urile și notele de integrare sincronizate cu `library-provenance.json`.
-
-[Verificați integrarea în Chess și exemplele în J0](README.md#verificare)
 
 <a id="shared-library-source"></a>
 
