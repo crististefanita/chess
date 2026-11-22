@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Play chess against AI, solve puzzles, and study openings.">
   <title>Chess Lab</title>
-  <link rel="stylesheet" href="runtime/2f50a25b41fffc50c4fb2ae483958ca73e5322fd3a135cb419144954fc6ff9db/game-review.css">
-  <link rel="stylesheet" href="runtime/2f50a25b41fffc50c4fb2ae483958ca73e5322fd3a135cb419144954fc6ff9db/study-openings.css">
-  <link rel="stylesheet" href="runtime/2f50a25b41fffc50c4fb2ae483958ca73e5322fd3a135cb419144954fc6ff9db/study-analysis.css">
-  <link rel="stylesheet" href="runtime/2f50a25b41fffc50c4fb2ae483958ca73e5322fd3a135cb419144954fc6ff9db/study-quests.css">
-  <link rel="stylesheet" href="runtime/2f50a25b41fffc50c4fb2ae483958ca73e5322fd3a135cb419144954fc6ff9db/chess-controls.css">
-  <link rel="stylesheet" href="runtime/2f50a25b41fffc50c4fb2ae483958ca73e5322fd3a135cb419144954fc6ff9db/board-layout.css">
-  <script type="module" src="runtime/2f50a25b41fffc50c4fb2ae483958ca73e5322fd3a135cb419144954fc6ff9db/game-review.mjs"></script>
+  <link rel="stylesheet" href="runtime/880be9163f22f7211561679fa78480ed048c04ae7900626e12dad28b207cbdd0/game-review.css">
+  <link rel="stylesheet" href="runtime/880be9163f22f7211561679fa78480ed048c04ae7900626e12dad28b207cbdd0/study-openings.css">
+  <link rel="stylesheet" href="runtime/880be9163f22f7211561679fa78480ed048c04ae7900626e12dad28b207cbdd0/study-analysis.css">
+  <link rel="stylesheet" href="runtime/880be9163f22f7211561679fa78480ed048c04ae7900626e12dad28b207cbdd0/study-quests.css">
+  <link rel="stylesheet" href="runtime/880be9163f22f7211561679fa78480ed048c04ae7900626e12dad28b207cbdd0/chess-controls.css">
+  <link rel="stylesheet" href="runtime/880be9163f22f7211561679fa78480ed048c04ae7900626e12dad28b207cbdd0/board-layout.css">
+  <script type="module" src="runtime/880be9163f22f7211561679fa78480ed048c04ae7900626e12dad28b207cbdd0/game-review.mjs"></script>
 </head>
 <body>
   <main>
@@ -119,15 +119,14 @@
       </div>
     </form>
     <section id="match" class="match" aria-busy="false" hidden>
-      <div id="match-captures-top" class="match-captures" data-seat="top" aria-hidden="true"></div>
+      <div class="match-seat" data-seat="top"><span id="match-player-top" class="match-player"></span><div id="match-captures-top" class="match-captures" data-seat="top" aria-hidden="true"></div></div>
       <div class="match-board-frame">
         <div id="match-inline-meter" class="match-inline-meter chess-evaluation-meter" role="meter" aria-label="Evaluation for White" aria-valuemin="0" aria-valuemax="100" hidden><span></span></div>
         <div id="match-board" class="board match-board study-board" role="group"></div>
       </div>
-      <div id="match-captures-bottom" class="match-captures" data-seat="bottom" aria-hidden="true"></div>
+      <div class="match-seat" data-seat="bottom"><span id="match-player-bottom" class="match-player"></span><div id="match-captures-bottom" class="match-captures" data-seat="bottom" aria-hidden="true"></div></div>
       <div class="match-caption">
         <p id="match-turn" class="turn" aria-live="polite"><span id="match-result"></span><button id="match-review-result" type="button" hidden><span aria-hidden="true">📊</span><span id="match-review-label">Game review</span></button></p>
-        <p id="match-profile" class="turn" hidden></p>
       </div>
       <div id="match-inline-analysis" class="match-inline-analysis" hidden>
         <output id="match-inline-score" aria-live="polite"></output>
