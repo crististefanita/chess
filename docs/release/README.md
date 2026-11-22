@@ -5,6 +5,25 @@
 Acest ghid leagă commitul, APK-ul semnat, proba Android și descărcarea verificată.
 [Catalogul edițiilor](../../release/README.md) indică versiunea disponibilă și dovezile ei.
 
+
+```mermaid
+%%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
+flowchart LR
+    Source["Sursă fixată"] -->|construiește| APK["APK identificat"]
+    Source -->|selectează verificări| Tests["Probe necesare"]
+    Tests -->|înregistrează| Evidence["Recepții și Extent"]
+    APK -->|leagă identitatea| Gate["ReleaseGate"]
+    Evidence -->|reconciliază| Gate
+    Gate -->|admite publicarea| Publish["Livrare și<br/>descărcare"]
+```
+
+<details>
+<summary>Legendă — identitatea candidatului, calificare și publicare</summary>
+
+Poarta reconciliază candidatul și dovezile necesare; un build reușit sau un raport existent nu califică singur livrarea. RAG selectează verificările și documentația afectate, iar poarta perechii EN/RO imuabile verifică edițiile revizuite. Procedura de mai jos deține semnarea, excepțiile de instalare, verificarea accesului și ordinea exactă a publicării.
+
+</details>
+
 ## Calificare și publicare
 
 Versiunea disponibilă se verifică în README-ul din `origin/main`. Dacă ramura locală conține lucrări paralele, porniți candidatul din `origin/main` în TMP și transferați doar fișierele revizuite pentru ediție.

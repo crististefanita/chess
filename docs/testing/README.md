@@ -13,6 +13,24 @@ Variația deschiderilor este guvernată de [OpeningVarietyTest](../../atf-tests/
 
 Schimbările repertoriului cer propria verificare a domeniului: fixează rădăcina verificată independent și toate semimutările PV oferite, compară replicile adverse libere la H17/H19, păstrează orizontul și alocația de noduri și include un context unde aceeași mutare de piesă este bună. O corecție de poziție exactă nu trebuie raportată drept câștig general de căutare ori Elo. [Exemplu nativ și dovadă independentă](../../atf-tests/src/test/java/ro/atf/chess/NimzoRepertoireTest.java)
 
+
+```mermaid
+%%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
+flowchart LR
+    Contract["Contract schimbat"] -->|selectează| JVM["Componente JVM"]
+    Contract -->|cere platformă| Platform["Probă Android sau<br/>Web"]
+    JVM -->|aserțiuni| Extent["Extent HTML"]
+    Platform -->|recepții observate| Extent
+    Extent -->|revizuiește domeniul| Review["Acceptanța<br/>dovezilor"]
+```
+
+<details>
+<summary>Legendă — nivelul testului și dovezile sunt alegeri separate</summary>
+
+Componentele exercită contracte de producție prin intrări controlate. Probele pe dispozitiv, worker împachetat și browser randat observă propriile limite; importul unei recepții nu execută din nou acea probă. Extent păstrează comparațiile și capturile efective, iar acceptanța revizuiește sursa, selecția și domeniul observat.
+
+</details>
+
 ## Alegerea nivelului
 
 - **Componentă** pentru reguli, progres, persistență, ordonare și layout măsurabil. Folosiți store-ul real cu preferințe în memorie și aserțiuni pe valori observabile.
@@ -25,6 +43,9 @@ JVM, iar integrarea nativă și restartul real pe Android. În Extent, urmăriț
 aserțiunea, diagnosticul și, unde este necesară, captura checkpointului.
 
 ## Motor și proiecție
+
+<details>
+<summary>Probe și limite — Motor și proiecție</summary>
 
 Verificați în JVM legalitatea mutărilor, proiecția tablei și soluțiile din cataloage. Comparați mutările cu oracolul independent chess.js.
 
@@ -128,7 +149,12 @@ oferite și comparate, replicile, adâncimile și nodurile efective. [Rulare și
 
 Fiecare semimutare, inclusiv replica adversarului, cere analiza efectivă Hard cu istoric. Componentele resping recepții lipsă sau străine; publicatorul benchmark rejucă dovezile înainte de Elo și Extent. [Protocol, comandă și interpretare](hard-audit.md)
 
+</details>
+
 ## Paritatea Web a motorului
+
+<details>
+<summary>Probe și limite — Paritatea Web a motorului</summary>
 
 `ChessWebRulesComponentTest` verifică motorul și cataloagele pe JVM. `ChessWebParityPublication` execută aceleași cazuri în workerul TeaVM pentru toate resursele folosite. Rulați proba explicit cu pachetul din TMP. [Build și probe Web](../../web/README.md)
 
@@ -464,7 +490,12 @@ Testele de componentă simulează tabla, stocarea și temporizatorul. Ele verifi
 - Probele Edge folosesc pachetul compilat pentru import, analiză nouă și reîncărcare reală. Publicatorul Extent verifică mutările, cache-ul de analiză, identitatea pachetului și capturile.
 - [Comenzile de rulare](../../web/README.md#analiza-partidei)
 
+</details>
+
 ## Tactică și punctaj
+
+<details>
+<summary>Probe și limite — Tactică și punctaj</summary>
 
 - `QuestRewardsTest` verifică seria între capitole, plafonul bonusului, restaurarea unei încercări asistate, punctajul anterior și totalurile. `TacticsCatalogTest` verifică cheia unică, lipsa matului imediat, continuitatea ID-urilor și câștigul care rezistă răspunsurilor legale la capătul liniei.
 - `QuestPayoffTest` verifică reluarea etapelor, capturile, finalul alternativ și restaurarea soluțiilor vechi. YAML-ul indică proveniența pozițiilor.
@@ -485,7 +516,12 @@ Publicați `android-tactics-explanation.html` cu `-Dtest=AndroidSanityPublicatio
 node scripts/verify-tactics.cjs $chessJs chess-core/src/main/resources/tactics.yaml chess-core/src/main/resources/tactics.sha256
 ```
 
+</details>
+
 ## Reluarea explicațiilor din puzzle
+
+<details>
+<summary>Probe și limite — Reluarea explicațiilor din puzzle</summary>
 
 [QuestReplayTest](../../atf-tests/src/test/java/ro/atf/chess/QuestReplayTest.java)
 verifică pe pozițiile din catalog semimutarea salvată în Mat în 2, fiecare
@@ -500,7 +536,12 @@ pieselor separă apărarea de cadrul final.
 - La 1080 × 1920 nativ folosește UI Automation. Ambele runde folosesc font 1,3×.
 - Recepția replayDisplay înregistrează profilul și sursa capturii. [Testul de geometrie](../../atf-tests/src/test/java/ro/atf/chess/ScreenCaptureGeometryTest.java)
 
+</details>
+
 ## Progresul problemelor
+
+<details>
+<summary>Probe și limite — Progresul problemelor</summary>
 
 Verificați în JVM punctajul, navigarea, progresul salvat și geometria capitolelor. Păstrați probe native pentru tablă, comenzi și starea salvată la restart.
 
@@ -553,6 +594,8 @@ node scripts/verify-tactics.cjs $chessJs chess-core/src/main/resources/training.
 node scripts/verify-tactics.cjs $chessJs atf-tests/src/test/resources/tactical-transfer-holdout.yaml atf-tests/src/test/resources/tactical-transfer-holdout.sha256
 node scripts/verify-tactics.cjs $chessJs chess-core/src/main/resources/intermezzo.yaml chess-core/src/main/resources/intermezzo.sha256
 ```
+
+</details>
 
 </details>
 
@@ -689,6 +732,9 @@ La modificarea instrumentării, sincronizați inventarul `prepare` și numărul 
 
 ## Upgrade al progresului
 
+<details>
+<summary>Probe și limite — Upgrade al progresului</summary>
+
 - Sanity-ul de distribuție pornește de la o instalare curată. Pentru proba separată de upgrade, porniți de la un emulator curat, verificați că cele două APK-uri au același certificat și instalați întâi ediția publicată.
 - Creați progres, opriți procesul și instalați candidatul cu `adb install -r`. Verificați `versionCode`, timpul primei instalări, PID-urile și ID-urile problemelor, apoi comparați punctele, seria și apărarea rămasă în curs.
 
@@ -705,7 +751,12 @@ Pe API 28, un profil de probă salvat de 0.9.0 a păstrat după upgrade 105 ID-u
 - Verificați și un capitol de mat completat anterior. `mate-129`, `mate2-024nn` și `mate3-02YEp` rămân ultimele în capitolele lor, iar toate pozițiile noi din aceste capitole sunt înaintea lor.
 - În APK-ul 0.10.0 publicat, Mat în 1 afișa `500/500` cu `102/500` rezolvate și **Următoarea** dezactivată. **Precedentă** deschidea problema de la `499/500`.
 
+</details>
+
 ## Tabla de analiză dintr-o partidă
+
+<details>
+<summary>Probe și limite — Tabla de analiză dintr-o partidă</summary>
 
 - `AnalysisLineTest` și workerul TeaVM citesc `contextual-analysis.json`. Cazurile fixează checkpointul, semimutarea vizibilă și orientarea pentru o partidă cu AI, o arhivă după abandon și o poziție de mat.
 - Ele verifică ramificarea, respingerea unui cursor invalid și păstrarea sursei. Componenta cu mock-uri verifică revenirea la partidă și la declanșator, păstrarea marcajului studiului independent și ignorarea răspunsurilor întârziate după ieșire.
@@ -719,7 +770,12 @@ mvn -B -ntp -pl atf-tests -am test '-Dtest=AnalysisLineTest,ChessWebAnalysisStud
 
 În sanity, deschideți o partidă la o mutare din istoric, deschideți tabla de analiză și reveniți. Verificați cursorul, orientarea și focusul. Cazurile de legalitate și persistență rămân în componente. [Tabla de analiză pe Web](../../web/README.md#studiu)
 
+</details>
+
 ## Deschideri
+
+<details>
+<summary>Probe și limite — Deschideri</summary>
 
 - `OpeningCatalogTest` verifică parcurgerea pentru ambele culori, pozițiile finale distincte și recunoașterea noilor linii în indexul ECO. `OpeningLessonTest` verifică o singură semimutare la fiecare apăsare, pauza replicii și rejucarea din istoric.
 - `MatchAiGovernanceTest` verifică pozițiile de comparație cu Stockfish pentru fiecare lecție. În Engleză și Nimzo-indiană, pozițiile noi măsoară răspunsul negrului înainte de retragerea calului, respectiv de schimbul de pe c3.
@@ -747,7 +803,12 @@ Setați `$receipt` la `openings.txt` din dosarul TMP tipărit de runner. Raportu
 
 Pentru APK-ul semnat, folosiți `-Distribution -IncludeOpenings -SourceCommit <sha>`. Proba folosește același APK instalat ca sanity-ul de bază și salvează recepția și capturile în subdirectorul `openings`.
 
+</details>
+
 ## Partidă și istoric
+
+<details>
+<summary>Probe și limite — Partidă și istoric</summary>
 
 Verificați în componente partidele, stocarea și analiza. Folosiți sanity-ul Android pentru restarturi de proces, navigarea nativă și dovezi din randare.
 
@@ -816,7 +877,12 @@ Proba nativă a partidei cu AI așteaptă indiciul verificat complet, fără să
 
 </details>
 
+</details>
+
 ## Tablă de analiză
+
+<details>
+<summary>Probe și limite — Tablă de analiză</summary>
 
 - `AnalysisLineTest` verifică navigarea, ramificarea, mutările speciale și exportul prefixului. Un cursor în istoric poate deschide analiza partidei sursă încheiate dacă linia întreagă îi păstrează mutările.
 - O ramură diferită, o partidă în curs și un mat jucat manual folosesc analiza de studiu. `GameReviewTest` verifică analiza tuturor mutărilor și criteriile Elo.
@@ -843,7 +909,12 @@ Proba nativă a partidei cu AI așteaptă indiciul verificat complet, fără să
 - Publicați cu `AndroidSanityPublication#publishMatchSlotsSanity` sau `#publishMatchArchiveSanity` și recepția fazei. Extent leagă aserțiunea, captura încorporată și amprenta ei de același pas Android.
 - Identitatea execuției include procesul, commitul, amprenta APK-ului pentru distribuție și un ID nativ de rulare. `-MatchMenusOnly` folosește același ID pentru Saved și Finished; probele separate generează fiecare un ID. Extent respinge marcajul nativ lipsă sau substituit și fazele din rulări diferite. [Partide salvate și încheiate](../board/README.md#partidă-cu-calculatorul)
 
+</details>
+
 ## Redare comună pe ecran compact
+
+<details>
+<summary>Probe și limite — Redare comună pe ecran compact</summary>
 
 Rulați `scripts/run-android-sanity.ps1 -Distribution -ReplayCompactOnly -SourceCommit <sha>` după build-ul semnat în TMP. Proba configurează profilul portret 720 × 1280, 320 dpi, font 1,3×, pornește aplicația în română și apoi în engleză, cu date de test independente, și restaurează profilul emulatorului la final.
 
@@ -852,7 +923,12 @@ Rulați `scripts/run-android-sanity.ps1 -Distribution -ReplayCompactOnly -Source
 - Publicați raportul cu `-Dtest=AndroidSanityPublication#publishReplayCompactSanity` și `-Dchess.android.receipt=<recepția RO>`. `android-replay-compact.html` include cele 12 aserțiuni și patru capturi.
 - Raportul cere ambele limbi și același APK, commit, profil, dispozitiv și ID de rulare, cu procese distincte. [Calificarea ediției](../release/README.md#calificare-și-publicare)
 
+</details>
+
 ## Proba TalkBack
+
+<details>
+<summary>Probe și limite — Proba TalkBack</summary>
 
 1. Activați TalkBack pe emulator. În **Mat în 1**, deschideți **Indiciu**, apoi **Arată mutarea**. Atingeți culoarea la mutare și glisați de două ori spre dreapta prin intrarea tactilă a emulatorului. După fiecare gest, capturați evenimentul Android `TYPE_VIEW_ACCESSIBILITY_FOCUSED` și cadrul cu focusul. Repetați după **Întoarce tabla**. [Intrarea tactilă a emulatorului](https://developer.android.com/studio/run/emulator-console)
 2. Pentru prima problemă din 0.3.1, traseul este negrul la mutare → regina neagră de pe d8 → h4, cu oricare dintre culori jos. Proba pe API 33 cu TalkBack 14.2 a confirmat cele patru glisări prin `EmulatorController/sendTouch`. [Extent-ul istoric](https://github.com/crististefanita/chess/blob/v0.4.0/release/0.3.1/reports/talkback-gestures-extent.html) rămâne în tagul Git, în afara retenției scurte a release-urilor.
@@ -897,7 +973,12 @@ Reutilizează `CoachingLineEvidence` la publicarea studiului.
 la scopurile runtime nerezolvate.
 [Admiterea rădăcinii și a liniei complete](learning-archive.md#admiterea-rădăcinii-și-a-liniei-complete)
 
+</details>
+
 ## Antet și navigare comune
+
+<details>
+<summary>Probe și limite — Antet și navigare comune</summary>
 
 Politica Java `UiChrome` deține dimensiunile logice ale comenzilor, destinațiile contextuale Înapoi și zona centrată de navigare. `ChessHeader` și `CenteredControls` o aplică pe Android; `GenerateUiChrome` exportă constantele și destinațiile către adapterul Web. Titlurile încep lângă Înapoi, ocupă cel mult două rânduri și păstrează ținta Înapoi de 48 dp/pixeli CSS. Opțiunile stau în dreapta, iar meniul urmărește butonul în interiorul ferestrei. Un meniu scund are propria derulare.
 
@@ -914,8 +995,9 @@ Pentru randare pereche, folosiți `1.e4 c5 2.c3 h5` la întoarcerea din istoricu
 `GenerateUiChrome` trebuie să reproducă exact modulul urmărit înainte de calificare. Eșecul compilării motorului nu poate fi ascuns de împachetarea UI: la reutilizare exclusiv UI, consemnează separat commitul și amprenta motorului calificat. [Matrice APK–Web](../../web/parity.md) · [Proces de release](../release/README.md)
 
 ```mermaid
+%%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
 flowchart LR
-    Policy["Politică Java pentru antet"] -->|limite native| Android["Vederi Android"]
+    Policy["Politică Java<br/>pentru antet"] -->|limite native| Android["Vederi Android"]
     Policy -->|constante generate| Web["DOM și CSS Web"]
     Cases["Cazuri comune"] -->|verificări JVM| Android
     Cases -->|verificări Node| Web
@@ -925,5 +1007,7 @@ flowchart LR
 <summary>Legendă — politică comună și dovezi din adaptere</summary>
 
 Politica furnizează dimensiuni și destinații. Cazurile comune verifică ambele proiecții; capturile native și MCP verifică randarea. Regulile jocului, bugetele AI și salvarea rămân la responsabilii existenți.
+
+</details>
 
 </details>

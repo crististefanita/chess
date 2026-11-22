@@ -17,6 +17,24 @@ Porniți de la ghidul care răspunde întrebării. Verificați afirmațiile desp
 
 Adversarul Hard și solverele cu obiectiv de puzzle au dovezi distincte: [studiu puzzle nativ](testing/hard-puzzle-study.md).
 
+
+```mermaid
+%%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
+flowchart LR
+    Question["Schimbare sau<br/>întrebare"] -->|identifică<br/>responsabilul| Guide["Ghidul ariei"]
+    Guide -->|urmărește| Source["Cod și configurație"]
+    Source -->|observat prin| Check["Nivel adecvat de<br/>test"]
+    Check -->|actualizează contractul| Guide
+    Check -->|lacună rămasă| Feedback["Feedback activ"]
+```
+
+<details>
+<summary>Legendă — identifică responsabilul înaintea alegerii dovezilor</summary>
+
+Aceasta este o hartă de lectură și întreținere, fără a reprezenta dependențe de build. Ghidul responsabil leagă afirmația de codul actual și de nivelul de test care o observă; acceptanța nerezolvată rămâne în feedback. Linkurile de mai sus către module, arhitectură, testare și livrare conduc la contractele detaliate.
+
+</details>
+
 ## Reguli de întreținere
 
 - **README principal:** scop, linkurile APK și browser în Jocul, harta arhitecturii,

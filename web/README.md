@@ -28,12 +28,13 @@ partidă din `chess-core`. Ecranele, tabla și navigarea aparțin adaptorului
 fiecărei platforme.
 
 ```mermaid
+%%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
 flowchart LR
-    Core["chess-core · Java și YAML"] -->|Gradle compilează sursele și include resursele| Native["APK · interfață Android"]
-    Core -->|generatorul produce date și TeaVM compilează Java| Bundle["Pachet Web · runtime prin manifest"]
-    Bundle -->|pagina încarcă modulul și workerul| Browser["Browser · DOM și CSS"]
-    Native -->|adaptorul scrie checkpointurile| Prefs["Android · SharedPreferences"]
-    Browser -->|adaptorul scrie checkpointurile| Local["Browser · localStorage"]
+    Core["Java și YAML"] -->|împachetează| Native["Android APK"]
+    Core -->|compilează| Bundle["Pachet TeaVM"]
+    Bundle -->|încarcă workerul| Browser["Web UI"]
+    Native -->|persistă| Prefs["SharedPreferences"]
+    Browser -->|persistă| Local["localStorage"]
 ```
 
 <details>

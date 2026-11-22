@@ -6,6 +6,14 @@
 - **Probe.** `BoardPanelLayoutTest` verifică geometria, `QuestHintTest` verifică indiciile, iar `MatchActionsTest` verifică comenzile partidei. `ChessWebQuestStudyTest` verifică comenzile de studiu fără Android.
 - **Acces rapid.** [Probleme](#tactică-și-puncte) · [Tablă de analiză](#tablă-de-analiză) · [Partidă cu calculatorul](#partidă-cu-calculatorul).
 
+
+| Scopul cititorului | Ghid responsabil |
+|---|---|
+| Înțelege identitatea și selecția problemelor | [Contractul catalogului](quest-curation.md) |
+| Interpretează alegerile AI și limitele dovezilor | [Evaluarea AI](ai-quality.md) |
+| Urmărește starea și navigarea analizei | [Game Review](game-review.md) |
+| Alege proba de componentă sau de platformă | [Strategia de testare](../testing/README.md) |
+
 ## Tactică și puncte
 
 - În **Tactică**, caută mutarea care câștigă material sau deschide o combinație. Când exercițiul are o continuare jucabilă, adversarul răspunde pe tablă și joci până la ultima mutare. **Explicația** îți arată linia, piesele capturate și schimbarea de material. La exercițiile care se încheie după cheie, **Studiul apărării** poate arăta ce urmează după replica aleasă de Stockfish.
@@ -49,15 +57,16 @@ măsoare previzualizarea ca sursă nouă. Redeschiderea măsoară sursa curentă
 înguste și în ferestrele de cel mult 480 dp înălțime, lăsând mai mult loc tablei.
 
 ```mermaid
+%%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
 flowchart LR
-    Source[Tabla sursă vizibilă] -->|măsoară latura curentă| Capture[Capturare o dată la deschidere]
-    Capture -->|pixeli CSS| Web[Latură Web în pixeli CSS]
-    Capture -->|pixeli nativi| APK[APK ReplayBoardLayout]
-    Web -->|rânduri limitate| Frame[Tablă și rânduri de comenzi fixe]
+    Source["Tabla sursă<br/>vizibilă"] -->|măsoară latura curentă| Capture["Capturare o dată la<br/>deschidere"]
+    Capture -->|pixeli CSS| Web["Latură Web în<br/>pixeli CSS"]
+    Capture -->|pixeli nativi| APK["APK<br/>ReplayBoardLayout"]
+    Web -->|rânduri limitate| Frame["Tablă și rânduri de<br/>comenzi fixe"]
     APK -->|dimensiuni măsurate| Frame
-    Frame -->|spațiul rămas| Details[Înălțime rămasă pentru explicația derulabilă]
-    Step[Pas sau variantă] -->|refolosește latura| Position[Poziție și text]
-    Position -->|actualizează piesele și textul| Frame
+    Frame -->|spațiul rămas| Details["Înălțime rămasă<br/>pentru explicația<br/>derulabilă"]
+    Step["Pas sau variantă"] -->|refolosește latura| Position["Poziție și text"]
+    Position -->|actualizează piesele<br/>și textul| Frame
 ```
 
 <details>
@@ -85,12 +94,13 @@ recreată măsoară noua latură înainte să redeschidă aceeași continuare.
 Indiciul AI simplu rămâne simplu; Back închide redarea și revine la sursă.
 
 ```mermaid
+%%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
 flowchart LR
-    Open[Redare deschisă] -->|pauză| Save[Salvează sursa, liniile complete și cursorii]
-    Save -->|rotație| Recreate[Recreează sursa și recalculează analiza]
+    Open["Redare deschisă"] -->|pauză| Save["Salvează sursa,<br/>liniile complete și<br/>cursorii"]
+    Save -->|rotație| Recreate["Recreează sursa și<br/>recalculează<br/>analiza"]
     Recreate -->|validează| Match{Aceeași sursă și aceleași linii?}
-    Match -->|da| Restore[Restaurează varianta și cursorii]
-    Match -->|nu| Reject[Respinge redarea expirată]
+    Match -->|da| Restore["Restaurează<br/>varianta și<br/>cursorii"]
+    Match -->|nu| Reject["Respinge redarea<br/>expirată"]
 ```
 
 <details>

@@ -12,9 +12,6 @@ descrie comportamentul, iar [catalogul edițiilor](../../release/README.md) indi
 - [Paritate APK/Web și dovezi randate](web-parity.md)
 - [Culorile analizei, acțiunea de final și reutilizarea calculului (WEB-06)](web-parity.md#web-06--culorile-acțiunea-de-final-și-reutilizarea-analizei)
 
-<details>
-<summary>Registrul priorităților și criteriile de închidere</summary>
-
 | Prioritate | Zonă | Observație | Criteriu de închidere |
 |---|---|---|---|
 | P2 | Coaching · completare limitată | Indiciul din Slavă după 52 de semimutări efective atinge plafonul existent de dovadă 5M; o analiză finală din Vieneză rămâne și ea incompletă. Siguranța respinge scorul nedovedit. | Optimizează expansiunea de dovadă măsurată cu replici libere și contraexemple, păstrând plafonul, sacrificiile corecte și decizia nativă independentă. Păstrează completarea FAIL și erorile tipizate explicite până când contextele reale se încheie. [Instantaneu](../testing/hard-status.md) |
@@ -47,9 +44,10 @@ descrie comportamentul, iar [catalogul edițiilor](../../release/README.md) indi
 | P2 | Calibrarea problemelor | Benzile de dificultate importate se suprapun. | Verifică timpul și încercările pe un lot amestecat separat. |
 | P2 | Android · separarea tranzițiilor de ecran | Ecranul Android deține mai multe tranziții de sesiune. | Mută tranzițiile într-un responsabil testabil pe JVM. |
 
-</details>
-
 ## Replici adverse slabe în indiciile publice
+
+<details>
+<summary>Martor, afirmație deschisă și criterii de închidere — Replici adverse slabe în indiciile publice</summary>
 
 Jurnalul nou cu hint maxim `learning-max-hint-20261118`, producător
 `8d564655b554d817fea4e3a04723a538ae5f3864`, înregistrează fiecare mutare efectivă
@@ -74,7 +72,12 @@ viitoare. Partidele istorice fără admiterea actuală se retrag. Fixture-urile 
 dovezile edițiilor, definițiile problemelor deschise și referințele originale ale
 oracolului sunt separate de corpusul activ de învățare.
 
+</details>
+
 ## Calibrarea analizei complete pe corpusul admis
+
+<details>
+<summary>Martor, afirmație deschisă și criterii de închidere — Calibrarea analizei complete pe corpusul admis</summary>
 
 Toate cele cinci partide păstrează acum `review.json`, `analysis.json` lizibil și
 un README propriu. Analiza adăugată are producătorul separat
@@ -108,7 +111,12 @@ verdicte Extent separate. Prima trece; ultimele două eșuează. Ratingurile loc
 ale analizei nu sunt Elo măsurat, iar cele trei trasee plafonate nu au rating.
 [Contract și componente](../testing/learning-archive.md#analiza-finală-și-capetele-indiciilor)
 
+</details>
+
 ## Constatările partidelor complete păstrate ca ținte de componentă
+
+<details>
+<summary>Martor, afirmație deschisă și criterii de închidere — Constatările partidelor complete păstrate ca ținte de componentă</summary>
 
 Cele două partide complete (Gambitul Damei și Franceza) și martorul de mat aparțin
 producătorului `242d6fe21d6fbe625f628cb3f677f9618f588674`: 130 de perechi Hard/indiciu
@@ -140,6 +148,8 @@ ulterioare ale indiciilor ar fi fost jucate retroactiv. Păstrează observațiil
 sursa lor; comparațiile indiciilor din sursa curentă sunt rejucări explicite cu
 identitățile originale ale profesorului, niciodată jurnale istorice inventate.
 [Admitere și reproducere reutilizabile](../testing/learning-archive.md)
+
+</details>
 
 ## Dovezi și verificări de închidere
 
@@ -314,6 +324,9 @@ originale cu producătorul real; nu le modifica antetele pentru a fabrica parita
 
 ## Pierderi native din partide încheiate și martori de frontieră
 
+<details>
+<summary>Martor, afirmație deschisă și criterii de închidere — Pierderi native din partide încheiate și martori de frontieră</summary>
+
 Lotul curent folosește producătorul `37c5f65`, nu consumatorul Native PVS ulterior.
 Engleza se încheie în 51 de semimutări, iar Scandinava în 52, ambele pierdute de Hard
 nativ contra Stockfish complet; martorul sacrificiului corect de damă se încheie în
@@ -341,8 +354,12 @@ Testele frontierei în șah rămân explicit marcate benchmark. [Contractul de a
 explică identitățile originale și remizele automate față de cele revendicabile.
 Dovezile rămân în `C:\work\sah\.studii\experiments\2026-11-19-hard-continuation`.
 
+</details>
 
 ## Dovada tactică și liniile afișate
+
+<details>
+<summary>Martor, afirmație deschisă și criterii de închidere — Dovada tactică și liniile afișate</summary>
 
 Cerut pe 19 noiembrie: replica finală de verificare poate rămâne în afara previzualizării
 obișnuite când este necesară doar pentru a stabili rezultatul schimbului. Sunt necesare
@@ -406,7 +423,12 @@ Nu deduce Elo sau transfer independent larg din controalele forțate compuse. Pa
 noi complete cer în continuare hint maxim înaintea fiecărei mutări, analiză finală și
 fazele profesorului rece sub producătorul real, cu recepția rezervei păstrată.
 
+</details>
+
 ## Audit nou de deschidere după reparația franceză
+
+<details>
+<summary>Martor, afirmație deschisă și criterii de închidere — Audit nou de deschidere după reparația franceză</summary>
 
 Evaluatorul corectat a jucat o partidă completă de Spaniolă, cu indicii maxime salvate
 înaintea tuturor celor 55 de semimutări efective, inclusiv teoria și mutările oracolului.
@@ -449,7 +471,12 @@ executabil și faze brute de oracol. O partidă nouă trebuie să păstreze fiec
 anterior mutării și analiza finală sub producătorul efectiv; nu redenumi partida
 anterioară de 55 de semimutări din Spaniolă ca joc curent.
 
+</details>
+
 ## Scoțiană șah câștigător și mat advers
+
+<details>
+<summary>Martor, afirmație deschisă și criterii de închidere — Scoțiană șah câștigător și mat advers</summary>
 
 Sursa restrânsă `e4bdd31af382297360e825bb1a47729e20c5cbbc` a trecut poarta celor 106
 poziții istorice: trei recomandări schimbate, 18 faze noi de oracol, zero rezultate
@@ -512,7 +539,12 @@ supraevaluat. Chiar comparația izolată H9 la 20M de noduri s-a oprit fără sc
 lucrul suplimentar nu a calificat reparația. Runtime-ul păstrează bugetele și evaluarea
 existente. Dovezi: `C:\work\sah\.studii\experiments\2026-11-19-scotch-re8`.
 
+</details>
+
 ## Martorul public al indiciului Nimzo
+
+<details>
+<summary>Martor, afirmație deschisă și criterii de închidere — Martorul public al indiciului Nimzo</summary>
 
 Partida originală `nimzo-indian-hard-black`, produsă de `3a1b0dbc01da1617d5eca29983f8f86056a7f8e0`,
 păstrează 63 de semimutări reale din poziția inițială, cu Hard și indiciul public
@@ -539,7 +571,12 @@ Variația deschiderilor este acoperită de
 și documentată în [ghidul AI](../board/ai-quality.md). Nu randomizează ordinea
 indiciilor, nu schimbă bugetele de căutare și nu dovedește o creștere Elo pentru Hard.
 
+</details>
+
 ## Auditul Indienei Regelui după corecția Nimzo
+
+<details>
+<summary>Martor, afirmație deschisă și criterii de închidere — Auditul Indienei Regelui după corecția Nimzo</summary>
 
 Partida nouă `kings-indian-hard-black`, produsă de `c8247d386bc922aefbc7d7c46838e32fc00c7e96`, ajunge la mat real la semimutarea 79. Fiecare mutare alb/negru are calculul Native Hard și indiciul ordinar maxim înainte de joc, iar fiecare mutare salvată are analiza nativă finală completă. Toate cele 109 indicii și 568 de semimutări ipotetice au fost verificate independent la H17/H19. Există 45 de pierderi PV mari stabile, cinci rădăcini slabe oferite (trei prime alegeri) și 21 de replici adverse slabe. Șapte capete cu piese importante expuse nu au pierdere mare stabilă; Game Review păstrează cinci recomandări slabe, 40 de semimutări ipotetice slabe, cinci etichete de eroare pe pierderi independente mici și o pierdere mare omisă. Integritatea trece; calitatea globală a șahului nu.
 
@@ -547,7 +584,12 @@ Prima pierdere reală este 8…Bd7, arătată și de indiciu, la H5 după 200k n
 
 Este o altă familie de deschidere, nu o comparație pereche cu Nimzo originală și nu o estimare Elo nouă. Intrarea Nimzo corectată lipsește din aceste poziții-rădăcină efective ale Indienei Regelui. Defectele Nimzo Bxc5/Ne5 și Scoțiană Re8+ rămân deschise. Dovezile complete sunt în `C:\work\sah\.studii\experiments\2026-11-19-nimzo-free-replies` și `corpus\2026-11-19-kings-indian-qualified`.
 
+</details>
+
 ## Închiderea cursei pionului și calibrarea scorului
+
+<details>
+<summary>Martor, afirmație deschisă și criterii de închidere — Închiderea cursei pionului și calibrarea scorului</summary>
 
 Alegerea inițială din training-051 și predarea planului pionului sunt închise la alocația
 obișnuită neschimbată, cu ambele finaluri compuse câștigate efectiv. Discountul geometric larg
@@ -558,3 +600,5 @@ descris independent ca aproximativ egal, nu înseamnă analiză calibrată. Cont
 replică slabă confirmată din joc, indiciu sau analiză în auditul complet cu oracol rece.
 Cere apărări libere și contraexemple de rege accesibil/opoziție; nu instala o cheie după FEN,
 nu șterge proba respinsă și nu deduce Elo din două finaluri compuse. Obiectivele ligii rămân deschise.
+
+</details>
