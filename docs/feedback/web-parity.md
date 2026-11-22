@@ -82,17 +82,17 @@ observația este un reper pentru desenator, nu o recepție de release 0.16.1.
 
 **Octeții publicați sunt verificați; comparația randată rămâne deschisă.**
 Workflow-ul Pages
-[45018215357](https://github.com/crististefanita/chess/actions/runs/45018215357)
-a publicat commitul static `fc97cb4b2dc7f6673b51669e775db70d0762290c`.
-Indexul servit indică runtime-ul
-`2f50a25b41fffc50c4fb2ae483958ca73e5322fd3a135cb419144954fc6ff9db`.
-Indexul, intrarea partidei, adaptorul pieselor capturate, CSS-ul și workerul
-descărcate sunt identice octet cu octet cu fișierele pregătite. Browser MCP
-eșuează încă la scrierea resurselor kernelului înaintea deschiderii tabului;
-încercarea de a deschide un browser în emulator a fost respinsă de revizuirea
-automată a politicii. Rămâne necesară recepția vizuală pereche pe același cadru
-de captură. Sursa nativă actuală are deja meniul partidei în dreapta antetului,
-ca Web; meniul instalării 0.15.2 este mai vechi.
+[45020801534](https://github.com/crististefanita/chess/actions/runs/45020801534)
+a publicat commitul static `3995e535606ebf7be2339ae5a4ce80a75c72f1b3` la a doua
+încercare. Încărcarea a reușit prima dată, dar GitHub Pages nu și-a găsit
+temporar propriul artifact `github-pages`; reluarea doar a jobului eșuat a
+reușit. Indexul servit indică acum runtime-ul
+`880be9163f22f7211561679fa78480ed048c04ae7900626e12dad28b207cbdd0`.
+Indexul, intrarea partidei, adaptorul locurilor numite, CSS-ul, motorul și
+workerul descărcate coincid octet cu octet cu fișierele pregătite. Browser MCP
+eșuează încă la scrierea resurselor kernelului înaintea deschiderii tabului.
+Rămâne necesară o recepție randată pereche. Sursa nativă actuală pune meniul
+partidei în dreapta antetului, ca Web; meniul instalării 0.15.2 este mai vechi.
 
 **P2 · Proprietarul vizibil al capturilor · contractul de componentă implementat la 2026-11-22.**
 `MatchOpponentName` dă acum ambelor adaptoare aceeași identitate Alex/Mira/Atlas.
@@ -103,6 +103,12 @@ Vechiul rezumat comun de sub tablă a fost eliminat. Închideți punctul doar du
 ce capturile pereche APK/Web, la text 130% în fereastră compactă și într-o
 fereastră largă, confirmă alinierea tablei și meniurilor fără decupare sau
 derularea paginii; Browser MCP rămâne indisponibil înaintea deschiderii tabului.
+
+Poarta focalizată din TMP a trecut 24 de teste JVM/worker/guvernanță EN, 20 de
+teste de documentație/componente RO, 46 de verificări Web simulate și compilarea
+Android. `MatchSeatParityTest` înregistrează aserțiunile în Extent. Recepția
+randată rămâne limita; rezultatele componentelor nu certifică pixelii sau
+derularea.
 
 **Poarta workerului reverificată · 2026-11-22.** `active-historical-replay` s-a încheiat în 26 de secunde, cu limita neschimbată de 55 de secunde. Clasa completă `ChessWebParityPublication` a arătat apoi un oracol contradictoriu: respingea aliasurile istorice ale workerului și motorului din rădăcină, deși contractul de publicare le păstrează pentru filele vechi. Aserțiunea verifică acum existența lor ca pereche și încărcarea workerului și motorului curent din runtime-ul versionat. Toate cele șase teste de publicare trec împreună, cu Extent. Nu s-au schimbat regulile de șah, comportamentul AI sau limita de timp.
 

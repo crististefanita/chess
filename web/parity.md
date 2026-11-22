@@ -49,6 +49,11 @@ Ghidurile jocului dețin regulile de produs și comportamentul platformelor. [Pa
 4. Deschideți **Joacă în browser**. Verificați fișierele versionate declarate și reîncărcați cu memoria cache intactă. Verificați reluarea checkpointului și jocul fără rețea după prima încărcare; o filă deschisă poate păstra runtime-ul anterior până la reîncărcare.
 5. Înregistrați revizia sursă, commitul static publicat, amprenta runtime și recepțiile Extent. Verificați octeții serviți independent de memoria cache a browserului.
 
+Dacă încărcarea reușește, dar GitHub Pages nu găsește temporar artifactul
+`github-pages`, păstrați neschimbate commitul static și cererea validate. Reluați
+numai jobul de publicare eșuat, apoi comparați octeții serviți cu pachetul
+calificat. O nouă eroare sau o diferență de octeți rămâne un eșec de publicare.
+
 [Schema pachetului](README.md#identitatea-pachetului-web) ·
 [Strategia de testare](../docs/testing/README.md#actualizarea-pachetului-web) ·
 [Procesul de release](../docs/release/README.md)
