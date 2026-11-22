@@ -60,7 +60,9 @@ readiness and the displayed position as independent checks; a timeout must
 not stand in for a wrong UI oracle.
 [Current cursor](../../chess-core/src/main/java/ro/atf/chess/MatchHistorySelection.java)
 
-**P2 · Native compact accessibility readiness.** The legacy compact replay stops at a visible Game Review command because its accessibility-node snapshot reports it unavailable. Retain that failed observation; refresh and verify the actual node before any click, without increasing the timeout. Game Review at 360 × 640 dp and 1.3× text, and the separate RO/EN rotation probe, passed on the same signed APK. These checks do not close the legacy helper's failure. Web Openings at 740 × 420 still needs about 37 CSS pixels of document scrolling; keep it in the compact-landscape work above.
+**P2 · Native compact accessibility readiness.** The legacy compact replay stops at a visible Game Review command because its accessibility-node snapshot reports it unavailable. Retain that failed observation; refresh and verify the actual node before any click, without increasing the timeout. Game Review at 360 × 640 dp and 1.3× text, and the separate RO/EN rotation probe, passed on the same signed APK. These checks do not close the legacy helper's failure.
+
+**Closed Web Openings overflow at 740 × 420, EN/RO text 130%.** The measured pre-fix document was 447 px high with a 153 px board. The adjacent layout now fits within 420 px and yields a 257 px square, within 2 px of the native compact model. `OpeningLessonTest` and `BoardSizingGovernanceTest` bind the threshold and seat reserve; `ChessWebOpeningLandscapePlaywrightE2e` checks the rendered document and board through Next/Previous with embedded Extent captures. This closes the Web scroll defect only. The separate mating source/replay width item above and a signed-APK paired rendered receipt remain open.
 
 [Shared policy, callbacks and rendered checks](../testing/README.md#shared-screen-chrome) own the implemented header/navigation contract; keep only unmet geometry, lifecycle and input criteria here.
 

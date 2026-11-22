@@ -1,4 +1,28 @@
 testChanges:
+  - id: CHESS-OPENING-LANDSCAPE-NATIVE-EN
+    base: "733e1a5b8d0e514efd0a2927356ce687dc13a9e2"
+    from: atf-tests/src/test/java/ro/atf/chess/OpeningLessonTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/OpeningLessonTest.java
+    test: ro.atf.chess.OpeningLessonTest#lessonBoardUsesLogicalProfilesAndFitsAfterLabelsAtEnlargedText
+    contract: "Retain native portrait and wide profiles; add the compact landscape board and two-seat fit that Web must follow"
+    allowDelete: false
+
+  - id: CHESS-OPENING-LANDSCAPE-WEB-EN
+    base: "733e1a5b8d0e514efd0a2927356ce687dc13a9e2"
+    from: atf-tests/src/test/java/ro/atf/chess/BoardSizingGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/BoardSizingGovernanceTest.java
+    test: ro.atf.chess.BoardSizingGovernanceTest#compactLandscapeOpeningUsesTheNativeBreakpointAndAnInternalDetailsScroller
+    contract: "Keep the one-owner reference sizing and require the adjacent opening layout to match the native breakpoint and internal-scroll policy"
+    allowDelete: false
+
+  - id: CHESS-OPENING-LANDSCAPE-SUITE-EN
+    base: "733e1a5b8d0e514efd0a2927356ce687dc13a9e2"
+    from: atf-tests/src/test/java/ro/atf/chess/SuiteGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/SuiteGovernanceTest.java
+    test: ro.atf.chess.SuiteGovernanceTest#everyJvmTestHasExactlyOnePrimarySuiteAndAnExtentAudit
+    contract: "Discover the single compact landscape browser proof only at its explicit E2E entry point"
+    allowDelete: false
+
   - id: CHESS-WEB-PLAYWRIGHT-POM-EN
     base: "f62a1e7755e87bd8560f7e65da9cde0665ef262a"
     from: atf-tests/pom.xml

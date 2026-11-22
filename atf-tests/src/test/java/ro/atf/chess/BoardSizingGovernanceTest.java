@@ -51,6 +51,20 @@ class BoardSizingGovernanceTest {
         check.same("Controls retain their shared 48px target", true, source("chess-controls.css").contains("--chess-control-size: 48px"));
     }
 
+    @Test void compactLandscapeOpeningUsesTheNativeBreakpointAndAnInternalDetailsScroller(Checks check) throws Exception {
+        String openings = source("study-openings.css");
+        String media = "@media (min-width: " + OpeningLessonLayout.sidePanelBreakpoint()
+                + "px) and (max-height: 480px) and (orientation: landscape)";
+        check.same("Web enters adjacent layout at the native logical-width breakpoint", true, openings.contains(media));
+        String adjacent = openings.substring(openings.indexOf(media));
+        check.same("Adjacent layout gives board and details separate bounded columns", true,
+                adjacent.contains("grid-template-columns: minmax(0, 1fr) minmax(0, 1fr)"));
+        check.same("The board reserves both seat captions", true,
+                adjacent.contains("2 * var(--opening-seat-height)"));
+        check.same("Only lesson details can scroll inside the viewport", true,
+                adjacent.contains(".opening-controls { max-block-size: 100%; overflow: auto; }"));
+    }
+
     private static String source(String file) throws Exception {
         return Files.readString(ProjectRoot.locate().resolve("web/src/main/web/" + file));
     }

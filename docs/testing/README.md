@@ -722,6 +722,11 @@ In sanity, open a game at a historical move, open the Analysis board, and return
 - In the Catalan and Alapin, comparison starts with White to move after the last reply in the lesson.
 
 - For APK–Web visual parity, `OpeningLessonTest` checks the board side length, the two-column threshold, and fit after measuring labels. `ChessWebOpeningStudyTest` checks hint tiers and the display contract without a browser.
+- `BoardSizingGovernanceTest` binds the compact Web media threshold to `OpeningLessonLayout.sidePanelBreakpoint()` and requires an internal details scroller. One Playwright E2E then checks the actual 740 × 420, 130% EN/RO lesson: no document overflow, both captions, adjacent details, a square within 2 px of the native model, stable geometry across Next/Previous, and embedded screenshots. Its report records the browser, source commit, bundle hash, actions and point assertions. This Web control does not replace the separate signed-APK capture.
+
+```powershell
+mvn -B -ntp -pl atf-tests -am test '-Dtest=OpeningLessonTest,BoardSizingGovernanceTest,ChessWebOpeningStudyTest,ChessWebOpeningLandscapePlaywrightE2e' '-Dsurefire.failIfNoSpecifiedTests=false' "-Dchess.web.bundle=$site" "-Dchess.web.playwright.browser=$edge" "-Dchess.web.playwright.source=$sourceCommit" "-Dchess.web.opening.extent=$openingExtent" "-Dchess.extent=$componentExtent"
+```
 - In sanity, open Italian Game C54 as White at `0 / 12`, then reveal `e2–e4`. Repeat at a 1.3× font scale on a compact 360 × 640 logical-unit profile and a 1280 × 900 landscape profile.
 - The target side lengths are 288 and 592 units. Compare board position before and after the hint, the outline on `e2`, complete text, and controls measuring at least 48 units.
 - Record Android density and usable area, the Web viewport, and paired captures in Extent. [Lessons](../board/openings.md) · [Study probes](../../web/README.md#study)
