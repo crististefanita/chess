@@ -120,6 +120,8 @@ Dot-source the script in the build session to load `J7_SIGNING_STORE` and `J7_SI
   A different Windows account requires separate recovery, not silent rotation.
   Both records retain the certificate comparison and `CLEAN_INSTALL` requirement.
 
+- `ReleaseGovernanceTest#committedProjectCertificateMatchesPublishedIdentityAndRejectsTampering` checks the public certificate in `.atf-signing` against its manifest and the current published signer during preflight. It rejects changed certificate bytes or a stale manifest. The encrypted key and DPAPI credential remain in the protected project record; the build still verifies the actual APK signature separately.
+
 - Without an explicit baseline, `verify-signing-continuity.ps1` looks for
   certificate evidence in the current release folder. When recovering a missing
   key, initialization also reads the catalog and stops rotation if current-release

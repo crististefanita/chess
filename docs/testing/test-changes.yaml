@@ -1,4 +1,12 @@
 testChanges:
+  - id: CHESS-SIGNER-CERTIFICATE-EN
+    base: "d202d0764829626f84ae78e4a789c3d39480108c"
+    from: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java
+    test: ro.atf.chess.ReleaseGovernanceTest#committedProjectCertificateMatchesPublishedIdentityAndRejectsTampering
+    contract: "Keep the committed project certificate equal to the signing manifest and published APK signer; reject substituted bytes or manifest"
+    allowDelete: false
+
   - id: CHESS-0162-ANDROID-VERSION-EN
     base: "d202d0764829626f84ae78e4a789c3d39480108c"
     from: android/app/build.gradle
