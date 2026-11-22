@@ -14,7 +14,7 @@ import ro.atf.chess.MatchSetup.Level;
 @AtfComponentTest
 @ExtendWith(ExtentAudit.class)
 class MatchAnalysisParityTest {
-    record Case(String id, Side humanSide, Level level, Boolean analysis, String moves, String checkpoint, int displayedPly,
+    record Case(String id, Side humanSide, Level level, Boolean analysis, long openingChoice, String moves, String checkpoint, int displayedPly,
                 Side sideToMove, Result result, String ending, String recommendation, boolean compareManualBoard, HistoryReplay historyReplay) {
         boolean enabled() { return Boolean.TRUE.equals(analysis); }
     }
@@ -38,7 +38,7 @@ class MatchAnalysisParityTest {
     @Test void nativeModelProjectsTheDisplayedMatchFrame(Checks check) throws IOException {
         for (var example : fixture()) {
             var setup = new MatchSetup(example.humanSide(), example.level(), example.enabled());
-            var match = ChessMatch.start(setup);
+            var match = ChessMatch.start(setup, example.openingChoice());
             for (String move : example.moves().split(" ")) match = match.play(Move.fromUci(move));
 
             var preferences = new MemoryPreferences();
@@ -48,8 +48,9 @@ class MatchAnalysisParityTest {
             var reopened = new MatchStore(preferences, () -> 1L, () -> "00000000-0000-4000-8000-000000000002");
             var restored = reopened.readMatch(1);
             check.same(example.id() + " restores the setup, checkpoint, result and side at the displayed ply",
-                    List.of(setup, example.checkpoint(), example.result(), example.sideToMove()),
-                    List.of(restored.setup(), restored.checkpoint(), restored.result(), restored.positionAt(example.displayedPly()).turn()));
+                    List.of(setup, example.openingChoice(), example.checkpoint(), example.result(), example.sideToMove()),
+                    List.of(restored.setup(), restored.openingChoice(), restored.checkpoint(), restored.result(),
+                            restored.positionAt(example.displayedPly()).turn()));
 
             var frame = frame(restored, example.displayedPly());
             check.same(example.id() + " exposes the expected evaluation ending", example.ending(), frame.ending());

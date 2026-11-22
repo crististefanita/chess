@@ -1,4 +1,20 @@
 testChanges:
+  - id: CHESS-MATCH-OPENING-FIXTURE-EN
+    base: "d202d0764829626f84ae78e4a789c3d39480108c"
+    from: atf-tests/src/test/java/ro/atf/chess/MatchAnalysisParityTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/MatchAnalysisParityTest.java
+    test: ro.atf.chess.MatchAnalysisParityTest#nativeModelProjectsTheDisplayedMatchFrame
+    contract: "Start every shared native/Web case with its declared opening choice and preserve checkpoint, analysis and replay assertions"
+    allowDelete: false
+
+  - id: CHESS-MATCH-OPENING-DATA-EN
+    base: "d202d0764829626f84ae78e4a789c3d39480108c"
+    from: atf-tests/src/test/resources/match-analysis-cases.json
+    replacement: atf-tests/src/test/java/ro/atf/chess/MatchAnalysisParityTest.java
+    test: ro.atf.chess.MatchAnalysisParityTest#nativeModelProjectsTheDisplayedMatchFrame
+    contract: "Declare the opening provenance explicitly while retaining every independently expected frame"
+    allowDelete: false
+
   - id: CHESS-SIGNER-CERTIFICATE-EN
     base: "d202d0764829626f84ae78e4a789c3d39480108c"
     from: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java

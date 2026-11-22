@@ -311,7 +311,9 @@ qualify a signed APK. [Signing identity](../release/README.md#qualification-and-
 Select `MatchAnalysisParityTest` and
 `ChessWebParityPublication#packagedWorkerProjectsInlineMatchAnalysis` in the
 Maven command for the TeaVM bundle. The shared cases fix the checkpoint and the
-displayed ply. Compare the option after restoration, White's evaluation, the
+displayed ply. Each case also declares its opening choice; start the match with
+that choice before comparing its versioned checkpoint. This prevents a fixture
+from expecting opening provenance that the test did not create. Compare the option after restoration, White's evaluation, the
 mating line from the historical position, and the terminal state.
 [Maven command](../../web/README.md) · [Shared data](../../atf-tests/src/test/resources/match-analysis-cases.json)
 
