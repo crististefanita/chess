@@ -1,0 +1,617 @@
+{
+  "runId": "2dad0687-effc-4a66-bce9-64f23938126a",
+  "browser": "Edg/158.0.4370.33",
+  "profile": "390x844 CSS px, DPR 1, locale ro-RO",
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "deviceScaleFactor": 1,
+    "locale": "ro-RO"
+  },
+  "bundleSha256": "ccc78cb51a0d3caa36ac0a4f71aef68109c01f98fc72e56eda9120af5778eb21",
+  "scope": "review-focus",
+  "fixtureSha256": "23759bb24ddc6740e9fe81e9f420e425d597edab6a365d42cf933d75bdea0f9b",
+  "archiveId": "f5bc5019-62c9-471e-b729-b42aedca8ee3",
+  "baseFonts": [
+    16,
+    16,
+    16
+  ],
+  "scaledFonts": [
+    20.8,
+    20.8,
+    20.8
+  ],
+  "header": {
+    "left": 0,
+    "right": 390,
+    "width": 390,
+    "backLeft": 16,
+    "titleLeft": 70.234375,
+    "titleRight": 379.765625,
+    "viewport": 390
+  },
+  "normalOrder": [
+    "archive-review-back",
+    "board",
+    "previous",
+    "best-line",
+    "next",
+    "why",
+    "review-actions",
+    "seek"
+  ],
+  "reverseOrder": [
+    "row-3",
+    "seek",
+    "review-actions",
+    "why"
+  ],
+  "whyOrder": [
+    "close-why",
+    "why-actions",
+    "board",
+    "played",
+    "recommended"
+  ],
+  "focusEvidence": [
+    {
+      "id": "graph-left",
+      "ply": 2,
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/8/5P2/PPPPP1PP/RNBQKBNR",
+      "lastMove": "e7e5",
+      "turn": "WHITE",
+      "branch": "HISTORY",
+      "why": false,
+      "focus": "seek",
+      "focusVisible": true,
+      "keyboardFocus": true,
+      "rowPly": 2,
+      "rowCount": 1,
+      "rowVisible": false,
+      "rowTabStops": [
+        2
+      ],
+      "plotPly": 2,
+      "seekVisible": true,
+      "seekValue": 2,
+      "seekLabel": "1… e7 la e5. De carte. Poziția 2 din 4. Scorul albului 50,3 la sută.",
+      "whyExpanded": false,
+      "board": [
+        0,
+        48,
+        390,
+        390
+      ],
+      "boardVisible": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "id": "graph-right",
+      "ply": 3,
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/6P1/5P2/PPPPP2P/RNBQKBNR",
+      "lastMove": "g2g4",
+      "turn": "BLACK",
+      "branch": "HISTORY",
+      "why": false,
+      "focus": "seek",
+      "focusVisible": true,
+      "keyboardFocus": true,
+      "rowPly": 3,
+      "rowCount": 1,
+      "rowVisible": false,
+      "rowTabStops": [
+        3
+      ],
+      "plotPly": 3,
+      "seekVisible": true,
+      "seekValue": 3,
+      "seekLabel": "2. g2 la g4. Greșeală gravă. Poziția 3 din 4. Scorul albului 0,0 la sută.",
+      "whyExpanded": false,
+      "board": [
+        0,
+        48,
+        390,
+        390
+      ],
+      "boardVisible": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "id": "selected-row",
+      "ply": 3,
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/6P1/5P2/PPPPP2P/RNBQKBNR",
+      "lastMove": "g2g4",
+      "turn": "BLACK",
+      "branch": "HISTORY",
+      "why": false,
+      "focus": "row-3",
+      "focusVisible": true,
+      "keyboardFocus": true,
+      "rowPly": 3,
+      "rowCount": 1,
+      "rowVisible": true,
+      "rowTabStops": [
+        3
+      ],
+      "plotPly": 3,
+      "seekVisible": true,
+      "seekValue": 3,
+      "seekLabel": "2. g2 la g4. Greșeală gravă. Poziția 3 din 4. Scorul albului 0,0 la sută.",
+      "whyExpanded": false,
+      "board": [
+        0,
+        48,
+        390,
+        390
+      ],
+      "boardVisible": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "id": "row-up",
+      "ply": 2,
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/8/5P2/PPPPP1PP/RNBQKBNR",
+      "lastMove": "e7e5",
+      "turn": "WHITE",
+      "branch": "HISTORY",
+      "why": false,
+      "focus": "row-2",
+      "focusVisible": true,
+      "keyboardFocus": true,
+      "rowPly": 2,
+      "rowCount": 1,
+      "rowVisible": true,
+      "rowTabStops": [
+        2
+      ],
+      "plotPly": 2,
+      "seekVisible": true,
+      "seekValue": 2,
+      "seekLabel": "1… e7 la e5. De carte. Poziția 2 din 4. Scorul albului 50,3 la sută.",
+      "whyExpanded": false,
+      "board": [
+        0,
+        48,
+        390,
+        390
+      ],
+      "boardVisible": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "id": "row-end",
+      "ply": 4,
+      "fen": "rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR",
+      "lastMove": "d8h4",
+      "turn": "WHITE",
+      "branch": "HISTORY",
+      "why": false,
+      "focus": "row-4",
+      "focusVisible": true,
+      "keyboardFocus": true,
+      "rowPly": 4,
+      "rowCount": 1,
+      "rowVisible": true,
+      "rowTabStops": [
+        4
+      ],
+      "plotPly": 4,
+      "seekVisible": true,
+      "seekValue": 4,
+      "seekLabel": "2… d8 la h4. De carte. Poziția 4 din 4. Scorul albului 0,0 la sută.",
+      "whyExpanded": false,
+      "board": [
+        0,
+        48,
+        390,
+        390
+      ],
+      "boardVisible": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "id": "row-home",
+      "ply": 0,
+      "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR",
+      "lastMove": "",
+      "turn": "WHITE",
+      "branch": "HISTORY",
+      "why": false,
+      "focus": "row-0",
+      "focusVisible": true,
+      "keyboardFocus": true,
+      "rowPly": 0,
+      "rowCount": 1,
+      "rowVisible": true,
+      "rowTabStops": [
+        0
+      ],
+      "plotPly": 0,
+      "seekVisible": true,
+      "seekValue": 0,
+      "seekLabel": "Poziția de start. Poziția 0 din 4. Scorul albului 50,0 la sută.",
+      "whyExpanded": false,
+      "board": [
+        0,
+        48,
+        390,
+        390
+      ],
+      "boardVisible": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "id": "row-down",
+      "ply": 1,
+      "fen": "rnbqkbnr/pppppppp/8/8/8/5P2/PPPPP1PP/RNBQKBNR",
+      "lastMove": "f2f3",
+      "turn": "BLACK",
+      "branch": "HISTORY",
+      "why": false,
+      "focus": "row-1",
+      "focusVisible": true,
+      "keyboardFocus": true,
+      "rowPly": 1,
+      "rowCount": 1,
+      "rowVisible": true,
+      "rowTabStops": [
+        1
+      ],
+      "plotPly": 1,
+      "seekVisible": true,
+      "seekValue": 1,
+      "seekLabel": "1. f2 la f3. De carte. Poziția 1 din 4. Scorul albului 46,0 la sută.",
+      "whyExpanded": false,
+      "board": [
+        0,
+        48,
+        390,
+        390
+      ],
+      "boardVisible": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "id": "row-end-again",
+      "ply": 4,
+      "fen": "rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR",
+      "lastMove": "d8h4",
+      "turn": "WHITE",
+      "branch": "HISTORY",
+      "why": false,
+      "focus": "row-4",
+      "focusVisible": true,
+      "keyboardFocus": true,
+      "rowPly": 4,
+      "rowCount": 1,
+      "rowVisible": true,
+      "rowTabStops": [
+        4
+      ],
+      "plotPly": 4,
+      "seekVisible": true,
+      "seekValue": 4,
+      "seekLabel": "2… d8 la h4. De carte. Poziția 4 din 4. Scorul albului 0,0 la sută.",
+      "whyExpanded": false,
+      "board": [
+        0,
+        48,
+        390,
+        390
+      ],
+      "boardVisible": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "id": "row-return",
+      "ply": 3,
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/6P1/5P2/PPPPP2P/RNBQKBNR",
+      "lastMove": "g2g4",
+      "turn": "BLACK",
+      "branch": "HISTORY",
+      "why": false,
+      "focus": "row-3",
+      "focusVisible": true,
+      "keyboardFocus": true,
+      "rowPly": 3,
+      "rowCount": 1,
+      "rowVisible": true,
+      "rowTabStops": [
+        3
+      ],
+      "plotPly": 3,
+      "seekVisible": true,
+      "seekValue": 3,
+      "seekLabel": "2. g2 la g4. Greșeală gravă. Poziția 3 din 4. Scorul albului 0,0 la sută.",
+      "whyExpanded": false,
+      "board": [
+        0,
+        48,
+        390,
+        390
+      ],
+      "boardVisible": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "id": "why-entry",
+      "ply": 3,
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/6P1/5P2/PPPPP2P/RNBQKBNR",
+      "lastMove": "g2g4",
+      "turn": "BLACK",
+      "branch": "HISTORY",
+      "why": true,
+      "focus": "close-why",
+      "focusVisible": true,
+      "keyboardFocus": true,
+      "rowPly": 3,
+      "rowCount": 1,
+      "rowVisible": false,
+      "rowTabStops": [],
+      "plotPly": 3,
+      "seekVisible": false,
+      "seekValue": 3,
+      "seekLabel": "2. g2 la g4. Greșeală gravă. Poziția 3 din 4. Scorul albului 0,0 la sută.",
+      "whyExpanded": true,
+      "board": [
+        0,
+        48,
+        390,
+        390
+      ],
+      "boardVisible": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "id": "why-recommended",
+      "ply": 3,
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/8/5P2/PPPPP1PP/RNBQKBNR",
+      "lastMove": "",
+      "turn": "WHITE",
+      "branch": "RECOMMENDED",
+      "why": true,
+      "focus": "recommended",
+      "focusVisible": true,
+      "keyboardFocus": true,
+      "rowPly": 3,
+      "rowCount": 1,
+      "rowVisible": false,
+      "rowTabStops": [],
+      "plotPly": 3,
+      "seekVisible": false,
+      "seekValue": 3,
+      "seekLabel": "2. g2 la g4. Greșeală gravă. Poziția 3 din 4. Scorul albului 0,0 la sută.",
+      "whyExpanded": true,
+      "board": [
+        0,
+        48,
+        390,
+        390
+      ],
+      "boardVisible": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "id": "why-escape",
+      "ply": 3,
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/6P1/5P2/PPPPP2P/RNBQKBNR",
+      "lastMove": "g2g4",
+      "turn": "BLACK",
+      "branch": "HISTORY",
+      "why": false,
+      "focus": "why",
+      "focusVisible": true,
+      "keyboardFocus": true,
+      "rowPly": 3,
+      "rowCount": 1,
+      "rowVisible": false,
+      "rowTabStops": [
+        3
+      ],
+      "plotPly": 3,
+      "seekVisible": true,
+      "seekValue": 3,
+      "seekLabel": "2. g2 la g4. Greșeală gravă. Poziția 3 din 4. Scorul albului 0,0 la sută.",
+      "whyExpanded": false,
+      "board": [
+        0,
+        48,
+        390,
+        390
+      ],
+      "boardVisible": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "id": "why-reopen",
+      "ply": 3,
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/6P1/5P2/PPPPP2P/RNBQKBNR",
+      "lastMove": "g2g4",
+      "turn": "BLACK",
+      "branch": "HISTORY",
+      "why": true,
+      "focus": "close-why",
+      "focusVisible": true,
+      "keyboardFocus": true,
+      "rowPly": 3,
+      "rowCount": 1,
+      "rowVisible": false,
+      "rowTabStops": [],
+      "plotPly": 3,
+      "seekVisible": false,
+      "seekValue": 3,
+      "seekLabel": "2. g2 la g4. Greșeală gravă. Poziția 3 din 4. Scorul albului 0,0 la sută.",
+      "whyExpanded": true,
+      "board": [
+        0,
+        48,
+        390,
+        390
+      ],
+      "boardVisible": true,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "id": "why-back",
+      "ply": 3,
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/6P1/5P2/PPPPP2P/RNBQKBNR",
+      "lastMove": "g2g4",
+      "turn": "BLACK",
+      "branch": "HISTORY",
+      "why": false,
+      "focus": "why",
+      "focusVisible": true,
+      "keyboardFocus": true,
+      "rowPly": 3,
+      "rowCount": 1,
+      "rowVisible": false,
+      "rowTabStops": [
+        3
+      ],
+      "plotPly": 3,
+      "seekVisible": true,
+      "seekValue": 3,
+      "seekLabel": "2. g2 la g4. Greșeală gravă. Poziția 3 din 4. Scorul albului 0,0 la sută.",
+      "whyExpanded": false,
+      "board": [
+        0,
+        48,
+        390,
+        390
+      ],
+      "boardVisible": true,
+      "viewport": [
+        390,
+        844
+      ]
+    }
+  ],
+  "analysisRequests": 0,
+  "ledgerSnapshot": "AAAAAQAAABUAAAAIbWF0Y2gtaWQBAAAAJGY1YmM1MDE5LTYyYzktNDcxZS1iNzI5LWI0MmFlZGNhOGVlMwAAABBtYXRjaC1jaGVja3BvaW50AQAAACYzfFdISVRFfEFEVkFOQ0VEfDB8ZjJmMyBlN2U1IGcyZzQgZDhoNAAAABFtYXRjaC1ibGFjay1iZWxvdwIAAAAAEW1hdGNoLW1hbnVhbC11c2VkAgAAAAAPbWF0Y2gtbWFudWFsLWFpAgAAAAARYWN0aXZlLW1hdGNoLXNsb3QDAAAAAQAAAAxyZXN1bWUtbWF0Y2gCAQAAABdtYXRjaC1jcmVhdGlvbi1zZXF1ZW5jZQQAAAAAAAAACwAAAA5tYXRjaC1jcmVhdGlvbgQAAAAAAAAACwAAABBtYXRjaC1zdGFydGVkLWF0BAAAAaIECawxAAAADW1hdGNoLXVzZXMtYWkCAQAAABNtYXRjaC1hcmNoaXZlLW9yZGVyAQAAACRmNWJjNTAxOS02MmM5LTQ3MWUtYjcyOS1iNDJhZWRjYThlZTMAAAA9bWF0Y2gtYXJjaGl2ZS1mNWJjNTAxOS02MmM5LTQ3MWUtYjcyOS1iNDJhZWRjYThlZTMtY2hlY2twb2ludAEAAAAmM3xXSElURXxBRFZBTkNFRHwwfGYyZjMgZTdlNSBnMmc0IGQ4aDQAAAA+bWF0Y2gtYXJjaGl2ZS1mNWJjNTAxOS02MmM5LTQ3MWUtYjcyOS1iNDJhZWRjYThlZTMtYmxhY2stYmVsb3cCAAAAAD5tYXRjaC1hcmNoaXZlLWY1YmM1MDE5LTYyYzktNDcxZS1iNzI5LWI0MmFlZGNhOGVlMy1tYW51YWwtdXNlZAIAAAAAPm1hdGNoLWFyY2hpdmUtZjViYzUwMTktNjJjOS00NzFlLWI3MjktYjQyYWVkY2E4ZWUzLWZpbmlzaGVkLWF0BAAAAaIECawxAAAAOm1hdGNoLWFyY2hpdmUtZjViYzUwMTktNjJjOS00NzFlLWI3MjktYjQyYWVkY2E4ZWUzLXVzZXMtYWkCAQAAAA5tYXRjaC1hcmNoaXZlZAIBAAAAGWxlZ2FjeS13ZWItcmV2aWV3LWNoZWNrZWQCAQAAADltYXRjaC1hcmNoaXZlLWY1YmM1MDE5LTYyYzktNDcxZS1iNzI5LWI0MmFlZGNhOGVlMy1yZXZpZXcBAAAF1EFBQUFBd0FzWkRWQ1pXTlhRakJ6YTJwYVVVbHZRak5hTW1FeWMyUjFaSGhsV2xWd1FrZ3hMMDlCYm1sd1VqUlJUVDBCQUFOQk1EQUFHMEpoY201bGN5QlBjR1Z1YVc1bk9pQkdiMjlzSjNNZ1RXRjBaUUFBQUFRQUFBSDBBQUFBTUFBQUFBRUFBQUFBQWdBRVFrOVBTd0FBQUFFQUIwSk1WVTVFUlZJQUFBQUIvLy8vL3dBQUFBQUJBQUFGdFFFQUFBU2ZBQUFHbEFBQUFBRUFCRUpQVDBzQUFBQUNBQUFBQkFBRVpqSm1Nd0FFUWs5UFN3QUFBZlFBQUFITUFBQUFLQUFBQWN3QUFBQUVBQUFBQUFBQUFBUUFCR0l4WXpNQUJHSTRZellBQkdjeFpqTUFCR2M0WmpZQUFBQUVBQVJtTW1ZekFBUmlPR00yQUFSaU1XTXpBQVJuT0dZMkFRQUlRMDlOVUV4RlZFVUFBRnhTQUFCaHFBQk1TMEFBQUFBRUFBQUFBd0FBQ0JFQUFBQ1dBQUFBQUFBQlRBZ0FBQUFMQUFBQUFRQjdVMlZoY21Ob1MyVjVXMlpwY25OMFBURXlNamszT0RJNU16a3dOekU0TWpnM056SXNJSE5sWTI5dVpEMHdMQ0IwYUdseVpEMHdMQ0JtYjNWeWRHZzlMVFl5T1RZNU5UUXhOelEyTURrNE5USTFOVE1zSUhSMWNtNDlNQ3dnWTJGemRHeGxVbWxuYUhSelBURTFMQ0JsYmxCaGMzTmhiblE5TFRGZEFBQUFGQUFFWWpGaE13QUVZakZqTXdBRVp6Rm1Nd0FFWnpGb013QUVZVEpoTXdBRVlUSmhOQUFFWWpKaU13QUVZakppTkFBRVl6SmpNd0FFWXpKak5BQUVaREprTXdBRVpESmtOQUFFWlRKbE13QUVaVEpsTkFBRVpqSm1Nd0FFWmpKbU5BQUVaekpuTXdBRVp6Sm5OQUFFYURKb013QUVhREpvTkFBQUFBUmxOMlUxQUFSQ1QwOUxBQUFDQUFBQUFmRUFBQUFQQUFBQjl3QUFBQVFBQUFBQUFBQUFCQUFFWWpoak5nQUVZakZqTXdBRVp6aG1OZ0FFWkRKa05BQUFBQVFBQkdVM1pUVUFCR0l4WXpNQUJHSTRZellBQkdVeVpUUUJBQWhEVDAxUVRFVlVSUUFBVHVBQUFHR29BRXhMUUFBQUFBUUFBQUFGQUFBSXFRQUFBTWdBQUFBQUFBRk1DQUFBQUFzQUFBQUJBSUZUWldGeVkyaExaWGxiWm1seWMzUTlNVEl5TlRJM09UTXpPVFEwTkRRMU9ESTNOaXdnYzJWamIyNWtQVEV3TkRnMU56WXNJSFJvYVhKa1BUQXNJR1p2ZFhKMGFEMHROakk1TmprMU5ERTNORFl3T1RnMU1qVTFNeXdnZEhWeWJqMHhMQ0JqWVhOMGJHVlNhV2RvZEhNOU1UVXNJR1Z1VUdGemMyRnVkRDB0TVYwQUFBQVVBQVJoTjJFMUFBUmhOMkUyQUFSaU4ySTFBQVJpTjJJMkFBUmpOMk0xQUFSak4yTTJBQVJrTjJRMUFBUmtOMlEyQUFSbE4yVTFBQVJsTjJVMkFBUm1OMlkxQUFSbU4yWTJBQVJuTjJjMUFBUm5OMmMyQUFSb04yZzFBQVJvTjJnMkFBUmlPR0UyQUFSaU9HTTJBQVJuT0dZMkFBUm5PR2cyQUFBQUJHY3laelFBQjBKTVZVNUVSVklBQUFJR0FBQUFBQUFBQWdZQUFBQUFBQUFBQkFBQUFBQUFBQUFGQUFSa01tUTBBQVJtT0dJMEFBUmpNV1F5QUFSa09HZzBBQVJuTW1jekFBQUFBZ0FFWnpKbk5BQUVaRGhvTkFBQUJHUTRhRFFBQkVKUFQwc0FBQVBvQUFBRDZBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUJBQVJrT0dnMEFBQUFBUUFFWkRob05BQT0AAABCbWF0Y2gtYXJjaGl2ZS1mNWJjNTAxOS02MmM5LTQ3MWUtYjcyOS1iNDJhZWRjYThlZTMtcmV2aWV3LWJvb2ttYXJrAQAAAGUyfGY1YmM1MDE5LTYyYzktNDcxZS1iNzI5LWI0MmFlZGNhOGVlM3xkNUJlY1dCMHNralpRSW9CM1oyYTJzZHVkeGVaVXBCSDEvT0FuaXBSNFFNPXwzfEhJU1RPUll8MHxmYWxzZQ==",
+  "observations": [
+    {
+      "id": "font-enlarged",
+      "expected": true,
+      "actual": true,
+      "passed": true
+    },
+    {
+      "id": "review-title-left-aligned",
+      "expected": true,
+      "actual": true,
+      "passed": true
+    },
+    {
+      "id": "review-tab-order",
+      "expected": true,
+      "actual": true,
+      "passed": true
+    },
+    {
+      "id": "graph-retains-focus",
+      "expected": true,
+      "actual": true,
+      "passed": true
+    },
+    {
+      "id": "selected-row-only-tab-stop",
+      "expected": true,
+      "actual": true,
+      "passed": true
+    },
+    {
+      "id": "history-navigation-keys",
+      "expected": true,
+      "actual": true,
+      "passed": true
+    },
+    {
+      "id": "why-entry-order",
+      "expected": true,
+      "actual": true,
+      "passed": true
+    },
+    {
+      "id": "escape-restores-launcher",
+      "expected": true,
+      "actual": true,
+      "passed": true
+    },
+    {
+      "id": "back-restores-launcher",
+      "expected": true,
+      "actual": true,
+      "passed": true
+    },
+    {
+      "id": "square-board-stable",
+      "expected": true,
+      "actual": true,
+      "passed": true
+    },
+    {
+      "id": "cached-review-used",
+      "expected": 0,
+      "actual": 0,
+      "passed": true
+    }
+  ],
+  "captures": [
+    {
+      "file": "focus-graph.png",
+      "sha256": "c0cae5bb1fe34c13c63dec257f90787e9377be4744697e2c33854f6c72837a7d"
+    },
+    {
+      "file": "focus-history.png",
+      "sha256": "a90766401a9a3e3e66ddfa43f687c9116bef406716d4b91d77467e4aebafa99b"
+    },
+    {
+      "file": "focus-why.png",
+      "sha256": "be2117a79a4026cde0153f647939ddbf8fa20e4fb872d6894996fef2bc3f15ff"
+    },
+    {
+      "file": "focus-return.png",
+      "sha256": "56f3527d9cf05f1106a124c498fb7858807a94bb218083eab5e42fc5f60f14a7"
+    }
+  ]
+}

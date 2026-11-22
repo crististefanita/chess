@@ -7,7 +7,7 @@ Chess Lab lets you play chess against AI, solve puzzles and study openings on An
 
 ## Play
 
-- [Download Chess Lab 0.16.1 APK](https://github.com/crististefanita/chess/releases/download/v0.16.1/ChessLab-0.16.1.apk)
+- [Download Chess Lab 0.16.2 APK](https://github.com/crististefanita/chess/releases/download/v0.16.2/ChessLab-0.16.2.apk)
 - [Play in your browser](https://crististefanita.github.io/chess/)
 
 ## Overview
@@ -153,7 +153,7 @@ flowchart LR
 
 ## Published Release
 
-- [Chess Lab 0.16.1 · release notes](https://github.com/crististefanita/chess/releases/tag/v0.16.1)
+- [Chess Lab 0.16.2 · release notes](https://github.com/crististefanita/chess/releases/tag/v0.16.2)
 
 ## Entry Points
 

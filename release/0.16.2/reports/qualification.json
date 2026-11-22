@@ -1,0 +1,27 @@
+{
+  "version": "0.16.2",
+  "versionCode": 39,
+  "sourceCommit": "a109db7187ea58d2853ca2af76cd9852e1666032",
+  "apkSha256": "2a88ab7847a285439fdfc3280a2ec67d21185f5a6b8a703cea8287a369e2f7f0",
+  "apkBytes": 1288391,
+  "qualificationGate": "PASS",
+  "signingCertificateSha256": "e49cc581c12594496e0b2b911aba9a09d04893c661f1ad5316d00377dc8a7772",
+  "componentExtentSha256": "fbe90df2915e5522b6e01bf90a3d6924523c4a38141d70c829fabece177dac4e",
+  "componentTests": 608,
+  "jvmInputsCommit": "a109db7187ea58d2853ca2af76cd9852e1666032",
+  "qualificationRunId": "6ff351b187404bcc918e113d59f18e9a",
+  "android": {
+    "game-review": {
+      "sourceCommit": "a109db7187ea58d2853ca2af76cd9852e1666032",
+      "nativeAssertions": 30,
+      "extentSha256": "d10287eedaecfe63efb8a7c3f3663628c270ae7bbcebcfee58323dcbd7896c05",
+      "report": "android-game-review.html",
+      "execution": "game-review-execution.json"
+    }
+  },
+  "testChangeReviewSha256": "687167784a06ac7b8db646f66f9a31e4c875fea63494d0d40a3665c55ff4cecc",
+  "minSdk": 26,
+  "targetSdk": 36,
+  "alignment": "PASS",
+  "observedUtc": "2026-11-22T18:20:09.0434485Z"
+}

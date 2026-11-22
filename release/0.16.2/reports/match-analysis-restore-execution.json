@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "scope": "analysis-restore",
+  "device": "127.0.0.1:5555",
+  "api": "28",
+  "apkSha256": "2a88ab7847a285439fdfc3280a2ec67d21185f5a6b8a703cea8287a369e2f7f0",
+  "sourceCommit": "a109db7187ea58d2853ca2af76cd9852e1666032",
+  "variant": "release",
+  "assertions": 2,
+  "receiptSha256": "14b6d161a7eca29372975ab8803d7b2e9c930be8e8370bd222e35cc027da6afc",
+  "captureSha256": {},
+  "runId": "4b560585b00d46f099e4ea37ace2dd9b"
+}

@@ -143,14 +143,14 @@ java -cp atf-tests/target/classes ro.atf.chess.release.ReleaseGate preflight atf
 
 - Run the suites from the same TMP checkout and choose fresh report paths.
 - Save the fresh component Surefire directory before the Android publisher writes other XML files there.
-- Build the Web bundle from the candidate commit in TMP and pass it through `chess.study.bundle`. Without it, three worker probes are skipped and `ReleaseGate qualification` rejects the suite. [Web build](../../web/README.md#build-and-verification)
+- Build the Web bundle from the candidate commit in TMP and pass it through both `chess.study.bundle` and `chess.web.bundle`. If either is absent, worker or list probes are skipped and strict qualification rejects the suite. [Web build](../../web/README.md#build-and-verification)
 
 ```powershell
 $runId = [guid]::NewGuid().ToString('N')
 $commit = git rev-parse HEAD
 $site = ./web/Build-ChessWeb.ps1 -WorkRoot (Join-Path $env:TEMP "chess-web-qualification-$runId")
 mvn -pl atf-tests -am test "-Dtest=ChessComponentSuite" "-Dsurefire.failIfNoSpecifiedTests=false" `
-  "-Dchess.study.bundle=$site" `
+  "-Dchess.study.bundle=$site" "-Dchess.web.bundle=$site" `
   "-Dchess.extent=$componentExtent" "-Dchess.qualification.commit=$commit" "-Dchess.qualification.runId=$runId"
   # Move the suite's Surefire receipts to $componentReceipts before Android publication.
   # Run signed sanity with -SourceCommit $commit -QualificationRunId $runId.

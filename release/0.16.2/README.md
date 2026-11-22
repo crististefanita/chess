@@ -12,4 +12,4 @@ This patch aligns the Game Review title with the other screen headers and streng
 
 ## Installation
 
-The signed APK is linked from the project README after qualification and publication. The release evidence is kept in [reports](reports/README.md).
+The [signed APK](https://github.com/crististefanita/chess/releases/download/v0.16.2/ChessLab-0.16.2.apk) is also linked from the [project README](../../README.md#play). The [evidence index](reports/README.md) records qualification and download checks.

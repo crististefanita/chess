@@ -52,12 +52,13 @@ changing the current no-jump contract.
 
 **Implemented · Native menu run identity; signed probe pending.** The Saved/Finished runner now generates one run ID for the paired phases and separate IDs for isolated runs. Extent checks the native marker, execution receipt and companion phase; negative component cases reject missing, substituted and cross-phase IDs. Keep the earlier focused observations outside strict supplemental qualification until the signed APK produces a new paired receipt.
 
-**Implemented · Native match history oracle; signed probe pending.**
-`awaitHiddenAnalysis` now checks the AI match's single selected-move label
-against `MatchHistorySelection`, including restored and compact flows. The
-manual Analysis board keeps its full-list oracle. A wrong label reports its
-expected and observed values separately from hint readiness. Verify both
-flows on the signed APK before closing native evidence.
+**Closed · Native match history oracle on the signed APK.**
+`awaitHiddenAnalysis` compares the AI match's single selected-move label
+against `MatchHistorySelection`; the manual Analysis board retains its
+full-list oracle. A wrong label reports expected and observed values separately
+from hint readiness. The signed 0.16.2 APK passed five assertions before and
+two after a real restart, with the same run ID and source identity.
+[Extent and executions](../../release/0.16.2/reports/README.md)
 [Current cursor](../../chess-core/src/main/java/ro/atf/chess/MatchHistorySelection.java)
 
 **P2 · Native compact accessibility readiness.** The legacy compact replay stops at a visible Game Review command because its accessibility-node snapshot reports it unavailable. Retain that failed observation; refresh and verify the actual node before any click, without increasing the timeout. Game Review at 360 × 640 dp and 1.3× text, and the separate RO/EN rotation probe, passed on the same signed APK. These checks do not close the legacy helper's failure.
