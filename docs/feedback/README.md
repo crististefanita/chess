@@ -357,6 +357,13 @@ recommendation. Component mocks cover interrupted work, foreign runs and missing
 phases; actual chess decisions retain independent Stockfish H17/H19 evidence.
 UI separation remains open until those proof and presentation contracts pass.
 
+The main-branch regression `CoachingProofTest#aQuietPieceOfferIsClosedThroughTheVisiblePawnCaptureInHintAndReview`
+now pins the concrete `c4d5 …exd5 Rxd5` piece-for-pawn case. The hint keeps the
+capture and recapture in its scored proof; Game Review closes the same exchange
+before grading the played move. This closes the engine-side “sacrifice ends before
+the visible recapture” gap for this witness. It does not close the separate preview
+work above or claim that every tactical sacrifice is objectively sound.
+
 The engine-side reserve now resolves a pending frontier with charged continuous recaptures
 and mandatory evasions, and rejects incomplete hint/review results. See the
 [implementation contract](../board/ai-quality.md#dynamic-coaching-frontier). Keep these

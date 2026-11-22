@@ -1246,7 +1246,11 @@ Review preserves its established recommendation on an actual exact-score tie. Th
 replay exposed `Nf3` and `e4` both at +21 after closure, replacing the old +651 horizon
 artifact. Lexical root ordering must not switch to `e4`: cold H17/H19 gives that switch
 160/111.5‰ more loss. Six retained raw phases and a component guard the tie without
-restoring the old score.
+restoring the old score. `CoachingProofTest#aQuietPieceOfferIsClosedThroughTheVisiblePawnCaptureInHintAndReview`
+adds the compact witness `c4d5 …exd5 Rxd5`: Hint must include the pawn capture and rook
+recapture in its scored proof, and Game Review must close the same exchange before grading
+the played move. This guards the reported piece-for-pawn horizon without prescribing a
+global move or claiming an Elo gain.
 [Stability controls](../../atf-tests/src/test/java/ro/atf/chess/CoachingStabilityTest.java)
 retain both horizons and the interrupted-confirmation negative. Completion certifies the
 declared search scope, not optimal chess or an Elo improvement.
