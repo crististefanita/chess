@@ -80,17 +80,28 @@ istoric, rotirea tablei și reluarea. Verificările focalizate Extent trec.
 Certificatul ediției instalate 0.15.2 diferă de cel al APK-ului semnat 0.16.1;
 observația este un reper pentru desenator, nu o recepție de release 0.16.1.
 
-**Diferența randată Web rămâne deschisă.** GitHub Pages servește încă runtime-ul
-`1d252b7ada67238062c5f7370d1012ffd342e38d04cb40d1f9d8714c617b512d`,
-fără rândurile pieselor capturate. Candidatul static pregătit
-`2f50a25b41fffc50c4fb2ae483958ca73e5322fd3a135cb419144954fc6ff9db`
-le conține, dar nu este publicat. Browser MCP eșuează la scrierea resurselor
-kernelului înaintea deschiderii tabului; încercarea de a deschide un browser
-în emulator a fost respinsă de revizuirea automată a politicii. Reverificați
-poarta completă a workerului, publicați commitul static exact prin workflow-ul
-Pages, apoi comparați vizual APK și Web pe același cadru de captură. Sursa nativă
-actuală are deja meniul partidei în dreapta antetului, ca Web; meniul instalării
-0.15.2 este mai vechi.
+**Octeții publicați sunt verificați; comparația randată rămâne deschisă.**
+Workflow-ul Pages
+[45018215357](https://github.com/crististefanita/chess/actions/runs/45018215357)
+a publicat commitul static `fc97cb4b2dc7f6673b51669e775db70d0762290c`.
+Indexul servit indică runtime-ul
+`2f50a25b41fffc50c4fb2ae483958ca73e5322fd3a135cb419144954fc6ff9db`.
+Indexul, intrarea partidei, adaptorul pieselor capturate, CSS-ul și workerul
+descărcate sunt identice octet cu octet cu fișierele pregătite. Browser MCP
+eșuează încă la scrierea resurselor kernelului înaintea deschiderii tabului;
+încercarea de a deschide un browser în emulator a fost respinsă de revizuirea
+automată a politicii. Rămâne necesară recepția vizuală pereche pe același cadru
+de captură. Sursa nativă actuală are deja meniul partidei în dreapta antetului,
+ca Web; meniul instalării 0.15.2 este mai vechi.
+
+**P2 · Proprietarul vizibil al capturilor.** APK-ul arată numele adversarului
+deasupra rândului de capturi de sus și numele omului sub rândul de jos. Web
+arată rândurile lângă tablă, dar rezumatul comun al jucătorilor rămâne sub ea.
+Adăugați etichete compacte și localizate lângă piesele capturate ale fiecărui
+jucător, fără micșorarea tablei sau derularea paginii la text 130%. Guvernați
+orientarea normală și întoarsă, numele lungi și istoricul în componente;
+închideți paritatea vizuală printr-o recepție randată pereche când Browser MCP
+devine disponibil.
 
 **Poarta workerului reverificată · 2026-11-22.** `active-historical-replay` s-a încheiat în 26 de secunde, cu limita neschimbată de 55 de secunde. Clasa completă `ChessWebParityPublication` a arătat apoi un oracol contradictoriu: respingea aliasurile istorice ale workerului și motorului din rădăcină, deși contractul de publicare le păstrează pentru filele vechi. Aserțiunea verifică acum existența lor ca pereche și încărcarea workerului și motorului curent din runtime-ul versionat. Toate cele șase teste de publicare trec împreună, cu Extent. Nu s-au schimbat regulile de șah, comportamentul AI sau limita de timp.
 
