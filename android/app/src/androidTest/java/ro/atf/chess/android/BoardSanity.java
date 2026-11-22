@@ -2752,7 +2752,7 @@ public final class BoardSanity extends Instrumentation {
             if (compact) checkCompactDisplay(activity, locale);
             var saved = store.matches().readMatch();
             compare("The enabled setting and two moves survive a process restart", true, saved != null && saved.analysisEnabled() && MATCH_ANALYSIS_FIXTURE.equals(saved.checkpoint()));
-            compare("The reopened match analyzes its live position with the hint hidden", true, awaitHiddenAnalysis(activity, 2, saved));
+            compare("The reopened match analyzes its live position with the hint hidden", true, awaitMatchAnalysis(activity, 2, saved));
             if (compact) {
                 var board = findBoard(viewsOf(activity));
                 checkCompactMatchBoard(activity, board);
@@ -2779,7 +2779,7 @@ public final class BoardSanity extends Instrumentation {
         tap(activity.findViewById(R.id.match_history_previous));
         var bounds = screenBounds(board);
         compare("The saved game opens analysis at the selected historical position", true,
-                awaitHiddenAnalysis(activity, 1, saved) && hasPawn(activity, board, "e4") && !hasPawn(activity, board, "e5"));
+                awaitMatchAnalysis(activity, 1, saved) && hasPawn(activity, board, "e4") && !hasPawn(activity, board, "e5"));
         if (compact) {
             checkCompactMatchNavigation(activity, board, liveGeometry, saved);
             checkCompactOpponent(activity, board, true);
@@ -2848,7 +2848,7 @@ public final class BoardSanity extends Instrumentation {
         var forward = matchGeometry(activity, board);
         boolean atLive = hasPawn(activity, board, "e5");
         tap(activity.findViewById(R.id.match_history_previous));
-        boolean atHistory = awaitHiddenAnalysis(activity, 1, match) && !hasPawn(activity, board, "e5");
+        boolean atHistory = awaitMatchAnalysis(activity, 1, match) && !hasPawn(activity, board, "e5");
         var backward = matchGeometry(activity, board);
         receipt.putString("compactArrowGeometry", String.join(" / ", history.coordinates(), forward.coordinates(), backward.coordinates()));
         compare("Back and Next preserve the board, evaluation bar and bulb while selecting the correct move", true,
@@ -2998,6 +2998,16 @@ public final class BoardSanity extends Instrumentation {
     }
 
     private boolean awaitHiddenAnalysis(Activity activity, int ply, ChessMatch match) {
+        return awaitHiddenAnalysis(activity, ply, match, 12_000);
+    }
+
+    private boolean awaitMatchAnalysis(Activity activity, int ply, ChessMatch match) {
+        // A full verified hint takes longer than a UI transition even on the JVM. Wait for
+        // completion, while preserving the same board, history, and hidden-hint assertions.
+        return awaitHiddenAnalysis(activity, ply, match, 90_000);
+    }
+
+    private boolean awaitHiddenAnalysis(Activity activity, int ply, ChessMatch match, long waitMillis) {
         TextView panel = activity.findViewById(R.id.match_analysis);
         View bulb = activity.findViewById(R.id.match_hint);
         ViewGroup moves = activity.findViewById(R.id.match_history_moves);
@@ -3005,7 +3015,7 @@ public final class BoardSanity extends Instrumentation {
         String current = match == null ? null : ply == 0 ? activity.getString(R.string.match_history_start)
                 : ro.atf.chess.MatchHistorySelection.at(match, ply).compact();
         boolean[] matches = {false};
-        long deadline = SystemClock.uptimeMillis() + 12_000;
+        long deadline = SystemClock.uptimeMillis() + waitMillis;
         do {
             runOnMainSync(() -> {
                 boolean selected = current == null ? ply < moves.getChildCount() && moves.getChildAt(ply).isSelected()
@@ -3025,7 +3035,10 @@ public final class BoardSanity extends Instrumentation {
                 throw new AssertionError("Current move differs from displayed history: expected " + current + ", observed " + observed[0]);
             }
         }
-        return false;
+        String[] state = {""};
+        runOnMainSync(() -> state[0] = "bulb=" + bulb.isEnabled() + ", selected=" + bulb.isSelected()
+                + ", panel=" + panel.getText());
+        throw new AssertionError("Analysis did not become ready within " + waitMillis + " ms: " + state[0]);
     }
 
     private void systemBack() {

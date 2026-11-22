@@ -812,6 +812,8 @@ mvn test '-Dmaven.repo.local=target/maven-repo' '-Dtest=AndroidSanityPublication
 
 Partida nativă cu AI afișează o singură etichetă a mutării selectate. Oracolul sanity o compară cu `MatchHistorySelection.at(match, ply).compact()` după navigare și reluare; valoarea greșită raportează textul așteptat și pe cel observat. Tabla manuală de analiză păstrează oracolul listei complete. Pregătirea indiciului, poziția selectată și textul istoricului rămân verificări distincte.
 
+Proba nativă a partidei cu AI așteaptă indiciul verificat complet, fără să trateze fereastra scurtă a tranziției UI ca termen al motorului. Pe cazul fix cu două semimutări, `hintAt(1)` a durat 16 secunde pe JVM în investigația 0.16.2. Proba Android semnată permite cel mult 90 de secunde, raportează starea efectivă a panoului și becului la expirare și cere în continuare poziția selectată exactă, indiciul ascuns, recomandarea legală și partida salvată neschimbată. Fereastra de 12 secunde rămâne pentru tranzițiile UI obișnuite.
+
 </details>
 
 ## Tablă de analiză
