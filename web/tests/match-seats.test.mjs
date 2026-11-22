@@ -53,5 +53,6 @@ test('localized seat descriptions and long names retain a fixed board row', asyn
     assert.match(css, /\.match-player\s*\{[^}]*max-inline-size:\s*48%;[^}]*text-overflow:\s*ellipsis;[^}]*white-space:\s*nowrap/);
     assert.match(css, /@media \(min-width: 481px\) and \(min-height: 481px\)\s*\{[^}]*--board-seat-size:\s*2\.1rem;/);
     assert.match(css, /\.match-seat\s*\{\s*display:\s*grid;\s*gap:\s*0;\s*align-content:\s*center;/);
+    assert.match(css, /\.match\[data-mode="AI"\]:has\(\.match-inline-meter:not\(\[hidden\]\)\) > \.match-seat\s*\{[^}]*inline-size:\s*min\(100%, calc\(var\(--play-board-limit\) \+ var\(--board-meter-gutter\)\)\);[^}]*padding-inline-start:\s*var\(--board-meter-gutter\);/);
     assert.match(layout, /--board-reference-chrome:\s*calc\([^;]*2 \* var\(--board-seat-size\)/);
 });
