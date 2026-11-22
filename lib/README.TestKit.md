@@ -38,3 +38,8 @@ public static void verifyState(RecordedAssertions audit, String actual) {
 Verificați contractele locale cu `PlatformLibraryProvenanceTest` și `SuiteGovernanceTest`. Păstrați coordonatele, hash-urile și notele de integrare sincronizate cu `library-provenance.json`.
 
 [Verificați integrarea în Chess și exemplele în J0](README.md#verificare)
+
+<a id="shared-library-source"></a>
+
+> **Sursa bibliotecii:** [Test Kit · ATF J0](https://github.com/crististefanita/atf_j0/blob/HEAD/lib/README.TestKit.md).
+> POM-ul, proveniența și testele acestui proiect stabilesc versiunea consumată și acceptanța locală.

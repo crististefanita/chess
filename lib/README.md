@@ -66,3 +66,8 @@ J0 deține contractele exemplelor de bibliotecă. [Ghidurile executabile J0](htt
 Raportați integrarea Chess Lab în [feedback-ul Chess](../docs/feedback/README.md).
 Pentru un defect al bibliotecii, izolați proba la ownerul J0 și repetați
 acceptanța consumatorului după înlocuirea perechii.
+
+<a id="shared-library-source"></a>
+
+> **Sursa bibliotecilor:** [Catalog · ATF J0](https://github.com/crististefanita/atf_j0/blob/HEAD/lib/README.md).
+> POM-ul, proveniența și testele acestui proiect stabilesc versiunea consumată și acceptanța locală.
