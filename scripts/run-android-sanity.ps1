@@ -501,16 +501,17 @@ try {
         return
     }
     if ($MatchSlotsOnly) {
-        Invoke-FocusedSanity $run 'match-slots' 2
+        Invoke-FocusedSanity $run 'match-slots' 2 ([guid]::NewGuid().ToString('N'))
         return
     }
     if ($MatchArchiveOnly) {
-        Invoke-FocusedSanity $run 'match-archive' 2
+        Invoke-FocusedSanity $run 'match-archive' 2 ([guid]::NewGuid().ToString('N'))
         return
     }
     if ($MatchMenusOnly) {
-        Invoke-FocusedSanity $run 'match-slots' 2
-        Invoke-IncludedSanity $run 'match-archive' 2
+        $runId = [guid]::NewGuid().ToString('N')
+        Invoke-FocusedSanity $run 'match-slots' 2 $runId
+        Invoke-IncludedSanity $run 'match-archive' 2 $runId
         return
     }
     if ($OpeningsOnly) {

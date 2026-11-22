@@ -50,14 +50,14 @@ with explanation beside the board, keeping source/replay sizing aligned and
 changing the current no-jump contract.
 [Puzzle explanation controls](../../atf-tests/src/test/java/ro/atf/chess/PuzzleExplainLayoutTest.java)
 
-**P2 · Native menu run identity.** Propagate one generated run ID through the Saved/Finished menu instrumentation, execution receipts and Extent. The current focused observations passed with the qualified source and APK, but lack this binding and therefore remain outside strict supplemental qualification. Add negative receipt cases for missing and substituted run IDs before admitting them to that gate.
+**Implemented · Native menu run identity; signed probe pending.** The Saved/Finished runner now generates one run ID for the paired phases and separate IDs for isolated runs. Extent checks the native marker, execution receipt and companion phase; negative component cases reject missing, substituted and cross-phase IDs. Keep the earlier focused observations outside strict supplemental qualification until the signed APK produces a new paired receipt.
 
-**P2 · Legacy analysis history oracles.** `awaitHiddenAnalysis` still checks
-one history child per ply. Align `analysis-prepare/restore` and their compact
-variants with the shared single-move game cursor. Preserve the Analysis
-board's full history list and its separate oracle. Keep completed hint/score
-readiness and the displayed position as independent checks; a timeout must
-not stand in for a wrong UI oracle.
+**Implemented · Native match history oracle; signed probe pending.**
+`awaitHiddenAnalysis` now checks the AI match's single selected-move label
+against `MatchHistorySelection`, including restored and compact flows. The
+manual Analysis board keeps its full-list oracle. A wrong label reports its
+expected and observed values separately from hint readiness. Verify both
+flows on the signed APK before closing native evidence.
 [Current cursor](../../chess-core/src/main/java/ro/atf/chess/MatchHistorySelection.java)
 
 **P2 · Native compact accessibility readiness.** The legacy compact replay stops at a visible Game Review command because its accessibility-node snapshot reports it unavailable. Retain that failed observation; refresh and verify the actual node before any click, without increasing the timeout. Game Review at 360 × 640 dp and 1.3× text, and the separate RO/EN rotation probe, passed on the same signed APK. These checks do not close the legacy helper's failure.
@@ -113,6 +113,8 @@ including after a reload and in an already open tab.
 [Release process](../release/README.md#qualification-and-publication)
 
 ## WEB-05 · Menus and Anchored Options
+
+**Closed · Game Review title alignment on compact Web.** The reported Romanian title was centered because the flex page allowed its header to shrink to the Back button and heading. The Review-only full-width rule keeps the heading beside Back. At 390 CSS px and 130% text, the rendered receipt measures a 390 px header and a title beginning at 70 px; the native header retains its 16 dp leading inset. `NavigationGovernanceTest` and the focus browser flow guard the adapter contract and the actual bounds. This closes only title alignment, not the menu and focus matrix below.
 
 **P2 · Focus, large text and remaining contexts.** The published compact Analysis board has an observed anchored menu and unchanged board without document scrolling. This does not complete the RO/EN 130% matrix for Puzzles, Game Review and Why.
 

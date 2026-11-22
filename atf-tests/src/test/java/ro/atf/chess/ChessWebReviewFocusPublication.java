@@ -79,6 +79,8 @@ class ChessWebReviewFocusPublication {
                 same("Browser uses the expected deployment channel", publicRun ? ChessPublicationRoutes.HOME_URL : "", publicUrl),
                 same("Native game ends at the fourth recorded ply", 4, review.turns().size()),
                 same("Enlargement changes computed fonts for the page, Why and history rows by 30%", true, enlarged(receipt)),
+                same("At enlarged text the review title starts beside Back, inside a full-width header", true,
+                        headerLeftAligned(receipt.path("header"))),
                 same("The browser consumes the cached review without new engine requests", IntNode.valueOf(0), receipt.path("analysisRequests"))));
         verifyOrder(receipt, source, review, checks);
         verifyVisits(receipt.path("focusEvidence"), publicRun, checks);
@@ -86,9 +88,10 @@ class ChessWebReviewFocusPublication {
         var fields = List.of(new ReportField("Review fixture SHA-256", fixtureHash), new ReportField("Archived game ID", archiveId),
                 new ReportField("Browser origin", publicUrl.isEmpty() ? "Loopback" : publicUrl),
                 new ReportField("Font sizes before and after", receipt.path("baseFonts") + " → " + receipt.path("scaledFonts")),
-                new ReportField("Keyboard actions", "Tab, Shift+Tab, arrows, Home, End, Enter and Escape"));
+                new ReportField("Keyboard actions", "Tab, Shift+Tab, arrows, Home, End, Enter and Escape"),
+                new ReportField("Review header bounds", receipt.path("header").toString()));
         var observations = new LinkedHashMap<String, JsonNode>();
-        for (String id : List.of("font-enlarged", "review-tab-order", "graph-retains-focus", "selected-row-only-tab-stop",
+        for (String id : List.of("font-enlarged", "review-title-left-aligned", "review-tab-order", "graph-retains-focus", "selected-row-only-tab-stop",
                 "history-navigation-keys", "why-entry-order", "escape-restores-launcher", "back-restores-launcher", "square-board-stable")) {
             observations.put(id, BooleanNode.TRUE);
         }
@@ -187,6 +190,17 @@ class ChessWebReviewFocusPublication {
             if (!(original >= 12 && Math.abs(scaled.path(index).asDouble(Double.NaN) - original * 1.3) < .1)) return false;
         }
         return true;
+    }
+
+    private static boolean headerLeftAligned(JsonNode header) {
+        double viewport = header.path("viewport").asDouble(Double.NaN);
+        double left = header.path("left").asDouble(Double.NaN);
+        double right = header.path("right").asDouble(Double.NaN);
+        double back = header.path("backLeft").asDouble(Double.NaN);
+        double title = header.path("titleLeft").asDouble(Double.NaN);
+        return viewport == 390 && left >= -.5 && left <= 1 && right >= viewport - 1 && right <= viewport + .5
+                && back >= left && title > back && title < Math.min(96, viewport * .3)
+                && header.path("titleRight").asDouble(Double.NaN) <= viewport;
     }
 
     private static boolean boardVisible(JsonNode entry) {

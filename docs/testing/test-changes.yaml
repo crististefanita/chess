@@ -1,4 +1,78 @@
 testChanges:
+  - id: CHESS-0162-ANDROID-VERSION-EN
+    base: "d202d0764829626f84ae78e4a789c3d39480108c"
+    from: android/app/build.gradle
+    replacement: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
+    test: ro.atf.chess.DocumentationGovernanceTest#projectReadmeArchitectureMatchesTheExecutableBuild
+    contract: "Advance the patch version without changing the SDK, signing or shared source boundary"
+    allowDelete: false
+
+  - id: CHESS-0162-ROOT-POM-EN
+    base: "d202d0764829626f84ae78e4a789c3d39480108c"
+    from: pom.xml
+    replacement: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
+    test: ro.atf.chess.DocumentationGovernanceTest#projectReadmeArchitectureMatchesTheExecutableBuild
+    contract: "Keep the JVM reactor aligned with the Android patch release"
+    allowDelete: false
+
+  - id: CHESS-0162-TEST-POM-EN
+    base: "d202d0764829626f84ae78e4a789c3d39480108c"
+    from: atf-tests/pom.xml
+    replacement: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
+    test: ro.atf.chess.DocumentationGovernanceTest#projectReadmeArchitectureMatchesTheExecutableBuild
+    contract: "Keep the audit suite on the same patch release as the APK"
+    allowDelete: false
+
+  - id: CHESS-MENU-RUN-RUNNER-EN
+    base: "d202d0764829626f84ae78e4a789c3d39480108c"
+    from: scripts/run-android-sanity.ps1
+    replacement: atf-tests/src/test/java/ro/atf/chess/ExtentGovernanceTest.java
+    test: ro.atf.chess.ExtentGovernanceTest#nativeMenuRejectsMissingOrSubstitutedRunIdentity
+    contract: "Bind Saved and Finished native menu phases to one generated run ID and reject missing or substituted markers"
+    allowDelete: false
+
+  - id: CHESS-MENU-RUN-PUBLICATION-EN
+    base: "d202d0764829626f84ae78e4a789c3d39480108c"
+    from: atf-tests/src/test/java/ro/atf/chess/AndroidSanityPublication.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ExtentGovernanceTest.java
+    test: ro.atf.chess.ExtentGovernanceTest#nativeMenuRejectsMissingOrSubstitutedRunIdentity
+    contract: "Require the native run marker, execution identity and paired menu run before PASS in Extent"
+    allowDelete: false
+
+  - id: CHESS-MENU-RUN-NEGATIVE-EN
+    base: "d202d0764829626f84ae78e4a789c3d39480108c"
+    from: atf-tests/src/test/java/ro/atf/chess/ExtentGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ExtentGovernanceTest.java
+    test: ro.atf.chess.ExtentGovernanceTest#nativeMenuRejectsMissingOrSubstitutedRunIdentity
+    contract: "Keep negative receipts and their failure reasons visible when the menu run is absent or substituted"
+    allowDelete: false
+
+  - id: CHESS-MATCH-HISTORY-NATIVE-EN
+    base: "d202d0764829626f84ae78e4a789c3d39480108c"
+    from: android/app/src/androidTest/java/ro/atf/chess/android/BoardSanity.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/MatchHistorySelectionTest.java
+    test: ro.atf.chess.MatchHistorySelectionTest#sharedFixturesDescribeOnlyTheMoveProducingTheSelectedPosition
+    contract: "Use the shared current-move label for AI-game readiness while retaining each selected child in the Analysis board history"
+    allowDelete: false
+    nativePath: android/app/src/androidTest/java/ro/atf/chess/android/BoardSanity.java
+    nativeProbe: "The reopened match analyzes its live position with the hint hidden"
+
+  - id: CHESS-REVIEW-HEADER-FOCUS-EN
+    base: "d202d0764829626f84ae78e4a789c3d39480108c"
+    from: atf-tests/src/test/java/ro/atf/chess/ChessWebReviewFocusPublication.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/NavigationGovernanceTest.java
+    test: ro.atf.chess.NavigationGovernanceTest#titleAndBackFollowTheOpeningHeaderWithoutReplacingContextualMenus
+    contract: "Retain the focus receipt and require a measured full-width Review title beside Back at enlarged text"
+    allowDelete: false
+
+  - id: CHESS-REVIEW-HEADER-GOVERNANCE-EN
+    base: "d202d0764829626f84ae78e4a789c3d39480108c"
+    from: atf-tests/src/test/java/ro/atf/chess/NavigationGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/NavigationGovernanceTest.java
+    test: ro.atf.chess.NavigationGovernanceTest#titleAndBackFollowTheOpeningHeaderWithoutReplacingContextualMenus
+    contract: "Preserve the shared header contract and bind the Web Review width to the native leading inset"
+    allowDelete: false
+
   - id: CHESS-OPENING-LANDSCAPE-NATIVE-EN
     base: "733e1a5b8d0e514efd0a2927356ce687dc13a9e2"
     from: atf-tests/src/test/java/ro/atf/chess/OpeningLessonTest.java

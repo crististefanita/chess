@@ -806,6 +806,8 @@ mvn test '-Dmaven.repo.local=target/maven-repo' '-Dtest=AndroidSanityPublication
 
 `ChessMatchTest` checks reconstruction before and after the bot reply, access to historical positions, checkmate, castling, en passant, and repetition. After the puzzle phases, the runner starts with fresh data and executes `match-prepare`, `match-restore`, and `match-settled` in separate processes, retaining the game between them. It checks the starting position, arrows, direct selection, return to the last move, move locking in history, and the saved game's identity.
 
+The native AI match shows one selected-move label. Its history sanity oracle compares that label with `MatchHistorySelection.at(match, ply).compact()` after navigation and restore; a wrong value reports expected and observed text. The manual Analysis board retains its full move-list oracle. Hint readiness, selected position and history text remain separate checks.
+
 </details>
 
 ## Analysis Board
@@ -838,7 +840,7 @@ mvn test '-Dmaven.repo.local=target/maven-repo' '-Dtest=AndroidSanityPublication
 
 - `-MatchMenusOnly` runs both menus on the same installation. For separate development probes, use `-MatchSlotsOnly` or `-MatchArchiveOnly`.
 - Publish with `AndroidSanityPublication#publishMatchSlotsSanity` or `#publishMatchArchiveSanity` and the phase receipt. Extent ties the assertion, embedded capture, and fingerprint to the same Android step.
-- Execution identity includes the process, commit, and distribution APK fingerprint. [Saved and finished games](../board/README.md#game-against-the-computer)
+- Execution identity includes the process, commit, distribution APK fingerprint, and a native run ID. `-MatchMenusOnly` uses one ID across Saved and Finished; separate probes generate their own ID. Extent rejects a missing or substituted native marker and a pair from different runs. [Saved and finished games](../board/README.md#game-against-the-computer)
 
 ## Shared replay on a compact screen
 
@@ -895,6 +897,8 @@ adds the actual one-turn review classification to the unresolved runtime goals.
 ## Shared screen chrome
 
 One Java policy, `UiChrome`, owns the logical control sizes, contextual Back destinations and centered navigation rail. `ChessHeader` and `CenteredControls` apply it on Android; `GenerateUiChrome` exports its constants and destinations to the Web adapter. Titles start beside Back, wrap to two lines and retain a 48 dp/CSS px Back target. Options stay at the right end, and the popup follows its trigger within the viewport. A short popup uses its own scroll area.
+
+Game Review uses a full-width Web header inside its flex page. Otherwise the header shrinks to its title and Back button and the entire group appears centered. At 390 CSS px and 130% text, the browser receipt checks the left inset and the title's bounds. The Android Review header retains its leading 16 dp inset. `NavigationGovernanceTest` checks both adapter declarations; the browser receipt verifies rendered geometry and embeds its captures in Extent.
 
 The game checkbox shows **AI** on compact widths while retaining its full accessible name and checked state. The move rail is centered and bounded at 384 logical pixels. Owners keep their callbacks, selected variant, per-line cursor and saved game. Enlarging text never shrinks the touch target. Back from a replay returns to its source; Back from a puzzle returns to chapters; Back from a chapter list returns home.
 
