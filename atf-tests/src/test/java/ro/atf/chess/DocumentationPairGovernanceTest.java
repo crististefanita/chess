@@ -25,6 +25,8 @@ class DocumentationPairGovernanceTest {
     private static final String RELEASE = "docs/release/README.md";
     private static final String RECEIPT = "release/0.15.3/reports/public-download.json";
     private static final String GUIDE = "guide.md";
+    private static final String SHARED_SOURCE = "chess-core/src/main/java/example/Shared.java";
+    private static final String LOCALIZED_SOURCE = "release-tools/src/main/java/ro/atf/chess/release/ReleaseRag.java";
 
     @TempDir
     static Path repository;
@@ -44,6 +46,8 @@ class DocumentationPairGovernanceTest {
         add(importer, "missing-target", with(ro, RELEASE, ro.get(RELEASE).replace("#pe-scurt", "#absent")));
         add(importer, "wrong-overview", with(ro, RELEASE, ro.get(RELEASE).replace("## Pe scurt", "## Overview")));
         add(importer, "receipt-drift", with(ro, RECEIPT, "{\"status\":404}\n"));
+        add(importer, "source-drift", with(ro, SHARED_SOURCE, "package example; class Changed {}\n"));
+        add(importer, "source-deleted", without(ro, SHARED_SOURCE));
         git(importer.toString(), "fast-import", "--quiet");
     }
 
@@ -74,6 +78,10 @@ class DocumentationPairGovernanceTest {
                 result("main", "missing-target").contains("guide.md#absent"));
         check.same("A changed archived receipt is rejected", true,
                 result("main", "receipt-drift").contains("Release evidence differs"));
+        check.same("Changed shared source is rejected with its path", true,
+                result("main", "source-drift").contains("Shared file differs between branches: " + SHARED_SOURCE));
+        check.same("Missing shared source is rejected with its path", true,
+                result("main", "source-deleted").contains("Shared file differs between branches: " + SHARED_SOURCE));
     }
 
     @Test
@@ -125,12 +133,20 @@ class DocumentationPairGovernanceTest {
                 "README.md", readme,
                 RELEASE, "# Release\n\n## " + first + "\n\n## " + release + "\n\n[Guide](../../" + GUIDE + "#" + anchor + ")\n",
                 GUIDE, guide,
-                RECEIPT, "{\"status\":200}\n");
+                RECEIPT, "{\"status\":200}\n",
+                SHARED_SOURCE, "package example; class Shared {}\n",
+                LOCALIZED_SOURCE, "route=" + play + "\n");
     }
 
     private static Map<String, String> with(Map<String, String> snapshot, String path, String contents) {
         var result = new TreeMap<>(snapshot);
         result.put(path, contents);
+        return result;
+    }
+
+    private static Map<String, String> without(Map<String, String> snapshot, String path) {
+        var result = new TreeMap<>(snapshot);
+        result.remove(path);
         return result;
     }
 

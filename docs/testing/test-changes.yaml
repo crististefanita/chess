@@ -1797,3 +1797,19 @@ testChanges:
     test: ro.atf.chess.UiChromeParityTest#generatedWebPolicyAndExecutableAdapterUseTheSameCases
     contract: "Keep generation from the actual Java contract, byte-identical Web policy and all five executable adapter assertions; resolve the loaded class location rather than assuming Maven output inside the checkout"
     allowDelete: false
+
+  - id: CHESS-EDITION-SHARED-FILES-RO
+    base: "25e935b64ba285cd5b079a93bf3eb58915b8e5a1"
+    from: atf-tests/src/test/java/ro/atf/chess/DocumentationPairGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/DocumentationPairGovernanceTest.java
+    test: ro.atf.chess.DocumentationPairGovernanceTest#pairedGateRejectsInventoryStructureLinksAndEvidenceDrift
+    contract: "Păstrează negativele Markdown și dovezi de ediție; respinge sursa comună schimbată sau lipsă, cu excepții doar pentru guvernanța localizată declarată"
+    allowDelete: false
+
+  - id: CHESS-COACHING-QUIET-TAIL-RO
+    base: "25e935b64ba285cd5b079a93bf3eb58915b8e5a1"
+    from: atf-tests/src/test/java/ro/atf/chess/CoachingProofTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/CoachingProofTest.java
+    test: ro.atf.chess.CoachingProofTest#aQuietPieceOfferIsClosedThroughTheVisiblePawnCaptureInHintAndReview
+    contract: "Păstrează dovezile existente și adaugă aceeași regresie EN pentru oferta liniștită, captura vizibilă, recaptură și linia completă în indiciu și analiză"
+    allowDelete: false

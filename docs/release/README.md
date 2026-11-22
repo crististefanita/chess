@@ -65,7 +65,11 @@ git push --atomic origin "${enCommit}:refs/heads/main" "${roCommit}:refs/heads/m
 
 Poarta perechii verifică inventarul Markdown urmărit, ordinea structurii,
 linkurile și destinațiile titlurilor corespondente și identitatea în octeți a
-dovezilor publicate. Revizuiți fiecare bloc de proză și fiecare etichetă vizibilă
+dovezilor publicate. Compară și fiecare fișier non-Markdown comun după obiectul
+Git și mod; diferă doar cele șase fișiere de guvernanță și RAG specifice limbii.
+Sursa comună lipsă sau schimbată respinge perechea. [Contractul perechii](../../release-tools/src/main/java/ro/atf/chess/release/DocumentationPair.java)
+
+Revizuiți fiecare bloc de proză și fiecare etichetă vizibilă
 din diagrame pentru limba sa și sensul tradus; trecerea porții structurale nu
 dovedește singură traducerea integrală sau fidelitatea ei. [Strategia de testare](../testing/README.md#alegerea-nivelului)
 

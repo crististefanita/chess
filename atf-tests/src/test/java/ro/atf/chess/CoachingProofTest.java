@@ -74,6 +74,29 @@ class CoachingProofTest {
         check.same("A different en passant right is a different context",false,proof.work().positionKey().equals(ChessPosition.fromFen("4k3/8/8/3pP3/8/8/8/4K3 w - - 0 1").searchKey().toString()));
     }
 
+    @Test void aQuietPieceOfferIsClosedThroughTheVisiblePawnCaptureInHintAndReview(Checks check) {
+        var board=ChessPosition.fromFen("6k1/8/4p3/8/2B5/8/8/3RK3 w - - 0 1");
+        var offer=m("c4d5");var offered=board.play(offer);var pawnCapture=m("e6d5");var rookRecapture=m("d1d5");
+        check.same("The quiet bishop offer is legal",true,board.legalMoves().contains(offer));
+        check.same("The pawn visibly attacks the offered bishop",true,offered.legalMoves().contains(pawnCapture));
+        var closed=CoachingProof.compare(offered,List.of(pawnCapture),1,Set.of(),ROOM);
+        check.same("The recapture proof is complete",CoachingProof.Status.COMPLETE,closed.work().status());
+        check.same("The scored branch includes the rook recapture, not just the pawn winning the bishop",List.of(pawnCapture,rookRecapture),closed.lines().getFirst().line());
+
+        var seedLine=new TacticalAnalysis.Variation(List.of(offer),0,0,TacticalAnalysis.Ending.HORIZON);
+        var seed=new TacticalAnalysis.HintSearch(List.of(seedLine),null,0,1,1);
+        var hint=TacticalAnalysis.certifyHints(board,seed,ROOM);
+        check.same("Hint keeps its complete tactical receipt",true,hint.proof().complete());
+        var hinted=hint.lines().stream().filter(line->line.move().equals(offer)).findFirst().orElseThrow();
+        check.same("Hint never ends on the unsupported quiet offer",List.of(offer,pawnCapture,rookRecapture),hinted.line());
+
+        var review=TacticalAnalysis.review(board,offer,Set.of(),new MatchAiPolicy.Search(2,100_000),ROOM);
+        check.same("Game Review closes the same capture before grading the played move",List.of(offer,pawnCapture,rookRecapture),review.played().line().subList(0,3));
+        check.same("Game Review publishes no incomplete reserve receipt",true,review.proof()==null||review.proof().complete());
+        var replay=board;for(var move:review.played().line())replay=replay.play(move);var finalPosition=replay;
+        check.same("Every audited move is legal and the proof does not leave the final piece hanging",true,finalPosition.legalMoves().stream().noneMatch(move->move.to()==rookRecapture.to()&&MatchMaterial.victim(finalPosition,move)!=null));
+    }
+
     @Test void aSingleUnpaidNodeOrForcingPlyPublishesNoScore(Checks check) {
         var board=ChessPosition.fromFen(CHAIN);var root=List.of(m("d2d4"));var completed=CoachingProof.compare(board,root,1,Set.of(),ROOM);
         int exact=completed.work().nodes();
