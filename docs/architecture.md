@@ -112,6 +112,7 @@ flowchart LR
 | Shared board and arrow geometry | `BoardPanelLayout`, `HintArrow` | `BoardPanelLayoutTest`, `HintArrowTest`, `MatchAnalysisParityTest` |
 | Component result and publication | `Checks`, `ExtentAudit`, `ComponentQualification` | `ExtentGovernanceTest`, `ReleaseGovernanceTest` |
 | Advisory routes and delivery | `ReleaseRag`, `ReleaseGate` | `GeometryRagGovernanceTest`, `ReleaseGovernanceTest` |
+| Code ownership and dependency direction | [Code quality contract](code-quality.md) | `SourceBoundaryGovernanceTest`, `DocumentationGovernanceTest` |
 | Documentation shape and meaning | Area guide, `MarkdownVisualContract`, `DocumentationPair` | `MarkdownDiagramGovernanceTest`, `DocumentationGovernanceTest`, paired review |
 
 ## Change Checklist

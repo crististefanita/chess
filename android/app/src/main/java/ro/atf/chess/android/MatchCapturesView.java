@@ -29,6 +29,7 @@ final class MatchCapturesView extends TextView {
         setTextSize(12);
         setTextColor(0xffc0bfb4);
         setIncludeFontPadding(false);
+        setMaxLines(1);
         BoardCaption.reserve(this, 1);
         // An icon-only line can report different font metrics from a text line.
         setHeight(getLineHeight());
@@ -36,7 +37,11 @@ final class MatchCapturesView extends TextView {
     }
 
     void show(Side side, MatchMaterial.Seat seat) {
-        if (side == shownSide && seat.equals(shown)) return;
+        boolean visible = !seat.captured().isEmpty() || seat.advantage() > 0;
+        if (side == shownSide && seat.equals(shown)) {
+            setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+            return;
+        }
         shown = seat;
         shownSide = side;
         var content = new SpannableStringBuilder();

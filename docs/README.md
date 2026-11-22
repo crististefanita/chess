@@ -7,6 +7,7 @@ Start with the guide that answers your question. Verify claims about behavior ag
 | Question | Guide |
 |---|---|
 | How do the engine, app, and tests fit together? | [Chess architecture](../README.md#chess-architecture) · [Context atlas](architecture.md) · [Engine and adapters](../web/README.md#shared-engine-and-platform-adapters) · [ATF libraries](../lib/README.md) |
+| How do I keep code ownership and dependencies clear? | [Code quality contract](code-quality.md) · [Owner and test map](architecture.md#owner-and-test-map) |
 | How do I play and configure puzzles? | [Board and gameplay](board/README.md) · [Catalog](board/quest-curation.md) |
 | How are AI opponents measured and game reviews interpreted? | [AI protocol](board/ai-quality.md#checks-for-every-change) · [Game Review](board/game-review.md) |
 | What needs checking before a change? | [Choosing a test level](testing/README.md#choosing-the-test-level) · [Extent reporting](testing/README.md#extent-reporting) |
@@ -42,13 +43,15 @@ Run from the TMP copy with JDK 21. If you use `-o`, the selected Maven repositor
 must already contain the dependencies and plugins.
 
 ```powershell
-mvn test '-Dtest=DocumentationGovernanceTest,ReleaseGovernanceTest' '-Dchess.extent=target/doc-governance.html'
+mvn -pl atf-tests -am test '-Dtest=ChessGovernanceSuite' '-Dsurefire.failIfNoSpecifiedTests=false' '-Dchess.extent=target/doc-governance.html'
 ```
 
-`DocumentationGovernanceTest` checks the README map, local navigation, current
-release destinations, feedback structure, and Markdown rules for guides and diagrams.
-The same checks cover the Web guide and parity matrix.
-`ReleaseGovernanceTest` checks publication rules and RAG routes.
+`ChessGovernanceSuite` includes `SourceBoundaryGovernanceTest` for production
+import boundaries, plus `DocumentationGovernanceTest`,
+`DocumentationPairGovernanceTest`, `MarkdownDiagramGovernanceTest`,
+`SuiteGovernanceTest`, `ExtentGovernanceTest`, and release governance. Together
+they check README routing, local navigation, bilingual structure, Markdown,
+report auditing, and publication rules.
 
 During review, compare claims against sources and build declarations.
 Check information ownership, example fidelity, rendering, and command results.

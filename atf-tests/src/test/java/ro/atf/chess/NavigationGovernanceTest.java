@@ -98,6 +98,31 @@ class NavigationGovernanceTest {
                 .contains("MatchHistorySelection.at(match, viewPly)"));
     }
 
+    @Test void webHistoryReadsTheBoundCacheBeforeSearchingAndReusesItsSourceObject(Checks check) throws IOException {
+        String analysis = Files.readString(ProjectRoot.locate().resolve("web/src/main/java/ro/atf/chess/WebMatchAnalysis.java"));
+        check.same("The Web adapter looks up the exact match checkpoint and ply before searching", true,
+                analysis.contains("cache.find(checkpoint, ply)")
+                        && analysis.contains("cached == null ? match.hintAt(ply) : cached.hint()"));
+        check.same("A cache hit restores the source object used by playable hints", true,
+                analysis.contains("if (cached != null) position = cached.position()"));
+        check.same("Only a miss is offered to the bounded proof-aware cache", true,
+                analysis.contains("if (cached == null) cache.remember(checkpoint, ply, position, analyzed)"));
+        check.same("Changing away from AI analysis clears retained values", true, analysis.contains("cache.clear()"));
+    }
+
+    @Test void androidMatchHistoryReadsTheBoundCacheBeforeSearchingAndClearsItOnClose(Checks check) throws IOException {
+        String analysis = Files.readString(ProjectRoot.locate().resolve("android/app/src/main/java/ro/atf/chess/android/MatchAnalysisView.java"));
+        check.same("Native history looks up the exact checkpoint and ply", true,
+                analysis.contains("analysisCache.find(matchCheckpoint, ply)"));
+        check.same("A native cache hit uses the retained source object for the playable hint", true,
+                analysis.contains("shownPosition = cached == null ? position : cached.position()"));
+        check.same("Only evaluated native analysis is retained", true,
+                analysis.contains("if (matchCheckpoint != null && evaluation != null)")
+                        && analysis.contains("analysisCache.remember(matchCheckpoint, ply, position, analyzed)"));
+        check.same("Closing the native view releases retained analysis", true,
+                analysis.contains("void close()") && analysis.contains("analysisCache.clear()"));
+    }
+
     private static String source(String name) throws IOException {
         return Files.readString(ProjectRoot.locate().resolve("web/src/main/web/" + name));
     }

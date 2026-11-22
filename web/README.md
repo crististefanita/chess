@@ -17,6 +17,8 @@ The Web build compiles the Java 17 engine with TeaVM 0.15.0 into an ES module. T
 
 - In the code under test, using SnakeYAML in the browser prevented rule initialization at `System.getLogger`. Generation resolves the dependency at build time. Checkpoint serialization retains the existing format through a `StringBuilder` that also works in the TeaVM runtime. The same cases verify the starting position, castling, en passant, promotion, game results, checkpoint restoration, openings, and puzzles.
 
+- The portable core uses `PortableSha256` for Hard proof IDs and Game Review checkpoint identity. It emits standard SHA-256 bytes without JCA provider discovery, preserving the existing hex and Base64 values. `PortableSha256Test` checks known vectors, padding boundaries, and parity with the JDK; `ChessWebParityPublication` compares both IDs from the compiled worker with JVM output. `TeaVmPortabilityGovernanceTest` rejects provider or class-loader lookup in production core sources. A successful Java compile is not a Web pass: build the TeaVM bundle and run `ChessWebParityPublication` before qualifying worker behavior.
+
 </details>
 
 ## Shared engine and platform adapters
@@ -83,6 +85,8 @@ change produces a new URL. The game URL stays the same.
 
 Color, difficulty, and automation belong to the saved match slot. Changing the name, language, or board orientation keeps the current position.
 
+MatchCaptures supplies the top and bottom capture rows from the selected history ply and board orientation. Web reuses the Staunton SVG artwork, groups repeated pieces, shows +N for material advantage, and keeps empty rows mounted so bot replies and history navigation never move the board.
+
 <details>
 <summary>Setup, local preferences, and reload probe</summary>
 
@@ -129,14 +133,21 @@ mvn -B -ntp -pl atf-tests test '-Dtest=ChessWebBotPublication' "-Dchess.web.bund
 - The choice belongs to the slot and is retained on reopening. In any match, study the position separately and play both sides through **Analysis board** in game options.
 
 - The bar spans the full height of the board's left edge. The score appears above history, and the lightbulb sits beside the arrows, including at the starting position.
-- Bar color follows board orientation, and the score uses White's perspective. Navigating history recalculates the evaluation for the displayed position.
-- The final position shows the match result.
+- Bar color follows board orientation, and the score uses White's perspective. History navigation reuses a completed evaluation for an already analyzed ply; a new position is calculated once.
+- Only complete, proof-carrying analyses are kept in a bounded, in-memory cache of 64 positions for the unchanged match. A changed match checkpoint clears it, and returning to a cached position resets the hint cursor. Reloading the app starts with an empty cache.
+- At the final position, the result offers the same **📊 Game review** action as the APK. It opens only at the match end; browsing an earlier ply shows the position status without that action.
 
 - The lightbulb clears the current selection and shows the recommended move. The suggestion button opens the line on the preview board, where arrows step through the moves without changing the match.
 - **Calculated line**, **Mating line** and Analysis board previews inherit the visible source board's side before opening. Steps and branch changes retain the square; reopening measures the current source again. Fixed header and navigation rows surround the board. The explanation scrolls in the remaining area, without overlapping the square or scrolling the whole dialog.
 - Closing returns to the history ply, and reopening the slot resumes at the end of the match with the hint hidden. The analysis board also offers opening theory.
 - At the current position, tapping the marked destination plays the legal hint when there is no board selection. The browser calculates analysis in a separate worker.
 - Changing the position or leaving the match invalidates the previous result. [Component and UI checks](../docs/testing/README.md#analysis-in-the-ai-game)
+
+### Game Review move colors
+
+The move list keeps the localized grade text and also mirrors the APK's grade colors: Brilliant, Great, and Best use the review accent; Mistake, Miss, and Blunder use the warning color. Other grades retain the primary text color. The grade remains in the accessible move label, so color is not the only signal.
+
+`review-presentation.mjs` owns the grade-tone groups and final-action eligibility. Component tests cover every grade, final-only visibility, and action blockers while analysis runs; the presentation test also guards the shared menu route. This does not replace paired APK/Web rendering receipts.
 
 ### The board in puzzles and matches
 

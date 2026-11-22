@@ -14,9 +14,17 @@ import java.util.stream.Stream;
 
 /** Small local retriever. It cites tracked guidance and leaves execution to the evidence gates. */
 public final class ReleaseRag {
-    private record Route(String path, String document, String heading, String check) {
+    private record Route(String path, String document, String heading, String check, String alternateHeading) {
+        Route(String path, String document, String heading, String check) {
+            this(path, document, heading, check, null);
+        }
+
         boolean matches(String changedPath) {
             return path.endsWith("/") ? changedPath.startsWith(path) : changedPath.equals(path);
+        }
+
+        String resolveHeading(List<String> lines) {
+            return lines.contains(heading) || alternateHeading == null ? heading : alternateHeading;
         }
     }
 
@@ -190,6 +198,8 @@ public final class ReleaseRag {
             new Route("atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java", RELEASE.document(), RELEASE.heading(), RELEASE.check()),
             new Route("docs/testing/README.md", "docs/testing/README.md", "## JVM suites", "ChessJvmSuite and ChessGovernanceSuite"),
             new Route("docs/README.md", "docs/README.md", "## Documentation Checks", "DocumentationGovernanceTest and ReleaseGovernanceTest"),
+            new Route("docs/code-quality.md", "docs/code-quality.md", "## Executable governance",
+                    "SourceBoundaryGovernanceTest and DocumentationGovernanceTest", "## Guvernanță executabilă"),
             new Route("docs/architecture.md", "docs/architecture.md", "## Overview", "DocumentationGovernanceTest, MarkdownDiagramGovernanceTest and DocumentationPairGovernanceTest"),
             new Route("docs/board/", "docs/testing/README.md", "## Engine and projection", "BoardPanelLayoutTest and QuestHintTest"),
             new Route("docs/feedback/", "docs/feedback/README.md", "# Feedback · Chess Lab",
@@ -302,9 +312,10 @@ public final class ReleaseRag {
                 document = Guidance.read(root.resolve(route.document()));
                 documents.put(route.document(), document);
             }
-            int line = document.lines().indexOf(route.heading()) + 1;
-            if (line == 0) throw new IOException("Missing citation anchor: " + route.document() + " " + route.heading());
-            var citation = new Citation(route.document(), line, route.heading(), document.sha256(), route.check());
+            String heading = route.resolveHeading(document.lines());
+            int line = document.lines().indexOf(heading) + 1;
+            if (line == 0) throw new IOException("Missing citation anchor: " + route.document() + " " + heading);
+            var citation = new Citation(route.document(), line, heading, document.sha256(), route.check());
             if (!result.contains(citation)) result.add(citation);
         }
         return new Inventory(result, paths.stream().filter(covered::contains).toList(),

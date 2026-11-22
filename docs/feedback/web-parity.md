@@ -22,10 +22,7 @@ equivalent decisions in `ChessActivity`, `AnalysisActivity`, and the Web
 adapter. Start with resuming, canceling, and receiving a delayed AI reply.
 [Engine and projection](../testing/README.md#engine-and-projection)
 
-**P1 · Web compilation · Hard proof digest.** At source `9f4fff3`, the full Web build fails in
-[`PawnPushProof.hash`](../../chess-core/src/main/java/ro/atf/chess/PawnPushProof.java): TeaVM cannot compile the reachable JCA provider path behind `MessageDigest.getInstance("SHA-256")`.
-The JVM classes compile, and the Android adapter compiles separately. Keep the qualified published engine for UI-only bundles.
-Before publishing a new engine, use a deterministic portable digest and verify identical proof IDs on JVM and TeaVM, then rerun the complete Web build and Hard controls. Do not qualify the failed engine from its successful JVM compilation alone.
+**Resolved 2026-11-22 · Web compilation · Hard proof digest.** `PortableSha256` emits the same standard SHA-256 bytes without JCA provider lookup. `PawnPushProof` and `GameReviewCodec` use it, preserving their existing lowercase-hex and Base64 identifiers. `PortableSha256Test` covers standard vectors, padding boundaries, JDK parity, and both persisted identifier contracts. `TeaVmPortabilityGovernanceTest` rejects provider discovery or class-loader lookup from production core sources. The complete TeaVM build and packaged-worker parity test remain the qualification gate; Java compilation by itself is not.
 
 **Closure checks**
 
@@ -91,3 +88,12 @@ including after a reload and in an already open tab.
 **P2 · Focus, large text and remaining contexts.** The published compact Analysis board has an observed anchored menu and unchanged board without document scrolling. This does not complete the RO/EN 130% matrix for Puzzles, Game Review and Why.
 
 Verify the last option, keyboard dismissal, focus return and the preserved source/cursor in those contexts at compact and desktop sizes. Retain a driver receipt and captures for each missing profile; no full rendered-parity claim follows from the existing component verdict. [Observed compact baseline](https://github.com/crististefanita/chess/blob/b51e17e7752cc0c0a3ec7be9500a362f4d3b20d2/release/0.16.1/reports/web-rendered-observation.json) · [Menu contract](../../web/README.md#main-menu-and-pieces)
+
+## WEB-06 · Game Review color, result action and analysis reuse
+
+**Components pass; paired rendered qualification remains open.** Web assigns the APK's grade-color groups to each move row and shows the localized **📊 Game review** action at the final position. Reopening an already analyzed ply in the same unchanged match reuses only complete, proof-carrying analysis. The cache retains the source position object for playable-line identity, resets the hint cursor on reuse, holds at most 64 positions, and clears when the match checkpoint changes. Incomplete analysis and work from another match are not reused. The cache is process-local; a reload may calculate again. `MatchAnalysisCacheComponentTest` and `ChessWebReviewPresentationTest` qualify the cache and presentation contracts with component assertions and Extent; `NavigationGovernanceTest` verifies the Android and Web adapters use the same cache contract.
+
+`PortableSha256` resolves the TeaVM compilation blocker tracked above. The full TeaVM bundle and packaged-worker parity gates now pass. The cache and presentation changes still need paired APK/Web rendered receipts for a finished result in RO/EN and history replay; shared-source and worker parity do not establish visual parity by themselves.
+
+- The component gate covers every grade group, textual labels, final-only visibility, blockers during analysis, a repeat hit for the same checkpoint/ply, exact-position line replay, hint reset, 64-entry LRU eviction, checkpoint invalidation, and rejection of incomplete work.
+- Close only with paired APK/Web receipts for a finished result and colored move list in RO/EN, plus an observed back/forward sequence showing that revisiting a cached AI ply returns immediately without a new search. Do not infer rendered parity from shared source alone.

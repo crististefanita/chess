@@ -38,6 +38,7 @@ import ro.atf.chess.ChessPosition.Move;
 import ro.atf.chess.ChessPosition.Side;
 import ro.atf.chess.GameReview;
 import ro.atf.chess.MatchControls;
+import ro.atf.chess.MatchCaptures;
 import ro.atf.chess.MatchSetup;
 import ro.atf.chess.MatchSlots;
 import ro.atf.chess.PuzzleChromeLayout;
@@ -1143,9 +1144,9 @@ public final class ChessActivity extends BackNavigableActivity {
         var bottom = blackBelow ? ChessPosition.Side.BLACK : ChessPosition.Side.WHITE;
         renderMatchPlayer(topPlayer, bottom.other(), markTurn && shownPosition.turn() == bottom.other());
         renderMatchPlayer(bottomPlayer, bottom, markTurn && shownPosition.turn() == bottom);
-        var material = match.materialAt(ply);
-        topCaptures.show(bottom.other(), material.forSide(bottom.other()));
-        bottomCaptures.show(bottom, material.forSide(bottom));
+        var captures = MatchCaptures.at(match, ply, blackBelow);
+        topCaptures.show(captures.top().side(), captures.top().material());
+        bottomCaptures.show(captures.bottom().side(), captures.bottom().material());
         renderMatchStatus(reviewing, ply);
         int activeLabelId = (shownPosition.turn() == bottom ? bottomPlayer : topPlayer).getId();
         if (matchAnalysis != null) {

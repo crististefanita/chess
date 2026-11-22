@@ -20,6 +20,7 @@ import ro.atf.chess.ChessMatch;
 import ro.atf.chess.ChessPosition;
 import ro.atf.chess.ChessPosition.Move;
 import ro.atf.chess.MatchEvaluation;
+import ro.atf.chess.MatchAnalysisCache;
 import ro.atf.chess.MatchHint;
 import ro.atf.chess.QuestHint;
 import ro.atf.chess.TacticalAnalysis;
@@ -33,6 +34,7 @@ final class MatchAnalysisView extends TextView {
     private final EvaluationBar evaluationBar;
     private final IntSupplier sourceBoardSide;
     private final Runnable renderBoard;
+    private final MatchAnalysisCache analysisCache = new MatchAnalysisCache();
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
     private ChessPosition shownPosition;
     private double shownTerminal = Double.NaN;
@@ -87,7 +89,9 @@ final class MatchAnalysisView extends TextView {
     void show(ChessMatch match, int ply) {
         double terminal = match.result() != ChessMatch.Result.IN_PROGRESS && ply == match.ply()
                 ? MatchEvaluation.terminalWhiteShare(match.result()) : Double.NaN;
-        show(match.positionAt(ply), () -> match.hintAt(ply), terminal, "MATCH|" + match.checkpoint() + "|" + ply);
+        String checkpoint = match.checkpoint();
+        show(match.positionAt(ply), () -> match.hintAt(ply), terminal,
+                "MATCH|" + checkpoint + "|" + ply, checkpoint, ply);
     }
 
     void show(ChessPosition position) {
@@ -104,13 +108,29 @@ final class MatchAnalysisView extends TextView {
     }
 
     private void show(ChessPosition position, Supplier<MatchHint> search, double terminal, String source) {
-        if (position == shownPosition && Double.compare(terminal, shownTerminal) == 0) return;
+        show(position, search, terminal, source, null, -1);
+    }
+
+    private void show(ChessPosition position, Supplier<MatchHint> search, double terminal, String source,
+                      String matchCheckpoint, int ply) {
+        if (position == shownPosition && Double.compare(terminal, shownTerminal) == 0 && source.equals(shownSource)) return;
         var restoring = pendingRestoration;
+        var cached = matchCheckpoint == null ? null : analysisCache.find(matchCheckpoint, ply).orElse(null);
         cancel();
         pendingRestoration = restoring != null && restoring.source().equals(source) ? restoring : null;
         shownSource = source;
-        shownPosition = position;
+        shownPosition = cached == null ? position : cached.position();
         shownTerminal = terminal;
+        if (cached != null) {
+            hint = cached.hint();
+            shownEvaluation = hint.evaluation(shownPosition);
+            if (shownEvaluation != null) {
+                display();
+                restorePreview(request);
+                return;
+            }
+            hint = null;
+        }
         setText(R.string.match_analysis_pending);
         setContentDescription(null);
         int currentRequest = request;
@@ -120,6 +140,8 @@ final class MatchAnalysisView extends TextView {
             post(() -> {
                 if (request != currentRequest) return;
                 pending = null;
+                if (matchCheckpoint != null && evaluation != null)
+                    analysisCache.remember(matchCheckpoint, ply, position, analyzed);
                 if (evaluation == null) {
                     boolean incomplete=analyzed.proof().filter(p->!p.complete()).isPresent();
                     setText(incomplete?R.string.match_analysis_incomplete:R.string.match_analysis_ended);
@@ -303,6 +325,7 @@ final class MatchAnalysisView extends TextView {
 
     void close() {
         cancel();
+        analysisCache.clear();
         worker.shutdown();
     }
 }

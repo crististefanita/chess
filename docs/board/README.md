@@ -248,7 +248,7 @@ flowchart LR
 
 ### Material and outcomes
 
-- Captured pieces appear below each name, with a number next to the symbol when several are of the same type. The player with a material advantage sees `+N` on the same row. Captures and the advantage follow the displayed ply, including in history and after resuming. [Chess.com display reference](https://support.chess.com/en/articles/8708638-how-can-i-see-the-captured-pieces-and-material-count)
+- Captured pieces and +N material advantage follow the displayed ply, including in history and after reopening. Android keeps each tray with its player name; Web keeps fixed-height trays directly above and below the board. Both rows follow seat ownership when the board flips, group duplicate pieces with a count, and reserve their height when empty so the board does not shift. [Chess.com display reference](https://support.chess.com/en/articles/8708638-how-can-i-see-the-captured-pieces-and-material-count)
 
 - The engine applies castling, en passant, and promotion choice. The game ends at checkmate, stalemate, common insufficient-material configurations, the fifth occurrence of the position, or 75 moves by each side without a capture or pawn move. Draw claims are part of the competition rules. [FIDE Laws of Chess](https://handbook.fide.com/chapter/e012023)
 

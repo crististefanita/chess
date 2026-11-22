@@ -11,8 +11,10 @@ import { reviewAnnouncementChannel, reviewWhyText, sliderPlyForKey } from './rev
 import { createMatchBotTimer } from './match-bot-timer.mjs';
 import { bindInlineMatchAnalysis, guidedMatchMove } from './match-inline-analysis.mjs';
 import { renderMatchHistory } from './match-history.mjs';
+import { renderMatchCaptures } from './match-captures.mjs';
 import { attachOptionsMenu, followOptionsMenu } from './options-menu.mjs';
 import { createReviewImport } from './review-import.mjs';
+import { matchReviewActionState, reviewGradeTone } from './review-presentation.mjs';
 
 const storageKey = 'chesslab.game-review.v1';
 const ledgerKey = 'chesslab.match-ledger.v1';
@@ -72,6 +74,7 @@ const words = {
         LOSES_MATERIAL: (piece, square, captured, value) => `The ${piece} on ${square} captures the ${captured}. Material loss: ${value}.`,
         MISSES_MATERIAL: (piece, square, captured, value) => `The ${piece} on ${square} can capture the ${captured}. Material gain: ${value}.`,
         pieces: { PAWN: 'pawn', KNIGHT: 'knight', BISHOP: 'bishop', ROOK: 'rook', QUEEN: 'queen', KING: 'king' },
+        captured: (side, pieces, advantage) => side + ' captured ' + pieces + (advantage ? ' · Material +' + advantage : ''),
         start: 'Start', step: 'Line', pieceAt: (piece, white, square) => `${white ? 'white' : 'black'} ${piece} ${square}`,
     },
     ro: {
@@ -122,6 +125,7 @@ const words = {
         LOSES_MATERIAL: (piece, square, captured, value) => `${piece} pe ${square} capturează ${captured}. Pierdere de material: ${value}.`,
         MISSES_MATERIAL: (piece, square, captured, value) => `${piece} pe ${square} poate captura ${captured}. Câștig de material: ${value}.`,
         pieces: { PAWN: 'pionul', KNIGHT: 'calul', BISHOP: 'nebunul', ROOK: 'turnul', QUEEN: 'dama', KING: 'regele' },
+        captured: (side, pieces, advantage) => side + ' a capturat ' + pieces + (advantage ? ' · Material +' + advantage : ''),
         start: 'Start', step: 'Linie', pieceAt: (piece, white, square) => `${piece} ${white ? 'la alb' : 'la negru'} pe ${square}`,
     },
 }[locale];
@@ -462,6 +466,14 @@ function drawHistory(state) {
         const ply = Number(item.dataset.ply);
         const label = reviewWorkspace.moveLabel(state, ply);
         if (item.textContent !== label) item.textContent = label;
+        const grade = reviewWorkspace.moveGrade(state, ply);
+        if (grade) {
+            item.dataset.grade = grade;
+            item.dataset.gradeTone = reviewGradeTone(grade);
+        } else {
+            delete item.dataset.grade;
+            delete item.dataset.gradeTone;
+        }
         const position = reviewWorkspace.positionText(state, ply);
         if (item.getAttribute('aria-label') !== position) item.setAttribute('aria-label', position);
         item.tabIndex = ply === state.ply ? 0 : -1;
@@ -677,13 +689,19 @@ function renderMatch() {
     container.dataset.level = match.level;
     container.dataset.awaitingBot = match.awaitingBot;
     orientBoard(matchBoard, matchSquares, match.blackBelow);
+    renderMatchCaptures(find('match-captures-top'), match.captures.top, pieceArtwork, words);
+    renderMatchCaptures(find('match-captures-bottom'), match.captures.bottom, pieceArtwork, words);
     drawBoard(matchBoard, matchSquares, match);
     inlineMatchAnalysis.show(match, container.dataset.matchId);
     drawMatchHint(inlineMatchAnalysis.revealedMove(), match.blackBelow);
     const result = browsing || match.result === 'IN_PROGRESS' ? words[match.sideToMove]
         : match.resigned ? words.resigned : match.result === 'AGREED_DRAW' ? words.agreedDraw : words[match.result] ?? words.DRAW;
-    find('match-turn').textContent = match.manualAiTurn ? words.manualAiTurn
+    find('match-result').textContent = match.manualAiTurn ? words.manualAiTurn
         : match.awaitingBot && failedBotRevision !== match.revision ? words.botTurn : result;
+    const reviewResult = find('match-review-result');
+    reviewResult.hidden = !matchReviewActionState(match, { browsing }).visible;
+    reviewResult.setAttribute('aria-label', words['menu-review']);
+    find('match-review-label').textContent = words['menu-review'];
     find('match-profile').hidden = !isAi;
     if (isAi) {
         const summary = words.aiProfile(levels[match.level], words[`${match.humanSide.toLowerCase()}-choice`]);
@@ -723,6 +741,7 @@ function renderAnalysis() {
     find('analyze').textContent = reviewed ? words.openCached : words.analyze;
     find('open-match-analysis').hidden = match?.mode === 'AI';
     find('analyze').hidden = match?.mode === 'AI';
+    find('match-review-result').disabled = matchReviewActionState(match, { running, engineFailed, otherTabChanged }).disabled;
     const available = match?.menu ?? {};
     for (const [action, id] of Object.entries(menuActions)) {
         const button = find(id);
@@ -1286,6 +1305,7 @@ find('menu-analysis').addEventListener('click', () => {
     if (mode === matchRoute && !busy && !analysis && !engineFailed) contextualAnalysis.open(mode, matchOptionsButton);
 });
 find('menu-review').addEventListener('click', () => analyzeMatch(true));
+find('match-review-result').addEventListener('click', () => analyzeMatch(true));
 find('menu-draw').addEventListener('click', () => void decideMatch('OFFER_DRAW', match?.revision));
 find('menu-resign').addEventListener('click', () => {
     if (busy || !match?.menu.RESIGN) return;

@@ -220,10 +220,14 @@ export function createReviewWorkspace(locale, selectGraph) {
         return move ? `${move.slice(0, 2)} → ${move.slice(2, 4)}${promotion ? ` = ${promotion}` : ''}` : '';
     }
 
+    function moveGrade(view, ply) {
+        return ply > 0 ? view.gradeKeys?.[ply - 1] : undefined;
+    }
+
     function moveLabel(view, ply) {
         if (ply === 0) return words.start;
         const prefix = `${Math.ceil(ply / 2)}${ply % 2 ? '.' : '…'}`;
-        const grade = words.grade[view.gradeKeys?.[ply - 1]];
+        const grade = words.grade[moveGrade(view, ply)];
         return [prefix + ' ' + moveName(view.moves[ply - 1]), grade].filter(Boolean).join(' · ');
     }
 
@@ -298,7 +302,7 @@ export function createReviewWorkspace(locale, selectGraph) {
         toolbar.scrollLeft += revealDistance(viewport.left, viewport.right, selected.left, selected.right);
     }
 
-    return { render, moveLabel, positionText, announcementText, graphAnnouncementText, revealFocus,
+    return { render, moveGrade, moveLabel, positionText, announcementText, graphAnnouncementText, revealFocus,
         revealSelected: () => reveal(find('history').querySelector('[aria-current="step"]')),
         revealExplanation: () => reveal(find('why-title')) };
 }

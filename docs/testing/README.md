@@ -132,6 +132,8 @@ Every ply, including an opposing reply, requires the actual history-aware Hard a
 
 `ChessWebRulesComponentTest` checks the engine and catalogs on the JVM. `ChessWebParityPublication` executes the same cases in the TeaVM worker for all resources used. Run the probe explicitly with the bundle from TMP. [Web build and probes](../../web/README.md)
 
+`PortableSha256Test` verifies standard SHA-256 vectors, block-padding boundaries, and identical proof-history and Game Review checkpoint IDs against the JDK reference. `ChessWebParityPublication` sends both IDs through the compiled worker and compares them with JVM output. `TeaVmPortabilityGovernanceTest` rejects provider discovery and dynamic class loading in production core sources, including a negative fixture. The release path must still compile the actual TeaVM bundle and run `ChessWebParityPublication`; JVM success alone does not qualify Web execution.
+
 ### Opening the Web menu
 
 `ChessWebShellTest` compares the Web title and groups with the APK resources. Navigation components simulate browser history, direct access to a section, and returning to the menu. Governance checks the public address in the README, and the sanity run starts at that link in a fresh profile. [Menu contract](../../web/README.md#main-menu-and-pieces)
@@ -181,6 +183,8 @@ The native panel, study SVG, review Canvas and inline AI analysis share one geom
 ### Analysis in the AI game
 
 Compare the same checkpoint and ply in the JVM and worker. Use native and browser probes for the rendered bar, lightbulb, and fixed board.
+
+MatchCapturesTest verifies the current ply, both board orientations, AI/human seat ownership, bot captures, and restored history. match-captures.test.mjs checks Staunton rendering, grouped counts, accessibility text, fixed top/bottom rows, and clearing stale captures after history navigation. These components run without an emulator.
 
 `MatchHistorySelectionTest` verifies the single game-move cursor against fourteen shared cases. The Web component covers both wire formats, unchanged live announcements, history growth, branching and stale cursors. The compiled worker checks projection parity and orientation. In Browser MCP, step from Start through the first, intermediate and latest move at compact, landscape and desktop sizes; verify one label between the arrows, boundary cues and an unchanged board rectangle. The APK adapter uses the shared cursor in game mode and preserves the Analysis board's history strip.
 
@@ -411,6 +415,7 @@ Use components for slot and archive state, continuation, graph selection, and lo
 - [Game Review graph](../../web/README.md#game-review-graph)
 
 - `ChessWebReviewAccessibilityTest` checks focus destinations, history bounds, and required scrolling in Node. `GameReviewSessionTest` checks returning to the played position after **Why?**.
+- `MatchAnalysisCacheComponentTest` verifies completed-only analysis reuse, exact source identity for playable hints, cursor reset, invalidation, incomplete-work rejection, and LRU eviction without a browser or emulator. `ChessWebReviewPresentationTest` runs the grade-color and final-action component contracts in Node and reports the assertions through Extent. `NavigationGovernanceTest` checks that both Web and Android adapters consult this cache before searching, retain the source position used by playable hints, and release it at the proper boundary.
 - The Edge sanity run keeps the Tab, arrow-key, and visible focus return probe at 1.3× font scale. The compact Android RO/EN baseline verifies fit and position retention.
 - [Keyboard controls in Game Review](../../web/README.md#keyboard-navigation-in-game-review) · [Compact replay](#shared-replay-on-a-compact-screen)
 
@@ -538,7 +543,7 @@ does not replace independent Stockfish quality checks or paired-game Elo measure
 | JUnit entry point | What it checks |
 |---|---|
 | `ChessComponentSuite` | Rules, positions and puzzles, progress, games, openings, hints, and geometry verified in the JVM. Includes Web accessibility contracts run through Node.js. Runs offline. |
-| `ChessGovernanceSuite` | Suite inventory, Extent results and diagnostics, local documentation links, AI policy, and release qualification. |
+| `ChessGovernanceSuite` | Production source boundaries, suite inventory, Extent results and diagnostics, local documentation links, AI policy, and release qualification. |
 | `ChessBenchmarkSuite` | Stockfish, the offline league, and the Elo anchor. Each probe starts when given its documented inputs. |
 | `ChessJvmSuite` | The default Maven entry point. Combines the three selections in one report. |
 
