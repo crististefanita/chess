@@ -50,7 +50,7 @@ with explanation beside the board, keeping source/replay sizing aligned and
 changing the current no-jump contract.
 [Puzzle explanation controls](../../atf-tests/src/test/java/ro/atf/chess/PuzzleExplainLayoutTest.java)
 
-**Implemented · Native menu run identity; signed probe pending.** The Saved/Finished runner now generates one run ID for the paired phases and separate IDs for isolated runs. Extent checks the native marker, execution receipt and companion phase; negative component cases reject missing, substituted and cross-phase IDs. Keep the earlier focused observations outside strict supplemental qualification until the signed APK produces a new paired receipt.
+**Closed · Native menu run identity on the signed APK.** The Saved/Finished runner generates one run ID for the paired phases and separate IDs for isolated runs. Extent checks the native marker, execution receipt and companion phase; negative component cases reject missing, substituted and cross-phase IDs. Both 0.16.2 menu phases passed on the signed APK with the same run ID and two assertions each. They remain supplementary to the strict 30-assertion Game Review qualification. [Menu reports and executions](../../release/0.16.2/reports/README.md)
 
 **Closed · Native match history oracle on the signed APK.**
 `awaitHiddenAnalysis` compares the AI match's single selected-move label
