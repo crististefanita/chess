@@ -218,12 +218,10 @@ dialog::backdrop { background: #121613a8; }
 }
 .match-captures[aria-hidden="true"] { visibility: hidden; }
 .match-captures[data-seat="bottom"] { justify-content: flex-start; }
-.captured-piece { position: relative; display: inline-block; flex: 0 0 1.12rem; inline-size: 1.12rem; block-size: 1.12rem; }
+.captured-piece { position: relative; display: inline-block; flex: 0 0 .59rem; inline-size: .59rem; block-size: .59rem; }
 .captured-piece[data-shape] svg { display: block; width: 100%; height: 100%; }
-.captured-piece[data-shape] .piece-body { fill: #51535a; stroke: #26272c; }
-.captured-piece[data-shape] .piece-details { fill: none; stroke: #313238; }
-.captured-piece.white[data-shape] .piece-body { fill: #fffef9; stroke: #414244; }
-.captured-piece.white[data-shape] .piece-details { stroke: #666762; }
+.captured-piece[data-shape] .captured-piece-silhouette { fill: #65666d; stroke: #c0bfb4; stroke-width: 2; }
+.captured-piece.white[data-shape] .captured-piece-silhouette { fill: #f1efe5; stroke: #5a5b56; }
 .captured-piece-count { margin-inline-start: -.12rem; margin-inline-end: .1rem; color: #c0bfb4; }
 .match-material-advantage { margin-inline-start: .32rem; color: #b8d88a; font-weight: 650; }
 .match-board-frame {

@@ -85,7 +85,7 @@ change produces a new URL. The game URL stays the same.
 
 Color, difficulty, and automation belong to the saved match slot. Changing the name, language, or board orientation keeps the current position.
 
-MatchCaptures supplies the top and bottom capture rows from the selected history ply and board orientation. Web reuses the Staunton SVG artwork, groups repeated pieces, shows +N for material advantage, and keeps empty rows mounted so bot replies and history navigation never move the board.
+MatchCaptures supplies the top and bottom capture rows from the selected history ply and board orientation. Both adapters use the same 48-unit `ChessPieceArtwork` silhouettes. Web matches the APK's capture-specific painter: silhouette only, the same light/dark fill and outline, and an icon scaled to 82% of the caption text. It groups repeated pieces, shows +N for material advantage, and keeps empty rows mounted so bot replies and history navigation never move the board. The board continues to use its separate detailed piece rendering.
 
 <details>
 <summary>Setup, local preferences, and reload probe</summary>

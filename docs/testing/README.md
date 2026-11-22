@@ -184,7 +184,7 @@ The native panel, study SVG, review Canvas and inline AI analysis share one geom
 
 Compare the same checkpoint and ply in the JVM and worker. Use native and browser probes for the rendered bar, lightbulb, and fixed board.
 
-MatchCapturesTest verifies the current ply, both board orientations, AI/human seat ownership, bot captures, and restored history. match-captures.test.mjs checks Staunton rendering, grouped counts, accessibility text, fixed top/bottom rows, and clearing stale captures after history navigation. These components run without an emulator.
+`MatchCapturesTest` verifies the selected ply, both board orientations, seat ownership, AI captures, and restored history. The mocked `match-captures.test.mjs` checks all five capturable kinds, shared 48-unit silhouettes, APK-matched capture palette and 82% icon scale, grouped counts, RO/EN accessible labels, fixed top/bottom rows, and invalid or stale capture data. The style contract reads the native capture painter as its reference. These component checks run without an emulator.
 
 `MatchHistorySelectionTest` verifies the single game-move cursor against fourteen shared cases. The Web component covers both wire formats, unchanged live announcements, history growth, branching and stale cursors. The compiled worker checks projection parity and orientation. In Browser MCP, step from Start through the first, intermediate and latest move at compact, landscape and desktop sizes; verify one label between the arrows, boundary cues and an unchanged board rectangle. The APK adapter uses the shared cursor in game mode and preserves the Analysis board's history strip.
 
