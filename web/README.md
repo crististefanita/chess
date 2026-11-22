@@ -86,7 +86,7 @@ fișierelor runtime produce o adresă nouă. Adresa jocului rămâne aceeași.
 
 Culoarea, dificultatea și automatizarea aparțin slotului salvat. Schimbarea numelui, a limbii sau a orientării tablei păstrează poziția curentă.
 
-MatchCaptures furnizează rândurile de capturi de sus și de jos pentru semimutarea selectată și orientarea tablei. Web reutilizează piesele SVG Staunton, grupează piesele repetate, arată +N pentru avantajul material și păstrează rândurile goale în pagină, astfel încât replica AI sau navigarea în istoric să nu deplaseze tabla.
+MatchCaptures furnizează rândurile de capturi de sus și de jos pentru semimutarea selectată și orientarea tablei. Ambele adaptoare folosesc aceleași siluete `ChessPieceArtwork` pe grila de 48 de unități. Web respectă desenarea capturilor din APK: numai silueta, aceeași umplere deschisă/închisă și același contur, iar pictograma are 82% din dimensiunea textului explicativ. Piesele repetate sunt grupate, avantajul material apare ca +N, iar rândurile goale rămân montate pentru ca replica AI sau navigarea în istoric să nu deplaseze tabla. Tabla folosește separat desenul detaliat al pieselor.
 
 <details>
 <summary>Configurare, preferințe locale și probă de reîncărcare</summary>

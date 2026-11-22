@@ -68,6 +68,10 @@ trebuie să înlocuiască diagnosticul unui oracol UI greșit.
 
 **P2 · Dovezi pereche ale adaptoarelor.** Antetul comun și cursorul unic au deja cazuri comune de componentă. Lipsește o recepție randată reutilizabilă pentru aceeași poziție sursă, variantă, cursor și secvență Înapoi pe APK și Web. Motorul Web mai vechi păstrat nu trebuie prezentat ca paritate cu un motor nativ mai nou.
 
+**Corecție de componentă pentru piesele capturate · 2026-11-22.** Web folosește acum silueta comună de 48 de unități, culorile de umplere și contur din APK și aceeași scară de 82% între icon și textul rândului. Componentele DOM simulate și Extent verifică toate cele cinci tipuri capturabile, intrările invalide, culoarea piesei și rândurile stabile. Neconcordanța de stil între adaptoare este închisă; aceasta nu înlocuiește recepția vizuală pereche cerută mai sus.
+
+**Poarta workerului rămâne deschisă · 2026-11-22.** `ChessWebParityPublication#packagedWorkerProjectsInlineMatchAnalysis` a depășit limita existentă de 55 de secunde pentru procesul copil în cazul `active-historical-replay`, în trei încercări. Celelalte patru cazuri din prima rulare de publicare au trecut, iar intrarea workerului și motorul compilat sunt identice octet cu octet cu runtime-ul candidat anterior. Păstrați poarta deschisă; investigați durata limitată fără a mări timeout-ul și fără a modifica regulile sau comportamentul AI în cadrul lucrării pentru stilul pieselor capturate.
+
 - Folosiți cazurile de istoric al deschiderii și analiză a matului din [contractul comun de testare](../testing/README.md#antet-și-navigare-comune).
 - Păstrați separat pentru fiecare adaptor identitățile surselor/artefactelor, profilul RO/EN, starea așteptată și întoarcerea observată. Workerul și geometria nu înlocuiesc randarea nativă sau MCP lipsă.
 - Închideți numai când recepțiile pereche arată aceeași linie și stare restaurată, inclusiv după reload/restart, pe APK-ul calificat și bundle-ul Web servit.

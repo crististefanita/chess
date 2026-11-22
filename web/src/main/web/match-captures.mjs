@@ -1,11 +1,28 @@
-import { showReviewPiece } from './review-workspace.mjs';
-
 const shapes = { PAWN: 'p', KNIGHT: 'n', BISHOP: 'b', ROOK: 'r', QUEEN: 'q' };
 const fallback = { p: '♟', n: '♞', b: '♝', r: '♜', q: '♛' };
 
+function showCapturedPiece(element, type, artwork) {
+    const shape = artwork?.[type]?.body;
+    if (!shape) return false;
+    const namespace = 'http://www.w3.org/2000/svg';
+    const svg = element.ownerDocument.createElementNS(namespace, 'svg');
+    svg.setAttribute('viewBox', '0 0 48 48');
+    svg.setAttribute('preserveAspectRatio', 'none');
+    const silhouette = element.ownerDocument.createElementNS(namespace, 'path');
+    silhouette.setAttribute('d', shape);
+    silhouette.setAttribute('class', 'captured-piece-silhouette');
+    silhouette.setAttribute('stroke-width', '2');
+    silhouette.setAttribute('stroke-linejoin', 'round');
+    svg.append(silhouette);
+    element.replaceChildren(svg);
+    element.dataset.shape = type;
+    return true;
+}
+
 export function renderMatchCaptures(container, seat, artwork, words) {
     const side = seat?.side;
-    const captures = seat?.pieces ?? [];
+    const captures = (seat?.pieces ?? []).filter(captured => captured && shapes[captured.kind]
+        && Number.isInteger(captured.count) && captured.count > 0);
     const advantage = seat?.advantage ?? 0;
     container.dataset.side = side ?? '';
     container.replaceChildren();
@@ -19,12 +36,11 @@ export function renderMatchCaptures(container, seat, artwork, words) {
     const spokenPieces = [];
     for (const captured of captures) {
         const kind = shapes[captured.kind];
-        if (!kind || !Number.isInteger(captured.count) || captured.count < 1) continue;
         const piece = container.ownerDocument.createElement('span');
         piece.className = 'captured-piece' + (opponentIsWhite ? ' white' : '');
         piece.dataset.captured = captured.kind;
         piece.setAttribute('aria-hidden', 'true');
-        if (!showReviewPiece(piece, kind, artwork)) piece.textContent = fallback[kind];
+        if (!showCapturedPiece(piece, kind, artwork)) piece.textContent = fallback[kind];
         container.append(piece);
         if (captured.count > 1) {
             const count = container.ownerDocument.createElement('small');

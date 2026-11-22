@@ -184,7 +184,7 @@ Panoul nativ, SVG-ul de studiu, Canvas-ul analizei și analiza AI inline au un s
 
 Comparați același checkpoint și aceeași semimutare în JVM și în worker. Folosiți probele native și de browser pentru bara randată, bec și tabla fixă.
 
-MatchCapturesTest verifică semimutarea curentă, ambele orientări, locurile AI/jucător, capturile calculatorului și istoricul restaurat. match-captures.test.mjs verifică piesele Staunton, gruparea numărului, textul accesibil, rândurile fixe de sus și jos și eliminarea capturilor vechi la navigarea în istoric. Aceste componente rulează fără emulator.
+`MatchCapturesTest` verifică semimutarea selectată, ambele orientări, locul fiecărui jucător, capturile AI și istoricul restaurat. Mock-ul `match-captures.test.mjs` acoperă toate cele cinci tipuri capturabile, siluetele comune pe grila de 48 de unități, paleta și scara pictogramei din APK, gruparea, textele accesibile RO/EN, rândurile fixe de sus și jos și datele invalide sau vechi. Contractul stilistic citește desenatorul nativ drept reper. Aceste componente rulează fără emulator.
 
 `MatchHistorySelectionTest` verifică cursorul pentru o singură mutare prin paisprezece cazuri comune. Componenta Web acoperă ambele formate de transport, anunțurile neschimbate, creșterea istoricului, ramificarea și cursoarele expirate. Workerul compilat verifică paritatea proiecției și orientarea. În Browser MCP, parcurgeți Start, prima mutare, o mutare intermediară și ultima pe profil compact, landscape și desktop; verificați o singură etichetă între săgeți, indiciile limitelor și dreptunghiul tablei neschimbat. Adaptorul APK folosește cursorul comun în partidă și păstrează banda istoricului din Tabla de analiză.
 

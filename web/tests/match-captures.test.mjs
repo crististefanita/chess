@@ -30,6 +30,8 @@ const words = {
 const artwork = {
     p: { body: 'M 0 0 L 10 10 Z', details: 'M 1 1 L 9 9' },
     n: { body: 'M 0 0 L 10 10 Z', details: 'M 1 1 L 9 9' },
+    b: { body: 'M 0 0 L 10 10 Z', details: 'M 1 1 L 9 9' },
+    r: { body: 'M 0 0 L 10 10 Z', details: 'M 1 1 L 9 9' },
     q: { body: 'M 0 0 L 10 10 Z', details: 'M 1 1 L 9 9' },
 };
 
@@ -85,6 +87,23 @@ test('captured tray displays repeated pieces, side colors and clears stale frame
     assert.equal(tray.children.length, 0);
 });
 
+test('every capturable kind uses the shared silhouette and the captured side color', () => {
+    const tray = element();
+    for (const [kind, shape] of [['PAWN', 'p'], ['KNIGHT', 'n'], ['BISHOP', 'b'], ['ROOK', 'r'], ['QUEEN', 'q']]) {
+        assert.equal(renderMatchCaptures(tray, { side: 'BLACK', pieces: [{ kind, count: 1 }], advantage: 0 }, artwork, words), true);
+        const [piece] = tray.children;
+        const [svg] = piece.children;
+        const [silhouette] = svg.children;
+        assert.equal(piece.dataset.captured, kind);
+        assert.equal(piece.dataset.shape, shape);
+        assert.equal(piece.className.includes('white'), true, kind + ' captured by Black uses White artwork');
+        assert.equal(silhouette.attributes.get('d'), artwork[shape].body);
+        assert.equal(svg.children.length, 1, kind + ' has the same silhouette-only capture style as Android');
+    }
+    assert.equal(renderMatchCaptures(tray, { side: 'WHITE', pieces: [{ kind: 'KING', count: 1 }], advantage: 0 }, artwork, words), false);
+    assert.equal(tray.children.length, 0, 'a king is never invented as a captured piece');
+});
+
 test('capture rows provide the same accessible contract in Romanian', () => {
     const tray = element();
     const romanian = {
@@ -96,6 +115,33 @@ test('capture rows provide the same accessible contract in Romanian', () => {
     assert.equal(renderMatchCaptures(tray,
         { side: 'WHITE', pieces: [{ kind: 'PAWN', count: 1 }], advantage: 1 }, artwork, romanian), true);
     assert.equal(tray.attributes.get('aria-label'), 'Alb a capturat pionul · Material +1');
+});
+
+test('captured pieces match the APK silhouette, palette, and icon scale', async () => {
+    const tray = element();
+    const shape = 'M 12 39 C 12 34 17 31 19 28 Z';
+    const native = await readFile(new URL('../../android/app/src/main/java/ro/atf/chess/android/MatchCapturesView.java', import.meta.url), 'utf8');
+    const css = await readFile(new URL('../src/main/web/game-review.css', import.meta.url), 'utf8');
+    assert.equal(renderMatchCaptures(tray, { side: 'BLACK', pieces: [{ kind: 'PAWN', count: 1 }], advantage: 0 },
+        { p: { body: shape, details: 'M 1 1 L 9 9' } }, words), true);
+    const [icon] = tray.children;
+    const [svg] = icon.children;
+    const [silhouette] = svg.children;
+    assert.equal(svg.attributes.get('viewBox'), '0 0 48 48');
+    assert.equal(silhouette.attributes.get('d'), shape);
+    assert.equal(silhouette.attributes.has('class'), true);
+    assert.equal(silhouette.attributes.get('class'), 'captured-piece-silhouette');
+    assert.equal(svg.children.length, 1, 'captured icons omit inner detail strokes as on Android');
+
+    assert.match(native, /Math\.round\(getTextSize\(\)\s*\*\s*\.82f\)/);
+    assert.match(css, /\.match-captures\s*\{[^}]*font-size:\s*\.72rem/s);
+    assert.match(css, /\.captured-piece\s*\{[^}]*inline-size:\s*\.59rem;[^}]*block-size:\s*\.59rem;/);
+    for (const color of ['0xfff1efe5', '0xff65666d', '0xff5a5b56', '0xffc0bfb4']) {
+        assert.ok(native.includes(color), `Android capture palette contains ${color}`);
+        assert.ok(css.includes(color.slice(4).replace(/^/, '#').toLowerCase()), `Web capture palette contains ${color}`);
+    }
+    assert.match(css, /\.captured-piece\[data-shape\] \.captured-piece-silhouette\s*\{[^}]*fill:\s*#65666d;[^}]*stroke:\s*#c0bfb4;[^}]*stroke-width:\s*2/s);
+    assert.match(css, /\.captured-piece\.white\[data-shape\] \.captured-piece-silhouette\s*\{[^}]*fill:\s*#f1efe5;[^}]*stroke:\s*#5a5b56/s);
 });
 
 test('match markup keeps the board between stable top and bottom capture rows', async () => {
