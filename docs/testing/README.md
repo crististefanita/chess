@@ -9,9 +9,14 @@ Choose the lowest test level that can observe the change. Build from a copy of t
 - [Android sanity](#android-sanity) and [Web parity](#web-engine-parity) cover rendering, lifecycle, and real assistive technology when needed.
 - [Extent evidence](#extent-reporting) ties assertions to the run. [Qualification](../release/README.md#qualification-and-publication) governs promotion.
 
+<details>
+<summary>Opening and repertoire evidence</summary>
+
 Opening variety is governed by [OpeningVarietyTest](../../atf-tests/src/test/java/ro/atf/chess/OpeningVarietyTest.java): complete authored-pool coverage, native decisions for all levels, atomic persistence failures, legacy checkpoints, history and slot replacement. The same-position hint and final review must remain identical across game choices. A new audited game measures transfer quality separately from these deterministic component contracts.
 
 Repertoire changes need their own scope check: freeze the independently verified root and all offered PV plies, compare free opposing replies at H17/H19, preserve the existing horizon and node allowance, and include a context where the same piece move is sound. An exact-position correction must not be reported as a general search or Elo gain. [Native example and independent evidence](../../atf-tests/src/test/java/ro/atf/chess/NimzoRepertoireTest.java)
+
+</details>
 
 
 ```mermaid
