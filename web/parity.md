@@ -38,8 +38,8 @@ The game guides own the product rules and platform behavior. [Matches, puzzles, 
 
 1. Build and qualify the bundle in TMP. Keep the exact static tree reachable from an immutable commit or tag; use a separate worktree for the staging files.
 2. Preserve previously published `runtime/<SHA-256>/` directories byte for byte and the legacy root URLs used by older open tabs. Include the new runtime directory, `index.html`, `.nojekyll` and the generated `.gitattributes` in the same commit. The `* -text` rule prevents Git from changing qualified bytes; compare staged blobs with the measured bundle before publication.
-3. Dispatch the [Pages workflow](../.github/workflows/chess-pages.yml) on `main` with the qualified `site_commit` and `manifest_sha256`. Pages deploys through Actions; the documentation branch `main_RO` is never the source of a deployment.
-    Use the exact site SHA for `site_commit`. Compute `manifest_sha256` from the raw Git tree listing. In a POSIX shell run:
+3. Put the qualified static commit and raw-tree digest in [the publication request](publication.request), then push that file on `main`. Only a change to this file triggers the [Pages workflow](../.github/workflows/chess-pages.yml); it validates the two identities before downloading the static tree. Manual dispatch with the same values remains available. The documentation branch `main_RO` never deploys.
+    Compute `manifest_sha256` from the exact static commit. In a POSIX shell run:
 
     ```bash
     git ls-tree -r --full-tree "$SITE_COMMIT" | sha256sum

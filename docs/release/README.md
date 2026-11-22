@@ -69,7 +69,9 @@ and translated meaning; a passing structural gate alone does not establish
 language completeness or translation fidelity. [Testing strategy](../testing/README.md#choosing-the-test-level)
 
 GitHub Actions deploys the qualified Web asset from an immutable Git commit
-through the [Pages workflow](../../.github/workflows/chess-pages.yml).
+when the two-line [publication request](../../web/publication.request) changes on
+`main`. The [Pages workflow](../../.github/workflows/chess-pages.yml) validates
+the request and the static tree digest; manual dispatch remains available.
 Permanent branches are limited to `main` and `main_RO`. Keep Git tags of
 published editions and deployed site bundles. [Web publication](../../web/parity.md#publishing-the-link)
 

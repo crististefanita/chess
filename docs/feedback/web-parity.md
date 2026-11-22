@@ -92,7 +92,7 @@ APK/Web visual comparison on the same captured frame. The current native source
 already places match options on the right side of the header, matching Web;
 the installed 0.15.2 menu is older.
 
-**Worker qualification remains open · 2026-11-22.** `ChessWebParityPublication#packagedWorkerProjectsInlineMatchAnalysis` timed out on `active-historical-replay` at the existing 55-second child-process limit in three attempts. The other four cases in the first publication run passed, and both the worker entry and compiled engine are byte-identical to the prior candidate runtime. Keep this gate open; investigate the bounded runtime without increasing the limit or changing chess/AI behavior as part of the capture-style work.
+**Worker gate rechecked · 2026-11-22.** `active-historical-replay` completed in 26 seconds with the unchanged 55-second limit. The full `ChessWebParityPublication` class then exposed a contradictory oracle: it rejected historical root worker/engine aliases that the publishing contract explicitly preserves for older open tabs. The assertion now verifies that legacy aliases form a pair and the current entry loads its worker and engine from the versioned runtime. All six publication tests pass together with Extent. No chess or AI behavior or time limit changed.
 
 - Use the opening-history and mating-review cases from the [shared testing contract](../testing/README.md#shared-screen-chrome).
 - Keep source/artifact identities, RO/EN profile, expected state and observed return per adapter. Worker and geometry checks cannot replace missing native or MCP rendering.
