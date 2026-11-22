@@ -315,7 +315,7 @@ V, R, Î și N înseamnă victorii, remize, înfrângeri și partide neterminate
 | Hard – Advanced | 14 / 7 / 2 / 1 | +191 | +104 … +307 |
 | Hard – Basic | 22 / 0 / 1 / 1 | +470 | +191 … ∞ |
 
-Hard a câștigat toate cele opt partide din Pirc și Benoni, din ambele perspective, contra Basic și Advanced. În partida Alehină Hard–Advanced, a jucat `Nc3` după semimutarea 44 și a ieșit din ciclul care ducea anterior la remiză la 52. Stockfish indică +6,71 pentru ieșire, cu istoricul partidei și pierdere WDL de 0‰. Partida a ajuns la plafonul de 160 de semimutări. Stockfish arată −5,19 pentru alb la finalul probei. În partida cu culorile inversate, Hard a câștigat la semimutarea 108. [Rejucarea istorică 0.7.0](https://github.com/crististefanita/chess/blob/6889d5c927635a8c83ddef28db985bc2fc6efec5/release/0.7.0/reports/league.tsv) rămâne în tagul Git, nu în catalogul scurt de release-uri.
+Hard a câștigat toate cele opt partide din Pirc și Benoni, din ambele perspective, contra Basic și Advanced. În partida Alehină Hard–Advanced, a jucat `Nc3` după semimutarea 44 și a ieșit din ciclul care ducea anterior la remiză la 52. Stockfish indică +6,71 pentru ieșire, cu istoricul partidei și pierdere WDL de 0‰. Partida a ajuns la plafonul de 160 de semimutări. Stockfish arată −5,19 pentru alb la finalul probei. În partida cu culorile inversate, Hard a câștigat la semimutarea 108. Intrările și procedurile curente ale ligii sunt păstrate împreună cu benchmarkul activ, nu legate de un singur replay arhivat.
 
 </details>
 
@@ -563,7 +563,7 @@ Am rulat aceeași ligă pe 12 deschideri noi, ambele culori, 24 de partide pentr
 
 Aceste conversii sunt doar scoruri relative în liga Chess și nu reprezintă Elo extern. Pe setul înghețat existent, câștigul a fost mai mic: o remiză a devenit victorie în Hard–Advanced. Podelele de transfer au rămas neschimbate: M1 500/500, M2 300/300, M3 194/200, tactici 87/100, antrenament 39/48 și Intermezzo 24/24. Testul de guvernanță verifică factorul, plafonul, dezactivarea și respinge valorile din afara intervalului.
 
-Rapoartele Extent și replay-urile TSV pentru candidatul, referință și capacitatea dublă au rămas în `C:\Users\Cristi\AppData\Local\Temp\j7-hard-tt-*`; nu sunt artefacte de release. [Terminologia oficială Stockfish despre transpoziții și căutare](https://official-stockfish.github.io/docs/stockfish-wiki/Terminology.html) explică rolul tabelului de transpoziții în reutilizarea pozițiilor. Documentația nu oferă o creștere Elo garantată pentru această implementare.
+[Terminologia oficială Stockfish despre transpoziții și căutare](https://official-stockfish.github.io/docs/stockfish-wiki/Terminology.html) explică rolul tabelului de transpoziții în reutilizarea pozițiilor. Documentația nu oferă o creștere Elo garantată pentru această implementare.
 
 Reperele configurate în aplicație provin din sursa anterioară căutării Hard6. Verificarea plafonului Advanced și a progresului Hard folosește partide cu executabilul Stockfish 19 local, identificat prin amprenta din `ai-anchor-observations.yaml`. Estimările depind de adversar, buget și protocol. [Calibrarea UCI Elo în Stockfish](https://official-stockfish.github.io/docs/stockfish-wiki/Stockfish-FAQ.html#the-elo-rating-of-stockfish)
 

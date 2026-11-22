@@ -22,7 +22,7 @@ care necesită decizii echivalente în `ChessActivity`, `AnalysisActivity`
 și adaptorul Web. Începeți cu reluarea, anularea și primirea unei replici
 AI întârziate. [Motor și proiecție](../testing/README.md#motor-și-proiecție)
 
-**Rezolvat la 22.11.2026 · Compilare Web · Digestul dovezii Hard.** `PortableSha256` produce aceiași octeți SHA-256 standard fără căutare de furnizori JCA. `PawnPushProof` și `GameReviewCodec` îl folosesc, păstrând identificatorii existenți în hex minuscul și Base64. `PortableSha256Test` acoperă vectori standard, limite de padding, paritatea cu JDK-ul și ambele contracte de identificatori persistenți. `TeaVmPortabilityGovernanceTest` respinge căutarea furnizorilor sau a claselor prin class-loader în sursele nucleului de producție. Buildul TeaVM complet și testul de paritate al workerului împachetat rămân poarta de calificare; compilarea Java singură nu este suficientă.
+**Închis · Compilare Web · Digest portabil pentru dovezi.** `PortableSha256` produce aceiași octeți SHA-256 standard fără căutare de furnizori JCA. `PawnPushProof` și `GameReviewCodec` îl folosesc, păstrând identificatorii existenți în hex minuscul și Base64. `PortableSha256Test` acoperă vectori standard, limite de padding, paritatea cu JDK-ul și ambele contracte de identificatori persistenți. `TeaVmPortabilityGovernanceTest` respinge căutarea furnizorilor sau a claselor prin class-loader în sursele nucleului de producție. Buildul TeaVM complet și testul de paritate al workerului împachetat rămân poarta de calificare; compilarea Java singură nu este suficientă.
 
 **Verificări de închidere**
 
@@ -50,18 +50,18 @@ de 48 dp. Cereți dreptunghiuri în componente RO/EN și capturi native înainte
 de schimbarea contractului actual fără salturi.
 [Controalele explicației](../../atf-tests/src/test/java/ro/atf/chess/PuzzleExplainLayoutTest.java)
 
-**Închis · Identitatea execuției meniurilor native pe APK-ul semnat.** Runnerul Salvate/Încheiate generează un ID comun pentru fazele pereche și ID-uri distincte pentru execuțiile izolate. Extent verifică marcajul nativ, recepția și faza pereche; componentele negative resping ID-uri lipsă, înlocuite sau diferite. Ambele faze 0.16.2 au trecut pe APK-ul semnat cu același ID și câte două aserțiuni. Ele rămân suplimentare față de calificarea strictă Game Review cu 30 de aserțiuni. [Rapoartele și execuțiile meniurilor](../../release/0.16.2/reports/README.md)
+**Închis · Identitatea execuției meniurilor native.** Runnerul Salvate/Încheiate generează un ID comun pentru fazele pereche și ID-uri distincte pentru execuțiile izolate. Extent verifică marcajul nativ, recepția și faza pereche; componentele negative resping ID-uri lipsă, înlocuite sau diferite. Verificările fazelor rămân suplimentare față de calificarea mai strictă Game Review.
 
 **Închis · Oracolul nativ al istoricului pe APK-ul semnat.**
 `awaitHiddenAnalysis` compară eticheta unică a mutării selectate din partida cu AI
 cu `MatchHistorySelection`; tabla manuală de analiză păstrează oracolul listei
 complete. O etichetă greșită raportează separat valoarea așteptată și cea observată,
-fără a o confunda cu pregătirea indiciului. APK-ul semnat 0.16.2 a trecut cinci
-aserțiuni înainte și două după un restart real, cu același ID și aceeași sursă.
-[Extent și execuții](../../release/0.16.2/reports/README.md)
+fără a o confunda cu pregătirea indiciului. Runnerul nativ verifică mutarea
+selectată înainte și după restartul procesului, pe baza aceluiași ID de rulare
+și a aceleiași surse. Arhiva ediției păstrează recepțiile fiecărei calificări.
 [Cursorul curent](../../chess-core/src/main/java/ro/atf/chess/MatchHistorySelection.java)
 
-**P2 · Pregătirea accesibilității native compacte.** Proba compactă veche se oprește la comanda Game Review vizibilă, deoarece instantaneul nodului de accesibilitate o raportează indisponibilă. Păstrați observația eșuată; actualizați și verificați nodul real înaintea apăsării, fără creșterea timeout-ului. Game Review la 360 × 640 dp și text 1,3×, precum și proba separată de rotație RO/EN, au trecut pe același APK semnat. Aceste verificări nu închid eșecul helperului vechi.
+**P2 · Pregătirea accesibilității native compacte.** Proba compactă veche se oprește la comanda Game Review vizibilă, deoarece instantaneul nodului de accesibilitate o raportează indisponibilă. Păstrați observația eșuată; actualizați și verificați nodul real înaintea apăsării, fără creșterea timeout-ului. Păstrați verificările Game Review cu text mărit și rotația RO/EN drept controale de regresie separate. Acestea nu închid eșecul helperului vechi.
 
 **Închisă depășirea Web Deschideri la 740 × 420, EN/RO cu text 130%.** Înainte, documentul măsura 447 px în înălțime, iar tabla 153 px. Așezarea alăturată încape acum în 420 px și oferă un pătrat de 257 px, la cel mult 2 px de modelul nativ compact. `OpeningLessonTest` și `BoardSizingGovernanceTest` leagă pragul și spațiul celor două etichete; `ChessWebOpeningLandscapePlaywrightE2e` verifică documentul randat și tabla la Următoarea/Anterioara, cu capturi în Extent. Se închide numai defectul de derulare Web. Folosirea lățimii de către sursa/redarea matului, descrisă mai sus, și captura randată pereche a APK-ului semnat rămân deschise.
 
@@ -69,7 +69,7 @@ aserțiuni înainte și două după un restart real, cu același ID și aceeași
 
 ## WEB-03 · Componente și E2E pe contractul comun
 
-**Verificat local la 22.11.2026 · Fluxul browser Salvate/Încheiate.** O probă Chromium reală a găsit că deschiderea unei partide migrate cu AI în Salvate ridica `ReferenceError: levels is not defined` și lăsa lista goală. Rândul citește acum nivelul din textele localizate ale meniului. O componentă fără browser verifică toate cele trei niveluri în RO/EN și respinge un nivel invalid. Proba Playwright cu un singur flux și raport Extent verifică separarea listelor, matul, reîncărcarea, încadrarea tablei arhivate, istoricul și geometria tablei de analiză; imaginile și acțiunile sunt incluse în raport. Acest control închide fluxul Web Salvate/Încheiate pentru profilul compact EN testat, fără a închide matricea de randare APK/Web la 130% de mai jos. [Strategia de testare](../testing/README.md#partide-salvate-arhivă-și-continuare)
+**Verificat · Fluxul browser Salvate/Încheiate.** O probă Chromium reală a găsit că deschiderea unei partide migrate cu AI în Salvate ridica `ReferenceError: levels is not defined` și lăsa lista goală. Rândul citește acum nivelul din textele localizate ale meniului. O componentă fără browser verifică toate cele trei niveluri în RO/EN și respinge un nivel invalid. Proba Playwright cu un singur flux și raport Extent verifică separarea listelor, matul, reîncărcarea, încadrarea tablei arhivate, istoricul și geometria tablei de analiză; imaginile și acțiunile sunt incluse în raport. Acest control închide fluxul Web Salvate/Încheiate pentru profilul compact EN testat, fără a închide matricea de randare APK/Web la 130% de mai jos. [Strategia de testare](../testing/README.md#partide-salvate-arhivă-și-continuare)
 
 **Limita distribuției.** Chess consumă perechile JAR/POM publicate J0 Reporting și Test Kit. `atf-ui` și `atf-debug-ui` din J1 sunt module sursă; copierea unui JAR necalificat în Chess ar ascunde proveniența. Dacă după această probă locală este nevoie de un adaptor browser reutilizabil, cerem proprietarului J1 un pachet binar versionat și acceptare la consumator; un contract neutru Reporting defect se raportează separat proprietarului J0, cu raportul eșuat și coordonata exactă.
 
@@ -85,7 +85,7 @@ Secvența legală a capturilor la semimutările 13–16 se află în
 [Cererea de publicare](../../web/publication.request) identifică pachetul
 calificat; identitatea octeților și aserțiunile componentelor nu dovedesc paritatea vizuală.
 
-**Tablă de analiză și liste, 2026-11-22.** Tabla de studiu proiectează acum
+**Tablă de analiză și liste.** Tabla de studiu proiectează acum
 aceleași rânduri de capturi ca partida cu AI, la semimutarea selectată, în ambele
 adaptoare. Cele două meniuri de câte zece intrări folosesc contractul comun
 `MatchStore` și `MatchListEntry`; componentele trec prin a unsprezecea partidă
@@ -107,13 +107,6 @@ randată rămâne deschisă.
 
 ## WEB-04 · Calificare și publicare
 
-**Octeții site-ului 0.16.2 verificați.** O declanșare Pages nouă a livrat
-commitul calificat după ce execuția inițială nu a găsit metadatele artefactului.
-Reluarea acelei execuții a creat artefacte `github-pages` duplicate; execuția
-nouă a reușit. Indexul și CSS-ul Game Review servite corespund obiectelor Git
-din tag. Aceasta confirmă identitatea publicării; matricea de paritate randată
-APK/Web rămâne deschisă. [Recepția deployului](../../release/0.16.2/reports/web-publication.json)
-
 **P2 · Calificarea ediției.** Legați în RAG commitul, cataloagele și amprentele APK și Web de recepțiile aceleiași ediții. [Criteriul de actualizare](../testing/README.md#actualizarea-pachetului-web)
 
 **Criteriu de închidere.** Porniți proba din **Joacă în browser**, sub
@@ -129,7 +122,7 @@ reluare, inclusiv după reîncărcare și într-o filă deja deschisă.
 
 **P2 · Focus, text mărit și contexte rămase.** Tabla de analiză compactă publicată are un meniu ancorat observat și o tablă neschimbată, fără derularea documentului. Aceasta nu încheie matricea RO/EN la 130% pentru Puzzles, Game Review și De ce.
 
-Verificați ultima opțiune, închiderea prin tastatură, revenirea focusului și sursa/cursorul păstrate în aceste contexte, la dimensiuni compacte și desktop. Păstrați recepția driverului și capturile pentru fiecare profil lipsă; verdictul componentelor nu implică paritate randată completă. [Reperul compact observat](https://github.com/crististefanita/chess/blob/b51e17e7752cc0c0a3ec7be9500a362f4d3b20d2/release/0.16.1/reports/web-rendered-observation.json) · [Contractul meniului](../../web/README.md#meniul-principal-și-piesele)
+Verificați ultima opțiune, închiderea prin tastatură, revenirea focusului și sursa/cursorul păstrate în aceste contexte, la dimensiuni compacte și desktop. Păstrați recepția driverului și capturile pentru fiecare profil lipsă; verdictul componentelor nu implică paritate randată completă. [Contractul meniului](../../web/README.md#meniul-principal-și-piesele)
 
 ## WEB-06 · Culorile, acțiunea de final și reutilizarea analizei
 

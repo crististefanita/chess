@@ -100,7 +100,7 @@ Dacă Pages nu găsește metadatele artefactului abia încărcat, porniți o dec
 manuală nouă cu același commit al site-ului și aceeași amprentă a arborelui.
 Nu reluați joburile eșuate în aceeași execuție: un al doilea upload poate crea
 două artefacte `github-pages` și face deployul ambiguu. Comparați indexul și
-resursele servite cu obiectele Git calificate. [Recuperarea observată](../../release/0.16.2/reports/web-publication.json)
+resursele servite cu obiectele Git calificate.
 Ramurile permanente sunt `main` și `main_RO`. Păstrați tagurile Git ale
 edițiilor publicate și pachetelor Web servite. [Publicarea Web](../../web/parity.md#publicarea-linkului)
 

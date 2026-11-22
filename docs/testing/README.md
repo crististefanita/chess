@@ -878,7 +878,7 @@ mvn test '-Dmaven.repo.local=target/maven-repo' '-Dtest=AndroidSanityPublication
 
 Partida nativă cu AI afișează o singură etichetă a mutării selectate. Oracolul sanity o compară cu `MatchHistorySelection.at(match, ply).compact()` după navigare și reluare; valoarea greșită raportează textul așteptat și pe cel observat. Tabla manuală de analiză păstrează oracolul listei complete. Pregătirea indiciului, poziția selectată și textul istoricului rămân verificări distincte.
 
-Proba nativă a partidei cu AI așteaptă indiciul verificat complet, fără să trateze fereastra scurtă a tranziției UI ca termen al motorului. Pe cazul fix cu două semimutări, `hintAt(1)` a durat 16 secunde pe JVM în investigația 0.16.2. Proba Android semnată permite cel mult 90 de secunde, raportează starea efectivă a panoului și becului la expirare și cere în continuare poziția selectată exactă, indiciul ascuns, recomandarea legală și partida salvată neschimbată. Fereastra de 12 secunde rămâne pentru tranzițiile UI obișnuite.
+Proba nativă a partidei cu AI așteaptă indiciul verificat complet, fără să trateze fereastra scurtă a tranziției UI ca termen al motorului. Proba Android semnată permite cel mult 90 de secunde, raportează starea efectivă a panoului și becului la expirare și cere în continuare poziția selectată exactă, indiciul ascuns, recomandarea legală și partida salvată neschimbată. Fereastra de 12 secunde rămâne pentru tranzițiile UI obișnuite.
 
 </details>
 
@@ -936,13 +936,13 @@ Rulați `scripts/run-android-sanity.ps1 -Distribution -ReplayCompactOnly -Source
 <summary>Probe și limite — Proba TalkBack</summary>
 
 1. Activați TalkBack pe emulator. În **Mat în 1**, deschideți **Indiciu**, apoi **Arată mutarea**. Atingeți culoarea la mutare și glisați de două ori spre dreapta prin intrarea tactilă a emulatorului. După fiecare gest, capturați evenimentul Android `TYPE_VIEW_ACCESSIBILITY_FOCUSED` și cadrul cu focusul. Repetați după **Întoarce tabla**. [Intrarea tactilă a emulatorului](https://developer.android.com/studio/run/emulator-console)
-2. Pentru prima problemă din 0.3.1, traseul este negrul la mutare → regina neagră de pe d8 → h4, cu oricare dintre culori jos. Proba pe API 33 cu TalkBack 14.2 a confirmat cele patru glisări prin `EmulatorController/sendTouch`. [Extent-ul istoric](https://github.com/crististefanita/chess/blob/v0.4.0/release/0.3.1/reports/talkback-gestures-extent.html) rămâne în tagul Git, în afara retenției scurte a release-urilor.
+2. Folosiți o poziție deterministă cu negrul la mutare și regina neagră pe d8, apoi navigați la h4 cu oricare culoare jos. Înregistrați dispozitivul, API-ul, evenimentele de focus și capturile în execuția Extent. Nu reutilizați rezultatul altei rulări.
 3. `QuestHintTest` verifică proiecția în ambele orientări. Sanity-ul verifică actualizarea legăturilor native. Proba glisărilor are propriul raport și folosește evenimentele de focus ca dovadă.
 
 Pentru republicare, rulați `TalkBackPublication#publishTalkBackGestures` din copia TMP și indicați logul prin `-Dchess.talkback.gestures`. Logul unei singure probe conține evenimentele `J7FocusProbe` și markerii `J7ProbeMarker`, de la `BLACK_ANCHOR_START` la `WHITE_DESTINATION_END`. În același director puneți `emulator.json`, capturile `BLACK-color.png`, `BLACK-PIECE.png`, `BLACK-DESTINATION.png` și echivalentele `WHITE-*`.
 
 - Pentru vorbire, activați **Display speech output**. La a cincea rezolvare, comparați mesajul unic de mat și prag cu ce se anunță după întoarcere, revenirea din meniu și repornire.
-- Proba anterioară compară ediția 0.3.0 cu build-ul corectat și consemnează cererile TalkBack și audio PCM sintetizat. [Extent-ul istoric](https://github.com/crististefanita/chess/blob/v0.3.1/docs/feedback/talkback-extent.html) este păstrat în tagul Git.
+- Păstrați PCM-ul sintetizat numai pentru investigarea vorbirii; înregistrați textul anunțat și tranzițiile focusului în execuția Extent curentă.
 
 ### Game Review
 
