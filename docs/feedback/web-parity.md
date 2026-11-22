@@ -68,48 +68,22 @@ trebuie să înlocuiască diagnosticul unui oracol UI greșit.
 
 **P2 · Dovezi pereche ale adaptoarelor.** Antetul comun și cursorul unic au deja cazuri comune de componentă. Lipsește o recepție randată reutilizabilă pentru aceeași poziție sursă, variantă, cursor și secvență Înapoi pe APK și Web. Motorul Web mai vechi păstrat nu trebuie prezentat ca paritate cu un motor nativ mai nou.
 
-**Corecție de componentă pentru piesele capturate · 2026-11-22.** Web folosește acum silueta comună de 48 de unități, culorile de umplere și contur din APK și aceeași scară de 82% între icon și textul rândului. Componentele DOM simulate și Extent verifică toate cele cinci tipuri capturabile, intrările invalide, culoarea piesei și rândurile stabile. Neconcordanța de stil între adaptoare este închisă; aceasta nu înlocuiește recepția vizuală pereche cerută mai sus.
+**P2 · Locurile și capturile randate.** Identitatea comună a adversarului,
+proiecția capturilor, desenatorul Web și rândurile fixe trec verificările JVM,
+DOM simulat și worker împachetat, inclusiv istoric, întoarcere și reluare.
+Secvența legală a capturilor la semimutările 13–16 se află în
+`match-capture-rows.json`; contractele și numele testelor sunt în
+[ghidul partidei cu AI](../../web/README.md#partida-cu-ai) și
+[strategia de testare](../testing/README.md#analiza-în-partida-cu-ai).
+[Cererea de publicare](../../web/publication.request) identifică pachetul
+calificat; identitatea octeților și aserțiunile componentelor nu dovedesc paritatea vizuală.
 
-**Secvență de capturi observată · 2026-11-22.** Pe emulatorul API 28, APK-ul
-instalat 0.15.2 a arătat cei doi pioni albi capturați de AI și +1 deasupra
-tablei, respectiv pionul negru capturat de om dedesubt, după
-`7...Nxe5 8.dxe6 fxe6`. Desenatorul actual păstrează siluetele, culorile și
-scara. `match-capture-rows.json` alimentează acum JVM, DOM-ul simulat și
-workerul TeaVM împachetat pentru semimutările 13–16, inclusiv întoarcerea în
-istoric, rotirea tablei și reluarea. Verificările focalizate Extent trec.
-Certificatul ediției instalate 0.15.2 diferă de cel al APK-ului semnat 0.16.1;
-observația este un reper pentru desenator, nu o recepție de release 0.16.1.
-
-**Octeții publicați sunt verificați; comparația randată rămâne deschisă.**
-Workflow-ul Pages
-[45021819859](https://github.com/crististefanita/chess/actions/runs/45021819859)
-a publicat commitul static `4da2e7ef47cca6767efd66ba4be58b0c0cf11dc4`.
-Indexul servit indică runtime-ul
-`db3b111fcbeb87c9178c5ba3dde6cdca567ee5c44e34e794b198f616d4c75763`.
-Indexul, intrarea partidei, adaptorul locurilor numite, CSS-ul, motorul și
-workerul descărcate coincid octet cu octet cu fișierele pregătite. Browser MCP
-eșuează încă la scrierea resurselor kernelului înaintea deschiderii tabului.
-Rămâne necesară o recepție randată pereche. Sursa nativă actuală pune meniul
-partidei în dreapta antetului, ca Web; meniul instalării 0.15.2 este mai vechi.
-
-**P2 · Proprietarul vizibil al capturilor · contractul de componentă implementat la 2026-11-22.**
-`MatchOpponentName` dă acum ambelor adaptoare aceeași identitate Alex/Mira/Atlas.
-Web pune numele și capturile fiecărui jucător într-un rând rezervat, cu nivelul
-AI lângă numele adversarului. Geometria compactă și largă, întoarcerea tablei,
-istoricul, etichetele RO/EN, numele lungi și alinierea cu bara de evaluare au
-verificări de componentă simulate.
-Vechiul rezumat comun de sub tablă a fost eliminat. Închideți punctul doar după
-ce capturile pereche APK/Web, la text 130% în fereastră compactă și într-o
-fereastră largă, confirmă alinierea tablei și meniurilor fără decupare sau
-derularea paginii; Browser MCP rămâne indisponibil înaintea deschiderii tabului.
-
-Poarta focalizată din TMP a trecut 24 de teste JVM/worker/guvernanță EN, 20 de
-teste de documentație/componente RO, 46 de verificări Web simulate și compilarea
-Android. `MatchSeatParityTest` înregistrează aserțiunile în Extent. Recepția
-randată rămâne limita; rezultatele componentelor nu certifică pixelii sau
-derularea.
-
-**Poarta workerului reverificată · 2026-11-22.** `active-historical-replay` s-a încheiat în 26 de secunde, cu limita neschimbată de 55 de secunde. Clasa completă `ChessWebParityPublication` a arătat apoi un oracol contradictoriu: respingea aliasurile istorice ale workerului și motorului din rădăcină, deși contractul de publicare le păstrează pentru filele vechi. Aserțiunea verifică acum existența lor ca pereche și încărcarea workerului și motorului curent din runtime-ul versionat. Toate cele șase teste de publicare trec împreună, cu Extent. Nu s-au schimbat regulile de șah, comportamentul AI sau limita de timp.
+Închideți doar cu capturi pereche din APK-ul calificat și pachetul Web servit,
+la text 130% în fereastră compactă și într-o fereastră largă. Verificați fiecare
+nume, nivel, piesă capturată, margine a tablei și meniu, fără decupare sau
+derularea paginii. Legați ambele capturi de identitățile sursei și artefactului.
+Browserul MCP eșuează în prezent înainte de deschiderea filei, deci recepția
+randată rămâne deschisă.
 
 - Folosiți cazurile de istoric al deschiderii și analiză a matului din [contractul comun de testare](../testing/README.md#antet-și-navigare-comune).
 - Păstrați separat pentru fiecare adaptor identitățile surselor/artefactelor, profilul RO/EN, starea așteptată și întoarcerea observată. Workerul și geometria nu înlocuiesc randarea nativă sau MCP lipsă.

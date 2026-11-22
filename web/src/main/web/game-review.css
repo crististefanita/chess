@@ -269,7 +269,6 @@ dialog::backdrop { background: #121613a8; }
   padding-inline-start: var(--board-meter-gutter);
 }
 .match[data-mode="AI"] .match-inline-meter { position: relative; inset: auto; inline-size: 100%; }
-.match[data-mode="AI"] #match-board { grid-column: 2; inline-size: 100%; }.match-inline-meter { position: relative; inset: auto; inline-size: 100%; }
 .match[data-mode="AI"] #match-board { grid-column: 2; inline-size: 100%; }
 .match-inline-meter {
   position: absolute;
