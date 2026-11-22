@@ -7,7 +7,7 @@ Chess Lab permite partide de șah cu AI, rezolvarea problemelor și studiul desc
 
 ## Jocul
 
-- [Descarcă APK Chess Lab 0.16.1](https://github.com/crististefanita/chess/releases/download/v0.16.1/ChessLab-0.16.1.apk)
+- [Descarcă APK Chess Lab 0.16.2](https://github.com/crististefanita/chess/releases/download/v0.16.2/ChessLab-0.16.2.apk)
 - [Joacă în browser](https://crististefanita.github.io/chess/)
 
 ## Pe scurt
@@ -153,7 +153,7 @@ flowchart LR
 
 ## Ediția publicată
 
-- [Chess Lab 0.16.1 · note de versiune](https://github.com/crististefanita/chess/releases/tag/v0.16.1)
+- [Chess Lab 0.16.2 · note de versiune](https://github.com/crististefanita/chess/releases/tag/v0.16.2)
 
 ## Puncte de intrare
 

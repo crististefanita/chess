@@ -143,14 +143,14 @@ java -cp atf-tests/target/classes ro.atf.chess.release.ReleaseGate preflight atf
 
 - Rulați suitele din același checkout TMP și alegeți căi noi pentru rapoarte.
 - Salvați directorul Surefire nou al componentelor înainte ca publicatorul Android să scrie alte XML-uri în el.
-- Construiți pachetul Web din commitul candidat în TMP și furnizați-l prin `chess.study.bundle`. Fără el, trei probe ale workerului sunt omise și `ReleaseGate qualification` respinge suita. [Buildul Web](../../web/README.md#build-și-verificare)
+- Construiți pachetul Web din commitul candidat în TMP și furnizați-l prin `chess.study.bundle` și `chess.web.bundle`. Dacă lipsește oricare, probele workerului sau ale listelor sunt omise, iar calificarea strictă respinge suita. [Buildul Web](../../web/README.md#build-și-verificare)
 
 ```powershell
 $runId = [guid]::NewGuid().ToString('N')
 $commit = git rev-parse HEAD
 $site = ./web/Build-ChessWeb.ps1 -WorkRoot (Join-Path $env:TEMP "chess-web-qualification-$runId")
 mvn -pl atf-tests -am test "-Dtest=ChessComponentSuite" "-Dsurefire.failIfNoSpecifiedTests=false" `
-  "-Dchess.study.bundle=$site" `
+  "-Dchess.study.bundle=$site" "-Dchess.web.bundle=$site" `
   "-Dchess.extent=$componentExtent" "-Dchess.qualification.commit=$commit" "-Dchess.qualification.runId=$runId"
   # Mutați recepțiile Surefire ale suitei în $componentReceipts înainte de publicarea Android.
   # Rulați sanity-ul semnat cu -SourceCommit $commit -QualificationRunId $runId.

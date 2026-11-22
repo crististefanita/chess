@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "previousVersion": "0.16.1",
+  "previousCertificateSha256": "e49cc581c12594496e0b2b911aba9a09d04893c661f1ad5316d00377dc8a7772",
+  "candidateVersion": "0.16.2",
+  "candidateCertificateSha256": "e49cc581c12594496e0b2b911aba9a09d04893c661f1ad5316d00377dc8a7772",
+  "installMode": "UPGRADE",
+  "result": "UPGRADE_COMPATIBLE",
+  "apkSha256": "2a88ab7847a285439fdfc3280a2ec67d21185f5a6b8a703cea8287a369e2f7f0",
+  "observedUtc": "2026-11-22T18:22:26.8821605Z"
+}

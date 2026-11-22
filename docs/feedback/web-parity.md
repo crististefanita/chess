@@ -52,12 +52,13 @@ de schimbarea contractului actual fără salturi.
 
 **Implementat · Identitatea execuției meniurilor native; proba semnată rămâne de verificat.** Runnerul Salvate/Încheiate generează acum un ID comun pentru fazele pereche și ID-uri distincte pentru execuțiile izolate. Extent verifică marcajul nativ, recepția de execuție și faza pereche; componentele negative resping ID-uri lipsă, înlocuite sau diferite între faze. Observațiile anterioare rămân în afara calificării suplimentare stricte până la o recepție nouă a APK-ului semnat.
 
-**Implementat · Oracolul nativ al istoricului; proba semnată rămâne de verificat.**
-`awaitHiddenAnalysis` compară acum eticheta mutării selectate din partida cu AI
-cu `MatchHistorySelection`, inclusiv după reluare și în profilul compact. Tabla
-manuală de analiză păstrează oracolul listei complete. O etichetă greșită
-raportează separat textul așteptat și cel observat, fără a confunda eroarea
-cu pregătirea indiciului. Verificați ambele fluxuri pe APK-ul semnat.
+**Închis · Oracolul nativ al istoricului pe APK-ul semnat.**
+`awaitHiddenAnalysis` compară eticheta unică a mutării selectate din partida cu AI
+cu `MatchHistorySelection`; tabla manuală de analiză păstrează oracolul listei
+complete. O etichetă greșită raportează separat valoarea așteptată și cea observată,
+fără a o confunda cu pregătirea indiciului. APK-ul semnat 0.16.2 a trecut cinci
+aserțiuni înainte și două după un restart real, cu același ID și aceeași sursă.
+[Extent și execuții](../../release/0.16.2/reports/README.md)
 [Cursorul curent](../../chess-core/src/main/java/ro/atf/chess/MatchHistorySelection.java)
 
 **P2 · Pregătirea accesibilității native compacte.** Proba compactă veche se oprește la comanda Game Review vizibilă, deoarece instantaneul nodului de accesibilitate o raportează indisponibilă. Păstrați observația eșuată; actualizați și verificați nodul real înaintea apăsării, fără creșterea timeout-ului. Game Review la 360 × 640 dp și text 1,3×, precum și proba separată de rotație RO/EN, au trecut pe același APK semnat. Aceste verificări nu închid eșecul helperului vechi.

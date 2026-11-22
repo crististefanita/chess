@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "scope": "analysis-prepare",
+  "device": "127.0.0.1:5555",
+  "api": "28",
+  "apkSha256": "2a88ab7847a285439fdfc3280a2ec67d21185f5a6b8a703cea8287a369e2f7f0",
+  "sourceCommit": "a109db7187ea58d2853ca2af76cd9852e1666032",
+  "variant": "release",
+  "assertions": 5,
+  "receiptSha256": "537e89d6f1c733155daaa1b7465904d1ac5b8ac2247e6b0a6702890ad3c4dc52",
+  "captureSha256": {
+    "match-analysis.png": "a109010ac31400dc67161d25c9f4772cc57797d4ac97a8ab5bb9696a5f59df4b"
+  },
+  "runId": "4b560585b00d46f099e4ea37ace2dd9b"
+}
