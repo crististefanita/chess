@@ -50,7 +50,7 @@ de 48 dp. Cereți dreptunghiuri în componente RO/EN și capturi native înainte
 de schimbarea contractului actual fără salturi.
 [Controalele explicației](../../atf-tests/src/test/java/ro/atf/chess/PuzzleExplainLayoutTest.java)
 
-**Implementat · Identitatea execuției meniurilor native; proba semnată rămâne de verificat.** Runnerul Salvate/Încheiate generează acum un ID comun pentru fazele pereche și ID-uri distincte pentru execuțiile izolate. Extent verifică marcajul nativ, recepția de execuție și faza pereche; componentele negative resping ID-uri lipsă, înlocuite sau diferite între faze. Observațiile anterioare rămân în afara calificării suplimentare stricte până la o recepție nouă a APK-ului semnat.
+**Închis · Identitatea execuției meniurilor native pe APK-ul semnat.** Runnerul Salvate/Încheiate generează un ID comun pentru fazele pereche și ID-uri distincte pentru execuțiile izolate. Extent verifică marcajul nativ, recepția și faza pereche; componentele negative resping ID-uri lipsă, înlocuite sau diferite. Ambele faze 0.16.2 au trecut pe APK-ul semnat cu același ID și câte două aserțiuni. Ele rămân suplimentare față de calificarea strictă Game Review cu 30 de aserțiuni. [Rapoartele și execuțiile meniurilor](../../release/0.16.2/reports/README.md)
 
 **Închis · Oracolul nativ al istoricului pe APK-ul semnat.**
 `awaitHiddenAnalysis` compară eticheta unică a mutării selectate din partida cu AI

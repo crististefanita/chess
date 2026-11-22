@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "scope": "match-slots",
+  "device": "127.0.0.1:5555",
+  "api": "28",
+  "apkSha256": "2a88ab7847a285439fdfc3280a2ec67d21185f5a6b8a703cea8287a369e2f7f0",
+  "sourceCommit": "a109db7187ea58d2853ca2af76cd9852e1666032",
+  "variant": "release",
+  "assertions": 2,
+  "receiptSha256": "bf304a32c68612f027615e8969bfdb6e5ae76949910dc3fc8c53a3ed39c26531",
+  "captureSha256": {
+    "match-slots.png": "d3e5719bb9bf555311a6b76ca020841bad034554da6a9af5a0b3d9aa0ab8b37e",
+    "saved-games.png": "5dea21f3d600f0416db41df8181ff2edb3d566a610de3c02eb5fdf1aaef1f67d"
+  },
+  "runId": "389be22c6c774b4fa73cbbd59bd1801d"
+}
