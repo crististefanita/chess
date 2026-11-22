@@ -70,7 +70,9 @@ din diagrame pentru limba sa și sensul tradus; trecerea porții structurale nu
 dovedește singură traducerea integrală sau fidelitatea ei. [Strategia de testare](../testing/README.md#alegerea-nivelului)
 
 GitHub Actions livrează artefactul Web calificat dintr-un commit Git imuabil
-prin [workflow-ul Pages](../../.github/workflows/chess-pages.yml).
+când [cererea de publicare](../../web/publication.request), cu două linii, se
+schimbă pe `main`. [Workflow-ul Pages](../../.github/workflows/chess-pages.yml)
+validează cererea și amprenta arborelui static; declanșarea manuală rămâne disponibilă.
 Ramurile permanente sunt `main` și `main_RO`. Păstrați tagurile Git ale
 edițiilor publicate și pachetelor Web servite. [Publicarea Web](../../web/parity.md#publicarea-linkului)
 

@@ -38,8 +38,8 @@ Ghidurile jocului dețin regulile de produs și comportamentul platformelor. [Pa
 
 1. Construiți și calificați pachetul în TMP. Păstrați arborele static exact la un commit sau tag imuabil; folosiți un worktree separat pentru fișierele pregătite.
 2. Păstrați octet cu octet directoarele `runtime/<SHA-256>/` deja publicate și adresele vechi din rădăcină folosite de filele deschise. Includeți noul director runtime, `index.html`, `.nojekyll` și `.gitattributes` generat în același commit. Regula `* -text` împiedică Git să modifice octeții calificați; comparați bloburile din index cu bundle-ul măsurat înainte de publicare.
-3. Declanșați [fluxul Pages](../.github/workflows/chess-pages.yml) pe `main` cu `site_commit` și `manifest_sha256` calificate. Pages publică prin Actions; ramura de documentație `main_RO` nu este niciodată sursă de publicare.
-    Folosiți SHA-ul exact al site-ului pentru `site_commit`. Calculați `manifest_sha256` din lista brută a arborelui Git. Într-un shell POSIX rulați:
+3. Puneți commitul static calificat și amprenta arborelui brut în [cererea de publicare](publication.request), apoi împingeți fișierul pe `main`. Numai schimbarea lui declanșează [fluxul Pages](../.github/workflows/chess-pages.yml); acesta validează cele două identități înainte de a descărca arborele static. Declanșarea manuală cu aceleași valori rămâne disponibilă. Ramura `main_RO` nu publică.
+    Calculați `manifest_sha256` din commitul static exact. Într-un shell POSIX rulați:
 
     ```bash
     git ls-tree -r --full-tree "$SITE_COMMIT" | sha256sum

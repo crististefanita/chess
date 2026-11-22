@@ -194,6 +194,11 @@ cu două capturi ale AI-ului și una a omului. Proiecția JVM, randarea Web simu
 scrie câte o aserțiune Extent pentru fiecare cadru. Aceste componente nu
 dovedesc randarea identică a bundle-ului servit acum de Pages.
 
+`publication-request.test.mjs` acceptă exact un commit static și o amprentă
+de manifest și respinge cererile greșite, duplicate sau substituite. Workflow-ul
+Pages citește cererea validată numai când se schimbă pe `main` și verifică
+întregul arbore Git static înainte de publicare.
+
 `MatchHistorySelectionTest` verifică cursorul pentru o singură mutare prin paisprezece cazuri comune. Componenta Web acoperă ambele formate de transport, anunțurile neschimbate, creșterea istoricului, ramificarea și cursoarele expirate. Workerul compilat verifică paritatea proiecției și orientarea. În Browser MCP, parcurgeți Start, prima mutare, o mutare intermediară și ultima pe profil compact, landscape și desktop; verificați o singură etichetă între săgeți, indiciile limitelor și dreptunghiul tablei neschimbat. Adaptorul APK folosește cursorul comun în partidă și păstrează banda istoricului din Tabla de analiză.
 
 `NavigationGovernanceTest` înregistrează stilurile comune pentru titlu, Back și navigare, adaptoarele care consumă proiecția liniei și colecțiile de variante care trebuie păstrate. Probele de componentă păstrează istoricul complet din Tabla de analiză, ramurile din deschideri și linia calculată și comenzile indiciu/Pericol ale problemelor. Proba Web randată vizitează Partide, Probleme, Deschideri și Tabla de analiză, inclusiv revenirea contextuală prin Back; capturile Web nu dovedesc randarea Android.

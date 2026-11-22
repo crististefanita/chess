@@ -92,7 +92,7 @@ Pages, apoi comparați vizual APK și Web pe același cadru de captură. Sursa n
 actuală are deja meniul partidei în dreapta antetului, ca Web; meniul instalării
 0.15.2 este mai vechi.
 
-**Poarta workerului rămâne deschisă · 2026-11-22.** `ChessWebParityPublication#packagedWorkerProjectsInlineMatchAnalysis` a depășit limita existentă de 55 de secunde pentru procesul copil în cazul `active-historical-replay`, în trei încercări. Celelalte patru cazuri din prima rulare de publicare au trecut, iar intrarea workerului și motorul compilat sunt identice octet cu octet cu runtime-ul candidat anterior. Păstrați poarta deschisă; investigați durata limitată fără a mări timeout-ul și fără a modifica regulile sau comportamentul AI în cadrul lucrării pentru stilul pieselor capturate.
+**Poarta workerului reverificată · 2026-11-22.** `active-historical-replay` s-a încheiat în 26 de secunde, cu limita neschimbată de 55 de secunde. Clasa completă `ChessWebParityPublication` a arătat apoi un oracol contradictoriu: respingea aliasurile istorice ale workerului și motorului din rădăcină, deși contractul de publicare le păstrează pentru filele vechi. Aserțiunea verifică acum existența lor ca pereche și încărcarea workerului și motorului curent din runtime-ul versionat. Toate cele șase teste de publicare trec împreună, cu Extent. Nu s-au schimbat regulile de șah, comportamentul AI sau limita de timp.
 
 - Folosiți cazurile de istoric al deschiderii și analiză a matului din [contractul comun de testare](../testing/README.md#antet-și-navigare-comune).
 - Păstrați separat pentru fiecare adaptor identitățile surselor/artefactelor, profilul RO/EN, starea așteptată și întoarcerea observată. Workerul și geometria nu înlocuiesc randarea nativă sau MCP lipsă.

@@ -41,8 +41,14 @@ class ChessWebParityPublication {
         var engine = runtime.resolve("chess-engine.mjs");
         check.same("The same runtime includes the Worker entry and compiled TeaVM module", true,
                 Files.isRegularFile(worker) && Files.isRegularFile(engine));
-        check.same("The site root has no unversioned worker or engine alias", false,
-                Files.exists(site.resolve(worker.getFileName())) || Files.exists(site.resolve(engine.getFileName())));
+        check.same("Historical root worker and engine aliases remain a complete pair",
+                Files.isRegularFile(site.resolve(worker.getFileName())),
+                Files.isRegularFile(site.resolve(engine.getFileName())));
+        check.same("The current entry loads the worker relative to its versioned runtime", true,
+                Files.readString(runtime.resolve("game-review.mjs"))
+                        .contains("new URL('./engine-worker.mjs', import.meta.url)"));
+        check.same("The versioned worker loads its engine from the same runtime", true,
+                Files.readString(worker).contains("\"./chess-engine.mjs\""));
         check.same("The runtime directory identifies the complete asset manifest",
                 runtime.getFileName().toString(), runtimeDigest(runtime));
 

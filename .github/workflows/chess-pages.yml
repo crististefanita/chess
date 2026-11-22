@@ -1,6 +1,10 @@
 name: Publish Chess Web
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - web/publication.request
   workflow_dispatch:
     inputs:
       site_commit:
@@ -29,26 +33,39 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Check out the publication request
+        if: github.event_name == 'push'
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+          path: request-source
       - name: Check the requested identity
+        id: request
         shell: bash
         env:
           SITE_COMMIT: ${{ inputs.site_commit }}
           MANIFEST_SHA256: ${{ inputs.manifest_sha256 }}
         run: |
           set -euo pipefail
-          [[ "$SITE_COMMIT" =~ ^[0-9a-f]{40}$ ]]
-          [[ "$MANIFEST_SHA256" =~ ^[0-9a-f]{64}$ ]]
+          if [[ "$GITHUB_EVENT_NAME" == push ]]; then
+            node request-source/web/scripts/validate-publication-request.mjs \
+              request-source/web/publication.request >> "$GITHUB_OUTPUT"
+          else
+            [[ "$SITE_COMMIT" =~ ^[0-9a-f]{40}$ ]]
+            [[ "$MANIFEST_SHA256" =~ ^[0-9a-f]{64}$ ]]
+            printf 'site_commit=%s\nmanifest_sha256=%s\n' "$SITE_COMMIT" "$MANIFEST_SHA256" >> "$GITHUB_OUTPUT"
+          fi
       - name: Download the qualified site tree
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          ref: ${{ inputs.site_commit }}
+          ref: ${{ steps.request.outputs.site_commit }}
           persist-credentials: false
           path: site-source
       - name: Verify and extract the site
         shell: bash
         env:
-          SITE_COMMIT: ${{ inputs.site_commit }}
-          MANIFEST_SHA256: ${{ inputs.manifest_sha256 }}
+          SITE_COMMIT: ${{ steps.request.outputs.site_commit }}
+          MANIFEST_SHA256: ${{ steps.request.outputs.manifest_sha256 }}
         run: |
           set -euo pipefail
           test "$(git -C site-source rev-parse HEAD)" = "$SITE_COMMIT"
