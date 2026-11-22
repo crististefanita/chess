@@ -316,7 +316,9 @@ califică un APK semnat. [Identitatea de semnare](../release/README.md#calificar
 Selectați `MatchAnalysisParityTest` și
 `ChessWebParityPublication#packagedWorkerProjectsInlineMatchAnalysis` în comanda
 Maven pentru pachetul TeaVM. Cazurile comune fixează checkpointul și semimutarea
-afișată. Comparați opțiunea după restaurare, evaluarea albului, linia de mat din
+afișată. Fiecare caz declară și alegerea deschiderii; porniți partida cu această
+alegere înainte de compararea checkpointului versionat. Astfel, fixture-ul nu
+pretinde o proveniență pe care testul nu a creat-o. Comparați opțiunea după restaurare, evaluarea albului, linia de mat din
 poziția istorică și starea terminală.
 [Comanda Maven](../../web/README.md) · [Datele comune](../../atf-tests/src/test/resources/match-analysis-cases.json)
 

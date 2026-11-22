@@ -1,4 +1,20 @@
 testChanges:
+  - id: CHESS-MATCH-OPENING-FIXTURE-RO
+    base: "0a2d5b1487d9652aade04ea7903c304376e3acc2"
+    from: atf-tests/src/test/java/ro/atf/chess/MatchAnalysisParityTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/MatchAnalysisParityTest.java
+    test: ro.atf.chess.MatchAnalysisParityTest#nativeModelProjectsTheDisplayedMatchFrame
+    contract: "Pornește fiecare caz comun nativ/Web cu deschiderea declarată și păstrează verificările checkpointului, analizei și redării"
+    allowDelete: false
+
+  - id: CHESS-MATCH-OPENING-DATA-RO
+    base: "0a2d5b1487d9652aade04ea7903c304376e3acc2"
+    from: atf-tests/src/test/resources/match-analysis-cases.json
+    replacement: atf-tests/src/test/java/ro/atf/chess/MatchAnalysisParityTest.java
+    test: ro.atf.chess.MatchAnalysisParityTest#nativeModelProjectsTheDisplayedMatchFrame
+    contract: "Declară explicit proveniența deschiderii, păstrând fiecare cadru așteptat independent"
+    allowDelete: false
+
   - id: CHESS-SIGNER-CERTIFICATE-RO
     base: "0a2d5b1487d9652aade04ea7903c304376e3acc2"
     from: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java
