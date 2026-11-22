@@ -69,3 +69,8 @@ HTTP duration comes from `ReportResponse.duration()`. `detail(...)` preserves th
 J0 [code, tests, and feedback](README.md#maintenance-and-feedback).
 
 [Verify the library integration in Chess and the examples in J0](README.md#verification)
+
+<a id="shared-library-source"></a>
+
+> **Library source:** [Reporting · ATF J0](https://github.com/crististefanita/atf_j0/blob/HEAD/lib/README.Reporting.md).
+> This project’s POM, provenance and tests define the consumed version and local acceptance.

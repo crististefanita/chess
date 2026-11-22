@@ -38,3 +38,8 @@ public static void verifyState(RecordedAssertions audit, String actual) {
 Verify local contracts with `PlatformLibraryProvenanceTest` and `SuiteGovernanceTest`. Keep coordinates, hashes, and integration notes aligned with `library-provenance.json`.
 
 [Verify the library integration in Chess and the examples in J0](README.md#verification)
+
+<a id="shared-library-source"></a>
+
+> **Library source:** [Test Kit · ATF J0](https://github.com/crististefanita/atf_j0/blob/HEAD/lib/README.TestKit.md).
+> This project’s POM, provenance and tests define the consumed version and local acceptance.

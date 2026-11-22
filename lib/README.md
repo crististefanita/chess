@@ -66,3 +66,8 @@ J0 owns the behavior of the library examples. [Executable J0 guides](https://git
 Report Chess Lab integration issues in [Chess feedback](../docs/feedback/README.md).
 For a library defect, isolate the reproduction with the J0 owner and repeat
 consumer acceptance after replacing the pair.
+
+<a id="shared-library-source"></a>
+
+> **Library sources:** [Catalog · ATF J0](https://github.com/crististefanita/atf_j0/blob/HEAD/lib/README.md).
+> This project’s POM, provenance and tests define the consumed version and local acceptance.

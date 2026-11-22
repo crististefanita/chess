@@ -48,3 +48,8 @@ var response = mock.send(ApiRequest.of("GET", "/health"),
 Before adopting a new version, check local compatibility with `PlatformLibraryProvenanceTest` and verify the simulated contracts used by Chess Lab. Keep coordinates, hashes, and integration notes aligned with `library-provenance.json`.
 
 [Verify the library integration in Chess and the examples in J0](README.md#verification)
+
+<a id="shared-library-source"></a>
+
+> **Library source:** [Mock · ATF J0](https://github.com/crististefanita/atf_j0/blob/HEAD/lib/README.Mock.md).
+> This project’s POM, provenance and tests define the consumed version and local acceptance.

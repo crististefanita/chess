@@ -44,3 +44,8 @@ var total = body.path("total").decimalValue();
 Before adopting a new version, check local compatibility with `PlatformLibraryProvenanceTest` and verify the contracts used by Chess Lab. Keep coordinates, hashes, and integration notes aligned with `library-provenance.json`.
 
 [Verify the library integration in Chess and the examples in J0](README.md#verification)
+
+<a id="shared-library-source"></a>
+
+> **Library source:** [Core · ATF J0](https://github.com/crististefanita/atf_j0/blob/HEAD/lib/README.Core.md).
+> This project’s POM, provenance and tests define the consumed version and local acceptance.
