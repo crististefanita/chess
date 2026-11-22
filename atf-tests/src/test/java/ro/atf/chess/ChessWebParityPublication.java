@@ -104,7 +104,7 @@ class ChessWebParityPublication {
         var frames = new ObjectMapper().readTree(fixture.toFile()).path("frames");
         check.same("The worker reported the named AI seat, every historical capture frame, flip and restore",
                 frames.size() + 3, rows.size());
-        check.same("The compiled Web worker projects Alex for Basic as Android",
+        check.same("Web opponent name equals Android Alex",
                 MatchOpponentName.forLevel(MatchSetup.Level.BASIC), rows.get("opponent-name"));
         for (var frame : frames) {
             String key = frame.path("ply").asText();
