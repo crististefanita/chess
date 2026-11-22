@@ -810,6 +810,8 @@ mvn test '-Dmaven.repo.local=target/maven-repo' '-Dtest=AndroidSanityPublication
 
 The native AI match shows one selected-move label. Its history sanity oracle compares that label with `MatchHistorySelection.at(match, ply).compact()` after navigation and restore; a wrong value reports expected and observed text. The manual Analysis board retains its full move-list oracle. Hint readiness, selected position and history text remain separate checks.
 
+The native AI-match probe waits for a completed verified hint rather than treating the short UI-transition window as an engine deadline. On the fixed two-ply fixture, `hintAt(1)` took 16 seconds on the JVM during the 0.16.2 investigation. The signed Android probe allows up to 90 seconds, reports the actual panel and bulb state on timeout, and still requires the exact selected position, hidden hint, legal recommendation, and unchanged saved game. The shorter 12-second window remains for ordinary UI transitions.
+
 </details>
 
 ## Analysis Board
