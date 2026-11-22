@@ -68,46 +68,20 @@ not stand in for a wrong UI oracle.
 
 **P2 · Paired adapter evidence.** Shared chrome and the single-move cursor already have common component cases. The gap is a reusable rendered receipt for the same source position, variant, cursor and Back sequence on APK and Web. The retained older Web engine must not be presented as parity with a newer native engine.
 
-**Captured-piece component fix · 2026-11-22.** Web now uses the shared 48-unit silhouette, the APK capture fill and outline colors, and the same 82% icon-to-caption scale. Mocked DOM and Extent component checks cover all five capturable kinds, invalid entries, side ownership and the stable capture rows. This closes the adapter-style mismatch; it does not replace the paired rendered receipt required above.
+**P2 · Rendered seats and captures.** The shared opponent identity, capture
+projection, Web painter and fixed seat rows pass JVM, mocked DOM and packaged
+worker checks, including history, flip and reload. The legal capture sequence
+at plies 13–16 is in `match-capture-rows.json`; the owner contracts and test
+names are in the [AI match guide](../../web/README.md#ai-match) and
+[test strategy](../testing/README.md#analysis-in-the-ai-game). The
+[publication request](../../web/publication.request) identifies the qualified
+bundle; byte identity and component assertions do not establish visual parity.
 
-**Recorded capture sequence · 2026-11-22.** On the API 28 emulator, the
-installed 0.15.2 APK showed the AI's two captured white pawns and +1 above the
-board, and the human's captured black pawn below it after
-`7...Nxe5 8.dxe6 fxe6`. The current capture painter retains those silhouettes,
-colors and scale. `match-capture-rows.json` now drives the JVM, mocked DOM and
-packaged TeaVM worker at plies 13–16, including return in history, flip and
-reload. The focused Extent checks pass. The emulator's 0.15.2 certificate
-differs from the signed 0.16.1 APK, so this observation is a capture-painter
-reference, not a 0.16.1 release receipt.
-
-**Published bytes verified; rendered comparison remains open.** Pages workflow
-[45021819859](https://github.com/crististefanita/chess/actions/runs/45021819859)
-published static commit `4da2e7ef47cca6767efd66ba4be58b0c0cf11dc4`.
-The served index names runtime
-`db3b111fcbeb87c9178c5ba3dde6cdca567ee5c44e34e794b198f616d4c75763`.
-The downloaded index, match entry, named-seat adapter, CSS, engine and worker
-match the staged files byte for byte. Browser MCP still fails while writing
-kernel assets before the tab opens. A paired rendered receipt remains necessary.
-The current native source places match options on the right of the header,
-matching Web; the installed 0.15.2 menu is older.
-
-**P2 · Visible capture ownership · component contract implemented 2026-11-22.**
-`MatchOpponentName` now gives both adapters the same Alex/Mira/Atlas identity.
-The Web places each player's name and captured pieces in one reserved seat row,
-with the AI level beside the opponent name. Compact and wide geometry, flip,
-history, RO/EN labels, long names and alignment with the evaluation rail have
-mocked component coverage. The old combined summary below the board is removed.
-Close this item only after paired
-APK/Web captures at compact 130% text and a wide window confirm the board and
-menus remain aligned without clipping or page scrolling; Browser MCP is still
-unavailable before the tab opens.
-
-The focused TMP gate passed 24 EN JVM/worker/governance tests, 20 RO
-documentation/component tests, 46 mocked Web checks and Android compilation.
-`MatchSeatParityTest` records the assertions in Extent. The rendered receipt is
-the remaining boundary; component results do not certify pixels or scrolling.
-
-**Worker gate rechecked · 2026-11-22.** `active-historical-replay` completed in 26 seconds with the unchanged 55-second limit. The full `ChessWebParityPublication` class then exposed a contradictory oracle: it rejected historical root worker/engine aliases that the publishing contract explicitly preserves for older open tabs. The assertion now verifies that legacy aliases form a pair and the current entry loads its worker and engine from the versioned runtime. All six publication tests pass together with Extent. No chess or AI behavior or time limit changed.
+Close only with paired captures from the qualified APK and served Web bundle
+at compact 130% text and a wide window. Check each name, level, captured
+piece, board edge and menu without clipping or page scrolling. Bind both
+captures to source and artifact identities. The MCP browser currently fails
+before opening the tab, so this rendered receipt remains open.
 
 - Use the opening-history and mating-review cases from the [shared testing contract](../testing/README.md#shared-screen-chrome).
 - Keep source/artifact identities, RO/EN profile, expected state and observed return per adapter. Worker and geometry checks cannot replace missing native or MCP rendering.
