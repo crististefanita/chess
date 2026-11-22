@@ -81,12 +81,10 @@ differs from the signed 0.16.1 APK, so this observation is a capture-painter
 reference, not a 0.16.1 release receipt.
 
 **Published bytes verified; rendered comparison remains open.** Pages workflow
-[45020801534](https://github.com/crististefanita/chess/actions/runs/45020801534)
-published static commit `3995e535606ebf7be2339ae5a4ce80a75c72f1b3` on its second
-attempt. Upload succeeded on the first attempt, but GitHub Pages temporarily
-could not find its own `github-pages` artifact; rerunning only the failed job
-succeeded. The served index now names runtime
-`880be9163f22f7211561679fa78480ed048c04ae7900626e12dad28b207cbdd0`.
+[45021819859](https://github.com/crististefanita/chess/actions/runs/45021819859)
+published static commit `4da2e7ef47cca6767efd66ba4be58b0c0cf11dc4`.
+The served index names runtime
+`db3b111fcbeb87c9178c5ba3dde6cdca567ee5c44e34e794b198f616d4c75763`.
 The downloaded index, match entry, named-seat adapter, CSS, engine and worker
 match the staged files byte for byte. Browser MCP still fails while writing
 kernel assets before the tab opens. A paired rendered receipt remains necessary.
@@ -97,8 +95,9 @@ matching Web; the installed 0.15.2 menu is older.
 `MatchOpponentName` now gives both adapters the same Alex/Mira/Atlas identity.
 The Web places each player's name and captured pieces in one reserved seat row,
 with the AI level beside the opponent name. Compact and wide geometry, flip,
-history, RO/EN labels and long names have mocked component coverage. The old
-combined summary below the board is removed. Close this item only after paired
+history, RO/EN labels, long names and alignment with the evaluation rail have
+mocked component coverage. The old combined summary below the board is removed.
+Close this item only after paired
 APK/Web captures at compact 130% text and a wide window confirm the board and
 menus remain aligned without clipping or page scrolling; Browser MCP is still
 unavailable before the tab opens.
