@@ -1,12 +1,12 @@
-# Mock — Deterministic HTTP Transport
+# Mock — deterministic HTTP transport
 
 ## Overview
 
-`atf-mock` replaces the Core port `ApiTransport` with a local response catalog. Use it for offline components and contracts with controlled input and an explicit fallback.
+`atf-mock` replaces the Core `ApiTransport` port with a local response catalog. Use it for offline components and contracts, with controlled inputs and an explicit fallback.
 
-## Minimal Example
+## Minimal example
 
-Place `mock.yaml` in the working directory.
+`mock.yaml` in the working directory:
 
 ```yaml
 mock:
@@ -15,7 +15,7 @@ mock:
   fallback: {status: 500, body: '{}'}
 ```
 
-In this method fragment, the transport stays offline.
+Snippet inside a method; the transport remains offline:
 
 ```java
 import atf.core.http.request.ApiRequest;
@@ -27,27 +27,25 @@ var response = mock.send(ApiRequest.of("GET", "/health"),
         "https://offline.test/health", "none").join();
 ```
 
-`response.status()` is `200`. A request without a matching route receives the `500` fallback. The test independently compares the response with the expected result.
+`response.status()` is `200`; a request with no matching route receives the `500` fallback. The test independently compares the response with the expected result.
 
-## Catalog and Matching
+## Catalog and matching
 
-| Need | API or Contract |
+| Need | API or contract |
 |---|---|
 | Explicit YAML catalog | `AtfMockTransport.fromConfiguration(Path)` |
 | Project configuration | `fromProjectConfiguration()`: `atf.mock.config` > `ATF_MOCK_CONFIG` > `atf-mock.yaml/yml` |
 | Request conditions | Method, path, auth profile, query, required headers, and expected body in `MockRoute` |
-| Request body | Default `json` mode, negative MIME check `wrong-content-type`, and numeric matching without converting through `double` |
-| Repeated query parameters | `ApiQueryParameters` includes the required values with their multiplicity |
+| Request body | Default `json` mode, negative MIME probe `wrong-content-type`; numeric matching without conversion through `double` |
+| Repeated query values | `ApiQueryParameters`; includes the required values with multiplicity |
 
-- Without configuration, `fromProjectConfiguration()` uses the `defaults()` fixture. The application catalog stays local.
-- The mock uses route duration as response metadata and returns without a simulated delay.
-- A mock check verifies integration. Acceptance of the real service, broker, or device is a separate check.
+- Without configuration, `fromProjectConfiguration()` uses the `defaults()` fixture; the application catalog remains local.
+- The duration in a route is response metadata, not a simulated real delay.
+- A mock probe verifies integration; acceptance of the real service, broker, or device remains separate.
 
 ---
 
-Before adopting a new version, check local compatibility with `PlatformLibraryProvenanceTest` and verify the simulated contracts used by Chess Lab. Keep coordinates, hashes, and integration notes aligned with `library-provenance.json`.
-
-[Verify the library integration in Chess and the examples in J0](README.md#verification)
+Before a new release, verify local compatibility with `PlatformLibraryProvenanceTest` and the simulated contracts used by Chess Lab. Keep coordinates, hashes and integration notes aligned with `library-provenance.json`.
 
 <a id="shared-library-source"></a>
 

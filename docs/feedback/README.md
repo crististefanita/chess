@@ -46,6 +46,7 @@ describes the behavior, and the [release catalog](../../release/README.md) point
 | P2 | Progress · Android upgrade | A signed upgrade still needs a progress probe. | Keep IDs, solutions and points across upgrade and restart. |
 | P2 | Puzzle calibration | Imported difficulty bands overlap. | Check attempts and time on a separate shuffled set. |
 | P2 | Android · separating screen transitions | The Android screen owns several session transitions. | Move transitions into a JVM-tested owner. |
+| P2 | Library documentation · edition parity | The library guides have no native commit-pinned EN/RO gate. | Reject a missing counterpart, changed link or executable block, and stale review metadata; accept localized prose without changing technical identity. |
 
 </details>
 

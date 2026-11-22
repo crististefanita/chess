@@ -1,20 +1,20 @@
-# Core — Common Contracts and Mechanisms
+# Core — shared contracts and mechanisms
 
 ## Overview
 
-`atf-core` provides the vocabulary and reusable mechanisms of ATF. Use it to compose adapters and executions while keeping application rules in the consumer.
+`atf-core` provides ATF's reusable vocabulary and mechanisms. Use it to compose adapters and executions while keeping application rules in the consumer.
 
-| What you need | Starting API |
+| Need | Starting API |
 |---|---|
 | HTTP requests, responses, and execution | `ApiRequest`, `ApiResponse`, `ApiTransport`, `ApiExecutor` |
 | Configuration captured for a run | `AtfConfiguration`, `ApiSettingsSnapshot`, `AtfRuntimeSnapshot` |
-| Strict JSON and sensitive data redaction | `JsonDocuments`, `SensitiveDataRedactor` |
-| Resource release in reverse order | `CleanupRegistry` |
+| Strict JSON and sensitive-data redaction | `JsonDocuments`, `SensitiveDataRedactor` |
+| Releasing resources in reverse order | `CleanupRegistry` |
 | Selective synchronization with baseline verification | `AtfPromotionManifest`, `AtfPromotionGuard` |
 
-## Minimal Example
+## Minimal example
 
-This method fragment can propagate `IOException` and builds the data without sending a request.
+Snippet inside a method that may propagate `IOException`; it constructs the data without sending a request:
 
 ```java
 import atf.core.http.request.ApiRequest;
@@ -29,21 +29,19 @@ var body = JsonDocuments.read("{\"total\":19.90}");
 var total = body.path("total").decimalValue();
 ```
 
-`url` is `https://example.test/api/orders/42`. `JsonDocuments` rejects duplicate keys and trailing content. Decimal numbers bypass `double` conversion.
+`url` is `https://example.test/api/orders/42`. `JsonDocuments` rejects duplicate keys and trailing content after the document; decimal numbers are not converted through `double`.
 
-## Using Core in ATF
+## Use in ATF
 
-- Inject an `ApiTransport` into `ApiExecutor` and choose the real or mock transport explicitly at composition time.
-- `HttpClientTransport` and `UrlConnectionTransport` propagate cancellation to the owned operation. The fallback includes the body in the deadline. Cancellation alone provides no rollback or replay authorization.
-- Reuse the run's configuration snapshot. The consumer owns the oracle, assertions, and business verdict.
-- Keep the original model for comparison. Apply redaction and previews when publishing diagnostics.
-- Core exposes neutral ports. [Console](README.Console.md), [Mock](README.Mock.md), and [Reporting](README.Reporting.md) have distinct roles.
+- Inject an `ApiTransport` into `ApiExecutor`; select the real or mock transport explicitly during composition.
+- `HttpClientTransport` and `UrlConnectionTransport` propagate cancellation to the owned operation; the fallback includes the body in the deadline. Cancellation does not prove rollback or authorize replay.
+- Reuse the run's configuration snapshot; the oracle, assertions, and business verdict belong to the consumer.
+- Keep the original model for comparison; apply redaction and preview limits when publishing diagnostics.
+- Core exposes neutral ports; [Console](README.Console.md), [Mock](README.Mock.md), and [Reporting](README.Reporting.md) have distinct roles.
 
 ---
 
-Before adopting a new version, check local compatibility with `PlatformLibraryProvenanceTest` and verify the contracts used by Chess Lab. Keep coordinates, hashes, and integration notes aligned with `library-provenance.json`.
-
-[Verify the library integration in Chess and the examples in J0](README.md#verification)
+Before a new release, verify local compatibility with `PlatformLibraryProvenanceTest` and the contracts used by Chess Lab. Keep coordinates, hashes and integration notes aligned with `library-provenance.json`.
 
 <a id="shared-library-source"></a>
 
