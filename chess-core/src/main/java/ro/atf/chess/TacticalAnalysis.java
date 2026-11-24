@@ -1438,7 +1438,7 @@ public final class TacticalAnalysis {
                         && position.pieceAt(move.from()).kind() != Kind.PAWN);
     }
 
-    private static int captureOrder(ChessPosition position, Move move) {
+    static int captureOrder(ChessPosition position, Move move) {
         var victim = position.pieceAt(move.to());
         var attacker = position.pieceAt(move.from());
         int capture = victim == null ? (attacker.kind() == Kind.PAWN && move.from() % 8 != move.to() % 8 ? 100 : 0)

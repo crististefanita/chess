@@ -7,6 +7,7 @@ describes the behavior, and the [release catalog](../../release/README.md) point
 
 [Reviewing test moves between suites](../testing/README.md#test-changes-against-a-git-baseline) describes the Git baseline and coverage evidence.
 
+- [Experimental Hard A gates and remaining work](hard.md)
 - [Native strength and hint/review comparisons](#finished-game-native-losses-and-frontier-controls)
 - [Learned-ordering transfer still needed](hard-learning.md)
 - [APK/Web parity and rendered evidence](web-parity.md)

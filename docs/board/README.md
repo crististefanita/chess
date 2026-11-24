@@ -11,6 +11,7 @@
 |---|---|
 | Understand puzzle identity and curation | [Catalog contract](quest-curation.md) |
 | Interpret AI choices and evidence limits | [AI evaluation](ai-quality.md) |
+| Inspect the experimental Hard A search and its gates | [Hard A contract](hard-candidates.md) |
 | Follow review state and navigation | [Game Review](game-review.md) |
 | Choose component or platform proof | [Test strategy](../testing/README.md) |
 

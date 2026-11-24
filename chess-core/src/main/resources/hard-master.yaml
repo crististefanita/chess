@@ -1,0 +1,12 @@
+schema: 2
+engine: A
+id: hard-a-v2
+max-plies: 6
+core-nodes: 200000
+max-total-nodes: 300000
+quiescence-plies: 16
+forcing-reserve-plies: 32
+table-entries: 22000
+evaluation: base
+ponder: false
+mate-certificate: {max-plies: 5, nodes: 100000}

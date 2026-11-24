@@ -2,6 +2,7 @@ package ro.atf.chess;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -72,6 +73,19 @@ public final class ChessMatch {
 
     public ChessPosition position() { return positionAt(ply()); }
     public int ply() { return moves.size(); }
+    List<Move> moveHistory() { return List.copyOf(moves); }
+    int reversiblePlies() { return quietPlies; }
+
+    boolean mayReachAutomaticDrawIn(int plies) {
+        if (quietPlies + plies >= 150) return true;
+        if (quietPlies + plies < 16) return false;
+        int priorNeeded = 5 - (1 + (plies - 1) / 4);
+        var visits = new HashMap<ChessPosition.SearchKey, Integer>();
+        for (int index = ply() - quietPlies; index <= ply(); index++) {
+            if (visits.merge(positionAt(index).searchKey(), 1, Integer::sum) >= priorNeeded) return true;
+        }
+        return false;
+    }
     public Move lastMove() { return moveAt(ply()); }
     public ChessPosition positionAt(int ply) { return positions.get(ply); }
     public MatchMaterial materialAt(int ply) { return MatchMaterial.at(this, ply); }
@@ -127,7 +141,12 @@ public final class ChessMatch {
     public ChessMatch play(Move move) {
         if (result != Result.IN_PROGRESS) throw new IllegalStateException("The match has ended");
         var before = position();
-        var after = before.play(move);
+        return afterGenerated(move, before.play(move));
+    }
+
+    // Search has already generated this legal move on this exact immutable board.
+    ChessMatch afterGenerated(Move move, ChessPosition after) {
+        var before = position();
         var nextPositions = new ArrayList<>(positions);
         nextPositions.add(after);
         var nextMoves = new ArrayList<>(moves);
@@ -221,7 +240,16 @@ public final class ChessMatch {
         return botDecision().move();
     }
 
-    record BotDecision(Move move, int depth, int extraNodes) { }
+    enum NodeAccounting { LEGACY_EXTRA, TOTAL }
+    record BotDecision(Move move, int depth, int extraNodes, NodeAccounting accounting, String engine, String stop, String certificate) {
+        BotDecision(Move move, int depth, int extraNodes, NodeAccounting accounting, String engine, String stop) {
+            this(move, depth, extraNodes, accounting, engine, stop, "NOT_RUN");
+        }
+        BotDecision(Move move, int depth, int extraNodes) {
+            this(move, depth, extraNodes, NodeAccounting.LEGACY_EXTRA, "legacy-v1", "LEGACY");
+        }
+        int searchedNodes() { return extraNodes; }
+    }
 
     record BotAnalysis(BotDecision decision, TacticalAnalysis.SearchReport search) { }
 
@@ -231,7 +259,17 @@ public final class ChessMatch {
     }
 
     BotDecision botDecision(MatchSetup.Level level) {
-        return analyzeBot(level).decision();
+        if (level == MatchSetup.Level.HARD && HardMaster.usesA()) return HardMaster.decide(this);
+        return referenceDecision(level);
+    }
+
+    BotDecision referenceDecision(MatchSetup.Level level) { return analyzeBot(level).decision(); }
+
+    Move hardBookMove() {
+        if (result != Result.IN_PROGRESS) return null;
+        var reply = OpeningRepertoire.CURRENT.playReply(position(), MatchSetup.Level.HARD, openingChoice);
+        if (reply == null || quietPlies >= 8 && occurrences(position(), ply() - 1) >= 2) return null;
+        return mayReachAutomaticDrawIn(1) && !automaticDrawMoves().isEmpty() ? null : reply;
     }
 
     /** Retains the search that actually selected the move; auditing must not run a different second search. */
