@@ -1,0 +1,6 @@
+schema: 1
+enabled: true
+reserve-nodes: 12000
+search-plies: 4
+quiescence-plies: 2
+margin-cp: 1

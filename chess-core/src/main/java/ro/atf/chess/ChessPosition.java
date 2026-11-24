@@ -256,6 +256,9 @@ public final class ChessPosition {
                 && board[from] != null && reaches(board[from], from, to);
     }
 
+    // Experimental search compatibility; reuse the existing guarded geometric helper.
+    boolean reachesFrom(int from, int to) { return attacksFrom(from, to); }
+
     boolean isCheckedFrom(int square) {
         Piece attacker = board[square];
         return attacker != null && attacker.side() == turn.other() && reaches(attacker, square, kingSquare(turn));
@@ -330,7 +333,7 @@ public final class ChessPosition {
         return false;
     }
 
-    private int kingSquare(Side side) { return side == Side.WHITE ? whiteKing : blackKing; }
+    int kingSquare(Side side) { return side == Side.WHITE ? whiteKing : blackKing; }
 
     private record AttackRay(int file, int rank, int[] squares) { }
 

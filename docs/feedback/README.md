@@ -7,6 +7,7 @@ descrie comportamentul, iar [catalogul edițiilor](../../release/README.md) indi
 
 [Revizuirea mutărilor între suite](../testing/README.md#schimbarea-testelor-față-de-o-bază-git) descrie baza Git și dovezile de acoperire.
 
+- [Porțile și lucrul rămas pentru Hard A experimental](hard.md)
 - [Forță nativă și comparații indiciu/analiză](#pierderi-native-din-partide-încheiate-și-martori-de-frontieră)
 - [Transferul ordonării învățate încă necesar](hard-learning.md)
 - [Paritate APK/Web și dovezi randate](web-parity.md)

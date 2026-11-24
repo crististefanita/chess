@@ -11,6 +11,7 @@
 |---|---|
 | Înțelege identitatea și selecția problemelor | [Contractul catalogului](quest-curation.md) |
 | Interpretează alegerile AI și limitele dovezilor | [Evaluarea AI](ai-quality.md) |
+| Înțelegerea căutării experimentale Hard A și a porților sale | [Contractul Hard A](hard-candidates.md) |
 | Urmărește starea și navigarea analizei | [Game Review](game-review.md) |
 | Alege proba de componentă sau de platformă | [Strategia de testare](../testing/README.md) |
 

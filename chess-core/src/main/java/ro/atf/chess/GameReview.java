@@ -59,6 +59,8 @@ public record GameReview(List<Turn> turns, Opening opening, int bookPlies, int i
     }
 
     private static GameReview analyze(ChessMatch match, IntConsumer progress, boolean rated) {
+        // The experimental A engine has no qualified historical opponent rating.
+        rated = rated && !(match.setup().level() == MatchSetup.Level.HARD && HardMaster.usesA());
         var policy = GameReviewPolicy.CURRENT;
         var book = OpeningIndex.CURRENT.recognize(match);
         var turns = new ArrayList<Turn>(match.ply());

@@ -1,0 +1,71 @@
+schema: 1
+candidate: hard-a-v2
+oracle: Stockfish 19 full strength H17/H19
+evidence: .studii/active-j7-offline-evaluation/runs/hard-master-a/material-audit/
+cases:
+  - id: "intermezzo/intermezzo-012"
+    fen: "1k1q3r/pp2b3/3p1p2/3P4/1P2PpP1/P5P1/2Q1B1P1/2R2RK1 b - - 0 30"
+    approved-roots: ["d8b6"]
+    rejected-root: "f4g3"
+    approved-wdl: [1000, 1000]
+    rejected-wdl: [487, 488]
+  - id: "tactics/tactic-007"
+    fen: "2bqkb1r/4pp2/1pnprn2/pNp2p1p/2P1P3/2NP2PP/PP4B1/R1BQ1RK1 w k - 0 14"
+    approved-roots: ["e4f5"]
+    rejected-root: "f1f5"
+    approved-wdl: [1000, 1000]
+    rejected-wdl: [659, 664]
+  - id: "tactics/tactic-035"
+    fen: "3r1rk1/pp2bppp/2ppnn2/8/N1P1P3/q1P4P/P2N2PB/R2Q1R1K w - - 1 17"
+    approved-roots: ["d2b1"]
+    rejected-root: "h1g1"
+    approved-wdl: [1000, 1000]
+    rejected-wdl: [0, 0]
+  - id: "tactics/tactic-050"
+    fen: "7r/p4pk1/1pp3p1/8/6q1/4Q3/PP1R1P1r/5KN1 w - - 0 39"
+    approved-roots: ["e3e5"]
+    rejected-root: "e3c3"
+    approved-wdl: [1000, 1000]
+    rejected-wdl: [0, 0]
+  - id: "tactics/tactic-071"
+    fen: "r1b2bnr/ppQp3p/2n2q1k/6pP/2B1P3/2PP4/PP3PP1/RNB1K2R b KQ - 0 11"
+    approved-roots: ["f8d6"]
+    rejected-root: "g8e7"
+    approved-wdl: [1000, 1000]
+    rejected-wdl: [0, 0]
+  - id: "training/training-001"
+    fen: "r3qr1k/1p2b1p1/4p1Qp/2ppP3/p4P2/2P1P1P1/PP4P1/1K1R3R w - - 1 21"
+    approved-roots: ["h1h6"]
+    rejected-root: "g6e6"
+    approved-wdl: [1000, 1000]
+    rejected-wdl: [0, 0]
+  - id: "training/training-014"
+    fen: "6rk/3b1prp/p2Q4/2pPp3/3qP1P1/5B1P/5PK1/R6R b - - 0 26"
+    approved-roots: ["d7g4"]
+    rejected-root: "d7b5"
+    approved-wdl: [1000, 1000]
+    rejected-wdl: [0, 0]
+  - id: "training/training-058"
+    fen: "r5k1/p2qppbp/1p1p1np1/2p5/2Pn4/P1NPP1PP/1P3P2/1RBQ1RK1 b - - 0 14"
+    approved-roots: ["d7h3"]
+    rejected-root: "d4c6"
+    approved-wdl: [1000, 1000]
+    rejected-wdl: [0, 1]
+  - id: "training/training-078"
+    fen: "2r5/1b4k1/2q1p1pr/2p5/1p1pR1QP/pP1P1PP1/P1P5/4R1K1 w - - 1 31"
+    approved-roots: ["e4e6"]
+    rejected-root: "f3f4"
+    approved-wdl: [1000, 1000]
+    rejected-wdl: [0, 0]
+  - id: "training/training-086"
+    fen: "4r2k/5pp1/1R1p1n1p/1P1P1Pn1/P4Q2/1B5r/2P3P1/6K1 b - - 0 35"
+    approved-roots: ["e8e1"]
+    rejected-root: "h3f3"
+    approved-wdl: [1000, 1000]
+    rejected-wdl: [0, 0]
+  - id: "training/training-104"
+    fen: "8/1N3k2/6p1/8/2P3P1/pr6/R7/5K2 b - - 2 56"
+    approved-roots: ["b3b1"]
+    rejected-root: "b3b7"
+    approved-wdl: [1000, 1000]
+    rejected-wdl: [498, 500]

@@ -1,0 +1,17 @@
+schema: 5
+engine: A
+id: hard-a-v6
+max-plies: 8
+core-nodes: 1000000
+max-total-nodes: 1100000
+quiescence-plies: 32
+forcing-reserve-plies: 32
+table-entries: 22000
+evaluation: king-pressure
+ponder: false
+mate-certificate: {max-plies: 5, nodes: 100000}
+root-pv: true
+pvs: true
+move-hints: true
+cutoff-ordering: true
+quiet-tactics: forcing-pins
