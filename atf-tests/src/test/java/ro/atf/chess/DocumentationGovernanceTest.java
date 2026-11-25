@@ -32,6 +32,7 @@ class DocumentationGovernanceTest {
     private static final List<String> WEB_GUIDES = List.of("web/README.md", "web/parity.md");
     private static final Pattern LINK = Pattern.compile("\\]\\(([^)\\s]+)\\)");
     private static final Pattern HEADING = Pattern.compile("^#{1,6}\\s+(.+)$");
+    private static final Pattern HTML_ANCHOR = Pattern.compile("^<a\\s+id=\"([^\"]+)\"\\s*>\\s*</a>$", Pattern.CASE_INSENSITIVE);
     private static final Pattern FENCE = Pattern.compile("^(`{3,}|~{3,})(.*)$");
     private static final Pattern CODE_SPAN = Pattern.compile("`([^`]+)`");
     private static final Pattern GRADLE_INCLUDE = Pattern.compile("(?m)^\\h*include\\h*\\(?([^\\r\\n]*)");
@@ -388,13 +389,17 @@ class DocumentationGovernanceTest {
                 List.of(), missingReadmeRoutes(prose(root.resolve("README.md"))));
     }
 
-    @Test void mainReadmeShowsOneDirectPlayLinkBelowTheApk(Checks check) throws IOException {
+    @Test void mainReadmeUsesTheGameSectionAndOneDirectBrowserLinkBelowTheApk(Checks check) throws IOException {
         var readme = prose(ProjectRoot.locate().resolve("README.md"));
         String address = ChessPublicationRoutes.HOME_URL;
-        var game = readme.stream().dropWhile(line -> !line.equals("## Play")).skip(1)
+        check.same("Main README uses the Game section", 1L,
+                readme.stream().filter(line -> line.equals("## Game")).count());
+        check.same("Play is not a section heading", 0L,
+                readme.stream().filter(line -> line.equals("## Play")).count());
+        var game = readme.stream().dropWhile(line -> !line.equals("## Game")).skip(1)
                 .takeWhile(line -> !line.startsWith("## ")).filter(line -> !line.isBlank()).toList();
-        check.same("Play contains exactly two links", 2, game.size());
-        check.same("Play ends with the canonical browser main menu", "- [Play in your browser](" + address + ")",
+        check.same("Game contains exactly two links", 2, game.size());
+        check.same("Game ends with the canonical browser main menu", "- [Play in browser](" + address + ")",
                 game.isEmpty() ? "" : game.getLast());
         check.same("The canonical play address appears exactly once", 1L,
                 readme.stream().filter(line -> line.contains("](" + address + ")")).count());
@@ -568,6 +573,7 @@ class DocumentationGovernanceTest {
 
     @Test void catchesMissingFilesAndRenamedAnchorsWithoutReadingCodeExamples(Checks check) throws IOException {
         Path guide = Files.writeString(folder.resolve("guide.md"), """
+                <a id="legacy-play"></a>
                 ## Mat în două
                 ## Mat în două
                 ```md
@@ -577,6 +583,7 @@ class DocumentationGovernanceTest {
         Path source = Files.writeString(folder.resolve("README.md"), """
                 [Lecție](guide.md#mat-în-două)
                 [Secțiune repetată](guide.md#mat-în-două-1)
+                [Ancoră stabilă](guide.md#legacy-play)
                 [Referință publică](https://example.test/not-checked)
                 [Lipsește](absent.md)
                 [Titlu mutat](guide.md#exemplu)
@@ -585,7 +592,8 @@ class DocumentationGovernanceTest {
                 [Exemplu](example.md)
                 ```
                 """);
-        check.same("Both headings in the guide are indexed", Set.of("mat-în-două", "mat-în-două-1"), anchors(guide));
+        check.same("Headings and explicit stable anchors in the guide are indexed",
+                Set.of("legacy-play", "mat-în-două", "mat-în-două-1"), anchors(guide));
         check.same("Only broken local targets are reported", List.of("absent.md", "guide.md#exemplu", "../guide.md"), brokenLinks(folder, source));
     }
 
@@ -610,6 +618,11 @@ class DocumentationGovernanceTest {
     private static Set<String> anchors(Path document) throws IOException {
         var result = new HashSet<String>();
         for (String line : prose(document)) {
+            var explicit = HTML_ANCHOR.matcher(line);
+            if (explicit.matches()) {
+                result.add(decode(explicit.group(1)));
+                continue;
+            }
             var heading = HEADING.matcher(line);
             if (!heading.matches()) continue;
             String slug = heading.group(1).strip().toLowerCase(Locale.ROOT)

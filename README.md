@@ -5,10 +5,10 @@ Chess Lab lets you play chess against AI, solve puzzles and study openings on An
 <a id="play"></a>
 <a id="jocul"></a>
 
-## Play
+## Game
 
 - [Download Chess Lab 0.16.2 APK](https://github.com/crististefanita/chess/releases/download/v0.16.2/ChessLab-0.16.2.apk)
-- [Play in your browser](https://crististefanita.github.io/chess/)
+- [Play in browser](https://crististefanita.github.io/chess/)
 
 ## Overview
 

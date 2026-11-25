@@ -361,26 +361,26 @@ class ReleaseGovernanceTest {
     @Test void readmeKeepsTheDownloadSectionFirstAndRejectsOtherApkRoutes(Checks check) throws IOException {
         check.same("The Romanian archive format qualifies with the APK, browser game, and separate release notes", "accepted",
                 decision(() -> publish(SOURCE, README.replace("\n", "\r\n"), 200, apk)));
-        String english = README.replace("## Jocul", "## Play").replace("## Ediția publicată", "## Published Release");
+        String english = README.replace("## Jocul", "## Game").replace("## Ediția publicată", "## Published Release");
         check.same("The English main README qualifies with the same routes", "accepted",
                 decision(() -> publish(SOURCE, english, 200, apk)));
-        check.same("Two download sections in different languages are rejected", "Duplicate Play section",
+        check.same("Two download sections in different languages are rejected", "Duplicate Game section",
                 decision(() -> ReleaseEvidence.gameLinks(english + "\n## Jocul\n")));
-        check.same("An introductory section cannot precede the download", "Play must be the first section",
+        check.same("An introductory section cannot precede the download", "Game must be the first section",
                 decision(() -> ReleaseEvidence.gameLinks(README.replace("Șah și studiu.", "## Introducere\n\nȘah și studiu."))));
-        check.same("Prose appended to a link is rejected", "Play must contain only the APK and browser links",
+        check.same("Prose appended to a link is rejected", "Game must contain only the APK and browser links",
                 decision(() -> ReleaseEvidence.gameLinks(README.replace(URL + ")", URL + ") — APK Android semnat."))));
         check.same("A label cannot carry integrity metadata", "Integrity metadata belongs in the release evidence",
                 decision(() -> ReleaseEvidence.gameLinks(README.replace("[APK]", "[APK SHA-256]"))));
-        check.same("A paragraph between game links is rejected", "Play must contain only the APK and browser links",
+        check.same("A paragraph between game links is rejected", "Game must contain only the APK and browser links",
                 decision(() -> ReleaseEvidence.gameLinks(README.replace("- [APK]", "Descarcă aici.\n\n- [APK]"))));
-        check.same("A duplicate download section is rejected", "Duplicate Play section",
+        check.same("A duplicate download section is rejected", "Duplicate Game section",
                 decision(() -> ReleaseEvidence.gameLinks(README + "\n## Jocul\n")));
-        check.same("A repeated canonical APK link in the introduction is rejected", "APK route outside the Play section",
+        check.same("A repeated canonical APK link in the introduction is rejected", "APK route outside the Game section",
                 decision(() -> ReleaseEvidence.gameLinks(README.replace("Șah și studiu.", "[Alt traseu](" + URL + ")"))));
         for (String route : List.of("[copie](dist/ChessLab.apk)", "[copie]: https://example.org/ChessLab%2EAPK?dl=1",
                 "<https://example.org/ChessLab.apk#download>", "<a href=\"https://example.org/ChessLab.apk\">Copie</a>")) {
-            check.same("An APK route outside the Play section is rejected · " + route, "APK route outside the Play section",
+            check.same("An APK route outside the Game section is rejected · " + route, "APK route outside the Game section",
                     decision(() -> ReleaseEvidence.gameLinks(README + "\n" + route + "\n")));
         }
     }
@@ -394,13 +394,13 @@ class ReleaseGovernanceTest {
                     "The online game must open the repository's main menu on GitHub Pages",
                     decision(() -> ReleaseEvidence.gameLinks(README.replace(PAGES_HOME, route))));
         }
-        check.same("The APK link must be first", "Play must start with the canonical APK link",
+        check.same("The APK link must be first", "Game must start with the canonical APK link",
                 decision(() -> ReleaseEvidence.gameLinks(README.replace("- [APK](" + URL + ")\n" + PLAY, PLAY + "\n- [APK](" + URL + ")"))));
-        check.same("A third link in the Play section is rejected", "Play must contain only the APK and browser links",
+        check.same("A third link in the Game section is rejected", "Game must contain only the APK and browser links",
                 decision(() -> ReleaseEvidence.gameLinks(README.replace(PLAY, PLAY + "\n" + EDITION))));
         check.same("The edition notes cannot point at another release", "The published edition must match the APK",
                 decision(() -> ReleaseEvidence.gameLinks(README.replace("/tag/v0.1.0", "/tag/v0.0.9"))));
-        check.same("The edition notes require their own section", "Missing published release section below Play",
+        check.same("The edition notes require their own section", "Missing published release section below Game",
                 decision(() -> ReleaseEvidence.gameLinks(README.replace("## Ediția publicată", "## Note"))));
     }
 

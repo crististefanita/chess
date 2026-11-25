@@ -110,7 +110,7 @@ before opening the tab, so this rendered receipt remains open.
 
 **P2 · Release qualification.** In RAG, tie the commit, catalogs, and APK and Web hashes to receipts from the same release. [Update criterion](../testing/README.md#updating-the-web-bundle)
 
-**Closure criterion.** Start the check from **Play in your browser**, below
+**Closure criterion.** Start the check from **Play in browser**, below
 the APK in the README, and confirm the manifest of the served bundle. On
 upgrade, verify the game library, an archived review, and the resumed ply,
 including after a reload and in an already open tab.

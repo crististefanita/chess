@@ -31,7 +31,7 @@ final class DocumentationPair {
             "docs/testing/test-changes.yaml",
             "release-tools/src/main/java/ro/atf/chess/release/ReleaseEvidence.java",
             "release-tools/src/main/java/ro/atf/chess/release/ReleaseRag.java");
-    private static final Role ENGLISH = new Role("main", "## Play", "## Published Release", "## Overview", "## Qualification and Publication");
+    private static final Role ENGLISH = new Role("main", "## Game", "## Published Release", "## Overview", "## Qualification and Publication");
     private static final Role ROMANIAN = new Role("main_RO", "## Jocul", "## Ediția publicată", "## Pe scurt", "## Calificare și publicare");
 
     record Result(String english, String romanian, int documents, int links, int sectionLinks) { }

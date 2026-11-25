@@ -2,7 +2,7 @@
 
 ## Overview
 
-**Play in your browser** sits below the APK download link in the main README. The Web base URL opens the main menu; a direct route opens its requested screen. Progress stays local to the device. [Main README](../README.md#play)
+**Play in browser** sits below the APK download link in the main README. The Web base URL opens the main menu; a direct route opens its requested screen. Progress stays local to the device. [Main README](../README.md#play)
 
 ## Contracts and checks
 
@@ -46,7 +46,7 @@ The game guides own the product rules and platform behavior. [Matches, puzzles, 
     git ls-tree -r --full-tree "$SITE_COMMIT" | sha256sum
     ```
 
-4. Open **Play in your browser**. Verify the declared versioned files and reload with the cache intact. Check checkpoint resumption and offline play after the first load; an open tab may keep the previous runtime until it reloads.
+4. Open **Play in browser**. Verify the declared versioned files and reload with the cache intact. Check checkpoint resumption and offline play after the first load; an open tab may keep the previous runtime until it reloads.
 5. Record the source revision, deployed static commit, runtime hash, and Extent receipts. Verify the served bytes independently of the browser cache.
 
 If upload succeeds but GitHub Pages temporarily cannot find its `github-pages`

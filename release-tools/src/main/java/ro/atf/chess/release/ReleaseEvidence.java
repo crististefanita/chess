@@ -16,7 +16,7 @@ public final class ReleaseEvidence {
     private static final Pattern LINK_BULLET = Pattern.compile("- \\[([^\\[\\]\\r\\n]+)]\\(([^\\s()<>]+)\\)");
     private static final Pattern APK_LINK = Pattern.compile(
             "https://github\\.com/([a-zA-Z0-9-]+)/([a-zA-Z0-9_.-]+)/releases/download/v(?<version>[0-9]+\\.[0-9]+\\.[0-9]+)/ChessLab-\\k<version>\\.apk");
-    private static final Pattern GAME = Pattern.compile("(?ms)^## (?:Play|Jocul)[ \\t]*\\R(.*?)(?=^#{1,2}[ \\t]+|\\z)");
+    private static final Pattern GAME = Pattern.compile("(?ms)^## (?:Game|Jocul)[ \\t]*\\R(.*?)(?=^#{1,2}[ \\t]+|\\z)");
     private static final Pattern EDITION = Pattern.compile("(?ms)^## (?:Published Release|Ediția publicată)[ \\t]*\\R(.*?)(?=^#{1,2}[ \\t]+|\\z)");
     private static final Pattern SECTION = Pattern.compile("(?m)^##[ \\t]+");
     private static final Pattern INTEGRITY_LABEL = Pattern.compile("(?i)sha[- ]?256|checksum|\\bbytes?\\b|[a-f0-9]{64}");
@@ -96,25 +96,25 @@ public final class ReleaseEvidence {
 
     public static List<String> gameLinks(String readme) throws IOException {
         var game = GAME.matcher(readme);
-        require(game.find(), "Missing Play section");
+        require(game.find(), "Missing Game section");
         String before = readme.substring(0, game.start());
         String after = readme.substring(game.end());
         var rows = game.group(1).lines().filter(line -> !line.isBlank()).toList();
-        require(!game.find(), "Duplicate Play section");
-        require(!SECTION.matcher(before).find(), "Play must be the first section");
-        String gameFormat = "Play must contain only the APK and browser links";
+        require(!game.find(), "Duplicate Game section");
+        require(!SECTION.matcher(before).find(), "Game must be the first section");
+        String gameFormat = "Game must contain only the APK and browser links";
         require(rows.size() == 2, gameFormat);
         String apk = linkTarget(rows.getFirst(), gameFormat);
         String online = linkTarget(rows.getLast(), gameFormat);
-        require(!APK_ROUTE.matcher(before).find() && !APK_ROUTE.matcher(after).find(), "APK route outside the Play section");
+        require(!APK_ROUTE.matcher(before).find() && !APK_ROUTE.matcher(after).find(), "APK route outside the Game section");
         var asset = APK_LINK.matcher(apk);
-        require(asset.matches(), "Play must start with the canonical APK link");
+        require(asset.matches(), "Game must start with the canonical APK link");
         String owner = asset.group(1);
         String repository = asset.group(2);
         String pages = "https://" + owner.toLowerCase(java.util.Locale.ROOT) + ".github.io/" + repository + "/";
         require(pages.equals(online), "The online game must open the repository's main menu on GitHub Pages");
         var edition = EDITION.matcher(after);
-        require(edition.find(), "Missing published release section below Play");
+        require(edition.find(), "Missing published release section below Game");
         var editionRows = edition.group(1).lines().filter(line -> !line.isBlank()).toList();
         require(!edition.find() && editionRows.size() == 1, "Expected one published edition link");
         String release = linkTarget(editionRows.getFirst(), "Expected one published edition link");

@@ -310,7 +310,7 @@ For the public check, pass the URL from the README as the last argument and add 
 
 ## Main menu and pieces
 
-- **Play in your browser** in the README opens the **Chess Lab** main menu, including when matches or a review have been saved. Groups follow the APK order.
+- **Play in browser** in the README opens the **Chess Lab** main menu, including when matches or a review have been saved. Groups follow the APK order.
 - **Saved games** appears when there are active matches, and **New game vs computer** opens setup. Explicit URLs such as `#ai`, `#openings`, and `#review` open the requested screen.
 - **Profile** validates the name through `PlayerProfile`, and **Settings** stores the language in the browser. [Feature matrix](parity.md#contracts-and-checks)
 
