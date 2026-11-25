@@ -10,20 +10,14 @@
 ## De la partidă la raport
 
 ```mermaid
+%%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
 flowchart LR
-    A["Partidă încheiată"] -->|deschide| B["Analiza partidei"]
-    K["Partidă sau studiu"] -->|verifică| L["Analiză AI activă"]
-    L -->|pornește| E
-    B -->|caută| C{"Raport salvat?"}
-    C -->|Da| D["Afișează raportul salvat"]
-    C -->|Nu| E["Reia mutările în ordine și identifică deschiderea ECO"]
-    E -->|poziții| F["Compară mutările"]
-    F -->|scoruri| G["Grafic și precizie"]
-    E -->|"Partidă încheiată eligibilă"| H["Estimează Elo din rezultatul partidei și reperul AI"]
-    G -->|completează| I["Raport complet"]
-    H -->|adaugă Elo| I
-    I -->|persistă| J["Salvează în arhivă"]
-    I -->|afișează| D
+    Move["Mutare AI salvată"] -->|programează| Work["Comparație nativă completă"]
+    Work -->|salvează fiecare semimutare| Journal["Jurnal persistent"]
+    Final["Analiza partidei"] -->|așteaptă lucrul lipsă| Work
+    Journal -->|agregă fără căutare| Report["Categorii, grafic și precizie"]
+    Report -->|adaugă când este eligibil| Elo["Elo din rezultat"]
+    Report -->|salvează| Archive["Arhiva partidelor încheiate"]
 ```
 
 <details>
@@ -192,3 +186,12 @@ Corecția țintită a indiciului Caro–Kann păstrează rezultatul efectiv `Gam
 Corecția italiană ulterioară a indiciului cu recaptura damei păstrează de asemenea exact JSON-ul Game Review pe aceleași șaizeci de mutări. Cele două studii noi de șaisprezece semimutări păstrează toate mutările și lipsa ratingului; nu închid cele nouă lacune de clasificare pereche. [Sursa și auditul italian](ai-quality.md#recaptura-damei-și-continuitatea-indiciului-italian)
 
 Preferința siciliană ulterioară pentru indiciile cu scor exact egal păstrează de asemenea exact cele șaizeci de rezultate Game Review pereche. Schimbă selecția indiciului, nu modelul de clasificare al analizei; cele nouă neconcordanțe stabile rămân deschise. [Dovezi și limite siciliene](ai-quality.md#egalități-exacte-în-siciliană-și-apărarea-piesei-legate)
+
+## Lucru persistent pe fiecare mutare
+
+[ReviewJournal](../../chess-core/src/main/java/ro/atf/chess/ReviewJournal.java) reține comparațiile native complete, în prefix continuu, pentru mutările jucate efectiv. După salvarea durabilă a partidei AI, colectorul din fundal completează semimutările lipsă fără să blocheze comenzile. Analiza finală așteaptă lucrul pornit și apelează **aggregate**, care nu caută și refuză dovezile lipsă. O partidă veche fără jurnal completează explicit lipsurile înainte.
+
+- **Dovezi înainte de categorii.** Se persistă punctele recomandării/mutării/alternativei, adâncimea comună, ambele linii legale, sacrificiul, costul nativ și eventuala dovadă forțată completă. O comparație ordinară completă poate să nu necesite dovadă forțată. Agregarea finală recalculează contextul ECO, categoriile, precizia și Elo eligibil din aceste date; nu substituie scorurile de referință ale deschiderilor sau indiciile din joc.
+- **Restart și ramificare.** Jurnalul este legat de ID-ul stabil, configurația inițială și istoricul exact. Reîncărcarea păstrează prefixul comun; întoarcerea sau ramificarea elimină sufixul schimbat. Înlocuirea ori evacuarea partidei refuză salvările întârziate. Amprenta versionată acoperă YAML-urile de analiză, reguli, căutare, evaluare, repertoriu și dovezi. Crește versiunea jurnalului când modificarea codului de căutare/evaluare invalidează dovezile anterioare.
+- **Persistență.** Android folosește tranzacția comună MatchStore; Web ține același jurnal Java lângă registrul de partide în localStorage. Ambele păstrează lucrul doar pentru partidele reținute. Salvarea eșuată rămâne vizibilă și nu poate marca raportul final complet. Web serializează salvările și le așteaptă înainte de agregare; fiecare semimutare completă supraviețuiește eșecului unui calcul ulterior.
+- **Planificare.** Un singur colector din fundal reunește checkpoint-urile rapide. Cererea finală așteaptă lucrul deja pornit. Ecranul nativ distrus oprește colectarea fără notificări întârziate. Dacă jucătorul termină mai repede decât analiza, ecranul final așteaptă doar lucrul lipsă. Analiza tablei independente de studiu rămâne la cerere. [Teste](../testing/README.md#componente-pentru-reutilizarea-analizei)

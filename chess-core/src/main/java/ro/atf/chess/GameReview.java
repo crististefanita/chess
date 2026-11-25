@@ -59,6 +59,21 @@ public record GameReview(List<Turn> turns, Opening opening, int bookPlies, int i
     }
 
     private static GameReview analyze(ChessMatch match, IntConsumer progress, boolean rated) {
+        return analyze(match, progress, rated, new ReviewJournal(match), true);
+    }
+
+    public static GameReview prepare(ChessMatch match, ReviewJournal journal, IntConsumer progress) {
+        return analyze(match, progress, false, journal, true);
+    }
+
+    /** No engine search: fails explicitly if any played move still lacks complete evidence. */
+    public static GameReview aggregate(ChessMatch match, ReviewJournal journal, boolean rated) {
+        if (rated && match.result() == ChessMatch.Result.IN_PROGRESS) throw new IllegalArgumentException("An unfinished match is unrated");
+        return analyze(match, ignored -> { }, rated, journal, false);
+    }
+
+    private static GameReview analyze(ChessMatch match, IntConsumer progress, boolean rated, ReviewJournal journal, boolean calculate) {
+        journal.align(match);
         // The experimental A engine has no qualified historical opponent rating.
         rated = rated && !(match.setup().level() == MatchSetup.Level.HARD && HardMaster.usesA());
         var policy = GameReviewPolicy.CURRENT;
@@ -72,21 +87,22 @@ public record GameReview(List<Turn> turns, Opening opening, int bookPlies, int i
             if (Thread.currentThread().isInterrupted()) throw new CancellationException();
             var board = before.position();
             var played = match.moveAt(ply);
-            var comparison = TacticalAnalysis.review(board, played, before.automaticDrawMoves(), policy.search);
-            int best = points(comparison.best().score(), policy.scoreScale);
-            int actual = points(comparison.played().score(), policy.scoreScale);
+            var context = before;
+            var sample = calculate ? journal.obtain(ply, () -> inspect(context, played)) : journal.require(ply);
+            int best = sample.best();
+            int actual = sample.actual();
             int loss = Math.max(0, best - actual);
-            int alternative = points(comparison.alternativeScore(), policy.scoreScale);
-            int sacrifice = Math.max(0, TacticalAnalysis.offeredMaterial(board, comparison.played()));
+            int alternative = sample.alternative();
+            int sacrifice = sample.sacrifice();
             boolean bookMove = ply <= book.bookPlies() && loss < policy.classification.bookLoss();
             boolean forced = board.legalMoves().size() == 1;
             int previousLoss = turns.isEmpty() ? 0 : turns.get(turns.size() - 1).loss();
-            Grade grade = classify(policy.classification, bookMove, forced, comparison.played().score() >= comparison.best().score(),
-                    comparison.depth(), best, actual, alternative, sacrifice, previousLoss, comparison.onlyProvedMate());
+            Grade grade = classify(policy.classification, bookMove, forced, sample.bestMove(),
+                    sample.depth(), best, actual, alternative, sacrifice, previousLoss, sample.onlyMate());
             var side = board.turn();
             if (ply == 1) initial = side == Side.WHITE ? best : 1000 - best;
             turns.add(new Turn(ply, side, played, grade, best, actual, loss, side == Side.WHITE ? actual : 1000 - actual,
-                    comparison.depth(), comparison.best().line(), comparison.played().line(), sacrifice,comparison.proof()));
+                    sample.depth(), sample.bestLine(), sample.playedLine(), sacrifice, sample.proof()));
             (side == Side.WHITE ? white : black).add(grade, loss);
             before = before.play(played);
             progress.accept(ply);
@@ -100,6 +116,17 @@ public record GameReview(List<Turn> turns, Opening opening, int bookPlies, int i
         return new GameReview(turns, book.opening(), book.bookPlies(), initial,
                 white.finish(human == Side.WHITE ? humanRating : botRating),
                 black.finish(human == Side.BLACK ? humanRating : botRating));
+    }
+
+    private static ReviewJournal.Sample inspect(ChessMatch before, Move played) {
+        var policy = GameReviewPolicy.CURRENT;
+        var board = before.position();
+        var comparison = TacticalAnalysis.review(board, played, before.automaticDrawMoves(), policy.search);
+        return new ReviewJournal.Sample(points(comparison.best().score(), policy.scoreScale), points(comparison.played().score(), policy.scoreScale),
+                points(comparison.alternativeScore(), policy.scoreScale), comparison.depth(),
+                Math.max(0, TacticalAnalysis.offeredMaterial(board, comparison.played())), comparison.ordinaryNodes(),
+                comparison.played().score() >= comparison.best().score(), comparison.onlyProvedMate(),
+                comparison.best().line(), comparison.played().line(), comparison.proof());
     }
 
     static int points(int score, int scale) {

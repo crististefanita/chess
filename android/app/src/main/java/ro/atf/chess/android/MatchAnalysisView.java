@@ -22,6 +22,8 @@ import ro.atf.chess.ChessPosition.Move;
 import ro.atf.chess.MatchEvaluation;
 import ro.atf.chess.MatchAnalysisCache;
 import ro.atf.chess.MatchHint;
+import ro.atf.chess.OpeningCatalog;
+import ro.atf.chess.OpeningReference;
 import ro.atf.chess.QuestHint;
 import ro.atf.chess.TacticalAnalysis;
 import ro.atf.chess.ReplayCheckpoint;
@@ -107,6 +109,11 @@ final class MatchAnalysisView extends TextView {
                 .collect(java.util.stream.Collectors.joining(","));
         String legal = position.legalMoves().stream().map(Move::uci).sorted().collect(java.util.stream.Collectors.joining(" "));
         show(position, () -> MatchHint.analyze(position), Double.NaN, "POSITION|" + position.turn() + "|" + board + "|" + legal);
+    }
+
+    void showOpening(OpeningCatalog.Opening opening, int ply) {
+        show(opening.positionAt(ply), () -> OpeningReference.analyze(opening, ply), Double.NaN,
+                "OPENING|" + opening.id() + "|" + ply);
     }
 
     void show(AnalysisLine line) {
@@ -261,6 +268,13 @@ final class MatchAnalysisView extends TextView {
         };
         String spokenScore = evaluation.ending() == TacticalAnalysis.Ending.HORIZON
                 ? context.getString(R.string.match_analysis_pawn_units, score) : score;
+        var reference = hint.reference().orElse(null);
+        if (reference != null) {
+            var delta = new MatchEvaluation(TacticalAnalysis.Ending.HORIZON, reference.deltaWhiteCentipawns(), 0);
+            var locale = getResources().getConfiguration().getLocales().get(0);
+            score = context.getString(R.string.opening_reference_score, evaluation.pawnLabel(locale), delta.pawnLabel(locale));
+            spokenScore = score + ". " + reference.engine() + ", " + reference.depth();
+        }
         if (theory != null) {
             displayTheory(score, spokenScore, theory);
         } else if (revealed == null) {

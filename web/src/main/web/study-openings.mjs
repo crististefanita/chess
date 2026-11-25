@@ -21,6 +21,7 @@ const vocabulary = {
     mate: (side, moves) => side + ' · Mate in ' + moves,
     balanced: 'Balanced', stalemate: 'Draw · Stalemate', line: 'View line',
     depth: count => 'Compared at depth ' + count,
+    reference: (score, delta) => score + ' · Ref. Δ ' + delta,
     estimate: side => 'Positional estimate for ' + side,
     difference: (start, end, change) => start + ' → ' + end + ' · Change ' + change,
     netMaterial: (notation, kind, gain) => notation + ' captures the ' + kind + ' · Material gain ' + gain,
@@ -48,6 +49,7 @@ const vocabulary = {
     mate: (side, moves) => side + ' · Mat în ' + moves,
     balanced: 'Echilibru', stalemate: 'Remiză · Pat', line: 'Vezi linia',
     depth: count => 'Comparație la adâncimea ' + count,
+    reference: (score, delta) => score + ' · Ref. Δ ' + delta,
     estimate: side => 'Estimare pozițională pentru ' + side.toLowerCase(),
     difference: (start, end, change) => start + ' → ' + end + ' · Diferență ' + change,
     netMaterial: (notation, kind, gain) => notation + ' capturează ' + kind + ' · Câștig de material ' + gain,
@@ -554,7 +556,10 @@ export function createOpeningStudy({ root, locale, call, home, board }) {
     const suggestion = revealed();
     assessment.disabled = !suggestion;
     assessment.setAttribute('aria-label', suggestion ? text.preview + ' · ' + notation(suggestion.move) : text.noComment);
-    const evaluation = ready?.failed ? text.error : ready ? evaluationText(ready.evaluation) : text.pending;
+    const evaluation = ready?.failed ? text.error : ready?.reference
+      ? text.reference(pawnLabel(ready.evaluation.whiteCentipawns), pawnLabel(ready.reference.deltaWhiteCentipawns))
+      : ready ? evaluationText(ready.evaluation) : text.pending;
+    assessment.title = ready?.reference ? ready.reference.engine + ' · ' + text.depth(ready.reference.depth) : '';
     const label = suggestion && ready.variants.length > 1 ? (variant + 1) + '/' + ready.variants.length + ' · ' : '';
     assessment.textContent = suggestion ? evaluation + '\n' + text.line + ' · ' + label + notation(suggestion.move) : evaluation;
     const share = ready?.evaluation?.whiteShare;

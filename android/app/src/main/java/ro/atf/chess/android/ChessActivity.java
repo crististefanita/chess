@@ -69,6 +69,8 @@ public final class ChessActivity extends BackNavigableActivity {
     private final Runnable reply = this::playDefense;
     private final Runnable botReply = this::startBotSearch;
     private final ExecutorService bot = Executors.newSingleThreadExecutor();
+    private final ExecutorService reviewWorker = Executors.newSingleThreadExecutor();
+    private ro.atf.chess.ReviewCollector reviewCollector;
     private Future<?> botJob;
     private int botGeneration;
     private List<Chapter> chapters;
@@ -137,6 +139,9 @@ public final class ChessActivity extends BackNavigableActivity {
                 new Chapter(R.id.chapter_intermezzo, R.string.open_intermezzo, R.id.chapter_intermezzo_totals, QuestCatalog.loadIntermezzo()));
         allIds = chapters.stream().flatMap(chapter -> chapter.ids().stream()).collect(Collectors.toList());
         store = new ChessProgressStore(this);
+        reviewCollector = new ro.atf.chess.ReviewCollector(reviewWorker,
+                request -> store.matches().prepareReview(request.id(), request.match(), false, ignored -> { }),
+                failure -> main.post(this::showSaveError));
         store.matches().migrateCompletedMatches();
         progress = store.quests().read(allIds);
         rewards = store.quests().readRewards();
@@ -857,7 +862,7 @@ public final class ChessActivity extends BackNavigableActivity {
         String id = archivedMatch == null ? store.matches().archivedId(matchSlot) : archivedMatch.id();
         boolean manualUsed = archivedMatch == null ? store.matches().matchManualUsed(matchSlot) : archivedMatch.manualUsed();
         if (completedReview == null) completedReview = store.matches().readReview(id, snapshot);
-        reviewDialog = GameReviewDialog.show(this, snapshot, completedReview, bot, this::notation, manualUsed, blackBelow, humanName(),
+        reviewDialog = GameReviewDialog.showPrepared(this, snapshot, completedReview, reviewWorker, this::notation, manualUsed, blackBelow, humanName(),
                 botName(match.setup().level()), result -> {
                     if (match == snapshot) completedReview = result;
                     if (store.matches().hasArchived(id) && !store.matches().saveReview(id, snapshot, result)) showSaveError();
@@ -866,7 +871,7 @@ public final class ChessActivity extends BackNavigableActivity {
                 }, this::reviewMatch, this::confirmContinuation, () -> {
                     reviewDialog = null;
                     scheduleBot();
-                });
+                }, update -> store.matches().prepareReview(id, snapshot, !manualUsed, update));
     }
 
     private void showMatchActions(View anchor) {
@@ -1132,6 +1137,8 @@ public final class ChessActivity extends BackNavigableActivity {
     }
 
     private void renderMatch() {
+        String reviewId = archivedMatch == null ? store.matches().archivedId(matchSlot) : archivedMatch.id();
+        if (store.matches().usesAi(reviewId)) reviewCollector.submit(reviewId, match);
         boolean reviewing = reviewedPly >= 0;
         int ply = reviewing ? reviewedPly : match.ply();
         var shownPosition = match.positionAt(ply);
@@ -1271,6 +1278,8 @@ public final class ChessActivity extends BackNavigableActivity {
         if (reviewDialog != null) reviewDialog.dismiss();
         if (payoffDialog != null) payoffDialog.dismiss();
         bot.shutdown();
+        if (reviewCollector != null) reviewCollector.close();
+        reviewWorker.shutdownNow();
         if (matchAnalysis != null) matchAnalysis.close();
         super.onDestroy();
     }

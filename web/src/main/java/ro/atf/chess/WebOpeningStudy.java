@@ -143,7 +143,7 @@ final class WebOpeningStudy {
         if (!state.aiEnabled()) throw new IllegalStateException("Opening analysis is disabled");
         var lesson = state.lesson();
         var position = lesson.practice().opening().positionAt(lesson.shownPly());
-        var hint = MatchHint.analyze(position);
+        var hint = OpeningReference.analyze(lesson.practice().opening(), lesson.shownPly());
         var evaluation = hint.evaluation(position);
         if (evaluation == null) return "{\"evaluation\":null,\"variants\":[]}";
         var lines = new StringBuilder("[");
@@ -161,7 +161,13 @@ final class WebOpeningStudy {
         }
         return "{\"evaluation\":{\"ending\":" + quote(evaluation.ending().name())
                 + ",\"whiteCentipawns\":" + evaluation.whiteCentipawns() + ",\"whiteMateMoves\":" + evaluation.whiteMateMoves()
-                + ",\"whiteShare\":" + evaluation.whiteShare() + "},\"variants\":" + lines.append(']') + "}";
+                + ",\"whiteShare\":" + evaluation.whiteShare() + "},\"reference\":" + reference(hint)
+                + ",\"variants\":" + lines.append(']') + "}";
+    }
+
+    private static String reference(MatchHint hint) {
+        return hint.reference().map(value -> "{\"engine\":" + quote(value.engine()) + ",\"depth\":" + value.depth()
+                + ",\"deltaWhiteCentipawns\":" + value.deltaWhiteCentipawns() + "}").orElse("null");
     }
 
     private static String previewMoves(MatchHint.Playback playback, Move fallback) {

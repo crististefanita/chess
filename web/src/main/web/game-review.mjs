@@ -17,6 +17,7 @@ import { matchListOpponent } from './match-list-row.mjs';
 import { attachOptionsMenu, followOptionsMenu } from './options-menu.mjs';
 import { createReviewImport } from './review-import.mjs';
 import { matchReviewActionState, reviewGradeTone } from './review-presentation.mjs';
+import { createReviewProgressStore, createReviewCollection, reviewProgressKey } from './review-progress.mjs';
 
 const storageKey = 'chesslab.game-review.v1';
 const ledgerKey = 'chesslab.match-ledger.v1';
@@ -27,6 +28,12 @@ const studyRoutes = {
     analysis: ['home-analysis', createAnalysisStudy],
 };
 const botDelayMillis = 650;
+const reviewWorkStore = createReviewProgressStore(localStorage, () => [...savedMatches, ...finishedMatches].map(row => row.id));
+const reviewCollection = createReviewCollection({ load: id => reviewWorkStore.load(id), compute: computeReviewWork,
+    save: (request, work, expected) => {
+        const write = () => !otherTabChanged && localStorage.getItem(ledgerKey) === storedLedger && reviewWorkStore.save(request, work, expected);
+        return navigator.locks ? navigator.locks.request(reviewProgressKey, write) : write();
+    }, failed: () => setStatus(words.analysisFailure) });
 const locale = homeLocale(location.search, localStorage);
 const words = {
     en: {
@@ -865,6 +872,10 @@ function adoptMatchState(response) {
         selectedSquare = undefined;
         promotionMoves = [];
     }
+    const pruneWork = () => { if (!otherTabChanged && localStorage.getItem(ledgerKey) === storedLedger) reviewWorkStore.prune(); };
+    if (navigator.locks) void navigator.locks.request(reviewProgressKey, pruneWork).catch(() => setStatus(words.saveFailed));
+    else try { pruneWork(); } catch { setStatus(words.saveFailed); }
+    if (match?.mode === 'AI' && match.ply > 0) reviewCollection.submit(reviewWorkRequest(match));
     renderMatch();
     renderMatchList();
     homeMenu.show(mode === 'home', savedMatches);
@@ -1094,8 +1105,21 @@ function revealRestoredReview(snapshot) {
     });
 }
 
-function runReviewAnalysis(snapshot, openComputedReview, rated = false) {
+async function runReviewAnalysis(snapshot, openComputedReview, rated = false) {
     const route = matchRoute;
+    let journal = null;
+    if (snapshot.mode === 'AI') {
+        const waiting = { terminate() {} };
+        analysis = waiting;
+        scheduleBot();
+        renderAnalysis();
+        try { journal = await reviewCollection.ensure(reviewWorkRequest(snapshot)); }
+        catch {
+            if (analysis === waiting) { cancelAnalysis(); setStatus(words.analysisFailure); scheduleBot(); }
+            return;
+        }
+        if (analysis !== waiting || match !== snapshot || mode !== route) return;
+    }
     const job = new Worker(new URL('./engine-worker.mjs', import.meta.url), { type: 'module' });
     analysis = job;
     scheduleBot();
@@ -1128,7 +1152,32 @@ function runReviewAnalysis(snapshot, openComputedReview, rated = false) {
             await openComputedReview(source);
         }, words.analysisFailure);
     });
-    job.postMessage({ id, type: 'review-analyze', checkpoint: snapshot.reviewCheckpoint, rated });
+    job.postMessage({ id, type: 'review-analyze', checkpoint: snapshot.reviewCheckpoint, rated, journal });
+}
+
+function reviewWorkRequest(snapshot) {
+    const id = snapshot.archiveId ?? savedMatches.find(row => row.slot === snapshot.slot)?.id;
+    return { id, checkpoint: snapshot.reviewCheckpoint };
+}
+
+function computeReviewWork(request) {
+    return new Promise((resolve, reject) => {
+        const job = new Worker(new URL('./engine-worker.mjs', import.meta.url), { type: 'module' });
+        const id = String(++serial);
+        const fail = error => { job.terminate(); reject(error); };
+        job.addEventListener('error', fail);
+        job.addEventListener('messageerror', fail);
+        job.addEventListener('message', ({ data }) => {
+            if (data.id !== id) return;
+            if (data.error) return fail(new Error(data.error));
+            if (typeof data.partialJournal === 'string') {
+                void request.checkpointed(data.partialJournal).catch(fail);
+                return;
+            }
+            if (typeof data.journal === 'string') { job.terminate(); resolve(data.journal); }
+        });
+        job.postMessage({ id, type: 'review-prepare', checkpoint: request.checkpoint, journal: request.journal });
+    });
 }
 
 function showMainMenu(addHistory = false) {
