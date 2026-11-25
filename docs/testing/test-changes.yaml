@@ -2026,3 +2026,11 @@ testChanges:
     test: ro.atf.chess.MatchAnalysisParityTest#nativeModelProjectsTheDisplayedMatchFrame
     contract: "Keep every Native numeric fixture mandatory in JVM components while retaining the compiled Native search as an explicit opt-in benchmark. Preserve the packaged rules and YAML comparisons; qualify the replacement coaching provider with the real Stockfish WASM and rendered browser flow. Nested assets and broker paths retain independent packaging assertions."
     allowDelete: false
+
+  - id: CHESS-OPENING-HINT-ROW-EN
+    base: "9af315ff25cd83c2709a9047155e79caba495bc8"
+    from: atf-tests/src/test/java/ro/atf/chess/ChessWebOpeningStudyTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ChessWebOpeningStudyTest.java
+    test: ro.atf.chess.ChessWebOpeningStudyTest#openingControllerPreservesLessonAndReplySemanticsWithoutABrowser
+    contract: "Preserve all 25 audited opening controller cases and add the replay-only one-row contract for three equal-width hint selectors at four source widths, without changing wrapping elsewhere"
+    allowDelete: false

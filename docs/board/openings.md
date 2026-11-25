@@ -64,4 +64,6 @@ See [analysis sources and selectable lines](analysis-sources.md) for the Stockfi
 
 The recommendation dialog captures the source board width before opening, through the shared rememberBoardSize adapter. Its frame adds only padding and borders to that square, bounded by the current viewport and the common Analysis-board limit. The fixed information-dialog width no longer shrinks this replay. Tab changes and Next/Previous reuse the captured size; reopening captures the current source again.
 
+When two or three hint choices are available, their buttons share one row and divide the replay width evenly. The text stays on one line and may truncate only when the viewport is narrower than the label; the control remains at least 48 px high. This replay-only rule does not change wrapping in other line collections.
+
 This scope applies only to the recommendation replay. Lesson selection, history and explanation dialogs retain their existing bounds. Narrow or short windows may constrain the square or scroll the dialog when its full readable content cannot fit. [Component checks](../testing/README.md#analysis-reuse-components) · [Sizing adapter](../../web/src/main/web/study-board-size.mjs)

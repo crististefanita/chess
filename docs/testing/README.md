@@ -1046,13 +1046,15 @@ The policy supplies dimensions and destinations. Shared cases check both project
 
 - **OpeningReferenceComponentTest** visits every current catalog frame without a live search provider, checks legal continuations and White deltas, and rejects stale producer fields, duplicate prefixes and illegal PVs. A removed leaf must invoke the live provider exactly once. The mocked Web controller also checks the localized reference label, provenance and cycling without another request.
 - **ReviewJournalComponentTest** uses actual native comparisons and preference transactions: aggregation parity, restart, missing work, branch trimming, policy/version corruption, illegal evidence, replaced owner, failed commit and collector cancellation. Completed raw comparisons remain separate from the final classification context.
-- **ReviewProgressWebComponentTest** runs eight Node cases with controlled workers/storage: retention, stale writer, joining, coalescing, durable-write barrier, failure/retry and surviving partial work. The existing opening wrapper runs all 25 controller cases. Both wrappers publish audited assertions through ATF Reporting. No browser or emulator is involved.
+- **ReviewProgressWebComponentTest** runs eight Node cases with controlled workers/storage: retention, stale writer, joining, coalescing, durable-write barrier, failure/retry and surviving partial work. The existing opening wrapper runs all 26 controller cases. Both wrappers publish audited assertions through ATF Reporting. No browser or emulator is involved.
 
 - **ReviewIncrementalPersistenceComponentTest** connects the real background collector to MatchStore. It verifies one durable native comparison per played move, interruption after ply two, recovery with only two missing writes, and exact cached-score aggregation without a new provider call. Recreating the store is a component simulation of restart; it does not claim an Android process probe.
 
 - **HintSelectableLinesComponentTest** checks all measured catalog frames, one/two/three-line playback and rejection of a fourth candidate before the native slots. Six additional DOM cases exercise every tab, its active state and independent cursor in both languages; they retain all earlier controller comparisons. [Source conventions](../board/analysis-sources.md)
 
 - The two opening replay-sizing cases use controlled source widths of 288, 344, 468 and 592 px. They require one capture per opening, stable geometry across tabs/steps, a new capture after reopening, and removal of the sizing override for ordinary dialogs. CSS checks keep the lesson-board guard while admitting only the scoped replay frame. Actual pixel fit is checked separately through MCP.
+
+- The three-choice replay layout contract keeps every hint selector on one row at 288, 344, 468 and 592 px source widths. Buttons share the available width, preserve the touch height and keep their labels to one line; the global wrapping rule remains for unrelated line collections. This is CSS/component evidence, not a rendered screenshot.
 
 Run from the isolated checkout with JDK 21 and Node; choose an external work directory for TMP and Extent.
 

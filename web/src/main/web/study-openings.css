@@ -230,6 +230,18 @@
 }
 .opening-dialog[data-opening-replay] > p { margin-block: .2rem; line-height: 1.2; }
 .opening-dialog[data-opening-replay] > .opening-dialog-actions { margin-block: .25rem; }
+.opening-dialog[data-opening-replay] .opening-dialog-actions[data-chess-lines] {
+  flex-flow: row nowrap;
+  min-inline-size: 0;
+}
+.opening-dialog[data-opening-replay] .opening-dialog-actions[data-chess-lines] > button {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .opening-history, .opening-dialog-actions {
   display: flex;
   flex-wrap: wrap;

@@ -41,7 +41,7 @@ This diagram describes stored references and Native analysis. Stockfish runs dur
 
 ## Selectable lines
 
-The agreed interface offers **at most three selectable lines**. Two or three alternatives show their selectors; one line needs no selector row. A tab changes only the replay branch. Each branch keeps its own ply while the dialog is open, and closing returns to the unchanged source position. Native HintPreviewDialog has three stable branch IDs; reference loading rejects a fourth line before projection.
+The agreed interface offers **at most three selectable lines**. Two or three alternatives show their selectors; one line needs no selector row. When shown, all selectors stay in one row and share the available width; long labels truncate visually while retaining their full accessible name and a 48 CSS px Web or 48 dp native target height. A tab changes only the replay branch. Each branch keeps its own ply while the dialog is open, and closing returns to the unchanged source position. Native HintPreviewDialog has three stable branch IDs; reference loading rejects a fourth line before projection.
 
 [HintSelectableLinesComponentTest](../../atf-tests/src/test/java/ro/atf/chess/HintSelectableLinesComponentTest.java) checks real catalog frames, one/two/three-line fixtures and the fourth-line negative. The Web DOM component cases exercise every selector in RO/EN, preserved cursors, Back/Next and one completed analysis request. These components do not certify pixel rendering.
 

@@ -140,7 +140,7 @@ The process-local hint cache above is separate from the persistent per-move revi
 
 **P2 · Explicit estimate provenance.** The cached opening score and PVs are Stockfish 19 measurements. HintPreview also displays a native static estimate between its first and final boards; this value is not the recorded Stockfish prefix delta. The [source map](../board/analysis-sources.md) now owns this distinction. Make the replay labels identify the native static estimate and the reference producer without conflating their perspectives. Close with component negatives for swapped sources and paired observed captions.
 
-The six RO/EN tab components cover one/two/three choices, selected state, independent cursors and an unchanged source. Browser MCP previously observed all three real cached selectors on the default viewport and at 360×740 in EN, including return from line three to line two at its retained 1/15 cursor. The compact selector wraps to two rows with all three options visible. This closes that narrow Web observation; paired APK and enlarged-text RO/EN captions remain open.
+The earlier Browser MCP capture exposed the three cached hint selectors wrapping onto two rows at a compact viewport. The replay now scopes a single-row layout to those selectors: equal-width controls, one-line labels and the existing 48 px height. The component contract checks source widths 288, 344, 468 and 592 px, while the other line collections retain their wrapping behavior. Pixel confirmation through Browser MCP remains open; paired APK and enlarged-text RO/EN captions also remain open.
 
 ## Source-sized opening replay frame
 
