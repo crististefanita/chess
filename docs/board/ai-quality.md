@@ -2,6 +2,8 @@
 
 ## Pe scurt
 
+[Sursele analizei](analysis-sources.md) arată unde Stockfish 19 furnizează date de deschidere memorate și unde rulează în continuare căutarea Java sau evaluarea statică nativă.
+
 - **Politica actuală.** Adversarul, indiciul și bara de evaluare au bugete separate. Căutarea Hard din prim-plan începe cu 100.000 de noduri suplimentare și poate continua adaptiv până la 200.000. [Configurația căutării](../../chess-core/src/main/resources/match-ai.yaml)
 - **Bugetele indiciului.** Căutarea ordinară are o alocație de 200.000 de noduri, inclusiv orizonturile, frontiera tactică și compararea alternativelor. Dovada forțată activată are o rezervă taxată separat, plafonată la 5.000.000 de noduri prin [coaching-proof.yaml](../../chess-core/src/main/resources/coaching-proof.yaml). Acesta nu este un plafon total de 200k pe decizie; păstrați statusul finalizării și ambii contori de lucru. [Contractul dovezii](#frontiera-dinamică-de-coaching)
 - **Acceptanță.** `MatchAiGovernanceTest` și `HardAdaptivePolicyTest` verifică politicile, iar `ChessBenchmarkSuite` măsoară deciziile față de un oracol fix. Comparațiile istorice de mai jos aparțin versiunii măsurate.

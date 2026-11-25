@@ -2,6 +2,8 @@
 
 ## Pe scurt
 
+[Harta surselor analizei](analysis-sources.md) separă referințele Stockfish ale deschiderilor, indiciile native live și dovezile persistate ale analizei partidei.
+
 - **Domeniu.** Motorul comun decide legalitatea mutărilor. Android și Web redau poziția prin adaptoarele lor. [Adaptorul Web și contractul comun](../../web/README.md)
 - **Probe.** `BoardPanelLayoutTest` verifică geometria, `QuestHintTest` verifică indiciile, iar `MatchActionsTest` verifică comenzile partidei. `ChessWebQuestStudyTest` verifică comenzile de studiu fără Android.
 - **Acces rapid.** [Probleme](#tactică-și-puncte) · [Tablă de analiză](#tablă-de-analiză) · [Partidă cu calculatorul](#partidă-cu-calculatorul).

@@ -2,6 +2,8 @@
 
 ## Pe scurt
 
+Analiza partidei agregă comparații native. Referințele Stockfish și delta statică a redării au proveniență separată: [harta surselor analizei](analysis-sources.md).
+
 - **Domeniu.** `GameReview` calculează categoriile, precizia și variantele jucate și recomandate pentru redare. Elo cere o partidă încheiată eligibilă. [Calculul](../../chess-core/src/main/java/ro/atf/chess/GameReview.java)
 - **Probe.** `GameReviewTest` verifică formulele, `GameReviewTimelineTest` verifică legalitatea redării, iar `GameReviewGraphParityTest` verifică navigarea între interfețe.
 

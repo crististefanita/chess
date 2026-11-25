@@ -2,6 +2,8 @@
 
 ## Pe scurt
 
+Vezi [sursele analizei și liniile selectabile](analysis-sources.md) pentru scorul de referință Stockfish, estimarea nativă a redării și contractul selectorului cu trei linii.
+
 - **Domeniu.** Exersează o linie adnotată din catalog cu oricare culoare. Tabla de analiză poate afișa și continuările documentate pentru poziția exactă.
 - **Probe.** `OpeningCatalogTest` verifică datele și mutările legale, `OpeningLessonTest` verifică jocul și reluarea, iar `OpeningTheoryTest` verifică găsirea teoriei. `ChessWebOpeningStudyTest` verifică comenzile Web.
 
