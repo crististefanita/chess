@@ -193,7 +193,9 @@
 .opening-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .opening-actions:has(> :last-child:not([data-withheld])) { grid-template-columns: repeat(2, minmax(0, 1fr)) 48px; }
 .opening-workspace .opening-actions button { font-size: .875rem; overflow-wrap: anywhere; }
-.opening-workspace .opening-actions .opening-ai-hint { font-size: 1.25rem; line-height: 1; }
+.opening-workspace .opening-actions .opening-ai-hint { display: grid; place-items: center; color: var(--opening-muted); }
+.opening-workspace .opening-actions .opening-ai-hint[aria-pressed="true"] { color: #57e0b4; }
+.opening-workspace .opening-actions .opening-ai-hint:disabled { color: #77766d; }
 .opening-assessment {
   color: var(--opening-muted);
   inline-size: 100%;

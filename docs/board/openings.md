@@ -32,7 +32,7 @@
 
 - **Lesson hint** highlights the piece first. **Show move** selects the piece, draws the arrow, and shows the coordinates and the idea. Tap the marked destination to play the move.
 
-- **AI analysis** evaluates the displayed position, including positions in history and at the end of the lesson. The score, bar and first recommendation appear together from one completed analysis. The same lightbulb used elsewhere cycles through its available continuations without starting another search. Hiding and showing AI at the same position reuses that result; changing position clears it, and a late result cannot replace the new frame. Lesson guidance keeps its own highlighted move. When the AI suggestion matches your lesson move, you can play it by tapping the destination. A different suggestion is labeled as an AI variation. [AI hint policy](ai-quality.md)
+- **AI analysis** evaluates the displayed position, including positions in history and at the end of the lesson. The score, bar and first recommendation appear together from one completed analysis. The monochrome lightbulb uses the AI game’s active green tint and cycles through its available continuations without starting another search. Hiding and showing AI at the same position reuses that result; changing position clears it, and a late result cannot replace the new frame. Lesson guidance keeps its own highlighted move. When the AI suggestion matches your lesson move, you can play it by tapping the destination. A different suggestion is labeled as an AI variation. [AI hint policy](ai-quality.md)
 
 ## Lesson configuration
 

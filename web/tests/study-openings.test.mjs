@@ -154,6 +154,7 @@ async function mountLesson(locale, responses = {}) {
     close() { this.open = false; this.events.get('close')(); }
   }
   document.createElement = tag => new Element(tag);
+  document.createElementNS = (namespace, tag) => Object.assign(new Element(tag), { namespace });
   document.body = new Element('body');
   document.body.focus();
   const root = new Element('section');
@@ -291,7 +292,18 @@ for (const locale of ['en', 'ro']) {
     const assessment = find('opening-assessment');
     toggle.click();
     await tick();
-    assert.equal(bulb.textContent, '💡');
+    const [icon] = bulb.children;
+    assert.equal(icon.tag, 'svg');
+    assert.equal(icon.namespace, 'http://www.w3.org/2000/svg');
+    assert.equal(icon.attributes.get('aria-hidden'), 'true');
+    assert.equal(bulb.className, 'opening-ai-hint review-icon');
+    const sharedIcon = readFileSync(new URL('../src/main/web/index.html', import.meta.url), 'utf8')
+      .match(/id="match-inline-hint"[^]*?<path d="([^"]+)"/)[1];
+    assert.equal(icon.children[0].attributes.get('d'), sharedIcon);
+    const colors = readFileSync(new URL('../src/main/web/study-openings.css', import.meta.url), 'utf8');
+    const matchColors = readFileSync(new URL('../src/main/web/game-review.css', import.meta.url), 'utf8');
+    const activeColor = matchColors.match(/#match-inline-hint\[aria-pressed="true"\]\s*\{\s*color:\s*([^;]+)/)[1];
+    assert.equal(colors.match(/\.opening-ai-hint\[aria-pressed="true"\]\s*\{\s*color:\s*([^;]+)/)[1], activeColor);
     assert.equal(bulb.disabled, true);
     assert.equal(meter.attributes.has('data-measured'), false);
     assert.equal(assessment.disabled, true);

@@ -133,3 +133,7 @@ Verify the last option, keyboard dismissal, focus return and the preserved sourc
 
 - The component gate covers every grade group, textual labels, final-only visibility, blockers during analysis, a repeat hit for the same checkpoint/ply, exact-position line replay, hint reset, 64-entry LRU eviction, checkpoint invalidation, and rejection of incomplete work.
 - Close only with paired APK/Web receipts for a finished result and colored move list in RO/EN, plus an observed back/forward sequence showing that revisiting a cached AI ply returns immediately without a new search. Do not infer rendered parity from shared source alone.
+
+## Opening reference data
+
+**P1 · Fast, auditable theory.** Store exact-position reference scores and continuations in YAML, with the producer, fixed evaluation settings and the previous-position delta. A known lesson prefix must display its validated data immediately; an absent or mismatched entry uses one live analysis. Never label the authored lesson move as engine-best without evidence. Keep book-reference values distinct from live analysis, preserve move history and legal rights, and govern stale data, sign conventions, both colors and the no-search path.

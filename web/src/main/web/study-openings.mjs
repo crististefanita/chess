@@ -267,7 +267,14 @@ export function createOpeningStudy({ root, locale, call, home, board }) {
   const actions = element('div', null, 'opening-actions');
   const guidance = button(text.hint, useGuidance);
   const aiToggle = button(text.ai, () => flow.dispatch('AI_TOGGLE'));
-  const bulb = button('💡', revealAnalysis, 'opening-ai-hint');
+  const bulb = button(null, revealAnalysis, 'opening-ai-hint review-icon');
+  const bulbIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  bulbIcon.setAttribute('viewBox', '0 0 24 24');
+  bulbIcon.setAttribute('aria-hidden', 'true');
+  const bulbPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  bulbPath.setAttribute('d', 'M9 18h6m-5 4h4M8 14a6 6 0 1 1 8 0c-.7.5-1 1-1 2H9c0-1-.3-1.5-1-2Z');
+  bulbIcon.append(bulbPath);
+  bulb.append(bulbIcon);
   bulb.setAttribute('aria-label', text.showAi);
   actions.append(guidance, aiToggle, bulb);
   controls.append(explanation, announcement, assessment, actions);
