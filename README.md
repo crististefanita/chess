@@ -1,6 +1,6 @@
 # Chess Lab
 
-Chess Lab lets you play chess against AI, solve puzzles and study openings on Android and in the browser. A shared Java engine owns legal play, analysis and learning state; platform adapters present it, while the test and release tools make behavior and delivered artifacts auditable.
+Chess Lab lets you play chess against AI, solve puzzles and study openings on Android and in the browser. Shared Java code owns legal play and learning state. The Web application uses Stockfish for hints and analysis; Android retains its native analyzer. Platform adapters present the game, while the test and release tools make behavior and delivered artifacts auditable.
 
 <a id="play"></a>
 <a id="jocul"></a>
@@ -29,7 +29,7 @@ Chess Lab lets you play chess against AI, solve puzzles and study openings on An
 
 ### Shared rules, platform-owned interaction
 
-Android and Web submit commands to the same engine contract. Legal moves, catalog decisions and saved-game transitions stay in Java; each adapter owns screen interaction, local storage integration and rendering.
+Android and Web submit commands to the same state contract. Legal moves, catalog decisions and saved-game transitions stay in Java; each adapter owns screen interaction, local storage integration and rendering. The Web analysis broker connects Stockfish to Java's validated analysis projection.
 
 ```mermaid
 %%{init: {"theme":"neutral","themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":20,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24}}}%%
@@ -38,10 +38,13 @@ flowchart LR
     Web["Web UI"]
     Worker["TeaVM worker"]
     Engine["chess-core<br/>rules and state"]
+    Stockfish["Stockfish<br/>Web analysis"]
     Projection["Position and legal actions"]
     Android -->|submits commands| Engine
     Web -->|sends revisioned requests| Worker
     Worker -->|runs compiled engine| Engine
+    Worker -->|requests analysis| Stockfish
+    Stockfish -->|returns scored variants| Worker
     Engine -->|returns public projection| Projection
 ```
 
@@ -49,7 +52,7 @@ flowchart LR
 <summary>Legend — shared engine and adapter boundaries</summary>
 
 - The diagram follows runtime commands. The Web worker contains the engine compiled with TeaVM; it does not call a remote JVM to decide legal moves.
-- The engine owns rules, search, catalog interpretation and save contracts. Android preferences and browser storage integrate those contracts on their own platforms.
+- Java owns rules, native AI search, catalog interpretation and save contracts. The Web broker runs Stockfish analysis and Java validates the returned variants; Android retains its native analysis path. [Analysis ownership](web/stockfish.md)
 - A JVM or worker assertion establishes a state transition. Native pixels, browser layout, accessibility and process restart require the corresponding platform probe. [Architecture atlas](docs/architecture.md)
 
 </details>
@@ -58,7 +61,7 @@ flowchart LR
 |---|---|---|
 | [chess-core](chess-core/src/main) | Rules, positions, search, YAML catalogs and progress by stable identity. | [Board and learning](docs/board/README.md) · [AI evaluation](docs/board/ai-quality.md) |
 | [android](android/app/src/main) | Menus, board, accessibility and the native persistence adapter. | [Android checks](docs/testing/README.md) |
-| [web](web) | Browser UI, local storage and engine-worker integration. | [Web build and parity](web/README.md) |
+| [web](web) | Browser UI, local storage, rules worker and Stockfish analysis integration. | [Web build and parity](web/README.md) · [Stockfish](web/stockfish.md) |
 | [atf-tests](atf-tests) | JVM components, governance and publication of platform receipts. | [Test strategy](docs/testing/README.md) |
 | [release-tools](release-tools/src/main) | Affected-guide selection, candidate identity, qualification and publication gates. | [Release process](docs/release/README.md) |
 | Dependencies | Versioned ATF artifacts, Maven scopes and provenance. | [Local library index](lib/README.md) |

@@ -5,12 +5,15 @@
 The register tracks open gaps and closure criteria. The [board guide](../board/README.md)
 describes the behavior, and the [release catalog](../../release/README.md) points to the published evidence.
 
+Native Hard diagnostics below retain their own engine and oracle evidence. Web Stockfish coaching has a [separate provider contract](stockfish-web.md); its integration does not resolve or recalibrate Native Hard by substitution.
+
 [Reviewing test moves between suites](../testing/README.md#test-changes-against-a-git-baseline) describes the Git baseline and coverage evidence.
 
 - [Experimental Hard A gates and remaining work](hard.md)
 - [Native strength and hint/review comparisons](#finished-game-native-losses-and-frontier-controls)
 - [Learned-ordering transfer still needed](hard-learning.md)
 - [APK/Web parity and rendered evidence](web-parity.md)
+- [Stockfish hints, analysis and saved-review integration on Web](stockfish-web.md)
 - [Game Review colors, end-of-game action and reusable analysis (WEB-06)](web-parity.md#web-06--game-review-color-result-action-and-analysis-reuse)
 
 | Priority | Area | Observation | Closure Criterion |

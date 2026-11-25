@@ -37,6 +37,8 @@ The game guides own the product rules and platform behavior. [Matches, puzzles, 
 
 ## Publishing the link
 
+Web coaching uses the pinned Stockfish engine for in-game hints, the manual board, opening analysis and new Game Reviews. Android coaching and both platforms' AI opponents retain their native providers. Legal moves, catalogs and ledger contracts remain shared; analysis scores and search lines are explicitly provider-specific. Existing native reviews remain readable and are recalculated only on request. [Source, journals and qualification](stockfish.md)
+
 1. Build and qualify the bundle in TMP. Keep the exact static tree reachable from an immutable commit or tag; use a separate worktree for the staging files.
 2. Preserve previously published `runtime/<SHA-256>/` directories byte for byte and the legacy root URLs used by older open tabs. Include the new runtime directory, `index.html`, `.nojekyll` and the generated `.gitattributes` in the same commit. The `* -text` rule prevents Git from changing qualified bytes; compare staged blobs with the measured bundle before publication.
 3. Put the qualified static commit and raw-tree digest in [the publication request](publication.request), then push that file on `main`. Only a change to this file triggers the [Pages workflow](../.github/workflows/chess-pages.yml); it validates the two identities before downloading the static tree. Manual dispatch with the same values remains available. The documentation branch `main_RO` never deploys.

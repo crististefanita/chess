@@ -53,6 +53,7 @@ class ChessWebStudyShellTest {
                 "Published HTML resolves the complete module and stylesheet graph in one immutable directory",
                 "Changing only a transitive module allocates a new address and preserves the previous runtime",
                 "Packaging refuses a missing entry asset and leaves previously published runtime files intact",
+                "Nested engine assets retain binary identity, adjacent loader routes and immutable addresses",
                 "Git staging with autocrlf preserves qualified engine bytes and the runtime manifest"));
     }
 
@@ -91,8 +92,12 @@ class ChessWebStudyShellTest {
         String site = System.getProperty("chess.study.bundle");
         if (site != null) builder.environment().put("J7_STUDY_WEB_SITE", site);
         var process = builder.start();
-        boolean finished = process.waitFor(50, TimeUnit.SECONDS);
-        if (!finished) process.destroyForcibly();
+        int timeout = script.endsWith(".test.mjs") ? 50 : 180;
+        boolean finished = process.waitFor(timeout, TimeUnit.SECONDS);
+        if (!finished) {
+            process.descendants().forEach(ProcessHandle::destroyForcibly);
+            process.destroyForcibly(); process.waitFor(10, TimeUnit.SECONDS);
+        }
         check.same(script + " completes", true, finished);
         String diagnostic = Files.readString(log);
         check.same(script + " exits successfully", "exit 0", process.exitValue() == 0 ? "exit 0" : diagnostic);

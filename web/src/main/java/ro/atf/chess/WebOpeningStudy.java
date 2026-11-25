@@ -11,6 +11,57 @@ import static ro.atf.chess.WebBoardState.quote;
 
 /** Adapts the APK lesson and authored lines to worker messages. */
 final class WebOpeningStudy {
+    private int externalRevision;
+    private String activeExternalKey;
+    private ChessMatch externalMatch;
+    private ExternalEngineAnalysis.Context externalContext;
+
+    String prepareExternal(String action, String value, int index, String saved, String option) {
+        if (!"ANALYZE".equals(action)) {
+            externalRevision++; activeExternalKey = null; externalContext = null; externalMatch = null;
+            return "{\"state\":" + command(action, value, index, saved, option) + ",\"revision\":" + externalRevision + ",\"request\":null}";
+        }
+        var state = restore(saved);
+        if (!state.aiEnabled()) throw new IllegalStateException("Opening analysis is disabled");
+        externalMatch = openingMatch(state);
+        externalContext = ExternalEngineAnalysis.context(externalMatch, externalMatch.ply());
+        activeExternalKey = externalContext.contextKey(); externalRevision++;
+        return "{\"state\":{\"evaluation\":null,\"variants\":[],\"pending\":true,\"revision\":" + externalRevision
+                + ",\"contextKey\":" + quote(activeExternalKey) + "},\"revision\":" + externalRevision + ",\"request\":" + externalContext.json() + "}";
+    }
+
+    String applyExternal(int revision, String key, String result) {
+        if (externalContext == null || revision != externalRevision || !key.equals(activeExternalKey)
+                || !key.equals(externalContext.contextKey())) return "{\"evaluation\":null,\"variants\":[],\"outcome\":\"STALE\"}";
+        var observed = ExternalEngineAnalysis.batch(externalMatch, externalMatch.ply(), result);
+        WebExternalAnalysis.requireCurrent(observed.provider());
+        var position = externalMatch.position(); var evaluation = observed.best().evaluation(position.turn());
+        var variants = new StringBuilder("[");
+        var offered = MatchHint.external(position, observed);
+        for (var line : observed.lines().stream().filter(value -> offered.lines().stream().anyMatch(item -> item.move().equals(value.root()))).toList()) {
+            var replay = HintPreview.open(position, line.variation()).orElseThrow();
+            append(variants, "{\"move\":" + move(line.root()) + ",\"frames\":" + frames(replay) + ",\"depth\":" + observed.depth()
+                    + ",\"proof\":null,\"previewMoves\":" + WebBoardState.json(offered.lines(), item -> move(item.move()))
+                    + ",\"decisive\":null,\"kind\":\"ENGINE\",\"centipawns\":" + line.cp() + ",\"mate\":" + line.mate()
+                    + ",\"rootSide\":" + quote(position.turn().name()) + ",\"engine\":" + observed.provider().json() + "}");
+        }
+        return "{\"evaluation\":{\"ending\":" + quote(evaluation.ending().name()) + ",\"whiteCentipawns\":" + evaluation.whiteCentipawns()
+                + ",\"whiteMateMoves\":" + evaluation.whiteMateMoves() + ",\"whiteShare\":" + WebExternalAnalysis.whiteShare(position, observed)
+                + ",\"engine\":" + observed.provider().json() + "},\"variants\":" + variants.append(']') + ",\"engine\":" + observed.provider().json() + ",\"pending\":false}";
+    }
+
+    private static ChessMatch openingMatch(State state) {
+        var match = ChessMatch.start(true);
+        for (int i = 0; i < state.lesson().shownPly(); i++) match = match.play(state.lesson().practice().opening().steps().get(i).move());
+        return match;
+    }
+
+    private String tracked(State state, boolean romanian) {
+        if (externalContext != null) {
+            var match = openingMatch(state); activeExternalKey = ExternalEngineAnalysis.context(match, match.ply()).contextKey();
+        }
+        return view(state, romanian);
+    }
     private static final class Catalog {
         static final java.util.List<Opening> ENTRIES = OpeningCatalog.load();
     }
@@ -31,12 +82,12 @@ final class WebOpeningStudy {
         if ("CATALOG".equals(action)) return catalog(romanian);
         if ("START".equals(action)) {
             if (index != 0 && index != 1) throw new IllegalArgumentException("Expected a learner side");
-            return view(new State(start(opening(value), index == 0 ? Side.WHITE : Side.BLACK), QuestHint.NONE, false, false), romanian);
+            return tracked(new State(start(opening(value), index == 0 ? Side.WHITE : Side.BLACK), QuestHint.NONE, false, false), romanian);
         }
         var state = restore(saved);
         if ("ANALYZE".equals(action)) return analysis(state);
         var lesson = state.lesson();
-        return view(switch (action) {
+        return tracked(switch (action) {
             case "RESTORE" -> state;
             case "SEEK" -> state.next(lesson.show(index));
             case "BACK" -> state.next(lesson.show(lesson.practice().ply()));

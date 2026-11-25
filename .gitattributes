@@ -8,3 +8,6 @@ lib/*.pom -text
 release/*/reports/analysis-compact-execution.json -text
 
 release/*/reports/documentation-pair.txt -text
+
+# Preserve the independently pinned Stockfish loader, WASM and licence bytes.
+web/src/main/web/stockfish/** -text whitespace=cr-at-eol

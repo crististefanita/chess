@@ -66,10 +66,11 @@
   --analysis-meter-width: var(--board-meter-size);
   --analysis-meter-gutter: var(--board-meter-gutter);
   --analysis-caption-height: var(--board-seat-size);
-  flex: 1 0 auto;
-  min-block-size: var(--board-stage-min);
+  flex: 0 0 auto;
+  min-block-size: 0;
+  margin-block: .25rem;
   display: grid;
-  place-items: center;
+  place-items: start center;
   container-type: inline-size;
 }
 
@@ -122,7 +123,7 @@
 .analysis-study-score,
 .analysis-study-evidence,
 .analysis-study-error { margin: 0; text-align: center; }
-.analysis-study-status { min-block-size: var(--board-feedback-size); font-size: .875rem; white-space: pre-line; }
+.analysis-study-status { min-block-size: 1.25rem; font-size: .875rem; white-space: pre-line; }
 .analysis-study-feedback { min-block-size: var(--board-feedback-size); font-size: .875rem; text-align: center; }
 .analysis-study-score { color: #c0bfb4; }
 .analysis-study-feedback button {

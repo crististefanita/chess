@@ -2,7 +2,7 @@
 
 ## Overview
 
-The [analysis source map](analysis-sources.md) distinguishes Stockfish opening references, native live hints and persisted Game Review evidence.
+The [analysis source map](analysis-sources.md) distinguishes stored opening references, Android Native coaching, live Web Stockfish analysis and persisted Game Review evidence.
 
 - **Scope.** The shared engine owns move legality. Android and Web render that position through their own adapters. [Web adapter and shared contract](../../web/README.md)
 - **Checks.** `BoardPanelLayoutTest` checks geometry, `QuestHintTest` checks hints, and `MatchActionsTest` checks game commands. `ChessWebQuestStudyTest` checks the study controls without Android.

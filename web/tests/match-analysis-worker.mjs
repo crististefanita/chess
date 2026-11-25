@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
+import { installNativeAnalysisReference } from './support/native-analysis-reference.mjs';
 
 const [worker, fixture, selectedId, scope = 'history'] = process.argv.slice(2);
 assert.ok(worker && fixture, 'Supply the packaged worker and the shared match-analysis fixture');
@@ -10,7 +11,7 @@ assert.ok(selected.length > 0, 'No shared match-analysis case named ' + selected
 let nextId = 0;
 let reply;
 globalThis.self = { postMessage: message => reply(message) };
-await import(pathToFileURL(worker));
+await installNativeAnalysisReference(pathToFileURL(worker));
 
 async function call(type, data = {}) {
     const id = ++nextId;

@@ -81,6 +81,7 @@ class SuiteGovernanceTest {
                 Set.of(ChessWebReviewPublication.class.getName(), ChessWebGamePublication.class.getName(),
                         ChessWebBotPublication.class.getName(), ChessWebLedgerPublication.class.getName(),
                         ChessWebMatchListPlaywrightE2e.class.getName(),
+                        ChessWebStockfishPlaywrightE2e.class.getName(),
                         ChessWebOpeningLandscapePlaywrightE2e.class.getName(),
                         ChessWebArchiveReviewsPublication.class.getName(), ChessWebArchiveContinuationPublication.class.getName(),
                         ChessWebReviewGraphPublication.class.getName(), ChessWebReviewFocusPublication.class.getName(),

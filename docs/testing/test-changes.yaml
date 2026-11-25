@@ -1994,3 +1994,35 @@ testChanges:
     test: ro.atf.chess.ChessWebOpeningStudyTest#openingControllerPreservesLessonAndReplySemanticsWithoutABrowser
     contract: "Keep all 23 preceding controller cases and lesson sizing guards; add two EN/RO source-width capture and ordinary-dialog isolation cases, allowing the wider frame only inside the scoped replay"
     allowDelete: false
+
+  - id: CHESS-WEB-STOCKFISH-SHELL-INVENTORY
+    base: "f25b8a9c6358dc1b17b816563ceb1f4a9de87989"
+    from: atf-tests/src/test/java/ro/atf/chess/ChessWebStudyShellTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ChessWebStudyShellTest.java
+    test: ro.atf.chess.ChessWebStudyShellTest#packagedBytesSurviveGitStaging
+    contract: "Preserve all existing shell and publication cases and require the added binary packaging fixture in the native receipt."
+    allowDelete: false
+
+  - id: CHESS-WEB-STOCKFISH-ASSERTION-IMPORT
+    base: "f25b8a9c6358dc1b17b816563ceb1f4a9de87989"
+    from: atf-tests/src/test/java/ro/atf/chess/Checks.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ChessWebStockfishTransportTest.java
+    test: ro.atf.chess.ChessWebStockfishTransportTest#refusesForeignEmptyAndReplacedReceipts
+    contract: "Keep the native Node assertion verdict instead of reinterpreting its displayed values; reject foreign run IDs, missing assertions and duplicate evidence."
+    allowDelete: false
+
+  - id: CHESS-WEB-STOCKFISH-SANITY-OWNER
+    base: "f25b8a9c6358dc1b17b816563ceb1f4a9de87989"
+    from: atf-tests/src/test/java/ro/atf/chess/SuiteGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/SuiteGovernanceTest.java
+    test: ro.atf.chess.SuiteGovernanceTest#everyJvmTestHasExactlyOnePrimarySuiteAndAnExtentAudit
+    contract: "Keep every existing explicit browser publisher and add the Stockfish sanity publisher without admitting E2E into offline component suites."
+    allowDelete: false
+
+  - id: CHESS-WEB-STOCKFISH-MANIFEST-AND-REFERENCE
+    base: "f25b8a9c6358dc1b17b816563ceb1f4a9de87989"
+    from: atf-tests/src/test/java/ro/atf/chess/ChessWebParityPublication.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/MatchAnalysisParityTest.java
+    test: ro.atf.chess.MatchAnalysisParityTest#nativeModelProjectsTheDisplayedMatchFrame
+    contract: "Keep every Native numeric fixture mandatory in JVM components while retaining the compiled Native search as an explicit opt-in benchmark. Preserve the packaged rules and YAML comparisons; qualify the replacement coaching provider with the real Stockfish WASM and rendered browser flow. Nested assets and broker paths retain independent packaging assertions."
+    allowDelete: false

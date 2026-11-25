@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "providerID": "stockfish-19.0.1-full-single",
+  "version": "19.0.1",
+  "sourceCommit": "0d5dd7944f88c817c07a26bc4fb1905d5f9c46d6",
+  "release": "https://github.com/nmrugg/stockfish.js/releases/tag/v19.0.1",
+  "source": "https://github.com/nmrugg/stockfish.js/archive/0d5dd7944f88c817c07a26bc4fb1905d5f9c46d6.tar.gz",
+  "files": [
+    {
+      "path": "stockfish-19-single.js",
+      "bytes": 28130,
+      "sha256": "8071dee87312f74805a859de933e1a1ef465579ab1a51fbd597388cdce9d444d"
+    },
+    {
+      "path": "stockfish-19-single.wasm",
+      "bytes": 99169054,
+      "sha256": "991bede2f253ebb08ff01fcc48270f4b9c8e66b12d5bd5f8d6f52eb3e3b3a740"
+    },
+    {
+      "path": "COPYING.txt",
+      "bytes": 35821,
+      "sha256": "0b383d5a63da644f628d99c33976ea6487ed89aaa59f0b3257992deac1171e6b"
+    },
+    {
+      "path": "AUTHORS",
+      "bytes": 6881,
+      "sha256": "f81e7d74c350626766382ec67fa262c38cda00cb8b501790f95cdebb526006c1"
+    }
+  ]
+}

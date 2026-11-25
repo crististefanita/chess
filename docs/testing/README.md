@@ -9,6 +9,8 @@ Choose the lowest test level that can observe the change. Build from a copy of t
 - [Android sanity](#android-sanity) and [Web parity](#web-engine-parity) cover rendering, lifecycle, and real assistive technology when needed.
 - [Extent evidence](#extent-reporting) ties assertions to the run. [Qualification](../release/README.md#qualification-and-publication) governs promotion.
 
+- [Web Stockfish qualification](../../web/stockfish.md#verification) separates protocol components, the real pinned WASM, the compiled Java projection and rendered browser sanity. `ChessWebStockfishTransportTest` imports the original Node assertion values and verdicts into Extent and rejects foreign or empty receipts. `ExternalEngineAnalysisTest` checks legal PVs, side normalization, archive compatibility and tampering. The native Hard engine and Android are separate qualification scopes.
+
 <details>
 <summary>Opening and repertoire evidence</summary>
 

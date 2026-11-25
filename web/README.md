@@ -2,9 +2,9 @@
 
 ## Overview
 
-The worker consumes Stockfish 19 opening references as YAML data; it runs the native Java engine for live analysis and Game Review. [Source and score conventions](../docs/board/analysis-sources.md)
+Chess Lab shares Java rules, catalogs and saved-game state between Android and the TeaVM worker. The Web application uses [Stockfish for hints and analysis](stockfish.md); each adapter owns input, rendering, navigation and local storage. Android retains its existing analysis engine in this integration step.
 
-Chess Lab runs the same Java engine on Android and in the TeaVM worker. Each adapter owns its own input, rendering, navigation, and local storage.
+Stored opening references remain separate from live Web Stockfish searches. [Source and score conventions](../docs/board/analysis-sources.md)
 
 - [APK–Web parity matrix](parity.md) lists the shared behavior and the evidence needed on each platform.
 - [Build and verification](#build-and-verification) compares the generated Web bundle with the JVM.

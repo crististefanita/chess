@@ -33,6 +33,12 @@ final class Checks {
 
     int size() { return rows.size(); }
 
+    /** Preserve an assertion verdict produced by a native runner, without reinterpreting its display text. */
+    void observed(String name, String expected, String actual, boolean passed) {
+        rows.add(new AtfAssertion(name, expected, actual, passed));
+        Assertions.assertTrue(passed, name);
+    }
+
     boolean failedSince(int first) { return rows.subList(first, rows.size()).stream().anyMatch(row -> !row.passed()); }
 
     List<AtfAssertion> rows() { return List.copyOf(rows); }

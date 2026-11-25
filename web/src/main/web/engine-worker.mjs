@@ -1,10 +1,45 @@
-import { analyzeReviewWithWork, prepareReviewJournal, applyBotMove, canonicalCheckpoint, computeBotMove, continueArchiveReview, continueMatch,
+import { applyBotMove, canonicalCheckpoint, computeBotMove, continueArchiveReview, continueMatch,
   flipMatchBoard, matchAutomation, matchDecision, matchHistory, normalizePlayerName, openLedger, openMatch, openReview, archiveReviewCheckpoint,
-  archiveReviewRated, importLegacyReview, ledgerState, matchAnalysisAction, openArchiveReview, openMatchAnalysis, pieceArtwork, playBot, playMatch, reviewAction, reviewGraphSelect,
-  saveArchiveReview, snapshot, continueStudyMatch, openStudyReview, studyCommand, studyReviewAction, studyReviewGraphSelect } from "./chess-engine.mjs";
+  archiveReviewRated, importLegacyReview, ledgerState, matchAnalysisAction, openArchiveReview, pieceArtwork, playBot, playMatch, reviewAction, reviewGraphSelect,
+  saveArchiveReview, snapshot, continueStudyMatch, openStudyReview, studyCommand, studyReviewAction, studyReviewGraphSelect,
+  prepareExternalMatchAnalysis, applyExternalMatchAnalysis, prepareExternalStudyAnalysis, applyExternalStudyAnalysis,
+  prepareExternalReview, applyExternalReview, validateExternalReviewTurn } from "./chess-engine.mjs";
+import { createStockfishAnalysis } from './stockfish-analysis.mjs';
+
+const stockfishRequests = new Map();
+let stockfishSerial = 0;
+function requestStockfish(request) {
+  const requestId = String(++stockfishSerial);
+  return new Promise((resolve, reject) => {
+    stockfishRequests.set(requestId, { resolve, reject });
+    self.postMessage({ kind: 'j7-stockfish-request', requestId, request });
+  });
+}
+
+function cancelStockfishRequests() {
+  for (const [requestId, pending] of stockfishRequests) {
+    self.postMessage({ kind: 'j7-stockfish-cancel', requestId });
+    pending.reject(new DOMException('The analysis position changed', 'AbortError'));
+  }
+  stockfishRequests.clear();
+}
+
+const stockfish = createStockfishAnalysis({ engine: {
+  prepareExternalMatchAnalysis, applyExternalMatchAnalysis, prepareExternalStudyAnalysis, applyExternalStudyAnalysis,
+  prepareExternalReview, applyExternalReview, validateExternalReviewTurn,
+}, analyze: requestStockfish });
 
 let pending = Promise.resolve();
 self.onmessage = ({ data }) => {
+  if (data?.kind === 'j7-stockfish-response') {
+    const request = stockfishRequests.get(data.requestId);
+    if (!request) return;
+    stockfishRequests.delete(data.requestId);
+    if (data.error) request.reject(new Error(typeof data.error === 'string' ? data.error : data.error.message));
+    else request.resolve(data.result);
+    return;
+  }
+  cancelStockfishRequests();
   pending = pending.then(() => respond(data ?? {}));
 };
 
@@ -15,7 +50,10 @@ async function respond({ id, type, resources, archive, checkpoint, review, ledge
     if (type === "snapshot" && typeof resources === "string") {
       self.postMessage({ id, snapshot: snapshot(resources) });
     } else if (type === "study" && [feature, action, value, saved, option, locale].every(field => typeof field === "string") && validPly(index)) {
-      self.postMessage({ id, study: JSON.parse(studyCommand(feature, action, value, index, saved, option, locale)) });
+      const study = feature === 'analysis' || feature === 'openings'
+        ? await stockfish.study({ feature, action, value, index, saved, option, locale })
+        : JSON.parse(studyCommand(feature, action, value, index, saved, option, locale));
+      self.postMessage({ id, study });
     } else if (type === "profile-name" && typeof name === "string") {
       self.postMessage({ id, name: normalizePlayerName(name) });
     } else if (type === "review-open" && validArchive(archive)) {
@@ -66,7 +104,7 @@ async function respond({ id, type, resources, archive, checkpoint, review, ledge
     } else if (type === "match-bot-compute" && typeof checkpoint === "string") {
       self.postMessage({ id, move: computeBotMove(checkpoint) });
     } else if (type === "match-analysis-open" && typeof checkpoint === "string" && validRevision(ply) && validRevision(expectedRevision)) {
-      self.postMessage({ id, ...JSON.parse(openMatchAnalysis(checkpoint, ply, expectedRevision)) });
+      self.postMessage({ id, ...await stockfish.match({ checkpoint, ply, expectedRevision }) });
     } else if (type === "match-analysis-action" && validRevision(expectedRevision) && validMatchAnalysisAction(action, index)) {
       self.postMessage({ id, ...JSON.parse(matchAnalysisAction(expectedRevision, action, index ?? 0)) });
     } else if (type === "match-bot-apply" && validRevision(expectedRevision) && typeof move === "string") {
@@ -85,14 +123,14 @@ async function respond({ id, type, resources, archive, checkpoint, review, ledge
       self.postMessage({ id, ...JSON.parse(continueStudyMatch(checkpoint, automatic, blackBelow)) });
     } else if (type === "review-prepare" && typeof checkpoint === "string" && optionalText(journal)) {
       const canonical = canonicalCheckpoint(checkpoint);
-      const work = prepareReviewJournal(canonical, journal ?? null,
-        (progress, total, partialJournal) => self.postMessage({ id, progress, total, partialJournal }));
+      const digest = await sha256(canonical);
+      const work = await stockfish.prepareReview(canonical, digest, () => {}, journal ?? null,
+        partialJournal => self.postMessage({ id, partialJournal }));
       self.postMessage({ id, journal: work });
     } else if (type === "review-analyze" && typeof checkpoint === "string" && typeof rated === "boolean" && optionalText(journal)) {
       const canonical = canonicalCheckpoint(checkpoint);
       const digest = await sha256(canonical);
-      const review = analyzeReviewWithWork(canonical, digest, journal ?? null, rated,
-        (progress, total) => self.postMessage({ id, progress, total }));
+      const review = await stockfish.review(canonical, digest, (progress, total) => self.postMessage({ id, progress, total }), { rated, journal: journal ?? null });
       self.postMessage({ id, archive: { id: crypto.randomUUID(), checkpoint: canonical, review } });
     } else {
       throw new TypeError("Invalid chess worker request");

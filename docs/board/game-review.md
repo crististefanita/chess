@@ -2,7 +2,7 @@
 
 ## Overview
 
-Game Review aggregates native comparisons. Stockfish opening references and the replay static delta have separate provenance: [analysis source map](analysis-sources.md).
+Game Review aggregates complete provider-bound comparisons: Native on Android and Stockfish on Web. Older reviews retain their original source. Stored opening references and the replay static delta have separate provenance: [analysis source map](analysis-sources.md) · [Web validation and journals](../../web/stockfish.md).
 
 - **Scope.** `GameReview` calculates grades, accuracy, and the replay of the played and recommended lines. Elo requires an eligible finished match. [Calculation](../../chess-core/src/main/java/ro/atf/chess/GameReview.java)
 - **Checks.** `GameReviewTest` checks the calculations, `GameReviewTimelineTest` checks legal replay, and `GameReviewGraphParityTest` checks navigation across surfaces.

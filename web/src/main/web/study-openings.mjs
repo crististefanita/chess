@@ -540,12 +540,13 @@ export function createOpeningStudy({ root, locale, call, home, board }) {
 
   function evaluationText(evaluation) {
     if (!evaluation) return text.ended;
+    const source = evaluation.engine?.providerID?.startsWith('stockfish-') ? 'Stockfish 19 · ' : '';
     if (evaluation.ending === 'CHECKMATE') {
-      return text.mate(evaluation.whiteMateMoves > 0 ? text.white : text.black, Math.abs(evaluation.whiteMateMoves));
+      return source + text.mate(evaluation.whiteMateMoves > 0 ? text.white : text.black, Math.abs(evaluation.whiteMateMoves));
     }
     if (evaluation.ending === 'STALEMATE') return text.stalemate;
     const centipawns = evaluation.whiteCentipawns;
-    return pawnLabel(centipawns) + ' · ' + (centipawns === 0 ? text.balanced : centipawns > 0 ? text.white : text.black);
+    return source + pawnLabel(centipawns) + ' · ' + (centipawns === 0 ? text.balanced : centipawns > 0 ? text.white : text.black);
   }
 
   function pawnLabel(centipawns) {

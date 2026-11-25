@@ -67,13 +67,14 @@ function pawns(centipawns, locale) {
 export function analysisScore(evaluation, locale) {
     const words = copy[language(locale)];
     if (!evaluation) return words.pending;
+    const source = evaluation.engine?.providerID?.startsWith('stockfish-') ? 'Stockfish 19 · ' : '';
     if (evaluation.ending === 'FINISHED') return words.finished;
     if (evaluation.ending === 'STALEMATE') return words.results.STALEMATE;
     if (evaluation.ending === 'CHECKMATE') {
-        return sideName(words, evaluation.mate > 0 ? 'WHITE' : 'BLACK') + ' · ' + words.mate(Math.abs(evaluation.mate));
+        return source + sideName(words, evaluation.mate > 0 ? 'WHITE' : 'BLACK') + ' · ' + words.mate(Math.abs(evaluation.mate));
     }
     const value = evaluation.centipawns;
-    return pawns(value, locale) + ' · ' + (value === 0 ? words.balanced : sideName(words, value > 0 ? 'WHITE' : 'BLACK'));
+    return source + pawns(value, locale) + ' · ' + (value === 0 ? words.balanced : sideName(words, value > 0 ? 'WHITE' : 'BLACK'));
 }
 
 export function analysisHintDescription(hint, locale) {
@@ -103,6 +104,14 @@ export function renderAnalysisMeter(meter, fill, evaluation, blackBelow, locale)
 
 export function renderAnalysisEvidence(target, preview, rootSide, locale, proofButton) {
     const words = copy[language(locale)];
+    if (preview.kind === 'ENGINE') {
+        const sign = (preview.rootSide ?? rootSide) === 'BLACK' ? -1 : 1;
+        const score = Number.isFinite(preview.mate) ? words.mate(Math.abs(preview.mate))
+            + ' · ' + sideName(words, sign * preview.mate > 0 ? 'WHITE' : 'BLACK')
+            : Number.isFinite(preview.centipawns) ? pawns(sign * preview.centipawns, locale) : words.pending;
+        target.textContent = 'Stockfish 19 · ' + words.depth(preview.depth) + ' · ' + score;
+        return;
+    }
     if (preview.kind === 'THEORY') {
         target.textContent = preview.name[language(locale)] + ' · ' + preview.eco + ' · '
             + (preview.idea?.[language(locale)] ?? words.genericTheory);
@@ -110,7 +119,7 @@ export function renderAnalysisEvidence(target, preview, rootSide, locale, proofB
     }
     const evidence = [];
     if (preview.depth > 0) evidence.push(words.depth(preview.depth));
-    if (preview.initialCp !== null) evidence.push(pawns(preview.initialCp, locale) + ' → ' + pawns(preview.finalCp, locale)
+    if (Number.isFinite(preview.initialCp) && Number.isFinite(preview.finalCp)) evidence.push(pawns(preview.initialCp, locale) + ' → ' + pawns(preview.finalCp, locale)
         + ' · Δ ' + pawns(preview.finalCp - preview.initialCp, locale));
     if (preview.decisive) {
         const proof = preview.decisive;

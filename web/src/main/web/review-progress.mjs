@@ -1,11 +1,11 @@
 export const reviewProgressKey = 'chesslab.review-work.v1';
 const storageKey = reviewProgressKey;
 
-/** Adjacent to the game ledger: only complete Java journals for retained game IDs. */
-export function createReviewProgressStore(storage, retainedIds) {
+/** Adjacent to the game ledger: provider-scoped journals for retained game IDs. */
+export function createReviewProgressStore(storage, retainedIds, { key = storageKey } = {}) {
   function read() {
     try {
-      const parsed = JSON.parse(storage.getItem(storageKey) ?? '{}');
+      const parsed = JSON.parse(storage.getItem(key) ?? '{}');
       if (parsed.version !== 1 || !parsed.records || typeof parsed.records !== 'object' || Array.isArray(parsed.records)) return {};
       return parsed.records;
     } catch { return {}; }
@@ -22,14 +22,14 @@ export function createReviewProgressStore(storage, retainedIds) {
       if ((records[request.id]?.journal ?? null) !== expected) return false;
       const next = Object.fromEntries(Object.entries(records).filter(([id]) => ids.includes(id)));
       next[request.id] = { checkpoint: request.checkpoint, journal };
-      storage.setItem(storageKey, JSON.stringify({ version: 1, records: next }));
+      storage.setItem(key, JSON.stringify({ version: 1, records: next }));
       return true;
     },
     prune() {
       const records = read();
       const ids = retainedIds();
       if (Object.keys(records).some(id => !ids.includes(id)))
-        storage.setItem(storageKey, JSON.stringify({ version: 1, records: Object.fromEntries(Object.entries(records).filter(([id]) => ids.includes(id))) }));
+        storage.setItem(key, JSON.stringify({ version: 1, records: Object.fromEntries(Object.entries(records).filter(([id]) => ids.includes(id))) }));
     },
   };
 }

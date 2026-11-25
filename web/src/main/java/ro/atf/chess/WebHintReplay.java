@@ -20,6 +20,15 @@ final class WebHintReplay {
 
     boolean open(ChessPosition root, MatchHint hint) {
         if (hint == null || isOpen()) return false;
+        if (hint.external().isPresent()) {
+            if (hint.revealedMove() == null) return false;
+            var observed = hint.external().orElseThrow(); var available = new ArrayList<Replay>(); branch = 0;
+            for (var line : observed.lines().stream().filter(value -> hint.lines().stream().anyMatch(item -> item.move().equals(value.root()))).toList()) {
+                if (line.root().equals(hint.revealedMove())) branch = available.size();
+                available.add(new ExternalReplay(HintPreview.open(root, line.variation()).orElseThrow(), observed.provider(), line, root.turn()));
+            }
+            previews = List.copyOf(available); return true;
+        }
         var theory = hint.theoryPlayback(root);
         if (theory.isPresent()) {
             var paths = theory.get();
@@ -92,6 +101,20 @@ final class WebHintReplay {
         Move last();
         void seek(int ply);
         String evidence();
+    }
+
+    private record ExternalReplay(HintPreview replay, ExternalEngineAnalysis.Provider provider, ExternalEngineAnalysis.Line line, ChessPosition.Side rootSide) implements Replay {
+        @Override public ChessPosition position() { return replay.position(); }
+        @Override public int ply() { return replay.step(); }
+        @Override public int length() { return replay.length(); }
+        @Override public Move first() { return replay.firstMove(); }
+        @Override public Move last() { return replay.lastMove(); }
+        @Override public void seek(int ply) { replay.seek(ply); }
+        @Override public String evidence() {
+            return ",\"kind\":\"ENGINE\",\"engine\":" + provider.json() + ",\"proof\":null,\"decisive\":null,\"depth\":" + line.depth()
+                    + ",\"centipawns\":" + line.cp() + ",\"mate\":" + line.mate() + ",\"rootSide\":" + WebBoardState.quote(rootSide.name())
+                    + ",\"initialCp\":null,\"finalCp\":null";
+        }
     }
 
     private record TheoryReplay(MatchHint.Theory path, OpeningReplay replay) implements Replay {

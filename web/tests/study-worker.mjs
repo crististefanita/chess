@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { runtimeDirectory } from '../tools/package-web.mjs';
+import { installNativeAnalysisReference } from './support/native-analysis-reference.mjs';
 
 const [bundle] = process.argv.slice(2);
 assert.ok(bundle, 'Supply the emitted Web site');
@@ -18,7 +19,7 @@ globalThis.self = {
         else completion.resolve(message);
     },
 };
-await import(pathToFileURL(join(await runtimeDirectory(bundle), 'engine-worker.mjs')));
+await installNativeAnalysisReference(pathToFileURL(join(await runtimeDirectory(bundle), 'engine-worker.mjs')));
 
 async function call(type, fields = {}) {
     const id = String(++next);
