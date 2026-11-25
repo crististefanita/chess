@@ -136,3 +136,7 @@ Verificați ultima opțiune, închiderea prin tastatură, revenirea focusului ș
 
 - Poarta de componentă acoperă fiecare grup de clasificare, etichetele textuale, vizibilitatea doar la final, blocajele din timpul analizei, accesarea aceleiași perechi identificator/semimutare, redarea liniei cu obiectul de poziție exact, resetarea becului, evacuarea LRU la 64 de poziții, invalidarea la schimbarea partidei și respingerea lucrului incomplet.
 - Închideți doar cu recepții pereche APK/Web pentru rezultatul final și lista colorată în RO/EN, plus o secvență observată Înapoi/Înainte care arată revenirea imediată la o semimutare AI memorată, fără o căutare nouă. Sursa comună singură nu dovedește paritatea randată.
+
+## Date de referință pentru deschideri
+
+**P1 · Teorie rapidă și auditabilă.** Păstrează în YAML scorurile de referință și continuările pentru poziția exactă, cu producătorul, setările fixe de evaluare și delta față de poziția anterioară. Un prefix cunoscut al lecției afișează imediat datele validate; o intrare absentă sau nepotrivită folosește o singură analiză live. Nu eticheta mutarea lecției drept cea mai bună a motorului fără dovezi. Separă valorile de referință de analiza live, păstrează istoricul și drepturile legale și guvernează datele expirate, semnul scorului, ambele culori și calea fără căutare.
