@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Play chess against AI, solve puzzles, and study openings.">
   <title>Chess Lab</title>
-  <link rel="stylesheet" href="runtime/98e0e5947276cbb76fb46fd1e14ddca53780938c54860d3d1ab7076190c04e99/game-review.css">
-  <link rel="stylesheet" href="runtime/98e0e5947276cbb76fb46fd1e14ddca53780938c54860d3d1ab7076190c04e99/study-openings.css">
-  <link rel="stylesheet" href="runtime/98e0e5947276cbb76fb46fd1e14ddca53780938c54860d3d1ab7076190c04e99/study-analysis.css">
-  <link rel="stylesheet" href="runtime/98e0e5947276cbb76fb46fd1e14ddca53780938c54860d3d1ab7076190c04e99/study-quests.css">
-  <link rel="stylesheet" href="runtime/98e0e5947276cbb76fb46fd1e14ddca53780938c54860d3d1ab7076190c04e99/chess-controls.css">
-  <link rel="stylesheet" href="runtime/98e0e5947276cbb76fb46fd1e14ddca53780938c54860d3d1ab7076190c04e99/board-layout.css">
-  <script type="module" src="runtime/98e0e5947276cbb76fb46fd1e14ddca53780938c54860d3d1ab7076190c04e99/game-review.mjs"></script>
+  <link rel="stylesheet" href="runtime/e4ce4fb4aa8e7f40bc916ebd7921de312ac8ab15f64356b15f6110307cce372c/game-review.css">
+  <link rel="stylesheet" href="runtime/e4ce4fb4aa8e7f40bc916ebd7921de312ac8ab15f64356b15f6110307cce372c/study-openings.css">
+  <link rel="stylesheet" href="runtime/e4ce4fb4aa8e7f40bc916ebd7921de312ac8ab15f64356b15f6110307cce372c/study-analysis.css">
+  <link rel="stylesheet" href="runtime/e4ce4fb4aa8e7f40bc916ebd7921de312ac8ab15f64356b15f6110307cce372c/study-quests.css">
+  <link rel="stylesheet" href="runtime/e4ce4fb4aa8e7f40bc916ebd7921de312ac8ab15f64356b15f6110307cce372c/chess-controls.css">
+  <link rel="stylesheet" href="runtime/e4ce4fb4aa8e7f40bc916ebd7921de312ac8ab15f64356b15f6110307cce372c/board-layout.css">
+  <script type="module" src="runtime/e4ce4fb4aa8e7f40bc916ebd7921de312ac8ab15f64356b15f6110307cce372c/game-review.mjs"></script>
 </head>
 <body>
   <main>
@@ -238,6 +238,7 @@
           <div id="review-menu" class="review-menu" hidden>
             <button id="review-on-board" type="button">Show on board</button>
             <button id="continue-review" type="button" hidden>Continue from here</button>
+            <button id="reanalyze-stockfish" type="button" hidden>Reanalyze with Stockfish</button>
           </div>
         </div>
         <p id="turn" class="visually-hidden"></p>
@@ -246,6 +247,7 @@
       </section>
       <div id="review-details" class="review-details">
         <section id="review-summary" class="review-summary" aria-labelledby="review-graph-label">
+          <p id="review-provider"></p>
           <p id="review-opening" hidden></p>
           <p id="review-graph-label">Evaluation by move · White above the center</p>
           <div id="review-graph-plot" class="review-graph-plot">
