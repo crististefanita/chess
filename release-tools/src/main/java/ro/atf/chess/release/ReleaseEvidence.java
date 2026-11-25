@@ -16,7 +16,7 @@ public final class ReleaseEvidence {
     private static final Pattern LINK_BULLET = Pattern.compile("- \\[([^\\[\\]\\r\\n]+)]\\(([^\\s()<>]+)\\)");
     private static final Pattern APK_LINK = Pattern.compile(
             "https://github\\.com/([a-zA-Z0-9-]+)/([a-zA-Z0-9_.-]+)/releases/download/v(?<version>[0-9]+\\.[0-9]+\\.[0-9]+)/ChessLab-\\k<version>\\.apk");
-    private static final Pattern GAME = Pattern.compile("(?ms)^## (?:Play|Jocul)[ \\t]*\\R(.*?)(?=^#{1,2}[ \\t]+|\\z)");
+    private static final Pattern GAME = Pattern.compile("(?ms)^## (?:Game|Play|Jocul)[ \\t]*\\R(.*?)(?=^#{1,2}[ \\t]+|\\z)");
     private static final Pattern EDITION = Pattern.compile("(?ms)^## (?:Published Release|Ediția publicată)[ \\t]*\\R(.*?)(?=^#{1,2}[ \\t]+|\\z)");
     private static final Pattern SECTION = Pattern.compile("(?m)^##[ \\t]+");
     private static final Pattern INTEGRITY_LABEL = Pattern.compile("(?i)sha[- ]?256|checksum|\\bbytes?\\b|[a-f0-9]{64}");

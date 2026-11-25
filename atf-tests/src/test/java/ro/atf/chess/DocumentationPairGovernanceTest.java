@@ -34,7 +34,7 @@ class DocumentationPairGovernanceTest {
     @BeforeAll
     static void createSnapshots() throws Exception {
         git("", "init", "--quiet");
-        var en = snapshot("Play", "Published Release", "Qualification and Publication", "Overview", "Usage", "overview");
+        var en = snapshot("Game", "Published Release", "Qualification and Publication", "Overview", "Usage", "overview");
         var ro = snapshot("Jocul", "Ediția publicată", "Calificare și publicare", "Pe scurt", "Folosire", "pe-scurt");
         var importer = new StringBuilder();
         add(importer, "main", en);

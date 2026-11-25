@@ -361,6 +361,10 @@ class ReleaseGovernanceTest {
     @Test void readmeKeepsTheDownloadSectionFirstAndRejectsOtherApkRoutes(Checks check) throws IOException {
         check.same("The APK, browser game and separate release notes qualify", "accepted",
                 decision(() -> publish(SOURCE, README.replace("\n", "\r\n"), 200, apk)));
+        String english = README.replace("## Jocul", "## Game").replace("[Joacă în browser]", "[Play in browser]")
+                .replace("## Ediția publicată", "## Published Release");
+        check.same("The English Game section is accepted", List.of(BASE + "tag/v0.1.0", URL),
+                ReleaseEvidence.gameLinks(english));
         check.same("An introductory section cannot precede the download", "Jocul must be the first section",
                 decision(() -> ReleaseEvidence.gameLinks(README.replace("Șah și studiu.", "## Introducere\n\nȘah și studiu."))));
         check.same("Prose appended to a link is rejected", "Jocul must contain only the APK and browser links",
