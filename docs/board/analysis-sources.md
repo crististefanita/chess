@@ -40,7 +40,7 @@ Stockfish rulează la generarea referințelor. Motorul comun validează și red�
 
 ## Linii selectabile
 
-Interfața agreată oferă **cel mult trei linii selectabile**. Două sau trei alternative afișează selectoarele; o singură linie nu are nevoie de rând de selecție. Un tab schimbă doar ramura redării. Fiecare ramură își păstrează semimutarea cât dialogul este deschis, iar închiderea revine la sursa neschimbată. HintPreviewDialog nativ are trei ID-uri stabile; încărcarea referinței respinge a patra linie înainte de proiectare.
+Interfața agreată oferă **cel mult trei linii selectabile**. Două sau trei alternative afișează selectoarele; o singură linie nu are nevoie de rând de selecție. Când apar, toate selectoarele rămân pe un rând și împart lățimea disponibilă; etichetele lungi se trunchiază vizual, păstrând numele accesibil complet și o țintă de 48 CSS px pe Web sau 48 dp nativ. Un tab schimbă doar ramura redării. Fiecare ramură își păstrează semimutarea cât dialogul este deschis, iar închiderea revine la sursa neschimbată. HintPreviewDialog nativ are trei ID-uri stabile; încărcarea referinței respinge a patra linie înainte de proiectare.
 
 [HintSelectableLinesComponentTest](../../atf-tests/src/test/java/ro/atf/chess/HintSelectableLinesComponentTest.java) verifică toate cadrele reale, cazuri cu una/două/trei linii și refuzul celei de-a patra. Componentele DOM Web apasă fiecare selector în RO/EN și verifică păstrarea cursorilor, Înapoi/Înainte și o singură cerere de analiză completă. Aceste componente nu certifică randarea în pixeli.
 

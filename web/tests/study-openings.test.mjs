@@ -472,6 +472,20 @@ for (const locale of ['en', 'ro']) for (const count of [1, 2, 3]) {
   });
 }
 
+test('Three cached hint selectors stay in one row inside the source-sized replay window', async () => {
+  const css = readFileSync(new URL('../src/main/web/study-openings.css', import.meta.url), 'utf8');
+  const shared = readFileSync(new URL('../src/main/web/chess-controls.css', import.meta.url), 'utf8');
+  assert.match(css, /\.opening-dialog\[data-opening-replay\] \.opening-dialog-actions\[data-chess-lines\]\s*\{[^}]*flex-flow:\s*row nowrap/);
+  assert.match(css, /\.opening-dialog\[data-opening-replay\] \.opening-dialog-actions\[data-chess-lines\]\s*>\s*button\s*\{[^}]*flex:\s*1 1 0;[^}]*min-inline-size:\s*0;[^}]*text-overflow:\s*ellipsis;[^}]*white-space:\s*nowrap/);
+  assert.match(shared, /\[data-chess-lines\]\s*\{\s*flex-wrap:\s*wrap;\s*\}/,
+    'unrelated line collections keep their existing wrapping policy');
+  for (const width of [288, 344, 468, 592]) {
+    const gap = 8;
+    const tabWidth = (width - 2 * gap) / 3;
+    assert.ok(tabWidth >= 48, `three accessible tabs fit across a ${width}px replay board (${tabWidth}px each)`);
+  }
+});
+
 for (const locale of ['en', 'ro']) {
   test(`${locale.toUpperCase()} replay captures the source width once and leaves ordinary dialogs at their original size`, async () => {
     for (const width of [288, 344, 468, 592]) {

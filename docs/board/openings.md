@@ -64,4 +64,6 @@ Vezi [sursele analizei și liniile selectabile](analysis-sources.md) pentru scor
 
 Dialogul recomandării preia lățimea tablei sursă înainte de deschidere, prin adaptorul comun rememberBoardSize. Chenarul adaugă doar spațierea și bordurile acelui pătrat, limitat de fereastra curentă și de reperul comun al Tablei de analiză. Lățimea fixă a dialogurilor informative nu mai micșorează această redare. Taburile și Înapoi/Înainte reutilizează dimensiunea capturată; redeschiderea citește din nou sursa curentă.
 
+Când sunt disponibile două sau trei opțiuni de indiciu, butoanele împart lățimea redării pe un singur rând. Textul rămâne pe un singur rând și se poate trunchia doar dacă fereastra este mai îngustă decât eticheta; controlul păstrează înălțimea minimă de 48 px. Regula este limitată la redare și nu schimbă împachetarea celorlalte grupuri de linii.
+
 Regula se aplică numai redării recomandării. Selecția lecției, istoricul și explicațiile își păstrează limitele existente. Ferestrele înguste ori scunde pot limita pătratul sau derula dialogul când conținutul lizibil complet nu încape. [Componente](../testing/README.md#componente-pentru-reutilizarea-analizei) · [Adaptorul de dimensiune](../../web/src/main/web/study-board-size.mjs)

@@ -143,7 +143,7 @@ Cache-ul de indicii din proces, descris mai sus, este separat de jurnalul persis
 
 **P2 · Proveniența explicită a estimării.** Scorul și PV-urile deschiderii memorate sunt măsurători Stockfish 19. HintPreview afișează și o estimare statică nativă între prima și ultima tablă; această valoare nu este delta prefixului consemnată de Stockfish. [Harta surselor](../board/analysis-sources.md) deține acum distincția. Etichetele redării trebuie să identifice estimarea statică nativă și producătorul referinței, fără confundarea perspectivelor. Închideți cu negative de componentă pentru surse inversate și etichete observate pereche.
 
-Cele șase componente RO/EN acoperă una/două/trei alegeri, starea selectată, cursorii independenți și sursa neschimbată. Anterior ajustării dialogului la lățimea sursei, Browser MCP a observat toate cele trei selectoare reale, pe fereastra implicită și la 360×740 în EN, inclusiv revenirea de pe linia trei pe linia doi la cursorul păstrat 1/15. Selectorul compact se așază pe două rânduri, cu toate cele trei opțiuni vizibile. Se închide doar această observație Web; recepția APK pereche și etichetele RO/EN la text mărit rămân deschise.
+Captura anterioară Browser MCP a arătat cele trei selectoare de indiciu pe două rânduri în fereastra compactă. Redarea limitează acum la un singur rând doar aceste selectoare: controale egale, etichete pe o linie și înălțimea existentă de 48 px. Contractul de componentă verifică lățimile sursă 288, 344, 468 și 592 px; celelalte colecții de linii își păstrează împachetarea. Confirmarea în pixeli prin Browser MCP rămâne deschisă; la fel recepția APK pereche și etichetele RO/EN la text mărit.
 
 ## Chenarul redării raportat la sursă
 

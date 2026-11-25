@@ -2001,3 +2001,11 @@ testChanges:
     test: ro.atf.chess.ChessWebOpeningStudyTest#openingControllerPreservesLessonAndReplySemanticsWithoutABrowser
     contract: "Keep all 23 preceding controller cases and lesson sizing guards; add two EN/RO source-width capture and ordinary-dialog isolation cases, allowing the wider frame only inside the scoped replay"
     allowDelete: false
+
+  - id: CHESS-OPENING-HINT-ROW-RO
+    base: "d23457a240dd09ee0904dd728c22e31a319f1e56"
+    from: atf-tests/src/test/java/ro/atf/chess/ChessWebOpeningStudyTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ChessWebOpeningStudyTest.java
+    test: ro.atf.chess.ChessWebOpeningStudyTest#openingControllerPreservesLessonAndReplySemanticsWithoutABrowser
+    contract: "Preserve all 25 audited opening controller cases and add the replay-only one-row contract for three equal-width hint selectors at four source widths, without changing wrapping elsewhere"
+    allowDelete: false
