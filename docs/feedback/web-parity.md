@@ -6,6 +6,10 @@ Registrul urmărește diferențele rămase între APK și Web.
 [Motor și adaptoare](../../web/README.md#motor-comun-și-adaptoare-de-platformă) ·
 [Matricea APK–Web](../../web/parity.md)
 
+## Afișarea analizei în Deschideri
+
+**P2 · Acceptare randată.** Ambele adaptoare din surse prezintă prima recomandare împreună cu scorul măsurat și reutilizează rezultatul curent la ascunderea/reafișarea AI. Componentele Web simulate acoperă o singură cerere, parcurgerea variantelor, indiciile lecției, erorile și rezultatele expirate; compilarea Android și buildul TeaVM complet trec. Dovada rămasă este o vedere compactă prin MCP și următorul sanity al deschiderilor pe APK semnat: scor, bară și prima linie împreună, același bec și tabla fixă la schimbarea variantei. Inițializarea MCP nu a fost disponibilă în această rundă; nu se declară PASS randat. [Comportamentul deschiderilor](../board/openings.md)
+
 ## Ce preluăm din J4
 
 Card Table Browser 0.2.0 și JAR-ul său de teste oferă contracte pentru

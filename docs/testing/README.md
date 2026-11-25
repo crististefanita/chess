@@ -809,6 +809,7 @@ mvn -B -ntp -pl atf-tests -am test '-Dtest=AnalysisLineTest,ChessWebAnalysisStud
 - În Catalană și Alapin, comparația pornește cu albul la mutare după ultima replică din lecție.
 
 - Pentru paritatea vizuală APK–Web, `OpeningLessonTest` verifică latura tablei, pragul pentru două coloane și încadrarea după măsurarea etichetelor. `ChessWebOpeningStudyTest` verifică treptele indiciului și contractul de afișare fără browser.
+- Componentele afișării deschiderilor cer și scorul, bara și prima recomandare dintr-un singur rezultat încheiat. Numără cererile de analiză la parcurgerea variantelor, ascunderea și reafișarea AI; resping răspunsul întârziat după plecarea și revenirea la același cadru; păstrează indiciile lecției și acoperă rezultatele în așteptare, eșuate și goale. Aceste verificări simulate nu certifică randarea Android.
 - `BoardSizingGovernanceTest` leagă pragul compact Web de `OpeningLessonLayout.sidePanelBreakpoint()` și cere derularea internă a detaliilor. Un singur E2E Playwright verifică apoi lecția reală EN/RO la 740 × 420 și text 130%: fără depășirea documentului, ambele etichete, detalii alăturate, pătrat la cel mult 2 px de modelul nativ, geometrie stabilă la Următoarea/Anterioara și capturi incluse. Raportul consemnează browserul, commitul, hashul bundle-ului, acțiunile și aserțiunile punctuale. Acest control Web nu înlocuiește captura separată a APK-ului semnat.
 
 ```powershell

@@ -32,7 +32,7 @@
 
 - **Indiciu lecție** evidențiază întâi piesa. **Arată mutarea** selectează piesa, trasează săgeata și afișează coordonatele și ideea. Atinge destinația marcată ca să joci mutarea.
 
-- **Analiză AI** evaluează poziția afișată, inclusiv în istoric și la finalul lecției. Becul parcurge cel mult trei continuări. Când sugestia coincide cu mutarea ta din lecție, o poți juca atingând destinația. O sugestie diferită apare etichetată drept variantă AI. Schimbarea poziției ascunde săgeata anterioară și actualizează evaluarea. [Politica indiciilor AI](ai-quality.md)
+- **Analiză AI** evaluează poziția afișată, inclusiv în istoric și la finalul lecției. Scorul, bara și prima recomandare apar împreună dintr-o singură analiză încheiată. Același bec folosit în celelalte ecrane parcurge continuările disponibile fără o nouă căutare. Ascunderea și reafișarea AI în aceeași poziție reutilizează rezultatul; schimbarea poziției îl șterge, iar un răspuns întârziat nu poate înlocui cadrul nou. Indiciul lecției își păstrează propria mutare evidențiată. Când sugestia AI coincide cu mutarea ta din lecție, o poți juca atingând destinația. O sugestie diferită apare etichetată drept variantă AI. [Politica indiciilor AI](ai-quality.md)
 
 ## Configurarea lecțiilor
 

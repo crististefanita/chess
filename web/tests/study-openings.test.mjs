@@ -127,7 +127,7 @@ test('A decisive comparison reaches the exact verified branch and ply', () => {
 
 const longPlan = 'Develop the knight with tempo and retain control of the centre.\n'.repeat(7).trim();
 
-async function mountLesson(locale) {
+async function mountLesson(locale, responses = {}) {
   const document = { addEventListener() {}, removeEventListener() {} };
   class Element {
     children = [];
@@ -170,18 +170,25 @@ async function mountLesson(locale) {
     fen: '8/8/8/8/8/8/4P3/8', plan: longPlan, hint: 'NONE', legal: ['e2e3', 'e2e4'], nextStep: { move: 'e2e4', idea: 'Control d5.' } };
   let tap;
   let hint = 'NONE';
+  let state = lesson;
+  const calls = [];
   const frames = [];
   const study = createOpeningStudy({
     root, locale, home() {},
     board: (_, onTap) => { tap = onTap; return { render: frame => frames.push(frame) }; },
-    async call(action) {
+    async call(action, fields) {
+      calls.push({ action, ...fields });
+      if (action in responses) return responses[action](fields, state);
       if (action === 'CATALOG') return { entries: [{ ...lesson, eco: 'C50', variation: 'Giuoco Piano', source: '#' }] };
       if (action === 'START') return lesson;
       if (action === 'THEORY') {
-        hint = hint === 'NONE' ? 'PIECE' : 'SOLUTION';
-        return { ...lesson, hint, hintPiece: 'PAWN' };
+        hint = { NONE: 'PIECE', PIECE: 'SOLUTION', SOLUTION: 'NONE' }[state.hint];
+        return state = { ...state, hint, hintPiece: 'PAWN' };
       }
-      if (action === 'AI_TOGGLE') return { ...lesson, aiEnabled: true };
+      if (action === 'CLEAR_HINT') return state = { ...state, hint: 'NONE', offLine: false };
+      if (action === 'AI_TOGGLE') return state = { ...state, aiEnabled: !state.aiEnabled };
+      if (action === 'SEEK') return state = { ...state, ply: fields.index, hint: 'NONE' };
+      if (action === 'FORWARD') return state = { ...state, ply: state.ply + 1, hint: 'NONE' };
       if (action === 'ANALYZE') return { evaluation: { whiteCentipawns: 22, whiteShare: .55 }, variants: [] };
       assert.fail('Unexpected worker action ' + action);
     },
@@ -190,7 +197,7 @@ async function mountLesson(locale) {
   find('opening-card').click();
   find('opening-dialog-actions').children[0].click();
   await tick();
-  return { find, document, tap, frames };
+  return { find, document, tap, frames, calls, study };
 }
 
 for (const [locale, title, hint] of [
@@ -265,4 +272,116 @@ test('The board and leading evaluation meter share one row before and after enab
   assert.match(css, /inline-size: min\(100%, var\(--play-column\)\)/);
   assert.doesNotMatch(css, /2 \* var\(--play-room\)|max-inline-size: none|repeat\(2, minmax\(0, 1fr\)\);\s*grid-template-rows/);
   assert.match(css, /--opening-board-side:\s*max\(0px, min\(var\(--play-board-limit\)/);
+});
+
+function recommendation(centipawns = 22, moves = ['e2e4', 'e2e3']) {
+  return { evaluation: { whiteCentipawns: centipawns, whiteShare: .55 },
+    variants: moves.map(move => ({ move, previewMoves: moves, depth: 4, proof: { reason: 'HORIZON' },
+      frames: [{ fen: '8/8/8/8/8/8/4P3/8', sideToMove: 'WHITE' }] })) };
+}
+
+for (const locale of ['en', 'ro']) {
+  test(`${locale.toUpperCase()} score and first recommendation arrive together and the bulb only cycles the completed analysis`, async () => {
+    let finish;
+    const { find, frames, calls } = await mountLesson(locale, {
+      ANALYZE: () => new Promise(resolve => { finish = resolve; }),
+    });
+    const [, toggle, bulb] = find('opening-actions').children;
+    const meter = find('opening-evaluation-bar');
+    const assessment = find('opening-assessment');
+    toggle.click();
+    await tick();
+    assert.equal(bulb.textContent, '💡');
+    assert.equal(bulb.disabled, true);
+    assert.equal(meter.attributes.has('data-measured'), false);
+    assert.equal(assessment.disabled, true);
+    finish(recommendation());
+    await tick();
+    assert.equal(meter.attributes.has('data-measured'), true);
+    assert.equal(assessment.disabled, false);
+    assert.match(assessment.textContent, /1\/2 · e2 → e4/);
+    assert.deepEqual(frames.at(-1).marks, ['e2', 'e4']);
+    assert.equal(bulb.attributes.get('aria-label'), locale === 'ro' ? 'Arată următoarea variantă' : 'Show next best move');
+    assessment.click();
+    assert.equal(find('opening-dialog').open, true);
+    find('opening-dialog').children[0].children[0].click();
+    bulb.click();
+    await tick();
+    assert.match(assessment.textContent, /2\/2 · e2 → e3/);
+    assert.deepEqual(frames.at(-1).marks, ['e2', 'e3']);
+    assert.match(assessment.textContent, locale === 'ro' ? /\+0,22/ : /\+0\.22/);
+    assert.equal(calls.filter(call => call.action === 'ANALYZE').length, 1);
+  });
+}
+
+test('Hiding and showing AI preserves the completed recommendation and does not search again', async () => {
+  const { find, calls, frames } = await mountLesson('en', { ANALYZE: async () => recommendation() });
+  const [, toggle, bulb] = find('opening-actions').children;
+  toggle.click(); await tick();
+  bulb.click(); await tick();
+  toggle.click(); await tick();
+  assert.equal(find('opening-assessment').attributes.has('data-withheld'), true);
+  assert.deepEqual(frames.at(-1).marks, []);
+  toggle.click(); await tick();
+  assert.match(find('opening-assessment').textContent, /2\/2 · e2 → e3/);
+  assert.equal(calls.filter(call => call.action === 'ANALYZE').length, 1);
+});
+
+test('A replaced frame and a closed lesson reject late analysis even after returning to the same position', async () => {
+  const pending = [];
+  const { find, study, calls, frames } = await mountLesson('en', {
+    ANALYZE: () => new Promise(resolve => pending.push(resolve)),
+  });
+  const [, toggle] = find('opening-actions').children;
+  const [previous, , next] = find('opening-navigation').children;
+  toggle.click(); await tick();
+  next.click(); await tick();
+  previous.click(); await tick();
+  pending[0](recommendation(900)); await tick();
+  assert.equal(find('opening-evaluation-bar').attributes.has('data-measured'), false);
+  pending[1](recommendation(800)); await tick();
+  assert.equal(find('opening-evaluation-bar').attributes.has('data-measured'), false);
+  pending[2](recommendation(33)); await tick();
+  assert.match(find('opening-assessment').textContent, /\+0\.33/);
+  next.click(); await tick();
+  assert.equal(calls.filter(call => call.action === 'ANALYZE').length, 4);
+  study.close();
+  const before = [find('opening-assessment').textContent, frames.length];
+  pending[3](recommendation(700)); await tick();
+  assert.deepEqual([find('opening-assessment').textContent, frames.length], before);
+});
+
+test('One in-flight analysis survives visibility toggles while lesson guidance retains its own cue', async () => {
+  let finish;
+  const { find, calls, frames } = await mountLesson('en', { ANALYZE: () => new Promise(resolve => { finish = resolve; }) });
+  const [guidance, toggle, bulb] = find('opening-actions').children;
+  toggle.click(); await tick();
+  toggle.click(); await tick();
+  guidance.click(); await tick();
+  finish(recommendation()); await tick();
+  assert.deepEqual(frames.at(-1).marks, ['e2']);
+  toggle.click(); await tick();
+  assert.deepEqual(frames.at(-1).marks, ['e2']);
+  assert.match(find('opening-assessment').textContent, /1\/2 · e2 → e4/);
+  bulb.click(); await tick();
+  assert.deepEqual(frames.at(-1).marks, ['e2', 'e3']);
+  assert.equal(calls.filter(call => call.action === 'ANALYZE').length, 1);
+});
+
+test('An empty or failed analysis cannot keep a stale recommendation and a failed request can be retried', async () => {
+  let attempt = 0;
+  const { find, calls } = await mountLesson('en', { ANALYZE: async () => {
+    if (++attempt === 1) throw new Error('worker unavailable');
+    return { evaluation: null, variants: [] };
+  } });
+  const [, toggle, bulb] = find('opening-actions').children;
+  toggle.click(); await tick();
+  assert.equal(bulb.disabled, true);
+  assert.equal(find('opening-assessment').disabled, true);
+  toggle.click(); await tick();
+  toggle.click(); await tick();
+  assert.equal(calls.filter(call => call.action === 'ANALYZE').length, 2);
+  assert.equal(bulb.disabled, true);
+  assert.equal(find('opening-assessment').disabled, true);
+  assert.equal(find('opening-evaluation-bar').attributes.has('data-measured'), false);
 });

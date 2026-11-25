@@ -34,6 +34,7 @@ final class MatchAnalysisView extends TextView {
     private final EvaluationBar evaluationBar;
     private final IntSupplier sourceBoardSide;
     private final Runnable renderBoard;
+    private final Runnable recommendationReady;
     private final MatchAnalysisCache analysisCache = new MatchAnalysisCache();
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
     private ChessPosition shownPosition;
@@ -47,10 +48,17 @@ final class MatchAnalysisView extends TextView {
     private int request;
 
     MatchAnalysisView(Context context, Function<Move, String> notation, Runnable renderBoard, IntSupplier sourceBoardSide) {
+        this(context, notation, renderBoard, sourceBoardSide, null);
+    }
+
+    /** A lesson presents its first recommendation together with the measured score. */
+    MatchAnalysisView(Context context, Function<Move, String> notation, Runnable renderBoard, IntSupplier sourceBoardSide,
+                      Runnable recommendationReady) {
         super(context);
         this.notation = notation;
         this.sourceBoardSide = sourceBoardSide;
         this.renderBoard = renderBoard;
+        this.recommendationReady = recommendationReady;
         evaluationBar = new EvaluationBar(context);
         setId(R.id.match_analysis);
         setGravity(Gravity.CENTER);
@@ -125,8 +133,7 @@ final class MatchAnalysisView extends TextView {
             hint = cached.hint();
             shownEvaluation = hint.evaluation(shownPosition);
             if (shownEvaluation != null) {
-                display();
-                restorePreview(request);
+                displayReady(request);
                 return;
             }
             hint = null;
@@ -150,10 +157,16 @@ final class MatchAnalysisView extends TextView {
                 }
                 hint = analyzed;
                 shownEvaluation = evaluation;
-                display();
-                restorePreview(currentRequest);
+                displayReady(currentRequest);
             });
         });
+    }
+
+    private void displayReady(int currentRequest) {
+        if (recommendationReady != null && hint.number() == 0) hint.revealNext();
+        display();
+        restorePreview(currentRequest);
+        if (recommendationReady != null) recommendationReady.run();
     }
 
     void hideSuggestion() {

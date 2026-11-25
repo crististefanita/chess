@@ -1959,3 +1959,21 @@ testChanges:
     test: ro.atf.chess.CoachingProofTest#aQuietPieceOfferIsClosedThroughTheVisiblePawnCaptureInHintAndReview
     contract: "Păstrează dovezile existente și adaugă aceeași regresie EN pentru oferta liniștită, captura vizibilă, recaptură și linia completă în indiciu și analiză"
     allowDelete: false
+
+  - id: CHESS-OPENING-READY-NATIVE-RO
+    base: "cd64ef4030bb005c719fd1bc643ab332a60ac3d2"
+    from: android/app/src/androidTest/java/ro/atf/chess/android/BoardSanity.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ChessWebOpeningStudyTest.java
+    test: ro.atf.chess.ChessWebOpeningStudyTest#openingControllerPreservesLessonAndReplySemanticsWithoutABrowser
+    contract: "Present the first recommendation with its score, as requested; retain the native score-prefix, lesson-step, geometry, alternative and destination comparisons. The component controller adds single-result and stale-response checks without claiming native execution."
+    allowDelete: false
+    nativePath: android/app/src/androidTest/java/ro/atf/chess/android/BoardSanity.java
+    nativeProbe: "Optional AI evaluates the current position without advancing the lesson"
+
+  - id: CHESS-OPENING-READY-COMPONENT-RO
+    base: "cd64ef4030bb005c719fd1bc643ab332a60ac3d2"
+    from: atf-tests/src/test/java/ro/atf/chess/ChessWebOpeningStudyTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ChessWebOpeningStudyTest.java
+    test: ro.atf.chess.ChessWebOpeningStudyTest#openingControllerPreservesLessonAndReplySemanticsWithoutABrowser
+    contract: "Preserve all nine existing opening cases and require six additional observable RO/EN, single-request, cue, late-result and failure cases in the audited Node receipt."
+    allowDelete: false
