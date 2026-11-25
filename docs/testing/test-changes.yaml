@@ -1978,3 +1978,11 @@ testChanges:
     test: ro.atf.chess.ChessWebOpeningStudyTest#openingControllerPreservesLessonAndReplySemanticsWithoutABrowser
     contract: "Preserve all 15 existing controller cases and add measured-reference provenance, White delta and no-extra-request checks in EN and RO"
     allowDelete: false
+
+  - id: CHESS-REFERENCE-TABS-EN
+    base: "88fa521b9de2c4818929e28b43b189342d407f96"
+    from: atf-tests/src/test/java/ro/atf/chess/ChessWebOpeningStudyTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ChessWebOpeningStudyTest.java
+    test: ro.atf.chess.ChessWebOpeningStudyTest#openingControllerPreservesLessonAndReplySemanticsWithoutABrowser
+    contract: "Preserve every preceding controller case and require six RO/EN one-to-three-line tab selection, cursor and no-repeat-analysis comparisons"
+    allowDelete: false

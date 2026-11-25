@@ -48,6 +48,12 @@ class ChessWebOpeningStudyTest {
                 "One in-flight analysis survives visibility toggles while lesson guidance retains its own cue",
                 "An empty or failed analysis cannot keep a stale recommendation and a failed request can be retried",
                 "EN reference score, white delta and source stay together while cycling cached continuations",
-                "RO reference score, white delta and source stay together while cycling cached continuations"), passed);
+                "RO reference score, white delta and source stay together while cycling cached continuations",
+                "EN cached replay exposes 1 selectable lines and preserves branch cursors",
+                "EN cached replay exposes 2 selectable lines and preserves branch cursors",
+                "EN cached replay exposes 3 selectable lines and preserves branch cursors",
+                "RO cached replay exposes 1 selectable lines and preserves branch cursors",
+                "RO cached replay exposes 2 selectable lines and preserves branch cursors",
+                "RO cached replay exposes 3 selectable lines and preserves branch cursors"), passed);
     }
 }

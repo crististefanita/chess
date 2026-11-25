@@ -2,6 +2,8 @@
 
 ## Overview
 
+[Analysis sources](analysis-sources.md) identifies where Stockfish 19 supplies stored opening data and where native Java search or static evaluation still runs.
+
 - **Current policy.** Opponent, hint and evaluation-bar work have separate budgets. Hard foreground search starts with 100,000 additional nodes and can continue adaptively to 200,000. [Search configuration](../../chess-core/src/main/resources/match-ai.yaml)
 - **Hint budgets.** Ordinary hint search has a 200,000-node allowance, including its horizons, tactical frontier and comparison allocation. A triggered forcing proof has a separately charged reserve capped at 5,000,000 nodes by [coaching-proof.yaml](../../chess-core/src/main/resources/coaching-proof.yaml). This is not a total 200k decision cap; retain the completion status and both work counters. [Proof contract](#dynamic-coaching-frontier)
 - **Acceptance.** `MatchAiGovernanceTest` and `HardAdaptivePolicyTest` check the policies and `ChessBenchmarkSuite` measures decisions against a fixed oracle. Historical comparisons below belong to the measured version.

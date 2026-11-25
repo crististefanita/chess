@@ -2,6 +2,8 @@
 
 ## Overview
 
+The worker consumes Stockfish 19 opening references as YAML data; it runs the native Java engine for live analysis and Game Review. [Source and score conventions](../docs/board/analysis-sources.md)
+
 Chess Lab runs the same Java engine on Android and in the TeaVM worker. Each adapter owns its own input, rendering, navigation, and local storage.
 
 - [APK–Web parity matrix](parity.md) lists the shared behavior and the evidence needed on each platform.

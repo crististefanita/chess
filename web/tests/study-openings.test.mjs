@@ -127,7 +127,7 @@ test('A decisive comparison reaches the exact verified branch and ply', () => {
 
 const longPlan = 'Develop the knight with tempo and retain control of the centre.\n'.repeat(7).trim();
 
-async function mountLesson(locale, responses = {}) {
+async function mountLesson(locale, responses = {}, position = {}) {
   const document = { addEventListener() {}, removeEventListener() {} };
   class Element {
     children = [];
@@ -168,7 +168,7 @@ async function mountLesson(locale, responses = {}) {
   }
   const lesson = { id: 'italian', title: 'Italian Game', ply: 0, practicePly: 0, total: 4,
     phase: 'LEARNER', canPlay: true, learner: 'WHITE', canAutoReply: false, sideToMove: 'WHITE',
-    fen: '8/8/8/8/8/8/4P3/8', plan: longPlan, hint: 'NONE', legal: ['e2e3', 'e2e4'], nextStep: { move: 'e2e4', idea: 'Control d5.' } };
+    fen: '8/8/8/8/8/8/4P3/8', plan: longPlan, hint: 'NONE', legal: ['e2e3', 'e2e4'], nextStep: { move: 'e2e4', idea: 'Control d5.' }, ...position };
   let tap;
   let hint = 'NONE';
   let state = lesson;
@@ -411,5 +411,59 @@ for (const locale of ['en', 'ro']) {
     assert.match(assessment.textContent, /2\/2/);
     assert.match(assessment.textContent, locale === 'ro' ? /\+0,32/ : /\+0\.32/);
     assert.equal(calls.filter(row => row.action === 'ANALYZE').length, 1);
+  });
+}
+
+for (const locale of ['en', 'ro']) for (const count of [1, 2, 3]) {
+  test(`${locale.toUpperCase()} cached replay exposes ${count} selectable lines and preserves branch cursors`, async () => {
+    const initial = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR';
+    const candidates = [
+      ['e2e4', 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR', 'rnbqkbnr/1ppppppp/p7/8/4P3/8/PPPP1PPP/RNBQKBNR'],
+      ['d2d4', 'rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR', 'rnbqkbnr/1ppppppp/p7/8/3P4/8/PPP1PPPP/RNBQKBNR'],
+      ['g1f3', 'rnbqkbnr/pppppppp/8/8/8/5N2/PPPPPPPP/RNBQKB1R', 'rnbqkbnr/1ppppppp/p7/8/8/5N2/PPPPPPPP/RNBQKB1R'],
+    ].slice(0, count);
+    const roots = candidates.map(candidate => candidate[0]);
+    const response = { evaluation: { whiteCentipawns: 32, whiteShare: .55 },
+      reference: { engine: 'Stockfish 19', depth: 16, deltaWhiteCentipawns: 0 },
+      variants: candidates.map(([move, first, second]) => ({ move, previewMoves: roots, depth: 16,
+        proof: { reason: 'ESTIMATE', addedDefense: false },
+        frames: [{ fen: initial, sideToMove: 'WHITE' }, { fen: first, sideToMove: 'BLACK', lastMove: move },
+          { fen: second, sideToMove: 'WHITE', lastMove: 'a7a6' }] })) };
+    const { find, calls, frames } = await mountLesson(locale, { ANALYZE: async () => response }, { fen: initial, legal: roots });
+    const [, toggle, bulb] = find('opening-actions').children;
+    toggle.click(); await tick();
+    if (count > 1) bulb.click();
+    find('opening-assessment').click();
+    const dialog = find('opening-dialog');
+    const tabs = find('opening-dialog-actions', dialog);
+    const navigation = find('opening-navigation', dialog);
+    const [earlier, status, later] = navigation.children;
+    assert.equal(dialog.open, true);
+    assert.equal(tabs.attributes.has('data-chess-lines'), true);
+    assert.equal(tabs.children.length, count);
+    assert.equal(tabs.hidden, count === 1);
+    const pressed = () => tabs.children.map(tab => tab.attributes.get('aria-pressed') === 'true');
+    assert.deepEqual(pressed(), roots.map((_, index) => index === (count > 1 ? 1 : 0)));
+    for (let index = 0; index < count; index++) {
+      tabs.children[index].click();
+      assert.deepEqual(pressed(), roots.map((_, branch) => branch === index));
+      assert.match(tabs.children[index].textContent, new RegExp('^' + (index + 1) + ' · '));
+      assert.deepEqual(frames.at(-1).marks, [roots[index].slice(0, 2), roots[index].slice(2, 4)]);
+      assert.match(status.textContent, /0 \/ 2/);
+    }
+    const selected = count - 1;
+    later.click();
+    assert.match(status.textContent, /1 \/ 2/);
+    assert.equal(earlier.disabled, false);
+    if (count > 1) {
+      tabs.children[0].click(); assert.match(status.textContent, /0 \/ 2/);
+      tabs.children[selected].click(); assert.match(status.textContent, /1 \/ 2/);
+    }
+    earlier.click(); assert.match(status.textContent, /0 \/ 2/);
+    assert.equal(earlier.disabled, true);
+    dialog.children[0].children[0].click();
+    assert.equal(dialog.open, false);
+    assert.equal(calls.filter(call => call.action === 'ANALYZE').length, 1);
+    assert.equal(calls.some(call => ['PLAY', 'REPLY', 'SEEK'].includes(call.action)), false);
   });
 }

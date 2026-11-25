@@ -2,6 +2,8 @@
 
 ## Overview
 
+See [analysis sources and selectable lines](analysis-sources.md) for the Stockfish reference score, native replay estimate and three-line selector contract.
+
 - **Scope.** Practice an annotated catalog line from either side. The Analysis board can also show documented continuations for the exact position.
 - **Checks.** `OpeningCatalogTest` checks the data and legal moves, `OpeningLessonTest` checks play and resumption, and `OpeningTheoryTest` checks the theory lookup. `ChessWebOpeningStudyTest` checks the Web controls.
 
