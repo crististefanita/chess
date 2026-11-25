@@ -59,3 +59,9 @@ Vezi [sursele analizei și liniile selectabile](analysis-sources.md) pentru scor
 - **Un singur rezultat.** Bara și cel mult trei continuări legale folosesc aceeași intrare și adâncime finalizată. Se păstrează doar mutările la cel mult 40 cp de lider. Mutarea scrisă în lecție nu devine automat cea mai bună mutare măsurată. Referința nu are recepție nativă de dovadă forțată.
 - **Delta.** Scorurile sunt din perspectiva albului: cp curent minus cp al prefixului precedent; delta inițială este zero. Rotirea tablei sau alegerea negrului nu inversează convenția. Ambele adaptoare afișează **Ref. Δ** și expun producătorul/adâncimea.
 - **Regenerare.** Exportă prefixele catalogului cu [ExportOpeningReferenceInputs](../../scripts/ExportOpeningReferenceInputs.java), apoi rulează [generate-opening-reference.cjs](../../scripts/generate-opening-reference.cjs) cu fișierul de prefixe, binarul Stockfish 19, YAML-ul rezultat și jurnalul UCI brut. Păstrează jurnalele în afara checkout-ului. [Dovezi de componentă](../testing/README.md#componente-pentru-reutilizarea-analizei)
+
+## Dimensiunea ferestrei de redare
+
+Dialogul recomandării preia lățimea tablei sursă înainte de deschidere, prin adaptorul comun rememberBoardSize. Chenarul adaugă doar spațierea și bordurile acelui pătrat, limitat de fereastra curentă și de reperul comun al Tablei de analiză. Lățimea fixă a dialogurilor informative nu mai micșorează această redare. Taburile și Înapoi/Înainte reutilizează dimensiunea capturată; redeschiderea citește din nou sursa curentă.
+
+Regula se aplică numai redării recomandării. Selecția lecției, istoricul și explicațiile își păstrează limitele existente. Ferestrele înguste ori scunde pot limita pătratul sau derula dialogul când conținutul lizibil complet nu încape. [Componente](../testing/README.md#componente-pentru-reutilizarea-analizei) · [Adaptorul de dimensiune](../../web/src/main/web/study-board-size.mjs)

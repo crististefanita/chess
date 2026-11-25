@@ -1993,3 +1993,11 @@ testChanges:
     test: ro.atf.chess.ChessWebOpeningStudyTest#openingControllerPreservesLessonAndReplySemanticsWithoutABrowser
     contract: "Preserve every preceding controller case and require six RO/EN one-to-three-line tab selection, cursor and no-repeat-analysis comparisons"
     allowDelete: false
+
+  - id: CHESS-OPENING-REPLAY-SIZE-RO
+    base: "7d0be1a50ae1cdab3dbab9f34d871ed8d992a29c"
+    from: atf-tests/src/test/java/ro/atf/chess/ChessWebOpeningStudyTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ChessWebOpeningStudyTest.java
+    test: ro.atf.chess.ChessWebOpeningStudyTest#openingControllerPreservesLessonAndReplySemanticsWithoutABrowser
+    contract: "Keep all 23 preceding controller cases and lesson sizing guards; add two EN/RO source-width capture and ordinary-dialog isolation cases, allowing the wider frame only inside the scoped replay"
+    allowDelete: false

@@ -1044,11 +1044,13 @@ Politica furnizează dimensiuni și destinații. Cazurile comune verifică ambel
 
 - **OpeningReferenceComponentTest** parcurge fiecare cadru al catalogului actual fără furnizor de căutare live, verifică liniile legale și deltele albului și respinge producătorul expirat, prefixele duplicate și PV-urile ilegale. O intrare finală eliminată trebuie să apeleze furnizorul live exact o dată. Controlerul Web simulat verifică și eticheta localizată de referință, proveniența și parcurgerea fără cerere nouă.
 - **ReviewJournalComponentTest** folosește comparații native reale și tranzacții de preferințe: paritate la agregare, restart, lucru lipsă, eliminarea ramurii schimbate, politică/versiune coruptă, dovezi ilegale, proprietar înlocuit, commit eșuat și oprirea colectorului. Comparațiile brute complete rămân separate de contextul clasificării finale.
-- **ReviewProgressWebComponentTest** rulează opt cazuri Node cu workeri/stocare controlate: retenție, salvare expirată, așteptarea aceluiași calcul, reunire, barieră de salvare durabilă, eșec/reîncercare și păstrarea lucrului parțial. Wrapperul existent al deschiderilor rulează toate cele 23 cazuri de controler. Ambele publică aserțiuni auditabile prin ATF Reporting. Nu implică browser sau emulator.
+- **ReviewProgressWebComponentTest** rulează opt cazuri Node cu workeri/stocare controlate: retenție, salvare expirată, așteptarea aceluiași calcul, reunire, barieră de salvare durabilă, eșec/reîncercare și păstrarea lucrului parțial. Wrapperul existent al deschiderilor rulează toate cele 25 cazuri de controler. Ambele publică aserțiuni auditabile prin ATF Reporting. Nu implică browser sau emulator.
 
 - **ReviewIncrementalPersistenceComponentTest** leagă colectorul real din fundal de MatchStore. Verifică o comparație nativă salvată pe mutare, întreruperea după semimutarea doi, reluarea cu doar două salvări lipsă și agregarea scorurilor memorate fără un nou apel de calcul. Recrearea stocării simulează restartul în componentă; nu pretinde o probă de proces Android.
 
 - **HintSelectableLinesComponentTest** verifică toate cadrele măsurate, redarea cu una/două/trei linii și respingerea celui de-al patrulea candidat înainte de sloturile native. Șase cazuri DOM suplimentare verifică fiecare tab, starea selectată și cursorul independent în ambele limbi; păstrează toate comparațiile anterioare. [Convențiile surselor](../board/analysis-sources.md)
+
+- Cele două cazuri de dimensionare a redării folosesc lățimi sursă controlate de 288, 344, 468 și 592 px. Cer o singură captură la deschidere, geometrie stabilă între taburi/pași, o captură nouă la redeschidere și eliminarea suprascrierii pentru dialogurile obișnuite. Controalele CSS păstrează limita tablei lecției și admit doar chenarul redării. Încadrarea reală în pixeli se verifică separat prin MCP.
 
 Rulează din checkout-ul izolat cu JDK 21 și Node; alege un director extern pentru TMP și Extent.
 
