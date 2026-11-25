@@ -51,10 +51,17 @@ Web coaching uses the pinned Stockfish engine for in-game hints, the manual boar
 4. Open **Play in browser**. Verify the declared versioned files and reload with the cache intact. Check checkpoint resumption and offline play after the first load; an open tab may keep the previous runtime until it reloads.
 5. Record the source revision, deployed static commit, runtime hash, and Extent receipts. Verify the served bytes independently of the browser cache.
 
-If upload succeeds but GitHub Pages temporarily cannot find its `github-pages`
-artifact, keep the validated static commit and request unchanged. Rerun only the
-failed deployment job, then verify the served bytes against the qualified site.
-Treat a failed retry or a byte mismatch as an open publication failure.
+If upload succeeds but deployment cannot find `github-pages`, inspect the run's
+artifact inventory first. This workflow combines upload and deployment in one
+job: rerunning that job can create a second same-named artifact. The official
+[artifact selector](https://github.com/actions/deploy-pages/blob/d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e/src/internal/api-client.js#L72-L82)
+rejects both an empty list and an ambiguous list.
+
+Keep the validated static commit and digest unchanged and start a fresh manual
+workflow dispatch on `main` with those exact inputs. This creates an isolated run
+without changing or rebuilding the qualified product. Confirm one artifact and
+a successful deployment, then verify the served bytes and browser behavior.
+Treat a failed fresh attempt or a byte mismatch as an open publication failure.
 
 [Bundle structure](README.md#web-bundle-identity) ·
 [Test strategy](../docs/testing/README.md#updating-the-web-bundle) ·
