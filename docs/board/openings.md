@@ -59,3 +59,9 @@ See [analysis sources and selectable lines](analysis-sources.md) for the Stockfi
 - **One result.** The bar and up to three legal continuations use the same record and completed depth. Keep only roots within 40 cp of the best. An authored lesson move is not automatically the measured best move. The reference has no native forcing-proof receipt.
 - **Delta.** Store scores from White's perspective: current cp minus the preceding prefix cp; the initial delta is zero. Flipping the board or choosing Black does not reverse this convention. Both adapters label it **Ref. Δ** and expose the producer/depth.
 - **Regeneration.** Export actual catalog prefixes with [ExportOpeningReferenceInputs](../../scripts/ExportOpeningReferenceInputs.java), then run [generate-opening-reference.cjs](../../scripts/generate-opening-reference.cjs) with the prefix file, Stockfish 19 binary, output YAML and raw UCI log paths. Retain raw logs outside the checkout. [Component evidence](../testing/README.md#analysis-reuse-components)
+
+## Replay window sizing
+
+The recommendation dialog captures the source board width before opening, through the shared rememberBoardSize adapter. Its frame adds only padding and borders to that square, bounded by the current viewport and the common Analysis-board limit. The fixed information-dialog width no longer shrinks this replay. Tab changes and Next/Previous reuse the captured size; reopening captures the current source again.
+
+This scope applies only to the recommendation replay. Lesson selection, history and explanation dialogs retain their existing bounds. Narrow or short windows may constrain the square or scroll the dialog when its full readable content cannot fit. [Component checks](../testing/README.md#analysis-reuse-components) · [Sizing adapter](../../web/src/main/web/study-board-size.mjs)

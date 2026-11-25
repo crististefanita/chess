@@ -129,18 +129,21 @@ const longPlan = 'Develop the knight with tempo and retain control of the centre
 
 async function mountLesson(locale, responses = {}, position = {}) {
   const document = { addEventListener() {}, removeEventListener() {} };
+  let sourceWidth = position.sourceWidth ?? 344;
   class Element {
     children = [];
     attributes = new Map();
     dataset = {};
     events = new Map();
     classList = { add() {}, toggle() {} };
-    style = { setProperty() {} };
+    style = { values: new Map(), setProperty(name, value) { this.values.set(name, value); },
+      getPropertyValue(name) { return this.values.get(name) ?? ''; }, removeProperty(name) { this.values.delete(name); } };
     isConnected = true;
     open = false;
     #text = '';
     textWrites = 0;
     constructor(tag) { this.tag = tag; }
+    getBoundingClientRect() { return { width: sourceWidth }; }
     get textContent() { return this.#text; }
     set textContent(value) { this.#text = value; this.textWrites++; }
     append(...children) { this.children.push(...children); }
@@ -198,7 +201,7 @@ async function mountLesson(locale, responses = {}, position = {}) {
   find('opening-card').click();
   find('opening-dialog-actions').children[0].click();
   await tick();
-  return { find, document, tap, frames, calls, study };
+  return { find, document, tap, frames, calls, study, resizeSource: width => { sourceWidth = width; } };
 }
 
 for (const [locale, title, hint] of [
@@ -271,7 +274,8 @@ test('The board and leading evaluation meter share one row before and after enab
   assert.match(css, /\.opening-message-text\s*\{[^}]*block-size: 3lh[^}]*overflow: hidden/);
   assert.match(css, /\.opening-board-row \.square\[data-study-hint\]::before\s*\{[^}]*border-radius: 13%[^}]*#57e0b4[^}]*pointer-events: none/);
   assert.match(css, /inline-size: min\(100%, var\(--play-column\)\)/);
-  assert.doesNotMatch(css, /2 \* var\(--play-room\)|max-inline-size: none|repeat\(2, minmax\(0, 1fr\)\);\s*grid-template-rows/);
+  const lessonCss = css.replace(/\.opening-dialog\[data-opening-replay\]\s*\{[^}]*\}/g, '');
+  assert.doesNotMatch(lessonCss, /2 \* var\(--play-room\)|max-inline-size: none|repeat\(2, minmax\(0, 1fr\)\);\s*grid-template-rows/);
   assert.match(css, /--opening-board-side:\s*max\(0px, min\(var\(--play-board-limit\)/);
 });
 
@@ -465,5 +469,40 @@ for (const locale of ['en', 'ro']) for (const count of [1, 2, 3]) {
     assert.equal(dialog.open, false);
     assert.equal(calls.filter(call => call.action === 'ANALYZE').length, 1);
     assert.equal(calls.some(call => ['PLAY', 'REPLY', 'SEEK'].includes(call.action)), false);
+  });
+}
+
+for (const locale of ['en', 'ro']) {
+  test(`${locale.toUpperCase()} replay captures the source width once and leaves ordinary dialogs at their original size`, async () => {
+    for (const width of [288, 344, 468, 592]) {
+      const response = recommendation();
+      response.variants.forEach(variant => variant.frames.push({ fen: '8/8/8/8/4P3/8/8/8', sideToMove: 'BLACK', lastMove: variant.move }));
+      const { find, resizeSource, calls } = await mountLesson(locale, { ANALYZE: async () => response }, { sourceWidth: width });
+      find('opening-actions').children[1].click(); await tick();
+      find('opening-assessment').click();
+      const dialog = find('opening-dialog');
+      assert.equal(dialog.attributes.has('data-opening-replay'), true);
+      assert.equal(dialog.style.getPropertyValue('--replay-board-side'), width + 'px');
+      resizeSource(width + 20);
+      find('opening-navigation', dialog).children[2].click();
+      find('opening-dialog-actions', dialog).children[1].click();
+      assert.equal(dialog.style.getPropertyValue('--replay-board-side'), width + 'px');
+      dialog.children[0].children[0].click();
+      find('opening-message').click();
+      assert.equal(dialog.attributes.has('data-opening-replay'), false);
+      assert.equal(dialog.style.getPropertyValue('--replay-board-side'), '');
+      dialog.children[0].children[0].click();
+      find('opening-assessment').click();
+      assert.equal(dialog.style.getPropertyValue('--replay-board-side'), (width + 20) + 'px');
+      assert.equal(calls.filter(call => call.action === 'ANALYZE').length, 1);
+    }
+    const css = readFileSync(new URL('../src/main/web/study-openings.css', import.meta.url), 'utf8');
+    const replay = css.match(/\.opening-dialog\[data-opening-replay\]\s*\{([^}]+)\}/)[1];
+    assert.match(replay, /min\(var\(--replay-board-side, var\(--play-board-limit\)\), var\(--play-board-limit\)\)/);
+    assert.match(replay, /2 \* var\(--opening-replay-padding\) \+ 2px/);
+    assert.match(replay, /max-inline-size: none/);
+    assert.match(replay, /calc\(100% - \.5rem\)/);
+    assert.doesNotMatch(replay, /30rem|27rem/);
+    assert.match(css, /\.opening-dialog\s*\{[^}]*inline-size: min\(30rem,/);
   });
 }

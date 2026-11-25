@@ -214,6 +214,22 @@
   overflow: auto;
 }
 .opening-dialog .board { margin-block: .35rem; }
+.opening-dialog[data-opening-replay] {
+  --opening-replay-padding: .5rem;
+  box-sizing: border-box;
+  inline-size: min(calc(min(var(--replay-board-side, var(--play-board-limit)), var(--play-board-limit))
+    + 2 * var(--opening-replay-padding) + 2px), calc(100% - .5rem));
+  max-inline-size: none;
+  max-block-size: calc(100dvh - .5rem);
+  padding: var(--opening-replay-padding);
+}
+.opening-dialog[data-opening-replay] > .board {
+  inline-size: min(100%, var(--replay-board-side, var(--play-board-limit)), var(--play-board-limit));
+  margin-inline: auto;
+  margin-block: .25rem;
+}
+.opening-dialog[data-opening-replay] > p { margin-block: .2rem; line-height: 1.2; }
+.opening-dialog[data-opening-replay] > .opening-dialog-actions { margin-block: .25rem; }
 .opening-history, .opening-dialog-actions {
   display: flex;
   flex-wrap: wrap;

@@ -54,6 +54,8 @@ class ChessWebOpeningStudyTest {
                 "EN cached replay exposes 3 selectable lines and preserves branch cursors",
                 "RO cached replay exposes 1 selectable lines and preserves branch cursors",
                 "RO cached replay exposes 2 selectable lines and preserves branch cursors",
-                "RO cached replay exposes 3 selectable lines and preserves branch cursors"), passed);
+                "RO cached replay exposes 3 selectable lines and preserves branch cursors",
+                "EN replay captures the source width once and leaves ordinary dialogs at their original size",
+                "RO replay captures the source width once and leaves ordinary dialogs at their original size"), passed);
     }
 }

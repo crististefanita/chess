@@ -1,6 +1,7 @@
 import { backLabel } from './screen-chrome.mjs';
 import { boardPlacement } from './study-board.mjs';
 import { renderLinePosition } from './line-navigation.mjs';
+import { rememberBoardSize } from './study-board-size.mjs';
 
 const checkpointKey = 'chesslab.opening-session.v1';
 const vocabulary = {
@@ -333,8 +334,11 @@ export function createOpeningStudy({ root, locale, call, home, board }) {
     return flow.open();
   }
 
-  function openDialog(title, contents) {
+  function openDialog(title, contents, { replay = false } = {}) {
     releaseFocus = document.activeElement;
+    if (replay) rememberBoardSize(boardHost, dialog);
+    else dialog.style.removeProperty('--replay-board-side');
+    dialog.toggleAttribute('data-opening-replay', replay);
     dialogTitle.textContent = title;
     const dialogHeader = element('div');
     dialogHeader.setAttribute('data-chess-header', '');
@@ -653,7 +657,7 @@ export function createOpeningStudy({ root, locale, call, home, board }) {
       }
       [...choices.children].forEach((button, index) => button.setAttribute('aria-pressed', String(index === branch)));
     }
-    openDialog(text.preview, [depth, choices, row, host, estimates, evidence, jump]);
+    openDialog(text.preview, [depth, choices, row, host, estimates, evidence, jump], { replay: true });
     advance(0);
   }
 
