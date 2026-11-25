@@ -397,3 +397,19 @@ test('An empty or failed analysis cannot keep a stale recommendation and a faile
   assert.equal(find('opening-assessment').disabled, true);
   assert.equal(find('opening-evaluation-bar').attributes.has('data-measured'), false);
 });
+
+for (const locale of ['en', 'ro']) {
+  test(`${locale.toUpperCase()} reference score, white delta and source stay together while cycling cached continuations`, async () => {
+    const measured = { ...recommendation(32), reference: { engine: 'Stockfish 19', depth: 16, deltaWhiteCentipawns: -5 } };
+    const { find, calls } = await mountLesson(locale, { ANALYZE: async () => measured });
+    const [, toggle, bulb] = find('opening-actions').children;
+    toggle.click(); await tick();
+    const assessment = find('opening-assessment');
+    assert.match(assessment.textContent, locale === 'ro' ? /Ref\. Δ −0,05/ : /Ref\. Δ −0\.05/);
+    assert.match(assessment.title, /Stockfish 19.*16/);
+    bulb.click(); await tick();
+    assert.match(assessment.textContent, /2\/2/);
+    assert.match(assessment.textContent, locale === 'ro' ? /\+0,32/ : /\+0\.32/);
+    assert.equal(calls.filter(row => row.action === 'ANALYZE').length, 1);
+  });
+}

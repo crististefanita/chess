@@ -10,20 +10,14 @@
 ## From match to report
 
 ```mermaid
+%%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
 flowchart LR
-    A["Finished match"] -->|opens| B["Game Review"]
-    K["Match or study"] -->|checks| L["AI analysis enabled"]
-    L -->|starts| E
-    B -->|looks up| C{"Saved report?"}
-    C -->|Yes| D["Display saved report"]
-    C -->|No| E["Replay moves in order and identify the ECO opening"]
-    E -->|positions| F["Compare moves"]
-    F -->|scores| G["Graph and accuracy"]
-    E -->|"Eligible finished match"| H["Estimate Elo from the result and AI reference rating"]
-    G -->|completes| I["Complete report"]
-    H -->|adds Elo| I
-    I -->|persists| J["Save to archive"]
-    I -->|displays| D
+    Move["Durable AI move"] -->|queues| Work["Complete native comparison"]
+    Work -->|saves each ply| Journal["Persistent journal"]
+    Final["Game Review"] -->|joins missing work| Work
+    Journal -->|aggregates without search| Report["Grades, graph and accuracy"]
+    Report -->|adds when eligible| Elo["Result-based Elo"]
+    Report -->|saves| Archive["Finished-game archive"]
 ```
 
 <details>
@@ -192,3 +186,12 @@ The targeted Caro–Kann hint correction leaves actual `GameReview.analyzeLine` 
 The subsequent Italian queen-recapture hint correction also preserves the same sixty-move Game Review JSON exactly. The two fresh sixteen-ply studies retain all moves and no rating; they do not close the nine matched classification gaps. [Italian source and audit](ai-quality.md#italian-queen-recapture-and-hint-continuity)
 
 The subsequent Sicilian exact-tie hint preference also preserves the sixty matched Game Review results exactly. It changes hint selection, not the review classification model; the nine stable disagreements remain open. [Sicilian evidence and limits](ai-quality.md#sicilian-exact-ties-and-pin-reinforcement)
+
+## Persistent per-move work
+
+[ReviewJournal](../../chess-core/src/main/java/ro/atf/chess/ReviewJournal.java) retains contiguous, complete native comparisons for actual played moves. After a durable AI-game checkpoint, the background collector fills missing plies without blocking input. The final review joins pending work and then calls **aggregate**, which performs no search and refuses missing evidence. An older game without work explicitly catches up first.
+
+- **Evidence before grades.** Persist best/played/alternative points, common depth, both legal lines, sacrifice, native work count and any complete forcing proof. Ordinary complete comparisons may have no forcing proof. Final assembly recalculates ECO context, grades, accuracy and eligible Elo from these samples; opening-reference scores and gameplay hint values are never substituted.
+- **Restart and branches.** Bind work to stable game ID, original setup and exact move history. Reload keeps the common prefix; taking back or branching discards the changed suffix. Replacing or evicting a game prevents late writes. A versioned fingerprint covers review, rules, search, evaluation, repertoire and proof YAML. Increment the journal version when search/evaluation code changes invalidate prior evidence.
+- **Persistence.** Android uses the shared MatchStore preferences transaction; Web keeps the same Java journal beside the game ledger in localStorage. Both retain work only for retained games. Write failures stay visible and cannot mark the final report complete. Web serializes checkpoint writes and waits for them before final aggregation; each completed ply survives a later calculation failure.
+- **Scheduling.** One background collector coalesces rapid checkpoints. A final request joins the work already in flight. A destroyed native screen cancels collection without late notifications. If the user finishes faster than analysis, the final screen waits only for missing work. The independent study-board review remains on demand. [Tests](../testing/README.md#analysis-reuse-components)

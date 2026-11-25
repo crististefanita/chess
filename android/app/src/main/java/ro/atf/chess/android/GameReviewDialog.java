@@ -134,25 +134,36 @@ final class GameReviewDialog {
                             Snapshot initialSnapshot, Consumer<Snapshot> rememberSnapshot,
                             IntConsumer showPosition, BiConsumer<Integer, Runnable> continueFrom, Runnable onClose) {
         return open(context, match, cached, worker, notation, manualMoves ? Mode.MANUAL_MATCH : Mode.MATCH,
-                blackBelow, human, bot, remember, initialSnapshot, rememberSnapshot, showPosition, continueFrom, onClose);
+                blackBelow, human, bot, remember, initialSnapshot, rememberSnapshot, showPosition, continueFrom, onClose, null);
+    }
+
+    static Dialog showPrepared(Context context, ChessMatch match, GameReview cached, ExecutorService worker,
+                               Function<Move, String> notation, boolean manualMoves, boolean blackBelow,
+                               String human, String bot, Consumer<GameReview> remember, Snapshot initialSnapshot,
+                               Consumer<Snapshot> rememberSnapshot, IntConsumer showPosition,
+                               BiConsumer<Integer, Runnable> continueFrom, Runnable onClose,
+                               Function<IntConsumer, GameReview> prepare) {
+        return open(context, match, cached, worker, notation, manualMoves ? Mode.MANUAL_MATCH : Mode.MATCH,
+                blackBelow, human, bot, remember, initialSnapshot, rememberSnapshot, showPosition, continueFrom, onClose, prepare);
     }
 
     static Dialog showLine(Context context, ChessMatch match, ExecutorService worker, Function<Move, String> notation,
                            Mode mode, boolean blackBelow, String human, String bot,
                            IntConsumer showPosition, BiConsumer<Integer, Runnable> continueFrom, Runnable onClose) {
         return open(context, match, null, worker, notation, mode, blackBelow, human, bot,
-                result -> {}, null, snapshot -> {}, showPosition, continueFrom, onClose);
+                result -> {}, null, snapshot -> {}, showPosition, continueFrom, onClose, null);
     }
 
     private static Dialog open(Context context, ChessMatch match, GameReview cached, ExecutorService worker,
                                Function<Move, String> notation, Mode mode, boolean blackBelow,
                                String human, String bot, Consumer<GameReview> remember,
                                Snapshot initialSnapshot, Consumer<Snapshot> rememberSnapshot,
-                               IntConsumer showPosition, BiConsumer<Integer, Runnable> continueFrom, Runnable onClose) {
+                               IntConsumer showPosition, BiConsumer<Integer, Runnable> continueFrom, Runnable onClose,
+                               Function<IntConsumer, GameReview> prepare) {
         var view = new GameReviewDialog(context, mode == Mode.STUDY ? Side.WHITE : match.setup().humanSide(), blackBelow, mode,
                 notation, showPosition, continueFrom, initialSnapshot, rememberSnapshot);
         AnalysisReplayDialog.showFullScreen(view.dialog);
-        var job = view.load(match, cached, worker, human, bot, remember);
+        var job = view.load(match, cached, worker, human, bot, remember, prepare);
         view.dialog.setOnDismissListener(dialog -> {
             if (view.replayWindow != null) view.replayWindow.dismiss();
             if (job != null) job.cancel(true);
@@ -162,7 +173,7 @@ final class GameReviewDialog {
     }
 
     private Future<?> load(ChessMatch match, GameReview cached, ExecutorService worker, String human, String bot,
-                           Consumer<GameReview> remember) {
+                           Consumer<GameReview> remember, Function<IntConsumer, GameReview> prepare) {
         if (cached != null) {
             display(match, cached, human, bot);
             return null;
@@ -180,7 +191,8 @@ final class GameReviewDialog {
                     progress.setProgress(ply);
                     label.setText(context.getString(R.string.game_review_progress, ply, match.ply()));
                 });
-                var result = mode.snapshot() ? GameReview.analyzeLine(match, update) : GameReview.analyze(match, update);
+                var result = prepare != null ? prepare.apply(update)
+                        : mode.snapshot() ? GameReview.analyzeLine(match, update) : GameReview.analyze(match, update);
                 content.post(() -> {
                     if (!dialog.isShowing()) return;
                     remember.accept(result);

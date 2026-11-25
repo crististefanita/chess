@@ -46,6 +46,8 @@ class ChessWebOpeningStudyTest {
                 "Hiding and showing AI preserves the completed recommendation and does not search again",
                 "A replaced frame and a closed lesson reject late analysis even after returning to the same position",
                 "One in-flight analysis survives visibility toggles while lesson guidance retains its own cue",
-                "An empty or failed analysis cannot keep a stale recommendation and a failed request can be retried"), passed);
+                "An empty or failed analysis cannot keep a stale recommendation and a failed request can be retried",
+                "EN reference score, white delta and source stay together while cycling cached continuations",
+                "RO reference score, white delta and source stay together while cycling cached continuations"), passed);
     }
 }

@@ -48,3 +48,12 @@
 - **Catalog lines.** The YAML lessons provide up to three lines in catalog order. The count follows availability at that position. Lines with the same first move remain distinct when they continue differently, and each retains all remaining plies and explanations.
 - **Replay.** The label below the board opens full-screen replay. Changing the line or step keeps the board and arrows fixed. Each line keeps its own step while the window remains open, and Back returns to the same position. [Game Review replay](game-review.md#review-navigation-and-recommended-lines)
 - **Fallback.** Without an applicable YAML lesson, the app uses complete continuations from the ECO index. ECO lines lack the lesson annotations. Without a documented continuation, the lightbulb returns to engine analysis.
+
+## Measured opening references
+
+[OpeningReference](../../chess-core/src/main/java/ro/atf/chess/OpeningReference.java) reads [opening-reference.yaml](../../chess-core/src/main/resources/opening-reference.yaml) for the exact legal lesson prefix. The current 139 unique prefixes cover every catalog frame. The key retains the full UCI history, side to move and replayed castling/en-passant rights. A missing prefix starts one native live analysis. Invalid producer fields, illegal or duplicate lines and inconsistent deltas are rejected during loading.
+
+- **Measured source.** Stockfish 19, depth 16, one thread, 16 MiB hash and MultiPV 3, with a fresh game and cleared hash for every prefix. The YAML records the engine binary digest. These are bounded reference evaluations, not universal scores or a native strength claim.
+- **One result.** The bar and up to three legal continuations use the same record and completed depth. Keep only roots within 40 cp of the best. An authored lesson move is not automatically the measured best move. The reference has no native forcing-proof receipt.
+- **Delta.** Store scores from White's perspective: current cp minus the preceding prefix cp; the initial delta is zero. Flipping the board or choosing Black does not reverse this convention. Both adapters label it **Ref. Δ** and expose the producer/depth.
+- **Regeneration.** Export actual catalog prefixes with [ExportOpeningReferenceInputs](../../scripts/ExportOpeningReferenceInputs.java), then run [generate-opening-reference.cjs](../../scripts/generate-opening-reference.cjs) with the prefix file, Stockfish 19 binary, output YAML and raw UCI log paths. Retain raw logs outside the checkout. [Component evidence](../testing/README.md#analysis-reuse-components)

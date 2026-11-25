@@ -161,7 +161,7 @@ public final class MatchStore {
         return saveMatch(slot, match, blackBelow, origin, manualAi, manualUsed, true);
     }
 
-    private boolean saveMatch(int slot, ChessMatch match, boolean blackBelow, GameOrigin origin,
+    private synchronized boolean saveMatch(int slot, ChessMatch match, boolean blackBelow, GameOrigin origin,
                               boolean manualAi, boolean manualUsed, boolean fresh) {
         String originKey = MatchSlots.key(MATCH_USES_AI, slot);
         GameOrigin savedOrigin = fresh ? null : recordedOrigin(originKey);
@@ -182,6 +182,8 @@ public final class MatchStore {
                 .putBoolean(MatchSlots.key(MATCH_MANUAL_AI, slot), manualAi).putInt(ACTIVE_MATCH_SLOT, slot)
                 .putBoolean(RESUME_MATCH, true).remove(RESUME_CHAPTER);
         if (fresh) {
+            String previousId = preferences.getString(idKey, null);
+            if (previousId != null && !hasArchived(previousId)) edit.remove(archiveKey(previousId, "work"));
             if (effectiveOrigin != GameOrigin.LOCAL && match.openingChoice() > 0) {
                 edit.putLong(AI_OPENING_SEQUENCE, Math.max(preferences.getLong(AI_OPENING_SEQUENCE, 0), match.openingChoice()));
             }
@@ -217,7 +219,7 @@ public final class MatchStore {
                 .putBoolean(archiveKey(id, "manual-used"), manualUsed).putLong(archiveKey(id, "finished-at"), finishedAt);
         if (origin != null) edit.putBoolean(archiveKey(id, ARCHIVE_USES_AI), origin == GameOrigin.AI);
         for (var previous : retention.evicted()) {
-            for (var field : List.of("checkpoint", "black-below", "manual-used", ARCHIVE_USES_AI, "finished-at", "review", REVIEW_BOOKMARK)) {
+            for (var field : List.of("checkpoint", "black-below", "manual-used", ARCHIVE_USES_AI, "finished-at", "review", "work", REVIEW_BOOKMARK)) {
                 edit.remove(archiveKey(previous, field));
             }
         }
@@ -272,6 +274,56 @@ public final class MatchStore {
 
     public String archivedId(int slot) { return preferences.getString(MatchSlots.key(MATCH_ID, slot), null); }
     public boolean hasArchived(String id) { return id != null && preferences.contains(archiveKey(id, "checkpoint")); }
+
+    public synchronized ReviewJournal readReviewWork(String id, ChessMatch match) {
+        return ReviewJournal.restore(match, id == null ? null : readArchiveText(id, "work"));
+    }
+
+    public synchronized boolean saveReviewWork(String id, ChessMatch snapshot, ReviewJournal work) {
+        var current = sourceForId(id);
+        if (current == null || !prefixOf(snapshot, current)) return false;
+        var accepted = ReviewJournal.restore(current, work.encode());
+        if (accepted.completed() != work.completed() || "REJECTED".equals(accepted.restoration())) return false;
+        if (readReviewWork(id, current).completed() > work.completed()) return true;
+        return preferences.edit().putString(archiveKey(id, "work"), work.encode()).commit();
+    }
+
+    public GameReview prepareReview(String id, ChessMatch match, boolean rated, java.util.function.IntConsumer progress) {
+        var work = readReviewWork(id, match);
+        int completed = work.completed();
+        if (completed == match.ply()) return GameReview.aggregate(match, work, rated);
+        GameReview.prepare(match, work, ply -> {
+            if (ply > completed) persistReviewWork(id, match, work);
+            progress.accept(ply);
+        });
+        return GameReview.aggregate(match, work, rated);
+    }
+
+    private synchronized void persistReviewWork(String id, ChessMatch match, ReviewJournal work) {
+        var current = sourceForId(id);
+        if (current == null || !prefixOf(match, current)) throw new java.util.concurrent.CancellationException("Review source replaced");
+        if (!saveReviewWork(id, match, work)) throw new IllegalStateException("Review progress could not be saved for this game");
+    }
+
+    public boolean usesAi(String id) {
+        for (int slot = 1; slot <= MatchSlots.LIMIT; slot++) if (id != null && id.equals(archivedId(slot)))
+            return preferences.getBoolean(MatchSlots.key(MATCH_USES_AI, slot), true);
+        var archive = readArchivedMatch(id);
+        return archive != null && archiveOrigin(archive) == GameOrigin.AI;
+    }
+
+    private ChessMatch sourceForId(String id) {
+        if (id == null) return null;
+        for (int slot = 1; slot <= MatchSlots.LIMIT; slot++) if (id.equals(archivedId(slot)) && hasMatch(slot)) return readMatch(slot);
+        var entry = readArchivedMatch(id);
+        return entry == null ? null : entry.match();
+    }
+
+    private static boolean prefixOf(ChessMatch before, ChessMatch after) {
+        if (before.ply() > after.ply() || !before.continueFrom(0).checkpoint().equals(after.continueFrom(0).checkpoint())) return false;
+        for (int ply = 1; ply <= before.ply(); ply++) if (!before.moveAt(ply).equals(after.moveAt(ply))) return false;
+        return true;
+    }
 
     public GameReview readReview(String id, ChessMatch match) {
         if (id == null) return null;

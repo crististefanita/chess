@@ -105,7 +105,7 @@ public final class GameReviewCodec {
         return Base64.getEncoder().encodeToString(PortableSha256.digest(match.checkpoint().getBytes(StandardCharsets.UTF_8)));
     }
 
-    private static void writeProof(DataOutputStream out,CoachingProof.Work p)throws IOException {
+    static void writeProof(DataOutputStream out,CoachingProof.Work p)throws IOException {
         out.writeBoolean(p!=null);if(p==null)return;
         out.writeUTF(p.status().name());for(int n:new int[]{p.nodes(),p.allocatedNodes(),p.ceiling(),p.ordinaryPlies(),p.forcingPlies(),p.captureReplies(),p.checkEvasions(),p.repeatedDraws(),p.ordinaryNodes(),p.boundedRoots(),p.tacticalPlies()})out.writeInt(n);
         out.writeUTF(p.positionKey());out.writeInt(p.roots().size());for(var move:p.roots())out.writeUTF(move.uci());
@@ -114,7 +114,7 @@ public final class GameReviewCodec {
         var reply=p.counterplay();out.writeBoolean(reply!=null);
         if(reply!=null){out.writeInt(reply.earlierPlies());for(var line:List.of(reply.earlierIncumbent(),reply.earlierChallenger(),reply.incumbent(),reply.challenger()))writeVariation(out,line);out.writeUTF(reply.selected().uci());out.writeInt(reply.leaderScore());out.writeInt(reply.minGainCp());out.writeInt(reply.minMaterialLoss());}
     }
-    private static CoachingProof.Work readProof(DataInputStream in,int version)throws IOException {
+    static CoachingProof.Work readProof(DataInputStream in,int version)throws IOException {
         if(!in.readBoolean())return null;var status=CoachingProof.Status.valueOf(in.readUTF());
         int nodes=in.readInt(),allocated=in.readInt(),ceiling=in.readInt(),ordinary=in.readInt(),forcing=in.readInt(),captures=in.readInt(),evasions=in.readInt(),draws=in.readInt(),base=in.readInt(),bounded=in.readInt(),tactical=in.readInt();
         String position=in.readUTF();int count=in.readInt();if(count<1||count>512)throw new IllegalArgumentException("Invalid proof root count");
@@ -159,12 +159,12 @@ public final class GameReviewCodec {
         return new Player(accuracy < 0 ? OptionalInt.empty() : OptionalInt.of(accuracy), rating, rated, grades);
     }
 
-    private static void writeLine(DataOutputStream out, List<Move> line) throws IOException {
+    static void writeLine(DataOutputStream out, List<Move> line) throws IOException {
         out.writeInt(line.size());
         for (var move : line) out.writeUTF(move.uci());
     }
 
-    private static List<Move> readLine(DataInputStream in) throws IOException {
+    static List<Move> readLine(DataInputStream in) throws IOException {
         int size = in.readInt();
         if (size < 0 || size > MAX_LINE_LENGTH) throw new IllegalArgumentException("Invalid analysis line length");
         var line = new ArrayList<Move>(size);

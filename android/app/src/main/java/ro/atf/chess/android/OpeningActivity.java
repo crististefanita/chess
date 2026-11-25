@@ -404,7 +404,7 @@ public final class OpeningActivity extends BackNavigableActivity {
         analysis.setVisibility(aiEnabled ? View.VISIBLE : View.GONE);
         analysis.bulb().setVisibility(aiEnabled ? View.VISIBLE : View.GONE);
         analysis.evaluationBar().setVisibility(aiEnabled ? View.VISIBLE : View.INVISIBLE);
-        if (aiEnabled && resumed) analysis.show(position);
+        if (aiEnabled && resumed) analysis.showOpening(practice.opening(), ply);
         var cue = playable && theoryHint != QuestHint.NONE
                 ? theoryHint.cue(practice.next().move()) : aiEnabled ? analysis.cue() : new QuestHint.Cue(-1, -1);
         var previous = ply == 0 ? null : practice.opening().steps().get(ply - 1).move();

@@ -1,4 +1,4 @@
-import { analyzeRatedReview, analyzeReview, applyBotMove, canonicalCheckpoint, computeBotMove, continueArchiveReview, continueMatch,
+import { analyzeReviewWithWork, prepareReviewJournal, applyBotMove, canonicalCheckpoint, computeBotMove, continueArchiveReview, continueMatch,
   flipMatchBoard, matchAutomation, matchDecision, matchHistory, normalizePlayerName, openLedger, openMatch, openReview, archiveReviewCheckpoint,
   archiveReviewRated, importLegacyReview, ledgerState, matchAnalysisAction, openArchiveReview, openMatchAnalysis, pieceArtwork, playBot, playMatch, reviewAction, reviewGraphSelect,
   saveArchiveReview, snapshot, continueStudyMatch, openStudyReview, studyCommand, studyReviewAction, studyReviewGraphSelect } from "./chess-engine.mjs";
@@ -10,7 +10,7 @@ self.onmessage = ({ data }) => {
 
 async function respond({ id, type, resources, archive, checkpoint, review, ledger, legacy, route, slot, archiveId, setup,
   expectedRevision, automatic, action, move, x, width, name, rated = false, ply = -1, studyReview = false, blackBelow = false,
-  feature, value, index, saved, option, locale }) {
+  feature, value, index, saved, option, locale, journal }) {
   try {
     if (type === "snapshot" && typeof resources === "string") {
       self.postMessage({ id, snapshot: snapshot(resources) });
@@ -83,11 +83,16 @@ async function respond({ id, type, resources, archive, checkpoint, review, ledge
       self.postMessage({ id, ...JSON.parse(continueMatch(expectedRevision, automatic)) });
     } else if (type === "study-match-continue" && typeof checkpoint === "string" && typeof automatic === "boolean" && typeof blackBelow === "boolean") {
       self.postMessage({ id, ...JSON.parse(continueStudyMatch(checkpoint, automatic, blackBelow)) });
-    } else if (type === "review-analyze" && typeof checkpoint === "string" && typeof rated === "boolean") {
+    } else if (type === "review-prepare" && typeof checkpoint === "string" && optionalText(journal)) {
+      const canonical = canonicalCheckpoint(checkpoint);
+      const work = prepareReviewJournal(canonical, journal ?? null,
+        (progress, total, partialJournal) => self.postMessage({ id, progress, total, partialJournal }));
+      self.postMessage({ id, journal: work });
+    } else if (type === "review-analyze" && typeof checkpoint === "string" && typeof rated === "boolean" && optionalText(journal)) {
       const canonical = canonicalCheckpoint(checkpoint);
       const digest = await sha256(canonical);
-      const analyze = rated ? analyzeRatedReview : analyzeReview;
-      const review = analyze(canonical, digest, (progress, total) => self.postMessage({ id, progress, total }));
+      const review = analyzeReviewWithWork(canonical, digest, journal ?? null, rated,
+        (progress, total) => self.postMessage({ id, progress, total }));
       self.postMessage({ id, archive: { id: crypto.randomUUID(), checkpoint: canonical, review } });
     } else {
       throw new TypeError("Invalid chess worker request");

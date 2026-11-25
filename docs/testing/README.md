@@ -1039,3 +1039,19 @@ The policy supplies dimensions and destinations. Shared cases check both project
 </details>
 
 </details>
+
+## Analysis reuse components
+
+- **OpeningReferenceComponentTest** visits every current catalog frame without a live search provider, checks legal continuations and White deltas, and rejects stale producer fields, duplicate prefixes and illegal PVs. A removed leaf must invoke the live provider exactly once. The mocked Web controller also checks the localized reference label, provenance and cycling without another request.
+- **ReviewJournalComponentTest** uses actual native comparisons and preference transactions: aggregation parity, restart, missing work, branch trimming, policy/version corruption, illegal evidence, replaced owner, failed commit and collector cancellation. Completed raw comparisons remain separate from the final classification context.
+- **ReviewProgressWebComponentTest** runs eight Node cases with controlled workers/storage: retention, stale writer, joining, coalescing, durable-write barrier, failure/retry and surviving partial work. The existing opening wrapper runs all 17 controller cases. Both wrappers publish audited assertions through ATF Reporting. No browser or emulator is involved.
+
+Run from the isolated checkout with JDK 21 and Node; choose an external work directory for TMP and Extent.
+
+```powershell
+$env:TMP = $workRoot
+$env:TEMP = $workRoot
+mvn -pl atf-tests -am test '-Dtest=OpeningReferenceComponentTest,ReviewJournalComponentTest,ReviewProgressWebComponentTest,ChessWebOpeningStudyTest,GameReviewTest' '-Dsurefire.failIfNoSpecifiedTests=false' "-DargLine=-Djava.io.tmpdir=$workRoot" "-Dchess.extent=$workRoot/analysis-reuse.html"
+```
+
+Compile both Android and TeaVM after shared-code changes. Component and compilation receipts establish their own boundaries; APK/Web rendering, physical restart and quota behavior in a real browser require separately selected platform evidence. [Opening data](../board/openings.md#measured-opening-references) · [Journal contract](../board/game-review.md#persistent-per-move-work)

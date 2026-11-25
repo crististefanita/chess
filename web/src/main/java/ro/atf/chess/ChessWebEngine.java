@@ -201,8 +201,33 @@ public final class ChessWebEngine {
         return GameReviewCodec.encode(review, digest);
     }
 
+    @JSExport
+    public static String prepareReviewJournal(String checkpoint, String journal, JournalProgress progress) {
+        var match = ChessMatch.restore(checkpoint);
+        var work = ReviewJournal.restore(match, journal);
+        int completed = work.completed();
+        GameReview.prepare(match, work, ply -> {
+            if (ply > completed) progress.onPly(ply, match.ply(), work.encode());
+        });
+        return work.encode();
+    }
+
+    @JSExport
+    public static String analyzeReviewWithWork(String checkpoint, String digest, String journal, boolean rated, Progress progress) {
+        var match = ChessMatch.restore(checkpoint);
+        var work = ReviewJournal.restore(match, journal);
+        // A supplied journal is an aggregation contract; invalid or incomplete work must not silently recalculate.
+        if (journal == null) GameReview.prepare(match, work, ply -> progress.onPly(ply, match.ply()));
+        return GameReviewCodec.encode(GameReview.aggregate(match, work, rated), digest);
+    }
+
     @JSFunctor
     public interface Progress extends JSObject {
         void onPly(int completed, int total);
+    }
+
+    @JSFunctor
+    public interface JournalProgress extends JSObject {
+        void onPly(int completed, int total, String journal);
     }
 }

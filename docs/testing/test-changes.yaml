@@ -1970,3 +1970,11 @@ testChanges:
     test: ro.atf.chess.ChessWebOpeningStudyTest#openingControllerPreservesLessonAndReplySemanticsWithoutABrowser
     contract: "Preserve all nine existing opening cases and require six additional observable RO/EN, single-request, cue, late-result and failure cases in the audited Node receipt."
     allowDelete: false
+
+  - id: CHESS-OPENING-REFERENCE-JVM-EN
+    base: "a941d46ec562b11c9e77d3e47264317ad083fbd7"
+    from: atf-tests/src/test/java/ro/atf/chess/ChessWebOpeningStudyTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ChessWebOpeningStudyTest.java
+    test: ro.atf.chess.ChessWebOpeningStudyTest#openingControllerPreservesLessonAndReplySemanticsWithoutABrowser
+    contract: "Preserve all 15 existing controller cases and add measured-reference provenance, White delta and no-extra-request checks in EN and RO"
+    allowDelete: false

@@ -323,4 +323,5 @@
     <string name="chrome_back_source">Înapoi la ecranul anterior</string>
     <string name="chrome_match_title">Joacă împotriva AI</string>
     <string name="chrome_automatic_short">AI</string>
+    <string name="opening_reference_score">%1$s · Ref. Δ %2$s</string>
 </resources>
