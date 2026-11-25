@@ -92,6 +92,27 @@ node scripts/verify-mate-in-three.cjs $chessJs chess-core/src/main/resources/mat
 
 </details>
 
+### Position legality invariants
+
+[VirtualLegalityComponentTest](../../atf-tests/src/test/java/ro/atf/chess/VirtualLegalityComponentTest.java)
+and [RayOccupancyComponentTest](../../atf-tests/src/test/java/ro/atf/chess/RayOccupancyComponentTest.java)
+provide eight component tests. They compare complete ordered legal and tactical
+move lists, check and outcome, repetition keys and resulting boards against the
+test-only [LegalityReferencePosition](../../atf-tests/src/test/java/ro/atf/chess/LegalityReferencePosition.java)
+and [LegalityReferenceRules](../../atf-tests/src/test/java/ro/atf/chess/LegalityReferenceRules.java),
+frozen from `800d1a527df3d8f094b2538767dcee82ed58cf8e`. This whole-position
+reference retains the earlier legality calculation independently of the
+optimized virtual-attack and occupancy path.
+
+Coverage includes known move-tree counts, seeded differential walks, parent
+immutability, rejected public moves, every promotion choice, both-color
+en passant and castling rook transfers. Ray controls cover the nearest blocker
+in every direction, empty rays and bits 0 and 63. Controlled YAML variants
+preserve accepted movement vectors and leap/ray modes. Every occupancy mask
+must equal the pieces on the final board. These are
+[rule-preservation contracts](../board/ai-quality.md#position-legality-and-occupancy);
+search quality and performance require their own evidence.
+
 ### Adaptive Hard budget
 
 `HardAdaptivePolicyTest` checks typed YAML keys, the base and maximum boundary,

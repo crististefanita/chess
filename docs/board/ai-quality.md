@@ -39,6 +39,21 @@ The bar and first line of text use a separate estimate for the current position.
 
 </details>
 
+## Position legality and occupancy
+
+`ChessPosition` keeps an `occupied` long bitboard with one bit per occupied
+square. Legality checks apply virtual changes to the origin, destination,
+en passant capture and castling rook, then test attacks on the king
+without constructing a child position for every candidate. Playing a move
+still creates a separate position; occupancy is updated from the final values
+of the changed squares.
+
+Precomputed ray masks select the nearest occupied square in each direction.
+That blocker determines whether a sliding attack reaches the king; leap and
+ray attacks still follow the movement rules loaded from YAML. Legal-move order,
+accepted YAML variants, promotion choices, castling and en passant retain their
+existing semantics. [Differential components and invariants](../testing/README.md#position-legality-invariants)
+
 ## Verified Nimzo development
 
 After `1.d4 Nf6 2.c4 e6 3.Nc3`, live theory already knew `…Bb4`, while coaching compared only `…Nc6` and `…Be7`. Widening the generic shortlist alone lowered its completed horizon from H6 to H5 and was rejected. The qualified correction uses the existing exact-position [verified repertoire](../../chess-core/src/main/resources/ai-repertoire.yaml), with the same castling/turn identity and no positional bonus or scripted opposing reply.
