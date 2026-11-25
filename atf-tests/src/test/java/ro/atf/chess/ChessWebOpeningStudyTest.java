@@ -40,6 +40,12 @@ class ChessWebOpeningStudyTest {
                 "A decisive comparison reaches the exact verified branch and ply",
                 "EN long caption opens in full and returns focus without duplicate announcements",
                 "RO long caption opens in full and returns focus without duplicate announcements",
-                "The board and leading evaluation meter share one row before and after enabling analysis"), passed);
+                "The board and leading evaluation meter share one row before and after enabling analysis",
+                "EN score and first recommendation arrive together and the bulb only cycles the completed analysis",
+                "RO score and first recommendation arrive together and the bulb only cycles the completed analysis",
+                "Hiding and showing AI preserves the completed recommendation and does not search again",
+                "A replaced frame and a closed lesson reject late analysis even after returning to the same position",
+                "One in-flight analysis survives visibility toggles while lesson guidance retains its own cue",
+                "An empty or failed analysis cannot keep a stale recommendation and a failed request can be retried"), passed);
     }
 }

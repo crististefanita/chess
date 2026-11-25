@@ -2004,11 +2004,10 @@ public final class BoardSanity extends Instrumentation {
         var bulb = lesson.findViewById(R.id.match_hint);
         long deadline = SystemClock.uptimeMillis() + 15_000;
         while (!bulb.isEnabled() && SystemClock.uptimeMillis() < deadline) SystemClock.sleep(40);
-        compare("Optional AI evaluates the current position without advancing the lesson", true, bulb.isEnabled()
+        compare("Optional AI evaluates the current position without advancing the lesson", true, bulb.isEnabled() && bulb.isSelected()
                 && lesson.findViewById(R.id.match_evaluation_bar).getVisibility() == View.VISIBLE && status.getText().toString().startsWith("2 / 12"));
         var analysisText = (TextView) lesson.findViewById(R.id.match_analysis);
-        String positionScore = analysisText.getText().toString();
-        tap(bulb);
+        String positionScore = analysisText.getText().toString().split("\\n", 2)[0];
         captureFrame("opening-ai", "The AI recommendation keeps the calibrated position score and the previous-move explanation visible",
                 image -> bulb.isSelected() && positionScore.startsWith("+0")
                         && hasColor(image, analysisText, analysisText.getCurrentTextColor(), 12)
@@ -2022,7 +2021,6 @@ public final class BoardSanity extends Instrumentation {
                         && cell(board, "f3").getContentDescription().toString().contains(lesson.getString(R.string.knight)));
         deadline = SystemClock.uptimeMillis() + 15_000;
         while (!bulb.isEnabled() && SystemClock.uptimeMillis() < deadline) SystemClock.sleep(40);
-        tap(bulb);
         compare("The Ruy López suggestion is identified as an AI alternative to the Italian lesson", true,
                 explanation.getText().toString().startsWith(lesson.getString(R.string.opening_ai_alternative))
                         && cell(board, "b5").getContentDescription().toString().contains(lesson.getString(R.string.hint_destination, ""))
@@ -2051,8 +2049,9 @@ public final class BoardSanity extends Instrumentation {
         while (!bulb.isEnabled() && SystemClock.uptimeMillis() < deadline) SystemClock.sleep(40);
         compare("The historical position can be analyzed on the anchored, read-only board", true,
                 status.getText().toString().contains(lesson.getString(R.string.opening_reviewing))
-                        && "e4".contentEquals(cell(board, "e4").getContentDescription()) && !cell(board, "e2").isEnabled()
-                        && screenBounds(board).equals(initial) && bulb.isEnabled() && !bulb.isSelected());
+                        && cell(board, "e2").getContentDescription().toString().contains(lesson.getString(R.string.pawn))
+                        && !cell(board, "e2").isEnabled() && screenBounds(board).equals(initial)
+                        && bulb.isEnabled() && bulb.isSelected() && analysisText.getText().toString().contains("\n"));
         captureFrame("opening-replay", "The review exposes a separate replay action and both step controls",
                 image -> fullyVisible(practice) && fullyVisible(previous) && fullyVisible(next)
                         && !previous.isEnabled() && next.isEnabled()

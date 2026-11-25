@@ -6,6 +6,10 @@ The register tracks the remaining differences between APK and Web.
 [Engine and adapters](../../web/README.md#shared-engine-and-platform-adapters) ·
 [APK–Web matrix](../../web/parity.md)
 
+## Opening analysis presentation
+
+**P2 · Rendered acceptance.** Both source adapters present the first recommendation with the measured score and reuse the current result while hiding/showing AI. Mocked Web components cover one request, cycling, lesson cues, errors and stale results; Android compilation and the full TeaVM build pass. The remaining proof is a compact MCP view and the next signed-APK opening sanity: score, bar and first line together, a consistent lightbulb, and fixed board geometry while cycling. MCP initialization was unavailable in this round; no rendered PASS is claimed. [Opening behavior](../board/openings.md)
+
 ## What We Reuse from J4
 
 Card Table Browser 0.2.0 and its test JAR provide card table contracts.

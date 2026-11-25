@@ -173,7 +173,7 @@ public final class OpeningActivity extends BackNavigableActivity {
         bottom = seat();
         board = new BoardView(this, this::tap, true);
         board.setId(R.id.opening_board);
-        analysis = new MatchAnalysisView(this, this::notation, this::showAiHint, () -> board.getWidth());
+        analysis = new MatchAnalysisView(this, this::notation, this::showAiHint, () -> board.getWidth(), this::render);
         analysis.setIncludeFontPadding(false);
         analysis.setTextSize(12);
         analysis.evaluationBar().setBlackBelow(next.practice().learner() == Side.BLACK);
@@ -253,7 +253,6 @@ public final class OpeningActivity extends BackNavigableActivity {
             aiEnabled = !aiEnabled;
             if (!aiEnabled) {
                 if (analysis.revealedMove() != null) clearSelection();
-                analysis.cancel();
             }
             render();
         });
@@ -279,7 +278,6 @@ public final class OpeningActivity extends BackNavigableActivity {
         if (!lesson.canPlay()) return;
         theoryHint = theoryHint == QuestHint.SOLUTION ? QuestHint.NONE : theoryHint.advance();
         offLine = false;
-        analysis.hideSuggestion();
         clearSelection();
         if (theoryHint == QuestHint.SOLUTION) selectPiece(practice().next().move().from());
         render();
@@ -303,7 +301,7 @@ public final class OpeningActivity extends BackNavigableActivity {
     private Move guidedMove() {
         if (!lesson.canPlay()) return null;
         var expected = practice().next().move();
-        return theoryHint == QuestHint.SOLUTION || expected.equals(analysis.revealedMove()) ? expected : null;
+        return theoryHint == QuestHint.SOLUTION || aiEnabled && expected.equals(analysis.revealedMove()) ? expected : null;
     }
 
     private void tap(int square) {
@@ -408,7 +406,7 @@ public final class OpeningActivity extends BackNavigableActivity {
         analysis.evaluationBar().setVisibility(aiEnabled ? View.VISIBLE : View.INVISIBLE);
         if (aiEnabled && resumed) analysis.show(position);
         var cue = playable && theoryHint != QuestHint.NONE
-                ? theoryHint.cue(practice.next().move()) : analysis.cue();
+                ? theoryHint.cue(practice.next().move()) : aiEnabled ? analysis.cue() : new QuestHint.Cue(-1, -1);
         var previous = ply == 0 ? null : practice.opening().steps().get(ply - 1).move();
         board.show(position, learner == Side.BLACK, selected, targets, previous, cue, playable,
                 (position.turn() == learner ? bottom : top).getId());
@@ -426,7 +424,7 @@ public final class OpeningActivity extends BackNavigableActivity {
             return getString(R.string.opening_hint_piece, getString(BoardView.kindLabel(piece.kind())));
         }
         String explanation = explanationAt(practice.ply());
-        Move suggested = analysis.revealedMove();
+        Move suggested = aiEnabled ? analysis.revealedMove() : null;
         if (phase == Phase.LEARNER && suggested != null && !practice.next().move().equals(suggested)) {
             return getString(R.string.opening_ai_alternative) + "\n" + explanation;
         }

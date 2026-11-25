@@ -201,6 +201,7 @@ export function createOpeningStudy({ root, locale, call, home, board }) {
   let selected = null;
   let analysis;
   let analysisKey;
+  let analysisRequest = 0;
   let variant = -1;
   let releaseFocus = null;
   let active = false;
@@ -266,7 +267,7 @@ export function createOpeningStudy({ root, locale, call, home, board }) {
   const actions = element('div', null, 'opening-actions');
   const guidance = button(text.hint, useGuidance);
   const aiToggle = button(text.ai, () => flow.dispatch('AI_TOGGLE'));
-  const bulb = button('◉', revealAnalysis);
+  const bulb = button('💡', revealAnalysis, 'opening-ai-hint');
   bulb.setAttribute('aria-label', text.showAi);
   actions.append(guidance, aiToggle, bulb);
   controls.append(explanation, announcement, assessment, actions);
@@ -312,9 +313,7 @@ export function createOpeningStudy({ root, locale, call, home, board }) {
     flow.close();
     document.removeEventListener('visibilitychange', visibility);
     if (dialog.open) dialog.close();
-    analysisKey = null;
-    analysis = null;
-    variant = -1;
+    clearAnalysis();
   }
 
   function open() {
@@ -380,13 +379,11 @@ export function createOpeningStudy({ root, locale, call, home, board }) {
     heading.textContent = lesson?.title ?? text.title;
     backButton.setAttribute('aria-label', backLabel(lesson ? 'OPENING' : 'OPENINGS', locale, Boolean(lesson?.reviewing)));
     if (lesson) {
-      if (frameKey(lesson) !== frameKey(before) || lesson.hint !== before?.hint || !lesson.aiEnabled) variant = -1;
+      if (frameKey(lesson) !== frameKey(before)) clearAnalysis();
       drawLesson();
       void requestAnalysis();
     } else {
-      analysis = null;
-      analysisKey = null;
-      variant = -1;
+      clearAnalysis();
       menu(entries);
     }
     if (pageChanged || document.activeElement === document.body) heading.focus();
@@ -496,30 +493,36 @@ export function createOpeningStudy({ root, locale, call, home, board }) {
     openDialog(text.history, [moves]);
   }
 
-  function frameKey(state) { return state ? state.id + '|' + state.ply : null; }
+  function frameKey(state) { return state ? state.id + '|' + state.ply + '|' + state.fen : null; }
+
+  function clearAnalysis() {
+    analysisRequest++;
+    analysis = null;
+    analysisKey = null;
+    variant = -1;
+  }
 
   function revealed() { return variant >= 0 && lesson?.aiEnabled && analysisKey === frameKey(lesson) ? analysis?.variants[variant] : null; }
 
   async function requestAnalysis() {
-    if (!lesson?.aiEnabled) {
-      analysis = null;
-      analysisKey = null;
-      return;
-    }
-    if (frameKey(lesson) === analysisKey) return;
+    if (!lesson?.aiEnabled) return;
+    if (frameKey(lesson) === analysisKey && !analysis?.failed) return;
     analysis = null;
+    variant = -1;
+    const request = ++analysisRequest;
     const key = frameKey(lesson);
     analysisKey = key;
     renderAnalysis();
     try {
       const received = await flow.analyze();
-      if (!active || !lesson?.aiEnabled || frameKey(lesson) !== key || analysisKey !== key) return;
+      if (!active || request !== analysisRequest || frameKey(lesson) !== key) return;
       analysis = received;
+      variant = received.variants.length ? 0 : -1;
     } catch {
-      if (!active || !lesson?.aiEnabled || frameKey(lesson) !== key || analysisKey !== key) return;
+      if (!active || request !== analysisRequest || frameKey(lesson) !== key) return;
       analysis = { failed: true, evaluation: null, variants: [] };
     }
-    renderAnalysis();
+    drawLesson();
   }
 
   function evaluationText(evaluation) {

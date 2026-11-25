@@ -806,6 +806,7 @@ In sanity, open a game at a historical move, open the Analysis board, and return
 - In the Catalan and Alapin, comparison starts with White to move after the last reply in the lesson.
 
 - For APK–Web visual parity, `OpeningLessonTest` checks the board side length, the two-column threshold, and fit after measuring labels. `ChessWebOpeningStudyTest` checks hint tiers and the display contract without a browser.
+- The opening display components also require the score, bar and first recommendation from one completed result. They count analysis requests while cycling, hiding and showing AI; reject a late result after leaving and returning to the same frame; preserve lesson cues; and cover pending, failed and empty results. These mocked checks do not certify Android rendering.
 - `BoardSizingGovernanceTest` binds the compact Web media threshold to `OpeningLessonLayout.sidePanelBreakpoint()` and requires an internal details scroller. One Playwright E2E then checks the actual 740 × 420, 130% EN/RO lesson: no document overflow, both captions, adjacent details, a square within 2 px of the native model, stable geometry across Next/Previous, and embedded screenshots. Its report records the browser, source commit, bundle hash, actions and point assertions. This Web control does not replace the separate signed-APK capture.
 
 ```powershell

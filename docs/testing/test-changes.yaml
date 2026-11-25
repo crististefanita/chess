@@ -1952,3 +1952,21 @@ testChanges:
     test: ro.atf.chess.DocumentationPairGovernanceTest#pairedGateRejectsInventoryStructureLinksAndEvidenceDrift
     contract: "Preserve Markdown and release-evidence negatives; reject changed or missing shared source while allowing only declared language-specific governance files"
     allowDelete: false
+
+  - id: CHESS-OPENING-READY-NATIVE-EN
+    base: "bb2b44d47676246145df09ab60727f0504c32f4d"
+    from: android/app/src/androidTest/java/ro/atf/chess/android/BoardSanity.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ChessWebOpeningStudyTest.java
+    test: ro.atf.chess.ChessWebOpeningStudyTest#openingControllerPreservesLessonAndReplySemanticsWithoutABrowser
+    contract: "Present the first recommendation with its score, as requested; retain the native score-prefix, lesson-step, geometry, alternative and destination comparisons. The component controller adds single-result and stale-response checks without claiming native execution."
+    allowDelete: false
+    nativePath: android/app/src/androidTest/java/ro/atf/chess/android/BoardSanity.java
+    nativeProbe: "Optional AI evaluates the current position without advancing the lesson"
+
+  - id: CHESS-OPENING-READY-COMPONENT-EN
+    base: "bb2b44d47676246145df09ab60727f0504c32f4d"
+    from: atf-tests/src/test/java/ro/atf/chess/ChessWebOpeningStudyTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ChessWebOpeningStudyTest.java
+    test: ro.atf.chess.ChessWebOpeningStudyTest#openingControllerPreservesLessonAndReplySemanticsWithoutABrowser
+    contract: "Preserve all nine existing opening cases and require six additional observable RO/EN, single-request, cue, late-result and failure cases in the audited Node receipt."
+    allowDelete: false
