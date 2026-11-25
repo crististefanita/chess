@@ -1046,12 +1046,14 @@ Politica furnizează dimensiuni și destinații. Cazurile comune verifică ambel
 - **ReviewJournalComponentTest** folosește comparații native reale și tranzacții de preferințe: paritate la agregare, restart, lucru lipsă, eliminarea ramurii schimbate, politică/versiune coruptă, dovezi ilegale, proprietar înlocuit, commit eșuat și oprirea colectorului. Comparațiile brute complete rămân separate de contextul clasificării finale.
 - **ReviewProgressWebComponentTest** rulează opt cazuri Node cu workeri/stocare controlate: retenție, salvare expirată, așteptarea aceluiași calcul, reunire, barieră de salvare durabilă, eșec/reîncercare și păstrarea lucrului parțial. Wrapperul existent al deschiderilor rulează toate cele 17 cazuri de controler. Ambele publică aserțiuni auditabile prin ATF Reporting. Nu implică browser sau emulator.
 
+- **ReviewIncrementalPersistenceComponentTest** leagă colectorul real din fundal de MatchStore. Verifică o comparație nativă salvată pe mutare, întreruperea după semimutarea doi, reluarea cu doar două salvări lipsă și agregarea scorurilor memorate fără un nou apel de calcul. Recrearea stocării simulează restartul în componentă; nu pretinde o probă de proces Android.
+
 Rulează din checkout-ul izolat cu JDK 21 și Node; alege un director extern pentru TMP și Extent.
 
 ```powershell
 $env:TMP = $workRoot
 $env:TEMP = $workRoot
-mvn -pl atf-tests -am test '-Dtest=OpeningReferenceComponentTest,ReviewJournalComponentTest,ReviewProgressWebComponentTest,ChessWebOpeningStudyTest,GameReviewTest' '-Dsurefire.failIfNoSpecifiedTests=false' "-DargLine=-Djava.io.tmpdir=$workRoot" "-Dchess.extent=$workRoot/analysis-reuse.html"
+mvn -pl atf-tests -am test '-Dtest=OpeningReferenceComponentTest,ReviewJournalComponentTest,ReviewIncrementalPersistenceComponentTest,ReviewProgressWebComponentTest,ChessWebOpeningStudyTest,GameReviewTest' '-Dsurefire.failIfNoSpecifiedTests=false' "-DargLine=-Djava.io.tmpdir=$workRoot" "-Dchess.extent=$workRoot/analysis-reuse.html"
 ```
 
 Compilează Android și TeaVM după modificarea codului comun. Recepțiile componentelor și compilării acoperă propriile limite; randarea APK/Web, restartul fizic și cota reală a browserului cer probe de platformă selectate separat. [Datele deschiderilor](../board/openings.md#referințe-măsurate-pentru-deschideri) · [Contractul jurnalului](../board/game-review.md#lucru-persistent-pe-fiecare-mutare)
