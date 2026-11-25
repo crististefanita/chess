@@ -39,6 +39,21 @@ Bara și prima linie de text folosesc o estimare separată pentru poziția curen
 
 </details>
 
+## Legalitatea poziției și ocuparea tablei
+
+`ChessPosition` păstrează un bitboard `occupied` de tip `long`, cu un bit pentru
+fiecare câmp ocupat. Verificarea legalității aplică virtual schimbările plecării,
+destinației, capturii en passant și turnului de la rocadă, apoi verifică atacurile
+asupra regelui în poziția rezultată, fără să construiască o poziție copil pentru fiecare
+candidată. Jucarea unei mutări creează în continuare o poziție separată; ocuparea
+se actualizează din valorile finale ale câmpurilor schimbate.
+
+Măștile de raze precalculate selectează cel mai apropiat câmp ocupat din fiecare
+direcție. Acea piesă stabilește dacă un atac pe rază ajunge la rege; atacurile
+prin salt și pe rază urmează în continuare regulile încărcate din YAML. Ordinea
+mutărilor legale, variantele YAML acceptate, alegerile promovării, rocada și
+en passant își păstrează semantica. [Componente diferențiale și invariante](../testing/README.md#invariantele-legalității-poziției)
+
 ## Dezvoltarea Nimzo verificată
 
 După `1.d4 Nf6 2.c4 e6 3.Nc3`, teoria jocului știa deja `…Bb4`, iar îndrumarea compara doar `…Nc6` și `…Be7`. Lărgirea listei generice singură a coborât orizontul complet de la H6 la H5 și a fost respinsă. Corecția calificată folosește [repertoriul verificat](../../chess-core/src/main/resources/ai-repertoire.yaml) existent pentru poziția exactă, cu aceeași identitate a rocadei și culorii la mutare, fără bonus pozițional ori replică adversă prestabilită.

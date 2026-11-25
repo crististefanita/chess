@@ -49,15 +49,17 @@ public final class ChessPosition {
     private final Side turn;
     private final int castleRights;
     private final int enPassant;
+    private final long occupied;
 
     private final int whiteKing;
     private final int blackKing;
 
-    private ChessPosition(Piece[] board, Side turn, int castleRights, int enPassant, int whiteKing, int blackKing) {
+    private ChessPosition(Piece[] board, Side turn, int castleRights, int enPassant, int whiteKing, int blackKing, long occupied) {
         this.board = board;
         this.turn = turn;
         this.castleRights = castleRights;
         this.enPassant = enPassant;
+        this.occupied = occupied;
         this.whiteKing = whiteKing;
         this.blackKing = blackKing;
     }
@@ -70,6 +72,7 @@ public final class ChessPosition {
         String[] fields = fen.trim().split("\\s+");
         if (fields.length != 6 || !fields[4].matches("[0-9]+") || !fields[5].matches("[1-9][0-9]*")) throw invalidFen(fen);
         Piece[] board = new Piece[64];
+        long occupied = 0;
         String[] ranks = fields[0].split("/", -1);
         if (ranks.length != 8) throw invalidFen(fen);
         int[] kings = {-1, -1};
@@ -85,7 +88,9 @@ public final class ChessPosition {
                     kings[side.ordinal()] = BoardSquare.of(file, 7 - row);
                 }
                 if (type == Kind.PAWN && (row == 0 || row == 7)) throw invalidFen(fen);
-                board[BoardSquare.of(file++, 7 - row)] = new Piece(side, type);
+                int square = BoardSquare.of(file++, 7 - row);
+                board[square] = new Piece(side, type);
+                occupied |= 1L << square;
             }
             if (file != 8) throw invalidFen(fen);
         }
@@ -110,7 +115,7 @@ public final class ChessPosition {
             if (enPassant / 8 != previous.home() + previous.forward() || board[enPassant] != null
                     || board[enPassant - step] != null || !new Piece(turn.other(), Kind.PAWN).equals(board[enPassant + step])) throw invalidFen(fen);
         }
-        var result = new ChessPosition(board, turn, rights, enPassant, kings[0], kings[1]);
+        var result = new ChessPosition(board, turn, rights, enPassant, kings[0], kings[1], occupied);
         if (result.inCheck(turn.other())) throw invalidFen(fen);
         return result;
     }
@@ -286,7 +291,7 @@ public final class ChessPosition {
             case KING -> reaches(piece, from, to) || canCastle(from, to);
             default -> reaches(piece, from, to);
         };
-        return allowed && !apply(move).inCheck(turn);
+        return allowed && !inCheckAfter(move);
     }
 
     private boolean pawnMove(int from, int to, int dx, int dy, Piece target) {
@@ -303,7 +308,7 @@ public final class ChessPosition {
         if (from != base + RULES.kingFrom || castle == null) return false;
         int rook = base + castle.rookFrom();
         if ((castleRights & rookRight(rook)) == 0 || !new Piece(turn, Kind.ROOK).equals(board[rook]) || !clearPath(from, rook)) return false;
-        return !inCheck(turn) && !apply(new Move(from, base + castle.rookTo())).inCheck(turn);
+        return !inCheck(turn) && !inCheckAfter(new Move(from, base + castle.rookTo()));
     }
 
     private static int homeBase(Side side) { return side == Side.WHITE ? 0 : 56; }
@@ -314,28 +319,55 @@ public final class ChessPosition {
     }
 
     private boolean inCheck(Side side) {
-        int king = kingSquare(side);
-        Side enemy = side.other();
+        return inCheck(kingSquare(side), side.other(), 0, 0, -1, null);
+    }
+
+    private boolean inCheckAfter(Move move) {
+        int from = move.from();
+        int to = move.to();
+        Piece piece = board[from];
+        long changed = (1L << from) | (1L << to);
+        int rookTo = -1;
+        Piece rook = null;
+        if (piece.kind() == Kind.PAWN && to == enPassant && from % 8 != to % 8) {
+            changed |= 1L << ((from / 8) * 8 + to % 8);
+        } else if (piece.kind() == Kind.KING && from == homeBase(turn) + RULES.kingFrom) {
+            var castle = castleAt(to, homeBase(turn));
+            if (castle != null) {
+                int rookFrom = homeBase(turn) + castle.rookFrom();
+                rookTo = homeBase(turn) + castle.rookTo();
+                rook = board[rookFrom];
+                changed |= (1L << rookFrom) | (1L << rookTo);
+            }
+        }
+        // Only occupancy matters for the moving side, including a promoted pawn.
+        // Preserve apply's rook transfer even for a configured king leap to a castle square.
+        return inCheck(piece.kind() == Kind.KING ? to : kingSquare(turn), turn.other(), changed, 1L << to, rookTo, rook);
+    }
+
+    private boolean inCheck(int king, Side enemy, long changed, long ownDestination, int rookTo, Piece rook) {
         for (int from : LEAP_ATTACKS[king]) {
-            Piece piece = board[from];
+            Piece piece = (changed & (1L << from)) == 0 ? board[from] : from == rookTo ? rook : null;
             if (piece != null && piece.side() == enemy && !RULES.ray(piece.kind())
                     && reaches(piece, from, king)) return true;
         }
+        long after = (occupied & ~changed) | ownDestination;
+        if (rook != null) after |= 1L << rookTo;
         for (AttackRay ray : RAY_ATTACKS[king]) {
-            for (int from : ray.squares()) {
-                Piece piece = board[from];
-                if (piece == null) continue;
-                if (piece.side() == enemy && RULES.ray(piece.kind())
-                        && RULES.direction(piece.kind(), ray.file(), ray.rank())) return true;
-                break;
-            }
+            long blockers = after & ray.mask();
+            if (blockers == 0) continue;
+            int from = ray.increasing() ? Long.numberOfTrailingZeros(blockers) : 63 - Long.numberOfLeadingZeros(blockers);
+            if ((ownDestination & (1L << from)) != 0) continue;
+            Piece piece = from == rookTo ? rook : board[from];
+            if (piece.side() == enemy && RULES.ray(piece.kind())
+                    && RULES.direction(piece.kind(), ray.file(), ray.rank())) return true;
         }
         return false;
     }
 
     int kingSquare(Side side) { return side == Side.WHITE ? whiteKing : blackKing; }
 
-    private record AttackRay(int file, int rank, int[] squares) { }
+    private record AttackRay(int file, int rank, long mask, boolean increasing) { }
 
     private static int[][] leapAttacks() {
         var attacks = new int[64][];
@@ -367,16 +399,17 @@ public final class ChessPosition {
             for (int file = -1; file <= 1; file++) {
                 for (int rank = -1; rank <= 1; rank++) {
                     if (file == 0 && rank == 0) continue;
-                    var squares = new ArrayList<Integer>();
+                    long mask = 0;
                     int x = king % 8 - file;
                     int y = king / 8 - rank;
                     while (x >= 0 && x < 8 && y >= 0 && y < 8) {
-                        squares.add(BoardSquare.of(x, y));
+                        mask |= 1L << BoardSquare.of(x, y);
                         x -= file;
                         y -= rank;
                     }
-                    if (!squares.isEmpty()) {
-                        rays.add(new AttackRay(file, rank, squares.stream().mapToInt(Integer::intValue).toArray()));
+                    if (mask != 0) {
+                        // Sources extend opposite the attack vector, so their square indices are monotone.
+                        rays.add(new AttackRay(file, rank, mask, file + 8 * rank < 0));
                     }
                 }
             }
@@ -435,12 +468,17 @@ public final class ChessPosition {
         int to = move.to();
         Piece piece = board[from];
         Piece[] next = board.clone();
+        long changed = (1L << from) | (1L << to);
         next[from] = null;
         next[to] = move.promotion() == null ? piece : new Piece(turn, move.promotion());
         int rights = castleRights & ~rookRight(from) & ~rookRight(to);
         int nextEnPassant = -1;
         if (piece.kind() == Kind.PAWN) {
-            if (to == enPassant && from % 8 != to % 8) next[(from / 8) * 8 + to % 8] = null;
+            if (to == enPassant && from % 8 != to % 8) {
+                int captured = (from / 8) * 8 + to % 8;
+                next[captured] = null;
+                changed |= 1L << captured;
+            }
             if (Math.abs(to - from) == RULES.initialAdvance * 8) nextEnPassant = (from + to) / 2;
         } else if (piece.kind() == Kind.KING) {
             rights &= turn == Side.WHITE ? 12 : 3;
@@ -450,12 +488,20 @@ public final class ChessPosition {
                 int rook = base + castle.rookFrom();
                 next[base + castle.rookTo()] = next[rook];
                 next[rook] = null;
+                changed |= (1L << rook) | (1L << (base + castle.rookTo()));
             }
         }
         boolean kingMoved = piece.kind() == Kind.KING;
+        long nextOccupied = occupied;
+        // Read the final squares: a configured king leap can transfer an empty or enemy corner.
+        for (long squares = changed; squares != 0; squares &= squares - 1) {
+            int square = Long.numberOfTrailingZeros(squares);
+            long mask = 1L << square;
+            nextOccupied = next[square] == null ? nextOccupied & ~mask : nextOccupied | mask;
+        }
         return new ChessPosition(next, turn.other(), rights, nextEnPassant,
                 kingMoved && turn == Side.WHITE ? to : whiteKing,
-                kingMoved && turn == Side.BLACK ? to : blackKing);
+                kingMoved && turn == Side.BLACK ? to : blackKing, nextOccupied);
     }
 
     private static int rookRight(int square) {

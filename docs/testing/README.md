@@ -92,6 +92,28 @@ node scripts/verify-mate-in-three.cjs $chessJs chess-core/src/main/resources/mat
 
 </details>
 
+### Invariantele legalității poziției
+
+[VirtualLegalityComponentTest](../../atf-tests/src/test/java/ro/atf/chess/VirtualLegalityComponentTest.java)
+și [RayOccupancyComponentTest](../../atf-tests/src/test/java/ro/atf/chess/RayOccupancyComponentTest.java)
+oferă opt teste de componentă. Compară listele complete și ordonate de mutări
+legale și tactice, șahul și rezultatul, cheile de repetiție și tablele rezultate cu
+[LegalityReferencePosition](../../atf-tests/src/test/java/ro/atf/chess/LegalityReferencePosition.java)
+și [LegalityReferenceRules](../../atf-tests/src/test/java/ro/atf/chess/LegalityReferenceRules.java),
+referințe rezervate testelor și înghețate din `800d1a527df3d8f094b2538767dcee82ed58cf8e`.
+Această referință a poziției complete păstrează calculul anterior al legalității,
+independent de calea optimizată a atacurilor virtuale și ocupării.
+
+Acoperirea include numere cunoscute ale arborilor de mutări, parcursuri
+diferențiale cu sămânță fixă, imutabilitatea părintelui, mutări publice respinse,
+fiecare alegere de promovare, en passant pentru ambele culori și transferurile
+turnului la rocadă. Controalele razelor verifică cea mai apropiată piesă din
+fiecare direcție, razele goale și biții 0 și 63. Variantele YAML controlate
+păstrează vectorii acceptați și modurile prin salt sau pe rază. Fiecare mască de
+ocupare trebuie să corespundă pieselor de pe tabla finală. Acestea sunt
+[contracte de păstrare a regulilor](../board/ai-quality.md#legalitatea-poziției-și-ocuparea-tablei);
+calitatea căutării și performanța cer dovezi proprii.
+
 ### Buget adaptiv Hard
 
 `HardAdaptivePolicyTest` verifică tipurile cheilor YAML, limita de bază și
