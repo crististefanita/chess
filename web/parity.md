@@ -2,7 +2,7 @@
 
 ## Overview
 
-**Play in browser** sits below the APK download link in the main README. The Web base URL opens the main menu; a direct route opens its requested screen. Progress stays local to the device. [Main README](../README.md#play)
+**Play in browser** sits below the APK download link in the main README. The Web base URL opens the main menu; a direct route opens its requested screen. Progress stays local to the device. [Main README](../README.md#game)
 
 ## Contracts and checks
 
