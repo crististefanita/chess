@@ -12,12 +12,12 @@ function batches(result) {
         const rows = batch.lines;
         const lines = Array.isArray(rows) ? rows.filter(exact).sort((a, b) => a.rank - b.rank) : [];
         if (batch.completeBatch === true && batch.expectedPvCount === rows?.length && lines.length === rows.length
-            && lines.length && lines[0].rank === 1 && lines.every((line, index) => line.rank === index + 1 && line.depth === batch.depth)) {
+            && lines.length && new Set(lines.map(line => line.pv[0])).size === lines.length && lines[0].rank === 1 && lines.every((line, index) => line.rank === index + 1 && line.depth === batch.depth)) {
             found.set(batch.depth, { depth: batch.depth, lines });
         }
     }
     if (result.completeBatch === true && result.expectedPvCount === result.lines?.length
-        && result.lines?.length && result.lines.every(exact) && result.lines[0].rank === 1
+        && result.lines?.length && new Set(result.lines.map(line => line.pv[0])).size === result.lines.length && result.lines.every(exact) && result.lines[0].rank === 1
         && result.lines.every((line, index) => line.rank === index + 1 && line.depth === result.lines[0].depth)) {
         found.set(result.lines[0].depth, { depth: result.lines[0].depth, lines: result.lines });
     }

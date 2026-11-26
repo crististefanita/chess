@@ -1,4 +1,4 @@
-# Chess Lab 0.17.0 · Dovezi
+# Chess Lab 0.17.1 · Dovezi
 
 ## Pe scurt
 

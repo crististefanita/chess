@@ -1,4 +1,36 @@
 testChanges:
+  - id: CHESS-DISTINCT-COHORT-1-RO
+    base: "2c25cdbc38f5edd17008829dffca38a8d12a07c7"
+    from: pom.xml
+    replacement: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
+    test: ro.atf.chess.DocumentationGovernanceTest#projectReadmeArchitectureMatchesTheExecutableBuild
+    contract: "Păstrează lotul complet anterior cu rădăcini distincte când orizontul nou repetă o mutare; califică APK-ul corectat"
+    allowDelete: false
+
+  - id: CHESS-DISTINCT-COHORT-2-RO
+    base: "2c25cdbc38f5edd17008829dffca38a8d12a07c7"
+    from: atf-tests/pom.xml
+    replacement: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
+    test: ro.atf.chess.DocumentationGovernanceTest#projectReadmeArchitectureMatchesTheExecutableBuild
+    contract: "Păstrează lotul complet anterior cu rădăcini distincte când orizontul nou repetă o mutare; califică APK-ul corectat"
+    allowDelete: false
+
+  - id: CHESS-DISTINCT-COHORT-3-RO
+    base: "2c25cdbc38f5edd17008829dffca38a8d12a07c7"
+    from: android/app/build.gradle
+    replacement: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
+    test: ro.atf.chess.DocumentationGovernanceTest#projectReadmeArchitectureMatchesTheExecutableBuild
+    contract: "Păstrează lotul complet anterior cu rădăcini distincte când orizontul nou repetă o mutare; califică APK-ul corectat"
+    allowDelete: false
+
+  - id: CHESS-DISTINCT-COHORT-4-RO
+    base: "2c25cdbc38f5edd17008829dffca38a8d12a07c7"
+    from: atf-tests/src/test/java/ro/atf/chess/StockfishCoachingComponentTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/StockfishCoachingComponentTest.java
+    test: ro.atf.chess.StockfishCoachingComponentTest#completedRoundsDoNotMixWithPartialOrBoundedHorizons
+    contract: "Păstrează lotul complet anterior cu rădăcini distincte când orizontul nou repetă o mutare; califică APK-ul corectat"
+    allowDelete: false
+
   - id: CHESS-LITE-ANALYSIS-INVENTORY-RO
     base: "e0a4faa433881475066b9cb75f3e060bcf57d751"
     from: atf-tests/src/test/java/ro/atf/chess/ChessWebAnalysisStudyTest.java

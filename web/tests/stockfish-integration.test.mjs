@@ -63,6 +63,20 @@ test('Compiled Web ports use the real pinned WASM for hints, openings and persis
         assert.equal(opening.engine.providerID, 'stockfish-19.0.1-lite-single');
         assert.ok(opening.variants.length >= 1);
 
+        // A real warm session can emit the same root twice at the newest horizon.
+        // Growing a saved AI line must retain the earlier distinct cohort and finish its review.
+        const savedLine = 'e2e4 c7c5 f2f4 b8c6 g1f3 g7g6'.split(' ');
+        let savedJournal = null, savedCheckpoint, savedDigest;
+        for (let length = 1; length <= savedLine.length; length++) {
+            savedCheckpoint = engine.canonicalCheckpoint('2|analysis|' + savedLine.slice(0, length).join(' '));
+            savedDigest = createHash('sha256').update(savedCheckpoint).digest('base64');
+            savedJournal = await coaching.prepareReview(savedCheckpoint, savedDigest, () => {}, savedJournal);
+        }
+        const savedQueries = requests.length;
+        const savedReview = await coaching.review(savedCheckpoint, savedDigest, () => {}, { journal: savedJournal });
+        assert.equal(requests.length, savedQueries, 'all six saved plies aggregate without another search');
+        assert.equal(parse(engine.openReview('saved-line', savedCheckpoint, savedReview, null, savedDigest)).moves.length, 6);
+
         const mate = engine.canonicalCheckpoint('2|analysis|f2f3 e7e5 g2g4 d8h4');
         const digest = createHash('sha256').update(mate).digest('base64');
         const progress = [];

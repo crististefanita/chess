@@ -84,6 +84,11 @@ test('An incomplete final MultiPV round never borrows alternatives from another 
     assert.equal(result.completedDepthBatches[0].depth, 5);
     assert.equal(result.completedDepthBatches[0].lines.length, 3);
     assert.throws(() => rows.finish('a2a3'));
+    for (const [index, move] of ['e2e4', 'd2d4', 'd2d4'].entries()) rows.add(parseInfoLine(info(move, 7, index + 1)));
+    const duplicated = rows.finish('e2e4');
+    assert.equal(duplicated.completeBatch, false);
+    assert.deepEqual(duplicated.completedDepthBatches.map(batch => batch.depth), [5]);
+    assert.equal(duplicated.iterations.at(-1).completeBatch, false);
 });
 
 test('The production Lite client is lazy, classic, uses its unrestricted policy and reuses one worker', async t => {

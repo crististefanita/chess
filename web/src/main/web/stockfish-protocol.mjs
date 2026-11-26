@@ -103,7 +103,7 @@ export function parseBestmove(raw) {
 }
 
 const batchSnapshot = (depth, rows, expected, sequence) => Object.freeze({ depth, expectedPvCount: expected,
-  completeBatch: rows.length === expected && rows.every((row, index) => row.rank === index + 1 && row.bound === "EXACT"),
+  completeBatch: rows.length === expected && new Set(rows.map(row => row.pv[0])).size === expected && rows.every((row, index) => row.rank === index + 1 && row.bound === "EXACT"),
   lines: Object.freeze([...rows]), sequence });
 
 /** A rank1 update begins a new MultiPV round; an older completed round is retained intact. */
@@ -120,7 +120,7 @@ export class StockfishIterations {
     round.rows.set(info.rank, row);
     if (info.rank === 1 && info.bound === "EXACT") this.latestExactTop.push(row);
     const rows = [...round.rows.values()].sort((a, b) => a.rank - b.rank);
-    if (round.started && rows.length === this.expected && rows.every((value, index) => value.rank === index + 1 && value.bound === "EXACT")) {
+    if (round.started && rows.length === this.expected && new Set(rows.map(value => value.pv[0])).size === this.expected && rows.every((value, index) => value.rank === index + 1 && value.bound === "EXACT")) {
       this.completed.set(info.depth, batchSnapshot(info.depth, rows, this.expected, this.sequence));
     }
   }

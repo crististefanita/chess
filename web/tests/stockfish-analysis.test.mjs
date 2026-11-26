@@ -52,7 +52,8 @@ test('An interrupted deeper MultiPV cannot displace the last complete top-three 
             prepareExternalMatchAnalysis: () => ({ request: ctx }),
             applyExternalMatchAnalysis: (_revision, _key, body) => { applied.push(JSON.parse(body)); return '{"state":"APPLIED"}'; },
         },
-        analyze: async () => result(ctx, [line('g1f3', 13, 0, 1)], [{ depth: 12, lines: earlier }], false),
+        analyze: async () => result(ctx, [line('g1f3', 14, 0, 1)], [{ depth: 12, lines: earlier },
+            { depth: 13, lines: [line('g1f3', 13, 20, 1), line('d2d4', 13, 10, 2), line('d2d4', 13, 10, 3)] }], false),
     });
     await worker.match({ checkpoint: 'checkpoint', ply: 0, expectedRevision: 2 });
     assert.equal(applied[0].depth, 12);
