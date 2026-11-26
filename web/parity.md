@@ -51,9 +51,17 @@ Analiza Web folosește motorul Stockfish fixat pentru indicii în partidă, tabl
 4. Deschideți **Joacă în browser**. Verificați fișierele versionate declarate și reîncărcați cu memoria cache intactă. Verificați reluarea checkpointului și jocul fără rețea după prima încărcare; o filă deschisă poate păstra runtime-ul anterior până la reîncărcare.
 5. Înregistrați revizia sursă, commitul static publicat, amprenta runtime și recepțiile Extent. Verificați octeții serviți independent de memoria cache a browserului.
 
-Dacă uploadul reușește, dar deploy-ul nu găsește `github-pages`, verificați inventarul artefactelor rulării. Acest flux combină uploadul și deploy-ul într-un job: reluarea lui poate produce încă un artefact cu același nume. [Selectorul oficial](https://github.com/actions/deploy-pages/blob/d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e/src/internal/api-client.js#L72-L82) respinge atât lipsa, cât și ambiguitatea listei.
+Dacă uploadul reușește, dar deploy-ul nu găsește `github-pages`, verificați inventarul artefactelor rulării. Acest flux combină uploadul și deploy-ul într-un job: reluarea lui poate produce încă un artefact cu același nume. [Selectorul oficial](https://github.com/actions/deploy-pages/blob/368f82528645a54fb793d4d04e342629a3f51346/src/internal/api-client.js#L72-L82) respinge atât lipsa, cât și ambiguitatea listei.
 
 Păstrați commitul static și digestul validate și porniți o declanșare manuală nouă pe `main` cu aceleași intrări. Obțineți o rulare izolată, fără modificarea sau reconstruirea produsului calificat. Confirmați un singur artefact și deploy reușit, apoi octeții serviți și comportamentul browserului. O nouă eroare sau diferență de octeți rămâne eșec de publicare.
+
+Dacă rularea nouă repetă eroarea, deși inventarul conține exact un upload
+încheiat, verificați compatibilitatea clienților de upload și deploy înaintea
+altei încercări. Fluxul curent fixează upload-pages-artifact 5.0.0 împreună cu
+deploy-pages 5.0.1 și include explicit fișierele ascunse, păstrând `.nojekyll`
+calificat. [Contractul de componentă](../atf-tests/src/test/java/ro/atf/chess/PagesWorkflowComponentTest.java)
+protejează ambele versiuni și calea verificată a uploadului. Reparația fluxului
+de livrare păstrează commitul static și amprenta arborelui.
 
 [Schema pachetului](README.md#identitatea-pachetului-web) ·
 [Strategia de testare](../docs/testing/README.md#actualizarea-pachetului-web) ·
