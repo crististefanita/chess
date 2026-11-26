@@ -36,6 +36,7 @@ Versiunea disponibilă se verifică în README-ul din `origin/main`. Dacă ramur
 6. Rulați `ChessComponentSuite` și sanity Game Review sub același ID de calificare. Treceți APK-ul, commitul, directoarele recepțiilor brute și rapoartele Extent prin `ReleaseGate qualification`. Verificați în Extent comparațiile extensibile și capturile din pașii lor. Pentru o schimbare în Teoria deschiderilor sau **De ce?**, adăugați proba compactă la font 1,3× în RO și EN pe același APK și commit. [Redarea comună](../testing/README.md#redare-comună-pe-ecran-compact) [Criterii de audit Extent](../testing/README.md#raportare-extent)
 7. După semnare și calificare, împingeți tagul candidat fără a rescrie istoricul și publicați asset-ul GitHub. Păstrați `currentVersion`, lista de comparație și README-ul principal pe ultima ediție verificată până când asset-ul nou există. Apoi promovați catalogul și README-ul în ambele ramuri. Păstrați în GitHub Release și local doar ediția nouă și ediția imediat anterioară; retrageți celelalte release-uri și dosare după ce noul asset și ruta din README au trecut verificarea. Nu ștergeți tagurile Git.
 8. Citiți README-ul din `main` pe GitHub și descărcați APK-ul de la URL-ul afișat. Verificați prin `ReleaseGate publication` tagul, canalul, statusul HTTP, octeții, SHA-256 și CRC. Salvați dovezile, împingeți commitul cu rapoartele și repetați descărcarea de pe versiunea finală a README-ului.
+9. Sincronizați ediția publicată curentă în checkout-ul de dezvoltare și treceți `ReleaseGate local-delivery` înainte de a declara procesul încheiat. [Ediția publicată în checkout-ul local](#ediția-publicată-în-checkout-ul-local)
 
 - Păstrați separat recepțiile descărcării publice și autentificate. Metadatele GitHub trebuie să identifice producătorul calificat prin `targetCommit`; recepția publică păstrează statusul HTTP observat, octeții compleți, amprenta și CRC pentru ruta canonică a asset-ului din README. O descărcare autentificată reușită, singură, nu încheie guvernanța publicării.
 
@@ -46,6 +47,28 @@ Versiunea disponibilă se verifică în README-ul din `origin/main`. Dacă ramur
 - Păstrați HTML-ul Extent generat la octet, inclusiv în indexul Git, pentru ca hash-urile din calificare să rămână valide. Aplicați verificarea de formatare fișierelor editate manual.
 
 - În checkout, guvernanța ediției curente recalculează amprentele HTML pentru calificarea strictă și compară recepțiile Android cu sursa, APK-ul și totalul de aserțiuni. Căile rapoartelor și ale recepțiilor trebuie să rămână în dosarul ediției.
+
+## Ediția publicată în checkout-ul local
+
+Publicarea livrează ediția curentă și în directorul `release/` al checkout-ului de dezvoltare. Descărcarea reușită de pe GitHub nu încheie singură această predare locală. Sursele pot conține experimente paralele și trebuie păstrate intacte.
+
+- Fixează commitul de publicare din ramura live, separat de sursa calificată a APK-ului. Citește catalogul și octeții originali ai rapoartelor din acel arbore Git imuabil.
+- Păstrează **doar ediția curentă** în această proiecție locală, cu APK-ul semnat complet, Extent, recepțiile și README-ul ediției. Catalogul publicat poate păstra ediția anterioară pentru comparație; proiecția locală are propriul index `PUBLISHED_RELEASE_CHECKOUT`.
+- Rulează [sincronizatorul](../../scripts/sync-published-release.ps1) din worktree-ul publicării verificate. Verifică calificarea, identitatea tagului, ruta README, ambele recepții de download, dimensiunea, amprenta și CRC-ul APK-ului înainte de înlocuire.
+- Pregătește copia în afara ambelor checkout-uri, sub `C:\work\sah`. Păstrează acolo vechiul director local pentru recuperare, verifică modificările concurente și înlocuiește doar `release/` de la destinație. Repetarea aceleiași sincronizări întoarce `UNCHANGED`.
+- Încheie prin `ReleaseGate local-delivery`. Fișierele lipsă, modificate sau suplimentare blochează poarta. `local-sync.yaml` identifică publicarea, producătorul calificat și inventarul exact; nu califică sursele experimentale din checkout. APK-ul generat și această recepție locală rămân în afara Git.
+
+```powershell
+git fetch origin
+$publication = git rev-parse origin/main_RO
+$destination = 'C:\work\1\atf_j7\release'
+$work = 'C:\work\sah\studii\release-sync'
+./scripts/sync-published-release.ps1 -PublicationCommit $publication -Destination $destination `
+  -WorkRoot $work -Apk $verifiedApk -Classpath $releaseClasspath
+java -cp $releaseClasspath ro.atf.chess.release.ReleaseGate local-delivery . $publication $destination $verifiedApk
+```
+
+Spațiul de lucru trebuie să existe. Classpath-ul conține instrumentele de release compilate și dependența SnakeYAML fixată. `PublishedReleaseArchiveTest` rulează offline, cu aserțiuni auditabile pentru README depășit, tag mutat, APK trunchiat, Extent modificat, dovadă de download lipsă și destinații nesigure. Preluăm granița de livrare locală verificată din Whist, fără să cuplăm schemele celor două jocuri sau să calificăm implicit sursele checkout-ului.
 
 ## Documentație bilingvă
 

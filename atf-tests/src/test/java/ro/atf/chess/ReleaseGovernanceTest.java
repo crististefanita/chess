@@ -451,10 +451,10 @@ class ReleaseGovernanceTest {
                 List.of("TacticsCatalogTest și verify-tactics.cjs", "QuestRewardsTest și MainMenuLayoutTest"),
                 tactics.stream().filter(item -> item.heading().equals("## Tactică și punctaj")).map(ReleaseRag.Citation::check).toList());
         var steps = ReleaseRag.workflow(root);
-        check.same("The release workflow follows the eight required steps", List.of(1, 2, 3, 4, 5, 6, 7, 8),
+        check.same("The release workflow includes all nine required steps", List.of(1, 2, 3, 4, 5, 6, 7, 8, 9),
                 steps.stream().map(line -> Integer.parseInt(line.substring(0, line.indexOf('.')))).toList());
-        check.same("The last step verifies the download again after pushing the evidence", true,
-                steps.getLast().contains("repetați descărcarea"));
+        check.same("Remote publication still repeats the final README download", true, steps.get(7).contains("repetați descărcarea"));
+        check.same("Completion also requires the verified local edition", true, steps.getLast().contains("ReleaseGate local-delivery"));
         check.same("A path outside the route table has no citation", List.of(), ReleaseRag.retrieve(root, List.of("unknown/foo")));
         Path missing = Files.createDirectories(folder.resolve("docs/testing")).resolve("README.md");
         Files.writeString(missing, "# No known anchor");

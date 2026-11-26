@@ -4,6 +4,12 @@
 
 [Feedback deschis](../feedback/hard.md) · [Protocolul de măsurare](hard-ab-elo.md) · [Ownership Stockfish Lite](../feedback/stockfish-web.md)
 
+[Calibrarea curentă](current-profile-calibration.md) măsoară toate cele trei profiluri și traseele scrise ale puzzle-urilor, cu continuări tehnice ale prefixelor originale și eșecuri explicite de calitate. Respectă domeniul ei înainte să interpretezi un Elo nou drept progres de algoritm.
+
+[Copiile de continuare](hard-continuation-copies.md) delimitează următoarea intervenție: păstrează recuperările rejucării selective, repară trei regresii reale și nepotrivirea sursă/obiectiv din training-060. Referința unui benchmark se validează independent înainte să devină țintă de învățare.
+
+Tratează corectitudinea rădăcinii și continuarea explicației drept porți separate. [Studiul frontierei în șah](native-forcing-frontier.md) păstrează o primă mutare Native câștigătoare urmată de ofertă de damă neînchisă; PASS pe prima alegere nu închide mecanismul. Păstrează contraexemplul fără să obligi motoarele viitoare să repete PV-ul greșit.
+
 ## Baza de lucru
 
 Pornește din main actual și păstrează fiecare experiment într-o copie identificată. A3 schimbă numai construirea cheii exacte din ocuparea tablei; nu schimbă bugetul, repertoriul, evaluarea sau mutările. Confirmarea vitezei și creșterea forței de joc sunt rezultate distincte. [Prima calificare A3 și experimentele respinse](hard-current-variants.md)

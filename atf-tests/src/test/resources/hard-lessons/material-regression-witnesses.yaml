@@ -1,0 +1,1458 @@
+{
+  "schema": 1,
+  "sourceCommit": "cda04af9388707b3533d5cb487e5f2ccbfa8e5f5",
+  "runId": "741abf78-a2f7-4d12-b6f9-f265a66f48d0",
+  "runtimeLearningAdmitted": false,
+  "scope": "REGRESSION_INTERPRETATION_ONLY;NO_RUNTIME_POSITION_LOOKUP;A_BASELINE_OR_CATALOG_KEY_CAN_BE_WRONG",
+  "teacher": {
+    "nodeSafetyCap": 10000000,
+    "UCI_LimitStrength": false,
+    "binary": "C:/work/sah/instrumente/stockfish-19/stockfish-windows-x86-64-universal.exe",
+    "depths": [
+      17,
+      19
+    ],
+    "sha256": "45bc8e4969147db9c2eb533810637994619bff0eacc81ccfd9854394901bcbd0",
+    "Hash": 32,
+    "Threads": 1
+  },
+  "nativeExit": 0,
+  "cases": [
+    {
+      "id": "tactic-003",
+      "initialFen": "r2qkb1r/1p2pppp/2p2n2/p1n5/3P1Bb1/2N2N2/PPPQBPPP/R3K2R w KQkq - 0 10",
+      "history": [
+        "d4c5",
+        "d8d2"
+      ],
+      "expected": "f4d2",
+      "rejected": {
+        "from": 21,
+        "to": 11,
+        "promotion": null
+      },
+      "nativeGuard": false,
+      "baselineRootRole": "CAPTURED_BASELINE_NOT_INVARIABLY_CORRECT",
+      "phases": [
+        {
+          "caseId": "tactic-003",
+          "depth": 17,
+          "move": null,
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen r2qkb1r/1p2pppp/2p2n2/p1n5/3P1Bb1/2N2N2/PPPQBPPP/R3K2R w KQkq - 0 10 moves d4c5 d8d2",
+          "nativeFen": "r3kb1r/1p2pppp/2p2n2/p1P5/5Bb1/2N2N2/PPPqBPPP/R3K2R w KQkq - 0 11",
+          "bestmove": "f4d2",
+          "score": {
+            "type": "cp",
+            "value": 663
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 17 seldepth 27 multipv 1 score cp 663 wdl 1000 0 0 nodes 296037 nps 841014 hashfull 63 tbhits 0 time 352 pv f4d2 e7e5 f3e5 g4e2 c3e2 f8c5 e5d3 c5a7 e1c1 e8c8 e2c3 f6d5 c3d5",
+            "bestmove f4d2 ponder e7e5"
+          ],
+          "commands": [
+            "position fen r2qkb1r/1p2pppp/2p2n2/p1n5/3P1Bb1/2N2N2/PPPQBPPP/R3K2R w KQkq - 0 10 moves d4c5 d8d2",
+            "go depth 17 nodes 10000000"
+          ]
+        },
+        {
+          "caseId": "tactic-003",
+          "depth": 17,
+          "move": "f4d2",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen r2qkb1r/1p2pppp/2p2n2/p1n5/3P1Bb1/2N2N2/PPPQBPPP/R3K2R w KQkq - 0 10 moves d4c5 d8d2",
+          "nativeFen": "r3kb1r/1p2pppp/2p2n2/p1P5/5Bb1/2N2N2/PPPqBPPP/R3K2R w KQkq - 0 11",
+          "bestmove": "f4d2",
+          "score": {
+            "type": "cp",
+            "value": 652
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 17 seldepth 24 multipv 1 score cp 652 wdl 1000 0 0 nodes 226548 nps 781200 hashfull 50 tbhits 0 time 290 pv f4d2 f6d7 e1c1 e7e6 h2h3 g4f3 e2f3 f8c5 h1f1 c5b4 h3h4 e6e5 g2g4 a5a4",
+            "bestmove f4d2 ponder f6d7"
+          ],
+          "commands": [
+            "position fen r2qkb1r/1p2pppp/2p2n2/p1n5/3P1Bb1/2N2N2/PPPQBPPP/R3K2R w KQkq - 0 10 moves d4c5 d8d2",
+            "go depth 17 nodes 10000000 searchmoves f4d2"
+          ]
+        },
+        {
+          "caseId": "tactic-003",
+          "depth": 17,
+          "move": "f3d2",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen r2qkb1r/1p2pppp/2p2n2/p1n5/3P1Bb1/2N2N2/PPPQBPPP/R3K2R w KQkq - 0 10 moves d4c5 d8d2",
+          "nativeFen": "r3kb1r/1p2pppp/2p2n2/p1P5/5Bb1/2N2N2/PPPqBPPP/R3K2R w KQkq - 0 11",
+          "bestmove": "f3d2",
+          "score": {
+            "type": "cp",
+            "value": 658
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 17 seldepth 35 multipv 1 score cp 658 wdl 1000 0 0 nodes 196371 nps 846426 hashfull 40 tbhits 0 time 232 pv f3d2 g4e2 e1e2 e7e6 d2e4 f6d5 f4c1 d5c3 e4c3 f8c5 h2h4 a5a4",
+            "bestmove f3d2 ponder g4e2"
+          ],
+          "commands": [
+            "position fen r2qkb1r/1p2pppp/2p2n2/p1n5/3P1Bb1/2N2N2/PPPQBPPP/R3K2R w KQkq - 0 10 moves d4c5 d8d2",
+            "go depth 17 nodes 10000000 searchmoves f3d2"
+          ]
+        },
+        {
+          "caseId": "tactic-003",
+          "depth": 19,
+          "move": null,
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen r2qkb1r/1p2pppp/2p2n2/p1n5/3P1Bb1/2N2N2/PPPQBPPP/R3K2R w KQkq - 0 10 moves d4c5 d8d2",
+          "nativeFen": "r3kb1r/1p2pppp/2p2n2/p1P5/5Bb1/2N2N2/PPPqBPPP/R3K2R w KQkq - 0 11",
+          "bestmove": "f4d2",
+          "score": {
+            "type": "cp",
+            "value": 655
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 19 seldepth 27 multipv 1 score cp 655 wdl 1000 0 0 nodes 550180 nps 867791 hashfull 115 tbhits 0 time 634 pv f4d2 f6d7 d2e3 f7f5 e1c1 e7e5 c1b1 g4f3 e2f3 d7c5 h1e1 e5e4 f3e2 a5a4 f2f3",
+            "bestmove f4d2 ponder f6d7"
+          ],
+          "commands": [
+            "position fen r2qkb1r/1p2pppp/2p2n2/p1n5/3P1Bb1/2N2N2/PPPQBPPP/R3K2R w KQkq - 0 10 moves d4c5 d8d2",
+            "go depth 19 nodes 10000000"
+          ]
+        },
+        {
+          "caseId": "tactic-003",
+          "depth": 19,
+          "move": "f4d2",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen r2qkb1r/1p2pppp/2p2n2/p1n5/3P1Bb1/2N2N2/PPPQBPPP/R3K2R w KQkq - 0 10 moves d4c5 d8d2",
+          "nativeFen": "r3kb1r/1p2pppp/2p2n2/p1P5/5Bb1/2N2N2/PPPqBPPP/R3K2R w KQkq - 0 11",
+          "bestmove": "f4d2",
+          "score": {
+            "type": "cp",
+            "value": 647
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 19 seldepth 33 multipv 1 score cp 647 wdl 1000 0 0 nodes 862500 nps 886433 hashfull 192 tbhits 0 time 973 pv f4d2 f6d7 e1c1 g4f3 e2f3 e7e6 f3e2 f8c5 c3e4 c5a7 g2g4 h7h6 a2a4 a7b6 f2f3 e8g8 e4c3 b6f2",
+            "bestmove f4d2 ponder f6d7"
+          ],
+          "commands": [
+            "position fen r2qkb1r/1p2pppp/2p2n2/p1n5/3P1Bb1/2N2N2/PPPQBPPP/R3K2R w KQkq - 0 10 moves d4c5 d8d2",
+            "go depth 19 nodes 10000000 searchmoves f4d2"
+          ]
+        },
+        {
+          "caseId": "tactic-003",
+          "depth": 19,
+          "move": "f3d2",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen r2qkb1r/1p2pppp/2p2n2/p1n5/3P1Bb1/2N2N2/PPPQBPPP/R3K2R w KQkq - 0 10 moves d4c5 d8d2",
+          "nativeFen": "r3kb1r/1p2pppp/2p2n2/p1P5/5Bb1/2N2N2/PPPqBPPP/R3K2R w KQkq - 0 11",
+          "bestmove": "f3d2",
+          "score": {
+            "type": "cp",
+            "value": 640
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 19 seldepth 30 multipv 1 score cp 640 wdl 1000 0 0 nodes 756469 nps 832199 hashfull 165 tbhits 0 time 909 pv f3d2 g4e2 e1e2 f6d5 c3d5 c6d5 f4e3 e7e5 f2f4 e5f4 e3f4 f8c5 c2c3 e8c8 e2d3 f7f6 h1f1",
+            "bestmove f3d2 ponder g4e2"
+          ],
+          "commands": [
+            "position fen r2qkb1r/1p2pppp/2p2n2/p1n5/3P1Bb1/2N2N2/PPPQBPPP/R3K2R w KQkq - 0 10 moves d4c5 d8d2",
+            "go depth 19 nodes 10000000 searchmoves f3d2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training-056",
+      "initialFen": "1k5r/n1r3pp/5p2/ppN5/5P2/8/2R3PP/1R4K1 w - - 0 29",
+      "history": [
+        "c5a6",
+        "b8b7"
+      ],
+      "expected": "a6c7",
+      "rejected": {
+        "from": 10,
+        "to": 50,
+        "promotion": null
+      },
+      "nativeGuard": false,
+      "baselineRootRole": "CAPTURED_BASELINE_NOT_INVARIABLY_CORRECT",
+      "phases": [
+        {
+          "caseId": "training-056",
+          "depth": 17,
+          "move": null,
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 1k5r/n1r3pp/5p2/ppN5/5P2/8/2R3PP/1R4K1 w - - 0 29 moves c5a6 b8b7",
+          "nativeFen": "7r/nkr3pp/N4p2/pp6/5P2/8/2R3PP/1R4K1 w - - 2 30",
+          "bestmove": "a6c7",
+          "score": {
+            "type": "cp",
+            "value": 639
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 17 seldepth 19 multipv 1 score cp 639 wdl 1000 0 0 nodes 51026 nps 718676 hashfull 7 tbhits 0 time 71 pv a6c7 b5b4 c7d5 a7b5 c2c5 b5a3 b1b3 b7a6 d5b4 a5b4 b3b4 h8d8 b4b3 d8d1 g1f2 d1d2 f2g3 a3c2",
+            "bestmove a6c7 ponder b5b4"
+          ],
+          "commands": [
+            "position fen 1k5r/n1r3pp/5p2/ppN5/5P2/8/2R3PP/1R4K1 w - - 0 29 moves c5a6 b8b7",
+            "go depth 17 nodes 10000000"
+          ]
+        },
+        {
+          "caseId": "training-056",
+          "depth": 17,
+          "move": "a6c7",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 1k5r/n1r3pp/5p2/ppN5/5P2/8/2R3PP/1R4K1 w - - 0 29 moves c5a6 b8b7",
+          "nativeFen": "7r/nkr3pp/N4p2/pp6/5P2/8/2R3PP/1R4K1 w - - 2 30",
+          "bestmove": "a6c7",
+          "score": {
+            "type": "cp",
+            "value": 658
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 17 seldepth 20 multipv 1 score cp 658 wdl 1000 0 0 nodes 90949 nps 891656 hashfull 20 tbhits 0 time 102 pv a6c7 b5b4 c7d5 h8c8 d5b4 a5b4 b1b4 b7a8 c2c8 a7c8 b4d4 c8b6 d4d8 a8b7 d8g8 b6d5 g8g7 b7c6",
+            "bestmove a6c7 ponder b5b4"
+          ],
+          "commands": [
+            "position fen 1k5r/n1r3pp/5p2/ppN5/5P2/8/2R3PP/1R4K1 w - - 0 29 moves c5a6 b8b7",
+            "go depth 17 nodes 10000000 searchmoves a6c7"
+          ]
+        },
+        {
+          "caseId": "training-056",
+          "depth": 17,
+          "move": "c2c7",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 1k5r/n1r3pp/5p2/ppN5/5P2/8/2R3PP/1R4K1 w - - 0 29 moves c5a6 b8b7",
+          "nativeFen": "7r/nkr3pp/N4p2/pp6/5P2/8/2R3PP/1R4K1 w - - 2 30",
+          "bestmove": "c2c7",
+          "score": {
+            "type": "cp",
+            "value": 0
+          },
+          "wdl": [
+            4,
+            991,
+            5
+          ],
+          "expectedPerMille": 499.5,
+          "raw": [
+            "info depth 17 seldepth 17 multipv 1 score cp 0 wdl 4 991 5 nodes 42776 nps 486090 hashfull 6 tbhits 0 time 88 pv c2c7 b7a6 c7g7 b5b4 g7f7 a7c6 f7f6 a6b5 f6f5 b5b6 f5f6 b6b5",
+            "bestmove c2c7 ponder b7a6"
+          ],
+          "commands": [
+            "position fen 1k5r/n1r3pp/5p2/ppN5/5P2/8/2R3PP/1R4K1 w - - 0 29 moves c5a6 b8b7",
+            "go depth 17 nodes 10000000 searchmoves c2c7"
+          ]
+        },
+        {
+          "caseId": "training-056",
+          "depth": 19,
+          "move": null,
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 1k5r/n1r3pp/5p2/ppN5/5P2/8/2R3PP/1R4K1 w - - 0 29 moves c5a6 b8b7",
+          "nativeFen": "7r/nkr3pp/N4p2/pp6/5P2/8/2R3PP/1R4K1 w - - 2 30",
+          "bestmove": "a6c7",
+          "score": {
+            "type": "cp",
+            "value": 659
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 19 seldepth 21 multipv 1 score cp 659 wdl 1000 0 0 nodes 99097 nps 669574 hashfull 16 tbhits 0 time 148 pv a6c7 b5b4 c7d5 h8b8 c2c5 a7c6 g1f1 b8d8 h2h4 d8d7 f1e1 d7d8 h4h5 d8e8 e1f1",
+            "bestmove a6c7 ponder b5b4"
+          ],
+          "commands": [
+            "position fen 1k5r/n1r3pp/5p2/ppN5/5P2/8/2R3PP/1R4K1 w - - 0 29 moves c5a6 b8b7",
+            "go depth 19 nodes 10000000"
+          ]
+        },
+        {
+          "caseId": "training-056",
+          "depth": 19,
+          "move": "a6c7",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 1k5r/n1r3pp/5p2/ppN5/5P2/8/2R3PP/1R4K1 w - - 0 29 moves c5a6 b8b7",
+          "nativeFen": "7r/nkr3pp/N4p2/pp6/5P2/8/2R3PP/1R4K1 w - - 2 30",
+          "bestmove": "a6c7",
+          "score": {
+            "type": "cp",
+            "value": 658
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 19 seldepth 21 multipv 1 score cp 658 wdl 1000 0 0 nodes 92416 nps 646265 hashfull 20 tbhits 0 time 143 pv a6c7 b5b4 c7d5 h8c8 d5b4 a5b4 b1b4 b7a8 c2c8 a7c8 b4d4 c8b6 d4d8 a8b7 d8g8 b6d5 g8g7 b7c6 g7h7",
+            "bestmove a6c7 ponder b5b4"
+          ],
+          "commands": [
+            "position fen 1k5r/n1r3pp/5p2/ppN5/5P2/8/2R3PP/1R4K1 w - - 0 29 moves c5a6 b8b7",
+            "go depth 19 nodes 10000000 searchmoves a6c7"
+          ]
+        },
+        {
+          "caseId": "training-056",
+          "depth": 19,
+          "move": "c2c7",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 1k5r/n1r3pp/5p2/ppN5/5P2/8/2R3PP/1R4K1 w - - 0 29 moves c5a6 b8b7",
+          "nativeFen": "7r/nkr3pp/N4p2/pp6/5P2/8/2R3PP/1R4K1 w - - 2 30",
+          "bestmove": "c2c7",
+          "score": {
+            "type": "cp",
+            "value": 0
+          },
+          "wdl": [
+            4,
+            991,
+            5
+          ],
+          "expectedPerMille": 499.5,
+          "raw": [
+            "info depth 19 seldepth 28 multipv 1 score cp 0 wdl 4 991 5 nodes 86272 nps 690176 hashfull 15 tbhits 0 time 125 pv c2c7 b7a6 c7g7 b5b4 g7f7 a7c6 f7f6 a6b5 f6f5 b5b6 f5f6",
+            "bestmove c2c7 ponder b7a6"
+          ],
+          "commands": [
+            "position fen 1k5r/n1r3pp/5p2/ppN5/5P2/8/2R3PP/1R4K1 w - - 0 29 moves c5a6 b8b7",
+            "go depth 19 nodes 10000000 searchmoves c2c7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training-060",
+      "initialFen": "8/6p1/4p3/2K1p3/1P5p/7P/4kPP1/8 b - - 0 36",
+      "history": [
+        "e2f2",
+        "b4b5"
+      ],
+      "expected": "f2g2",
+      "rejected": {
+        "from": 36,
+        "to": 28,
+        "promotion": null
+      },
+      "nativeGuard": false,
+      "baselineRootRole": "CAPTURED_BASELINE_NOT_INVARIABLY_CORRECT",
+      "phases": [
+        {
+          "caseId": "training-060",
+          "depth": 17,
+          "move": null,
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 8/6p1/4p3/2K1p3/1P5p/7P/4kPP1/8 b - - 0 36 moves e2f2 b4b5",
+          "nativeFen": "8/6p1/4p3/1PK1p3/7p/7P/5kP1/8 b - - 0 37",
+          "bestmove": "e5e4",
+          "score": {
+            "type": "cp",
+            "value": 509
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 17 seldepth 49 multipv 1 score cp 509 wdl 1000 0 0 nodes 722863 nps 1487372 hashfull 111 tbhits 0 time 486 pv e5e4 b5b6 e4e3 b6b7 e3e2 b7b8q e2e1q b8b2 f2g1 b2g7 e6e5 c5d5 e1d2 d5e6 e5e4 e6f7",
+            "bestmove e5e4 ponder b5b6"
+          ],
+          "commands": [
+            "position fen 8/6p1/4p3/2K1p3/1P5p/7P/4kPP1/8 b - - 0 36 moves e2f2 b4b5",
+            "go depth 17 nodes 10000000"
+          ]
+        },
+        {
+          "caseId": "training-060",
+          "depth": 17,
+          "move": "f2g2",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 8/6p1/4p3/2K1p3/1P5p/7P/4kPP1/8 b - - 0 36 moves e2f2 b4b5",
+          "nativeFen": "8/6p1/4p3/1PK1p3/7p/7P/5kP1/8 b - - 0 37",
+          "bestmove": "f2g2",
+          "score": {
+            "type": "cp",
+            "value": -617
+          },
+          "wdl": [
+            0,
+            0,
+            1000
+          ],
+          "expectedPerMille": 0,
+          "raw": [
+            "info depth 17 seldepth 21 multipv 1 score cp -617 wdl 0 0 1000 nodes 268863 nps 1768835 hashfull 29 tbhits 0 time 152 pv f2g2 b5b6 g7g5 b6b7 g5g4 h3g4 h4h3 b7b8q h3h2 b8b7 e5e4 g4g5 h2h1q b7e4 g2g1 e4h1 g1h1 c5d6 h1h2",
+            "bestmove f2g2 ponder b5b6"
+          ],
+          "commands": [
+            "position fen 8/6p1/4p3/2K1p3/1P5p/7P/4kPP1/8 b - - 0 36 moves e2f2 b4b5",
+            "go depth 17 nodes 10000000 searchmoves f2g2"
+          ]
+        },
+        {
+          "caseId": "training-060",
+          "depth": 17,
+          "move": "e5e4",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 8/6p1/4p3/2K1p3/1P5p/7P/4kPP1/8 b - - 0 36 moves e2f2 b4b5",
+          "nativeFen": "8/6p1/4p3/1PK1p3/7p/7P/5kP1/8 b - - 0 37",
+          "bestmove": "e5e4",
+          "score": {
+            "type": "cp",
+            "value": 485
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 17 seldepth 41 multipv 1 score cp 485 wdl 1000 0 0 nodes 303414 nps 1379154 hashfull 42 tbhits 0 time 220 pv e5e4 b5b6 e4e3 b6b7 e3e2 b7b8q e2e1q b8b2 f2g1 b2g7 e1e3 c5c6 e6e5 g7g4 e5e4 c6d6",
+            "bestmove e5e4 ponder b5b6"
+          ],
+          "commands": [
+            "position fen 8/6p1/4p3/2K1p3/1P5p/7P/4kPP1/8 b - - 0 36 moves e2f2 b4b5",
+            "go depth 17 nodes 10000000 searchmoves e5e4"
+          ]
+        },
+        {
+          "caseId": "training-060",
+          "depth": 19,
+          "move": null,
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 8/6p1/4p3/2K1p3/1P5p/7P/4kPP1/8 b - - 0 36 moves e2f2 b4b5",
+          "nativeFen": "8/6p1/4p3/1PK1p3/7p/7P/5kP1/8 b - - 0 37",
+          "bestmove": "e5e4",
+          "score": {
+            "type": "cp",
+            "value": 549
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 19 seldepth 71 multipv 1 score cp 549 wdl 1000 0 0 nodes 4728865 nps 1722719 hashfull 526 tbhits 0 time 2745 pv e5e4 b5b6 e4e3 b6b7 e3e2 b7b8q e2e1q b8b2 f2g1 b2g7 e6e5 g7h6 e1f2 c5d5 f2d4 d5c6 d4f4 h6h5",
+            "bestmove e5e4 ponder b5b6"
+          ],
+          "commands": [
+            "position fen 8/6p1/4p3/2K1p3/1P5p/7P/4kPP1/8 b - - 0 36 moves e2f2 b4b5",
+            "go depth 19 nodes 10000000"
+          ]
+        },
+        {
+          "caseId": "training-060",
+          "depth": 19,
+          "move": "f2g2",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 8/6p1/4p3/2K1p3/1P5p/7P/4kPP1/8 b - - 0 36 moves e2f2 b4b5",
+          "nativeFen": "8/6p1/4p3/1PK1p3/7p/7P/5kP1/8 b - - 0 37",
+          "bestmove": "f2g2",
+          "score": {
+            "type": "cp",
+            "value": -617
+          },
+          "wdl": [
+            0,
+            0,
+            1000
+          ],
+          "expectedPerMille": 0,
+          "raw": [
+            "info depth 19 seldepth 31 multipv 1 score cp -617 wdl 0 0 1000 nodes 270692 nps 1746400 hashfull 29 tbhits 0 time 155 pv f2g2 b5b6 g7g5 b6b7 g5g4 h3g4 h4h3 b7b8q h3h2 b8a8 g2g1 g4g5 h2h1q a8h1 g1h1 g5g6 e5e4 c5d4 e6e5 d4e4 h1g2",
+            "bestmove f2g2 ponder b5b6"
+          ],
+          "commands": [
+            "position fen 8/6p1/4p3/2K1p3/1P5p/7P/4kPP1/8 b - - 0 36 moves e2f2 b4b5",
+            "go depth 19 nodes 10000000 searchmoves f2g2"
+          ]
+        },
+        {
+          "caseId": "training-060",
+          "depth": 19,
+          "move": "e5e4",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 8/6p1/4p3/2K1p3/1P5p/7P/4kPP1/8 b - - 0 36 moves e2f2 b4b5",
+          "nativeFen": "8/6p1/4p3/1PK1p3/7p/7P/5kP1/8 b - - 0 37",
+          "bestmove": "e5e4",
+          "score": {
+            "type": "cp",
+            "value": 545
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 19 seldepth 67 multipv 1 score cp 545 wdl 1000 0 0 nodes 2515975 nps 1708061 hashfull 298 tbhits 0 time 1473 pv e5e4 b5b6 e4e3 b6b7 e3e2 b7b8q e2e1q b8b2 f2g1 b2g7 e1e3 c5c6 e6e5 c6d5 e3d3 d5c5 e5e4 g7g5",
+            "bestmove e5e4 ponder b5b6"
+          ],
+          "commands": [
+            "position fen 8/6p1/4p3/2K1p3/1P5p/7P/4kPP1/8 b - - 0 36 moves e2f2 b4b5",
+            "go depth 19 nodes 10000000 searchmoves e5e4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training-091",
+      "initialFen": "r4rk1/ppbb2pp/2p1p3/2Pp4/3Pp3/2N1P3/PPQ1B1PP/R1B1qRK1 b - - 0 16",
+      "history": [
+        "f8f1",
+        "e2f1"
+      ],
+      "expected": "a8f8",
+      "rejected": {
+        "from": 50,
+        "to": 15,
+        "promotion": null
+      },
+      "nativeGuard": false,
+      "baselineRootRole": "CAPTURED_BASELINE_NOT_INVARIABLY_CORRECT",
+      "phases": [
+        {
+          "caseId": "training-091",
+          "depth": 17,
+          "move": null,
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen r4rk1/ppbb2pp/2p1p3/2Pp4/3Pp3/2N1P3/PPQ1B1PP/R1B1qRK1 b - - 0 16 moves f8f1 e2f1",
+          "nativeFen": "r5k1/ppbb2pp/2p1p3/2Pp4/3Pp3/2N1P3/PPQ3PP/R1B1qBK1 b - - 0 17",
+          "bestmove": "a8f8",
+          "score": {
+            "type": "cp",
+            "value": 786
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 17 seldepth 20 multipv 1 score cp 786 wdl 1000 0 0 nodes 200693 nps 1127488 hashfull 38 tbhits 0 time 178 pv a8f8 c2e2 f8f1 e2f1 c7h2 g1h2 e1f1 a2a4 e6e5 a4a5 d7g4 b2b4 f1f2 b4b5 f2h4 h2g1",
+            "bestmove a8f8 ponder c2e2"
+          ],
+          "commands": [
+            "position fen r4rk1/ppbb2pp/2p1p3/2Pp4/3Pp3/2N1P3/PPQ1B1PP/R1B1qRK1 b - - 0 16 moves f8f1 e2f1",
+            "go depth 17 nodes 10000000"
+          ]
+        },
+        {
+          "caseId": "training-091",
+          "depth": 17,
+          "move": "a8f8",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen r4rk1/ppbb2pp/2p1p3/2Pp4/3Pp3/2N1P3/PPQ1B1PP/R1B1qRK1 b - - 0 16 moves f8f1 e2f1",
+          "nativeFen": "r5k1/ppbb2pp/2p1p3/2Pp4/3Pp3/2N1P3/PPQ3PP/R1B1qBK1 b - - 0 17",
+          "bestmove": "a8f8",
+          "score": {
+            "type": "cp",
+            "value": 809
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 17 seldepth 21 multipv 1 score cp 809 wdl 1000 0 0 nodes 171382 nps 1020130 hashfull 32 tbhits 0 time 168 pv a8f8 c2e2 f8f1 e2f1 c7h2 g1h2 e1f1 b2b4 g7g5 b4b5 g5g4",
+            "bestmove a8f8 ponder c2e2"
+          ],
+          "commands": [
+            "position fen r4rk1/ppbb2pp/2p1p3/2Pp4/3Pp3/2N1P3/PPQ1B1PP/R1B1qRK1 b - - 0 16 moves f8f1 e2f1",
+            "go depth 17 nodes 10000000 searchmoves a8f8"
+          ]
+        },
+        {
+          "caseId": "training-091",
+          "depth": 17,
+          "move": "c7h2",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen r4rk1/ppbb2pp/2p1p3/2Pp4/3Pp3/2N1P3/PPQ1B1PP/R1B1qRK1 b - - 0 16 moves f8f1 e2f1",
+          "nativeFen": "r5k1/ppbb2pp/2p1p3/2Pp4/3Pp3/2N1P3/PPQ3PP/R1B1qBK1 b - - 0 17",
+          "bestmove": "c7h2",
+          "score": {
+            "type": "cp",
+            "value": -37
+          },
+          "wdl": [
+            1,
+            958,
+            41
+          ],
+          "expectedPerMille": 480,
+          "raw": [
+            "info depth 17 seldepth 39 multipv 1 score cp -37 wdl 1 958 41 nodes 635673 nps 964602 hashfull 113 tbhits 0 time 659 pv c7h2 g1h2 a8f8 c2e2 e1h4 h2g1 f8f6 e2d2 d7e8 b2b4 f6h6 c3e2 h4h1 g1f2",
+            "bestmove c7h2 ponder g1h2"
+          ],
+          "commands": [
+            "position fen r4rk1/ppbb2pp/2p1p3/2Pp4/3Pp3/2N1P3/PPQ1B1PP/R1B1qRK1 b - - 0 16 moves f8f1 e2f1",
+            "go depth 17 nodes 10000000 searchmoves c7h2"
+          ]
+        },
+        {
+          "caseId": "training-091",
+          "depth": 19,
+          "move": null,
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen r4rk1/ppbb2pp/2p1p3/2Pp4/3Pp3/2N1P3/PPQ1B1PP/R1B1qRK1 b - - 0 16 moves f8f1 e2f1",
+          "nativeFen": "r5k1/ppbb2pp/2p1p3/2Pp4/3Pp3/2N1P3/PPQ3PP/R1B1qBK1 b - - 0 17",
+          "bestmove": "a8f8",
+          "score": {
+            "type": "cp",
+            "value": 806
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 19 seldepth 23 multipv 1 score cp 806 wdl 1000 0 0 nodes 203977 nps 1014810 hashfull 39 tbhits 0 time 201 pv a8f8 c2e2 f8f1 e2f1 c7h2 g1h2 e1f1 a2a4 e6e5 a4a5 h7h5 d4e5",
+            "bestmove a8f8 ponder c2e2"
+          ],
+          "commands": [
+            "position fen r4rk1/ppbb2pp/2p1p3/2Pp4/3Pp3/2N1P3/PPQ1B1PP/R1B1qRK1 b - - 0 16 moves f8f1 e2f1",
+            "go depth 19 nodes 10000000"
+          ]
+        },
+        {
+          "caseId": "training-091",
+          "depth": 19,
+          "move": "a8f8",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen r4rk1/ppbb2pp/2p1p3/2Pp4/3Pp3/2N1P3/PPQ1B1PP/R1B1qRK1 b - - 0 16 moves f8f1 e2f1",
+          "nativeFen": "r5k1/ppbb2pp/2p1p3/2Pp4/3Pp3/2N1P3/PPQ3PP/R1B1qBK1 b - - 0 17",
+          "bestmove": "a8f8",
+          "score": {
+            "type": "cp",
+            "value": 828
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 19 seldepth 24 multipv 1 score cp 828 wdl 1000 0 0 nodes 177192 nps 984400 hashfull 33 tbhits 0 time 180 pv a8f8 c2e2 f8f1 e2f1 c7h2 g1h2 e1f1 b2b4 f1f2 a1b1 f2h4 h2g1 h4e1 g1h2 e1c3",
+            "bestmove a8f8 ponder c2e2"
+          ],
+          "commands": [
+            "position fen r4rk1/ppbb2pp/2p1p3/2Pp4/3Pp3/2N1P3/PPQ1B1PP/R1B1qRK1 b - - 0 16 moves f8f1 e2f1",
+            "go depth 19 nodes 10000000 searchmoves a8f8"
+          ]
+        },
+        {
+          "caseId": "training-091",
+          "depth": 19,
+          "move": "c7h2",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen r4rk1/ppbb2pp/2p1p3/2Pp4/3Pp3/2N1P3/PPQ1B1PP/R1B1qRK1 b - - 0 16 moves f8f1 e2f1",
+          "nativeFen": "r5k1/ppbb2pp/2p1p3/2Pp4/3Pp3/2N1P3/PPQ3PP/R1B1qBK1 b - - 0 17",
+          "bestmove": "c7h2",
+          "score": {
+            "type": "cp",
+            "value": -63
+          },
+          "wdl": [
+            0,
+            866,
+            134
+          ],
+          "expectedPerMille": 433,
+          "raw": [
+            "info depth 19 seldepth 28 multipv 1 score cp -63 wdl 0 866 134 nodes 820257 nps 974176 hashfull 143 tbhits 0 time 842 pv c7h2 g1h2 a8f8 c2d2 e1f1 d2e2 f1f6 e2e1 f6h6 h2g1 f8f6 c3e2 h6h5 e2f4 h5g4 b2b3 f6h6 e1a5 g4h4",
+            "bestmove c7h2 ponder g1h2"
+          ],
+          "commands": [
+            "position fen r4rk1/ppbb2pp/2p1p3/2Pp4/3Pp3/2N1P3/PPQ1B1PP/R1B1qRK1 b - - 0 16 moves f8f1 e2f1",
+            "go depth 19 nodes 10000000 searchmoves c7h2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training-096",
+      "initialFen": "3q3k/8/3PQ2p/p3n1r1/P1P4b/2N1p2P/1r6/R5RK w - - 0 33",
+      "history": [
+        "e6h6",
+        "h8g8"
+      ],
+      "expected": "h6h4",
+      "rejected": {
+        "from": 18,
+        "to": 35,
+        "promotion": null
+      },
+      "nativeGuard": false,
+      "baselineRootRole": "CAPTURED_BASELINE_NOT_INVARIABLY_CORRECT",
+      "phases": [
+        {
+          "caseId": "training-096",
+          "depth": 17,
+          "move": null,
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 3q3k/8/3PQ2p/p3n1r1/P1P4b/2N1p2P/1r6/R5RK w - - 0 33 moves e6h6 h8g8",
+          "nativeFen": "3q2k1/8/3P3Q/p3n1r1/P1P4b/2N1p2P/1r6/R5RK w - - 1 34",
+          "bestmove": "h6h4",
+          "score": {
+            "type": "cp",
+            "value": 279
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 17 seldepth 54 multipv 1 score cp 279 wdl 1000 0 0 nodes 248460 nps 934060 hashfull 42 tbhits 0 time 266 pv h6h4 b2h2 h1h2 e5f3 h2h1 f3h4 g1g5 g8f7 a1f1 f7e6 g5h5 h4g6 c4c5 d8a8 h1g1 e3e2 c3e2 a8e4 f1f2 g6e5 h5f5 e4a4 e2g3 a4c4 f2e2 c4e2 g3e2 e6f5 e2d4 f5f6 c5c6 e5f7 d4b5 f6e6",
+            "bestmove h6h4 ponder b2h2"
+          ],
+          "commands": [
+            "position fen 3q3k/8/3PQ2p/p3n1r1/P1P4b/2N1p2P/1r6/R5RK w - - 0 33 moves e6h6 h8g8",
+            "go depth 17 nodes 10000000"
+          ]
+        },
+        {
+          "caseId": "training-096",
+          "depth": 17,
+          "move": "h6h4",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 3q3k/8/3PQ2p/p3n1r1/P1P4b/2N1p2P/1r6/R5RK w - - 0 33 moves e6h6 h8g8",
+          "nativeFen": "3q2k1/8/3P3Q/p3n1r1/P1P4b/2N1p2P/1r6/R5RK w - - 1 34",
+          "bestmove": "h6h4",
+          "score": {
+            "type": "cp",
+            "value": 289
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 17 seldepth 35 multipv 1 score cp 289 wdl 1000 0 0 nodes 113439 nps 969564 hashfull 19 tbhits 0 time 117 pv h6h4 b2h2 h1h2 e5f3 h2h1 f3h4 g1g5 g8f7 a1f1 f7e6 g5h5 h4g6 c4c5 d8a8 h1g1 e3e2 c3e2 a8e4 f1f2 e4e3 h5h7 g6e5 e2f4 e6f5 h7h5 f5e4 g1g2 e5f3",
+            "bestmove h6h4 ponder b2h2"
+          ],
+          "commands": [
+            "position fen 3q3k/8/3PQ2p/p3n1r1/P1P4b/2N1p2P/1r6/R5RK w - - 0 33 moves e6h6 h8g8",
+            "go depth 17 nodes 10000000 searchmoves h6h4"
+          ]
+        },
+        {
+          "caseId": "training-096",
+          "depth": 17,
+          "move": "c3d5",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 3q3k/8/3PQ2p/p3n1r1/P1P4b/2N1p2P/1r6/R5RK w - - 0 33 moves e6h6 h8g8",
+          "nativeFen": "3q2k1/8/3P3Q/p3n1r1/P1P4b/2N1p2P/1r6/R5RK w - - 1 34",
+          "bestmove": "c3d5",
+          "score": {
+            "type": "cp",
+            "value": -673
+          },
+          "wdl": [
+            0,
+            0,
+            1000
+          ],
+          "expectedPerMille": 0,
+          "raw": [
+            "info depth 17 seldepth 52 multipv 1 score cp -673 wdl 0 0 1000 nodes 1655273 nps 967430 hashfull 318 tbhits 0 time 1711 pv c3d5 e5f3 g1g5 d8g5 d5e7 g8f7 h6h7 f7e6 h7e4 g5e5 e4g4 e6d6 g4f3",
+            "bestmove c3d5 ponder e5f3"
+          ],
+          "commands": [
+            "position fen 3q3k/8/3PQ2p/p3n1r1/P1P4b/2N1p2P/1r6/R5RK w - - 0 33 moves e6h6 h8g8",
+            "go depth 17 nodes 10000000 searchmoves c3d5"
+          ]
+        },
+        {
+          "caseId": "training-096",
+          "depth": 19,
+          "move": null,
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 3q3k/8/3PQ2p/p3n1r1/P1P4b/2N1p2P/1r6/R5RK w - - 0 33 moves e6h6 h8g8",
+          "nativeFen": "3q2k1/8/3P3Q/p3n1r1/P1P4b/2N1p2P/1r6/R5RK w - - 1 34",
+          "bestmove": "h6h4",
+          "score": {
+            "type": "cp",
+            "value": 325
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 19 seldepth 43 multipv 1 score cp 325 wdl 1000 0 0 nodes 508365 nps 1050340 hashfull 86 tbhits 0 time 484 pv h6h4 b2h2 h1h2 e5f3 h2h1 f3h4 g1g5 g8f7 a1f1 f7e6 g5h5 h4g6 c4c5 d8a8 h1g1 a8b7 h5g5 g6e5 c3e2 b7h7 e2f4 e6d7 f4h5 h7h8 f1f5 e5c6 g5g7 d7c8 f5g5 c6d8 h5f4 e3e2 f4e2 h8h3 g5g3 h3h4 g7c7 c8b8",
+            "bestmove h6h4 ponder b2h2"
+          ],
+          "commands": [
+            "position fen 3q3k/8/3PQ2p/p3n1r1/P1P4b/2N1p2P/1r6/R5RK w - - 0 33 moves e6h6 h8g8",
+            "go depth 19 nodes 10000000"
+          ]
+        },
+        {
+          "caseId": "training-096",
+          "depth": 19,
+          "move": "h6h4",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 3q3k/8/3PQ2p/p3n1r1/P1P4b/2N1p2P/1r6/R5RK w - - 0 33 moves e6h6 h8g8",
+          "nativeFen": "3q2k1/8/3P3Q/p3n1r1/P1P4b/2N1p2P/1r6/R5RK w - - 1 34",
+          "bestmove": "h6h4",
+          "score": {
+            "type": "cp",
+            "value": 300
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 19 seldepth 47 multipv 1 score cp 300 wdl 1000 0 0 nodes 711602 nps 1233279 hashfull 135 tbhits 0 time 577 pv h6h4 b2h2 h1h2 e5f3 h2h1 f3h4 g1g5 g8f7 a1f1 f7e6 g5h5 h4g6 c4c5 d8e8 h1h2 g6f4 h5h7 e8g8 h7e7 e6f5 f1g1 g8b3 e7e3 b3b2 h2h1 b2b7 c3e4",
+            "bestmove h6h4 ponder b2h2"
+          ],
+          "commands": [
+            "position fen 3q3k/8/3PQ2p/p3n1r1/P1P4b/2N1p2P/1r6/R5RK w - - 0 33 moves e6h6 h8g8",
+            "go depth 19 nodes 10000000 searchmoves h6h4"
+          ]
+        },
+        {
+          "caseId": "training-096",
+          "depth": 19,
+          "move": "c3d5",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 3q3k/8/3PQ2p/p3n1r1/P1P4b/2N1p2P/1r6/R5RK w - - 0 33 moves e6h6 h8g8",
+          "nativeFen": "3q2k1/8/3P3Q/p3n1r1/P1P4b/2N1p2P/1r6/R5RK w - - 1 34",
+          "bestmove": "c3d5",
+          "score": {
+            "type": "cp",
+            "value": -910
+          },
+          "wdl": [
+            0,
+            0,
+            1000
+          ],
+          "expectedPerMille": 0,
+          "raw": [
+            "info depth 19 seldepth 26 multipv 1 score cp -910 wdl 0 0 1000 nodes 1735646 nps 1066776 hashfull 329 tbhits 0 time 1627 pv c3d5 e5f3 g1g5 h4g5 h6g6 g8f8 g6f5 d8f6 f5c8 f8g7 c8c7 g7h6 d6d7 b2h2 c7h2 f6a1 h1g2 f3h2 d7d8b",
+            "bestmove c3d5 ponder e5f3"
+          ],
+          "commands": [
+            "position fen 3q3k/8/3PQ2p/p3n1r1/P1P4b/2N1p2P/1r6/R5RK w - - 0 33 moves e6h6 h8g8",
+            "go depth 19 nodes 10000000 searchmoves c3d5"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training-040",
+      "initialFen": "3r1rk1/2p1q1p1/p7/Q2Rp2b/7P/2N1P1B1/PP3P2/2K5 w - - 0 25",
+      "history": [
+        "d5e5",
+        "e7d7",
+        "e5d5",
+        "d7h3"
+      ],
+      "expected": "d5h5",
+      "rejected": {
+        "from": 35,
+        "to": 59,
+        "promotion": null
+      },
+      "nativeGuard": false,
+      "baselineRootRole": "CAPTURED_BASELINE_NOT_INVARIABLY_CORRECT",
+      "phases": [
+        {
+          "caseId": "training-040",
+          "depth": 17,
+          "move": null,
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 3r1rk1/2p1q1p1/p7/Q2Rp2b/7P/2N1P1B1/PP3P2/2K5 w - - 0 25 moves d5e5 e7d7 e5d5 d7h3",
+          "nativeFen": "3r1rk1/2p3p1/p7/Q2R3b/7P/2N1P1Bq/PP3P2/2K5 w - - 3 27",
+          "bestmove": "d5d8",
+          "score": {
+            "type": "cp",
+            "value": 583
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 17 seldepth 38 multipv 1 score cp 583 wdl 1000 0 0 nodes 1200354 nps 838236 hashfull 224 tbhits 0 time 1432 pv d5d8 h3h1 d8d1 h5d1 c3d1 f8d8 a5a4 g8h8 a4c2 a6a5 g3e5 h1d5 e5c3 h8g8 c2b3 d5b3 a2b3 d8d5 e3e4 d5h5 c1c2 h5h4 c2d3 h4h1",
+            "bestmove d5d8 ponder h3h1"
+          ],
+          "commands": [
+            "position fen 3r1rk1/2p1q1p1/p7/Q2Rp2b/7P/2N1P1B1/PP3P2/2K5 w - - 0 25 moves d5e5 e7d7 e5d5 d7h3",
+            "go depth 17 nodes 10000000"
+          ]
+        },
+        {
+          "caseId": "training-040",
+          "depth": 17,
+          "move": "d5h5",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 3r1rk1/2p1q1p1/p7/Q2Rp2b/7P/2N1P1B1/PP3P2/2K5 w - - 0 25 moves d5e5 e7d7 e5d5 d7h3",
+          "nativeFen": "3r1rk1/2p3p1/p7/Q2R3b/7P/2N1P1Bq/PP3P2/2K5 w - - 3 27",
+          "bestmove": "d5h5",
+          "score": {
+            "type": "cp",
+            "value": 594
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 17 seldepth 30 multipv 1 score cp 594 wdl 1000 0 0 nodes 390937 nps 575754 hashfull 72 tbhits 0 time 679 pv d5h5 h3f1 c1c2 f1d3 c2b3 d8b8 b3a3 d3c2 c3a4 f8d8 h5d5 d8d5 a5d5 g8h8 d5h5 h8g8 h5c5 c2d2 c5c4 g8h8 b2b3 b8b5 g3c7 b5d5 c4c3 d5d3 c3d2",
+            "bestmove d5h5 ponder h3f1"
+          ],
+          "commands": [
+            "position fen 3r1rk1/2p1q1p1/p7/Q2Rp2b/7P/2N1P1B1/PP3P2/2K5 w - - 0 25 moves d5e5 e7d7 e5d5 d7h3",
+            "go depth 17 nodes 10000000 searchmoves d5h5"
+          ]
+        },
+        {
+          "caseId": "training-040",
+          "depth": 17,
+          "move": "d5d8",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 3r1rk1/2p1q1p1/p7/Q2Rp2b/7P/2N1P1B1/PP3P2/2K5 w - - 0 25 moves d5e5 e7d7 e5d5 d7h3",
+          "nativeFen": "3r1rk1/2p3p1/p7/Q2R3b/7P/2N1P1Bq/PP3P2/2K5 w - - 3 27",
+          "bestmove": "d5d8",
+          "score": {
+            "type": "cp",
+            "value": 547
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 17 seldepth 46 multipv 1 score cp 547 wdl 1000 0 0 nodes 1254252 nps 1153865 hashfull 230 tbhits 0 time 1087 pv d5d8 f8d8 a5h5 h3f1 c1c2 f1d3 c2b3 d8b8 b3a3 d3c2 h5e2 b8b2 e2c2 b2c2 a3b3 c2d2 a2a4 c7c6 c3e4 d2d1 b3b2 d1e1",
+            "bestmove d5d8 ponder f8d8"
+          ],
+          "commands": [
+            "position fen 3r1rk1/2p1q1p1/p7/Q2Rp2b/7P/2N1P1B1/PP3P2/2K5 w - - 0 25 moves d5e5 e7d7 e5d5 d7h3",
+            "go depth 17 nodes 10000000 searchmoves d5d8"
+          ]
+        },
+        {
+          "caseId": "training-040",
+          "depth": 19,
+          "move": null,
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 3r1rk1/2p1q1p1/p7/Q2Rp2b/7P/2N1P1B1/PP3P2/2K5 w - - 0 25 moves d5e5 e7d7 e5d5 d7h3",
+          "nativeFen": "3r1rk1/2p3p1/p7/Q2R3b/7P/2N1P1Bq/PP3P2/2K5 w - - 3 27",
+          "bestmove": "d5d8",
+          "score": {
+            "type": "cp",
+            "value": 596
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 19 seldepth 52 multipv 1 score cp 596 wdl 1000 0 0 nodes 3077723 nps 871876 hashfull 503 tbhits 0 time 3530 pv d5d8 h3h1 d8d1 h5d1 c3d1 f8d8 a5a4 g8h8 a4c2 h1d5 c2e2 d5a2 d1c3 a2a5 c1c2 h8h7 e2c4 a5b6 c4e4 h7g8 b2b3 a6a5",
+            "bestmove d5d8 ponder h3h1"
+          ],
+          "commands": [
+            "position fen 3r1rk1/2p1q1p1/p7/Q2Rp2b/7P/2N1P1B1/PP3P2/2K5 w - - 0 25 moves d5e5 e7d7 e5d5 d7h3",
+            "go depth 19 nodes 10000000"
+          ]
+        },
+        {
+          "caseId": "training-040",
+          "depth": 19,
+          "move": "d5h5",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 3r1rk1/2p1q1p1/p7/Q2Rp2b/7P/2N1P1B1/PP3P2/2K5 w - - 0 25 moves d5e5 e7d7 e5d5 d7h3",
+          "nativeFen": "3r1rk1/2p3p1/p7/Q2R3b/7P/2N1P1Bq/PP3P2/2K5 w - - 3 27",
+          "bestmove": "d5h5",
+          "score": {
+            "type": "cp",
+            "value": 645
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 19 seldepth 44 multipv 1 score cp 645 wdl 1000 0 0 nodes 1224465 nps 783908 hashfull 220 tbhits 0 time 1562 pv d5h5 h3f1 c1c2 f1d3 c2b3 d8b8 b3a3 d3c2 c3a4 f8d8 h5d5 d8d5 a5d5 g8h7 d5h5 h7g8 h5c5 c2d1",
+            "bestmove d5h5 ponder h3f1"
+          ],
+          "commands": [
+            "position fen 3r1rk1/2p1q1p1/p7/Q2Rp2b/7P/2N1P1B1/PP3P2/2K5 w - - 0 25 moves d5e5 e7d7 e5d5 d7h3",
+            "go depth 19 nodes 10000000 searchmoves d5h5"
+          ]
+        },
+        {
+          "caseId": "training-040",
+          "depth": 19,
+          "move": "d5d8",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 3r1rk1/2p1q1p1/p7/Q2Rp2b/7P/2N1P1B1/PP3P2/2K5 w - - 0 25 moves d5e5 e7d7 e5d5 d7h3",
+          "nativeFen": "3r1rk1/2p3p1/p7/Q2R3b/7P/2N1P1Bq/PP3P2/2K5 w - - 3 27",
+          "bestmove": "d5d8",
+          "score": {
+            "type": "cp",
+            "value": 601
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 19 seldepth 41 multipv 1 score cp 601 wdl 1000 0 0 nodes 1383852 nps 1048372 hashfull 248 tbhits 0 time 1320 pv d5d8 f8d8 a5h5 h3f1 c1c2 f1d3 c2b3 d8b8 b3a3 d3c2 h5e2 b8b2 e2c2 b2c2 a3b3 c2d2 c3e4 d2d1 g3c7 d1b1",
+            "bestmove d5d8 ponder f8d8"
+          ],
+          "commands": [
+            "position fen 3r1rk1/2p1q1p1/p7/Q2Rp2b/7P/2N1P1B1/PP3P2/2K5 w - - 0 25 moves d5e5 e7d7 e5d5 d7h3",
+            "go depth 19 nodes 10000000 searchmoves d5d8"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "guard-training012",
+      "initialFen": "4r1k1/1rp2ppp/5q2/2R5/8/P2P4/R2Q1PPP/6K1 b - - 0 24",
+      "history": [],
+      "expected": "b7b1",
+      "rejected": {
+        "from": 55,
+        "to": 39,
+        "promotion": null
+      },
+      "nativeGuard": false,
+      "baselineRootRole": "CAPTURED_BASELINE_NOT_INVARIABLY_CORRECT",
+      "phases": [
+        {
+          "caseId": "guard-training012",
+          "depth": 17,
+          "move": null,
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 4r1k1/1rp2ppp/5q2/2R5/8/P2P4/R2Q1PPP/6K1 b - - 0 24",
+          "nativeFen": "4r1k1/1rp2ppp/5q2/2R5/8/P2P4/R2Q1PPP/6K1 b - - 0 24",
+          "bestmove": "b7b1",
+          "score": {
+            "type": "cp",
+            "value": 858
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 17 seldepth 19 multipv 1 score cp 858 wdl 1000 0 0 nodes 285474 nps 1045692 hashfull 61 tbhits 0 time 273 pv b7b1 c5c1 e8e2 d2e2 b1c1 e2f1 c1f1 g1f1 g7g6 a2e2 f6a1 e2e1 a1a3 e1e8 g8g7 f1e2 a3a2 e2e3",
+            "bestmove b7b1 ponder c5c1"
+          ],
+          "commands": [
+            "position fen 4r1k1/1rp2ppp/5q2/2R5/8/P2P4/R2Q1PPP/6K1 b - - 0 24",
+            "go depth 17 nodes 10000000"
+          ]
+        },
+        {
+          "caseId": "guard-training012",
+          "depth": 17,
+          "move": "b7b1",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 4r1k1/1rp2ppp/5q2/2R5/8/P2P4/R2Q1PPP/6K1 b - - 0 24",
+          "nativeFen": "4r1k1/1rp2ppp/5q2/2R5/8/P2P4/R2Q1PPP/6K1 b - - 0 24",
+          "bestmove": "b7b1",
+          "score": {
+            "type": "cp",
+            "value": 863
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 17 seldepth 22 multipv 1 score cp 863 wdl 1000 0 0 nodes 326788 nps 1078508 hashfull 68 tbhits 0 time 303 pv b7b1 c5c1 e8e2 d2e2 b1c1 e2f1 c1f1 g1f1 f6a6 a2a1",
+            "bestmove b7b1 ponder c5c1"
+          ],
+          "commands": [
+            "position fen 4r1k1/1rp2ppp/5q2/2R5/8/P2P4/R2Q1PPP/6K1 b - - 0 24",
+            "go depth 17 nodes 10000000 searchmoves b7b1"
+          ]
+        },
+        {
+          "caseId": "guard-training012",
+          "depth": 17,
+          "move": "h7h5",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 4r1k1/1rp2ppp/5q2/2R5/8/P2P4/R2Q1PPP/6K1 b - - 0 24",
+          "nativeFen": "4r1k1/1rp2ppp/5q2/2R5/8/P2P4/R2Q1PPP/6K1 b - - 0 24",
+          "bestmove": "h7h5",
+          "score": {
+            "type": "cp",
+            "value": -7
+          },
+          "wdl": [
+            3,
+            990,
+            7
+          ],
+          "expectedPerMille": 498,
+          "raw": [
+            "info depth 17 seldepth 25 multipv 1 score cp -7 wdl 3 990 7 nodes 234930 nps 1003974 hashfull 40 tbhits 0 time 234 pv h7h5 c5c1 b7b3 a3a4 e8d8 d2e2 b3d3 h2h3 f6f4 c1e1 g7g6 a4a5 d3d2 a2d2 d8d2",
+            "bestmove h7h5 ponder c5c1"
+          ],
+          "commands": [
+            "position fen 4r1k1/1rp2ppp/5q2/2R5/8/P2P4/R2Q1PPP/6K1 b - - 0 24",
+            "go depth 17 nodes 10000000 searchmoves h7h5"
+          ]
+        },
+        {
+          "caseId": "guard-training012",
+          "depth": 19,
+          "move": null,
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 4r1k1/1rp2ppp/5q2/2R5/8/P2P4/R2Q1PPP/6K1 b - - 0 24",
+          "nativeFen": "4r1k1/1rp2ppp/5q2/2R5/8/P2P4/R2Q1PPP/6K1 b - - 0 24",
+          "bestmove": "b7b1",
+          "score": {
+            "type": "cp",
+            "value": 858
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 19 seldepth 20 multipv 1 score cp 858 wdl 1000 0 0 nodes 287713 nps 1137205 hashfull 61 tbhits 0 time 253 pv b7b1 c5c1 e8e2 d2e2 b1c1 e2f1 c1f1 g1f1 g7g6 a2e2 f6a1 e2e1 a1a3 e1e8 g8g7 f1e2 a3a2 e2e3 c7c6",
+            "bestmove b7b1 ponder c5c1"
+          ],
+          "commands": [
+            "position fen 4r1k1/1rp2ppp/5q2/2R5/8/P2P4/R2Q1PPP/6K1 b - - 0 24",
+            "go depth 19 nodes 10000000"
+          ]
+        },
+        {
+          "caseId": "guard-training012",
+          "depth": 19,
+          "move": "b7b1",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 4r1k1/1rp2ppp/5q2/2R5/8/P2P4/R2Q1PPP/6K1 b - - 0 24",
+          "nativeFen": "4r1k1/1rp2ppp/5q2/2R5/8/P2P4/R2Q1PPP/6K1 b - - 0 24",
+          "bestmove": "b7b1",
+          "score": {
+            "type": "cp",
+            "value": 891
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 19 seldepth 24 multipv 1 score cp 891 wdl 1000 0 0 nodes 337240 nps 1120398 hashfull 69 tbhits 0 time 301 pv b7b1 c5c1 e8e2 d2e2 b1c1 e2f1 f6c3 a2e2 c1f1 g1f1 c3d3 a3a4 g7g5 a4a5 g8g7 h2h3",
+            "bestmove b7b1 ponder c5c1"
+          ],
+          "commands": [
+            "position fen 4r1k1/1rp2ppp/5q2/2R5/8/P2P4/R2Q1PPP/6K1 b - - 0 24",
+            "go depth 19 nodes 10000000 searchmoves b7b1"
+          ]
+        },
+        {
+          "caseId": "guard-training012",
+          "depth": 19,
+          "move": "h7h5",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 4r1k1/1rp2ppp/5q2/2R5/8/P2P4/R2Q1PPP/6K1 b - - 0 24",
+          "nativeFen": "4r1k1/1rp2ppp/5q2/2R5/8/P2P4/R2Q1PPP/6K1 b - - 0 24",
+          "bestmove": "h7h5",
+          "score": {
+            "type": "cp",
+            "value": -11
+          },
+          "wdl": [
+            3,
+            988,
+            9
+          ],
+          "expectedPerMille": 497,
+          "raw": [
+            "info depth 19 seldepth 32 multipv 1 score cp -11 wdl 3 988 9 nodes 529971 nps 1025088 hashfull 101 tbhits 0 time 517 pv h7h5 c5c1 f6d6 a3a4 e8d8 h2h3 d6d3 d2e1 d3d6 a2a1 c7c5 c1d1",
+            "bestmove h7h5 ponder c5c1"
+          ],
+          "commands": [
+            "position fen 4r1k1/1rp2ppp/5q2/2R5/8/P2P4/R2Q1PPP/6K1 b - - 0 24",
+            "go depth 19 nodes 10000000 searchmoves h7h5"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "guard-training012-mirror",
+      "initialFen": "6k1/r2q1ppp/p2p4/8/2r5/5Q2/1RP2PPP/4R1K1 w - - 0 24",
+      "history": [],
+      "expected": "b2b8",
+      "rejected": {
+        "from": 15,
+        "to": 31,
+        "promotion": null
+      },
+      "nativeGuard": false,
+      "baselineRootRole": "CAPTURED_BASELINE_NOT_INVARIABLY_CORRECT",
+      "phases": [
+        {
+          "caseId": "guard-training012-mirror",
+          "depth": 17,
+          "move": null,
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 6k1/r2q1ppp/p2p4/8/2r5/5Q2/1RP2PPP/4R1K1 w - - 0 24",
+          "nativeFen": "6k1/r2q1ppp/p2p4/8/2r5/5Q2/1RP2PPP/4R1K1 w - - 0 24",
+          "bestmove": "b2b8",
+          "score": {
+            "type": "cp",
+            "value": 915
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 17 seldepth 21 multipv 1 score cp 915 wdl 1000 0 0 nodes 145967 nps 1216391 hashfull 28 tbhits 0 time 120 pv b2b8 c4c8 e1e7 d7e7 b8c8 e7f8 f3c6 a7e7 c8f8 g8f8 c6d6 h7h6 h2h4 g7g6 g1f1 a6a5 d6d8 e7e8 d8a5 f8g7",
+            "bestmove b2b8 ponder c4c8"
+          ],
+          "commands": [
+            "position fen 6k1/r2q1ppp/p2p4/8/2r5/5Q2/1RP2PPP/4R1K1 w - - 0 24",
+            "go depth 17 nodes 10000000"
+          ]
+        },
+        {
+          "caseId": "guard-training012-mirror",
+          "depth": 17,
+          "move": "b2b8",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 6k1/r2q1ppp/p2p4/8/2r5/5Q2/1RP2PPP/4R1K1 w - - 0 24",
+          "nativeFen": "6k1/r2q1ppp/p2p4/8/2r5/5Q2/1RP2PPP/4R1K1 w - - 0 24",
+          "bestmove": "b2b8",
+          "score": {
+            "type": "cp",
+            "value": 881
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 17 seldepth 20 multipv 1 score cp 881 wdl 1000 0 0 nodes 408261 nps 1197246 hashfull 71 tbhits 0 time 341 pv b2b8 c4c8 e1e7 d7e7 b8c8 e7f8 f3c6 a7e7 c8f8 g8f8 c6d6 a6a5 g1f1 a5a4 d6c5",
+            "bestmove b2b8 ponder c4c8"
+          ],
+          "commands": [
+            "position fen 6k1/r2q1ppp/p2p4/8/2r5/5Q2/1RP2PPP/4R1K1 w - - 0 24",
+            "go depth 17 nodes 10000000 searchmoves b2b8"
+          ]
+        },
+        {
+          "caseId": "guard-training012-mirror",
+          "depth": 17,
+          "move": "h2h4",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 6k1/r2q1ppp/p2p4/8/2r5/5Q2/1RP2PPP/4R1K1 w - - 0 24",
+          "nativeFen": "6k1/r2q1ppp/p2p4/8/2r5/5Q2/1RP2PPP/4R1K1 w - - 0 24",
+          "bestmove": "h2h4",
+          "score": {
+            "type": "cp",
+            "value": -9
+          },
+          "wdl": [
+            3,
+            989,
+            8
+          ],
+          "expectedPerMille": 497.5,
+          "raw": [
+            "info depth 17 seldepth 27 multipv 1 score cp -9 wdl 3 989 8 nodes 306832 nps 1040108 hashfull 59 tbhits 0 time 295 pv h2h4 c4c8 e1d1 h7h6 f3d5 c8d8 d5a5 d7c7 a5c7 a7c7 d1d3 c7c8",
+            "bestmove h2h4 ponder c4c8"
+          ],
+          "commands": [
+            "position fen 6k1/r2q1ppp/p2p4/8/2r5/5Q2/1RP2PPP/4R1K1 w - - 0 24",
+            "go depth 17 nodes 10000000 searchmoves h2h4"
+          ]
+        },
+        {
+          "caseId": "guard-training012-mirror",
+          "depth": 19,
+          "move": null,
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 6k1/r2q1ppp/p2p4/8/2r5/5Q2/1RP2PPP/4R1K1 w - - 0 24",
+          "nativeFen": "6k1/r2q1ppp/p2p4/8/2r5/5Q2/1RP2PPP/4R1K1 w - - 0 24",
+          "bestmove": "b2b8",
+          "score": {
+            "type": "cp",
+            "value": 845
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 19 seldepth 23 multipv 1 score cp 845 wdl 1000 0 0 nodes 153567 nps 1129169 hashfull 29 tbhits 0 time 136 pv b2b8 c4c8 e1e7 d7e7 b8c8 e7f8 c8f8 g8f8 g2g3 a7c7 f3d3 f8e7 d3h7 g7g6 h7h4 e7d7 h4a4 c7c6 g1f1",
+            "bestmove b2b8 ponder c4c8"
+          ],
+          "commands": [
+            "position fen 6k1/r2q1ppp/p2p4/8/2r5/5Q2/1RP2PPP/4R1K1 w - - 0 24",
+            "go depth 19 nodes 10000000"
+          ]
+        },
+        {
+          "caseId": "guard-training012-mirror",
+          "depth": 19,
+          "move": "b2b8",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 6k1/r2q1ppp/p2p4/8/2r5/5Q2/1RP2PPP/4R1K1 w - - 0 24",
+          "nativeFen": "6k1/r2q1ppp/p2p4/8/2r5/5Q2/1RP2PPP/4R1K1 w - - 0 24",
+          "bestmove": "b2b8",
+          "score": {
+            "type": "cp",
+            "value": 850
+          },
+          "wdl": [
+            1000,
+            0,
+            0
+          ],
+          "expectedPerMille": 1000,
+          "raw": [
+            "info depth 19 seldepth 35 multipv 1 score cp 850 wdl 1000 0 0 nodes 412584 nps 1175452 hashfull 72 tbhits 0 time 351 pv b2b8 c4c8 e1e7 d7e7 b8c8 e7f8 c8f8 g8f8 f3c6 f8e7 c6e4 e7f8 e4h7 a6a5 h7h8 f8e7 h8h4 e7e8 h4a4 e8d8",
+            "bestmove b2b8 ponder c4c8"
+          ],
+          "commands": [
+            "position fen 6k1/r2q1ppp/p2p4/8/2r5/5Q2/1RP2PPP/4R1K1 w - - 0 24",
+            "go depth 19 nodes 10000000 searchmoves b2b8"
+          ]
+        },
+        {
+          "caseId": "guard-training012-mirror",
+          "depth": 19,
+          "move": "h2h4",
+          "nodeSafetyCap": 10000000,
+          "positionCommand": "position fen 6k1/r2q1ppp/p2p4/8/2r5/5Q2/1RP2PPP/4R1K1 w - - 0 24",
+          "nativeFen": "6k1/r2q1ppp/p2p4/8/2r5/5Q2/1RP2PPP/4R1K1 w - - 0 24",
+          "bestmove": "h2h4",
+          "score": {
+            "type": "cp",
+            "value": -8
+          },
+          "wdl": [
+            3,
+            989,
+            8
+          ],
+          "expectedPerMille": 497.5,
+          "raw": [
+            "info depth 19 seldepth 25 multipv 1 score cp -8 wdl 3 989 8 nodes 475424 nps 1056497 hashfull 89 tbhits 0 time 450 pv h2h4 c4c8 e1d1 h7h6 f3d5 d7e8 d5d6 a6a5 b2a2 a5a4 g2g3 a7e7 d6d3 e7e1 d1e1 e8e1 g1g2",
+            "bestmove h2h4 ponder c4c8"
+          ],
+          "commands": [
+            "position fen 6k1/r2q1ppp/p2p4/8/2r5/5Q2/1RP2PPP/4R1K1 w - - 0 24",
+            "go depth 19 nodes 10000000 searchmoves h2h4"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -4,6 +4,8 @@
 
 [Protocol A/B și Elo](hard-ab-elo.md) · [Feedback curent](../feedback/hard.md)
 
+[Studiul ulterior al frontierei în șah](native-forcing-frontier.md) reproduce defectul frunzei, respinge alte două integrări și păstrează separat dovezile primei mutări și ale liniei complete. Rezultatele sale nu înlocuiesc domeniul acestui experiment de viteză înghețat.
+
 Reperul acestei runde este `65a29ab023a6a1da11a0da1b3476da717bee5baf`. Selectorul public este `LEGACY`; configurația adaptivă existentă permite 100k–200k noduri suplimentare. Acest contor nu include căutarea comună H3. Repertoriul și politicile rămân identice între părinte și fiecare copie.
 
 ## Viteză

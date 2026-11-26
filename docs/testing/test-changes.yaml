@@ -1,4 +1,12 @@
 testChanges:
+  - id: CHESS-LOCAL-RELEASE-DELIVERY
+    base: "74b52690af33b241acd67393b095c2de161bb532"
+    from: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java
+    test: ro.atf.chess.ReleaseGovernanceTest#ragRetrievesOnlyAffectedGuidanceAndVerifiesTheAnchor
+    contract: "Păstrează downloadul final din README și adaugă livrarea locală verificată obligatorie drept pasul nouă"
+    allowDelete: false
+
   - id: CHESS-LIVE-DOC-RO
     base: "2c25cdbc38f5edd17008829dffca38a8d12a07c7"
     from: atf-tests/src/test/java/ro/atf/chess/HardDocumentationTest.java

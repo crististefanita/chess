@@ -1,5 +1,7 @@
 # Statusul măsurat al Hard nativ
 
+Pentru reperul curent al celor trei profiluri și lotul original de 300 de partide, folosește [calibrarea curentă](current-profile-calibration.md). Tabelul Elo de mai jos rămâne eșantionul anterior identificat separat; nu se combină cu lotul curent și nu este Delta Elo a unui candidat.
+
 Instantaneul reperului aparține sursei **`85b1c478575d3c31065161c55aa02cffcd0e7eee`**. Rejucarea curentă fără obiectiv declarat include corecțiile limitate pentru replica damei și cursa pionului exterior descrise mai jos; catalogul, alocația obișnuită 100k→200k și ratingurile afișate rămân neschimbate. Tabelul Elo aparține în continuare reperului, nu adversarului corectat. Calibrarea reperului este independentă de porțile promovării unui candidat: catalogul incomplet nu împiedică măsurarea adversarului existent, iar estimarea ratingului nu califică un candidat.
 
 ## Rezultatele problemelor

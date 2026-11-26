@@ -6,6 +6,9 @@ Alegeți cel mai mic nivel de testare care poate observa schimbarea. Construiți
 
 - [Statusul măsurat al Hard nativ](hard-status.md) separă dovada matelor cu toate apărările, conversia materială și instantaneul Elo pe perechi.
 - [Native Hard A/B și Elo](hard-ab-elo.md) guvernează brațele de viteză/forță, observațiile Stockfish pe mutare, transferul pe familii noi și comparațiile de rating pe perechi. Algoritmul, bugetul și timpul sunt experimente separate.
+- [Dovezile frontierei în șah](native-forcing-frontier.md) separă primele mutări corecte de PV-urile Native neînchise, cu referințe Stockfish capturate portabile și teste negative de componentă.
+- [Calibrarea curentă a celor trei profiluri](current-profile-calibration.md) raportează lotul original de 300 de partide, traseele puzzle-urilor, continuările tehnice, incertitudinea și verdictele separate de integritate/calitate.
+- [Studiul celor șase copii de continuare](hard-continuation-copies.md) separă experimentele de buget, orizont și reutilizare; câștigurile confirmate de profesor, regresiile reale și referința curriculară coruptă au porți distincte.
 - [Suitele JVM](#suite-jvm) verifică regulile, adaptoarele și guvernanța fără emulator.
 - [Sanity Android](#sanity-android) și [paritatea Web](#paritatea-web-a-motorului) acoperă, când e nevoie, randarea, ciclul de viață și tehnologiile asistive reale.
 - [Dovezile Extent](#raportare-extent) leagă aserțiunile de rulare. [Calificarea](../release/README.md#calificare-și-publicare) guvernează promovarea.
