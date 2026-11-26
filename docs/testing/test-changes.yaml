@@ -1,4 +1,20 @@
 testChanges:
+  - id: CHESS-GRADUAL-EVALUATION-1
+    base: "3707753f57bbd54fdabe8b95198a3a95a8ed7cad"
+    from: atf-tests/src/test/java/ro/atf/chess/MatchEvaluationTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/MatchEvaluationTest.java
+    test: ro.atf.chess.MatchEvaluationTest#mapsEvaluationToTheBarWithEqualAndTerminalPositions
+    contract: "Use a shared gradual visual advantage scale; preserve raw engine scores, WDL, perspective and terminal outcomes"
+    allowDelete: false
+
+  - id: CHESS-GRADUAL-EVALUATION-2
+    base: "3707753f57bbd54fdabe8b95198a3a95a8ed7cad"
+    from: atf-tests/src/test/java/ro/atf/chess/AndroidStockfishCoachingTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/AndroidStockfishCoachingTest.java
+    test: ro.atf.chess.AndroidStockfishCoachingTest#barUsesTheSharedAdvantageScaleAndPreservesObservedWdl
+    contract: "Use a shared gradual visual advantage scale; preserve raw engine scores, WDL, perspective and terminal outcomes"
+    allowDelete: false
+
   - id: CHESS-RELEASE-MODULE-1
     base: "ca7cfe06c994a869d9e488bf968eea6b4eda6c56"
     from: pom.xml

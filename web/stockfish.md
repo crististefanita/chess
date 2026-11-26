@@ -15,7 +15,7 @@ The current candidate uses **Stockfish Lite** for calculated hints, the evaluati
 | Puzzle solution and authored theory | Verified catalog and legal replay | Shared Java catalog |
 | Opponent move | Native Basic, Advanced or Hard | Shared Java match policy |
 
-The bar displays White's engine evaluation and WDL expected score. It is not an Elo measurement or a measured human win probability. Changing opponent level cannot weaken the coaching engine or select another analysis provider.
+The bar displays White's engine evaluation on the shared gradual centipawn scale. +1 pawn occupies 60% and +8 about 83%; finite scores leave both colors visible. Observed WDL remains unchanged for review and grading. The visual scale is not an Elo measurement or a measured human win probability. Changing opponent level cannot weaken the coaching engine or select another analysis provider.
 
 ## Request and validation
 

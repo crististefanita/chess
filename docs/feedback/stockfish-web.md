@@ -11,7 +11,7 @@ Stockfish Lite owns calculated hints, the evaluation bar and interim/final Game 
 | Interim and final review | Free and played roots share a completed depth and provider. Archive reopening preserves identity; partial or foreign work cannot be labelled complete. |
 | Puzzle explanations | Catalog replay remains verified rule knowledge. Any calculated coaching line or score needs its declared Lite provider; audit wrong-move and payoff routes separately. |
 
-The bar's WDL expected score is not a human win probability or Elo. A longer PV is not a deeper completed search or stronger play. [Source conventions](../board/analysis-sources.md)
+The vertical bar now uses the shared gradual centipawn projection, independently of WDL saturation. Raw Stockfish WDL remains review evidence; neither value is human Elo. The scale and both production adapters have offline component coverage. A longer PV is not a deeper completed search or stronger play. [Source conventions](../board/analysis-sources.md)
 
 ## Verified edition
 

@@ -20,8 +20,7 @@ final class WebExternalAnalysis {
     }
 
     static double whiteShare(ChessPosition position, ExternalEngineAnalysis.Batch batch) {
-        int points = batch.best().expectedPoints();
-        return (position.turn() == ChessPosition.Side.WHITE ? points : 1000 - points) / 1000.0;
+        return batch.best().evaluation(position.turn()).whiteShare();
     }
 
     static String provider(GameReview review) {

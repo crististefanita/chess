@@ -40,8 +40,9 @@ test('Compiled Web ports use the real pinned WASM for hints, openings and persis
         assert.equal(match.analysis.hint.count, 3, 'the close top-three roots are selectable in an actual AI-game hint');
         const complete = requests[0].completedDepthBatches.at(-1);
         assert.equal(complete.completeBatch, true);
-        const wdl = complete.lines[0].wdl;
-        assert.equal(match.analysis.evaluation.whiteShare, (1000 - Math.round(wdl[0] + wdl[1] / 2)) / 1000);
+        const cp = -complete.lines[0].score.value;
+        assert.equal(match.analysis.evaluation.centipawns, cp, 'the raw Stockfish score is retained');
+        assert.equal(match.analysis.evaluation.whiteShare, .5 + .5 * cp / (400 + Math.abs(cp)), 'the bar uses the shared visual advantage scale');
         const hinted = parse(engine.matchAnalysisAction(5, 'hint', 0));
         assert.equal(hinted.analysis.hint.move, requests[0].bestmove);
         engine.prepareExternalMatchAnalysis(checkpoint, 0, 6);

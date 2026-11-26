@@ -42,12 +42,12 @@ public record MatchEvaluation(TacticalAnalysis.Ending ending, int whiteCentipawn
         return sign + number.format(Math.abs(whiteCentipawns) / 100.0);
     }
 
-    /** Share of the track belonging to White. Eight pawns fill either side of the scale. */
+    /** Visual advantage, not WDL or a win probability. Only mate or a final result fills the track. */
     public double whiteShare() {
         return switch (ending) {
             case CHECKMATE -> whiteMateMoves > 0 ? 1 : 0;
             case STALEMATE -> .5;
-            case HORIZON -> Math.max(0, Math.min(1, .5 + whiteCentipawns / 1600.0));
+            case HORIZON -> .5 + .5 * whiteCentipawns / (400.0 + Math.abs((double) whiteCentipawns));
         };
     }
 
