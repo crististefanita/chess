@@ -1,0 +1,14 @@
+schema: 1
+runtime-admission: diagnostic-only
+lesson: close-visible-exchanges-before-scoring
+unsafe-tail:
+  source: training-012
+  fen: "4r1k1/1rp2ppp/5q2/2R5/8/P2P4/R2Q1PPP/6K1 b - - 0 24"
+  line: h7h5 c5c1 g7g5 a3a4 f6f2
+  legal-recaptures: [g1f2, d2f2]
+sound-sacrifice:
+  source: CoachingProofTest.checkEvasionsAndSoundQueenSacrificesKeepTheirLegalProof
+  fen: "4r2r/p1p2kp1/2p2p2/2Qb4/8/2B3Nq/PPP2R1P/5RK1 b - - 0 30"
+  root: h3g3
+  mate-plies: 3
+transfer-requirement: excluded-families-and-free-defenses

@@ -187,6 +187,8 @@ the promotion gate rejects a bad experiment; it does not qualify the engine.
 
 Ordering models rank legal moves; they do not provide a known puzzle solution or change the acceptance oracle. Keep ancestry-equivalent positions in the same partition. Compare ordering, complete decisions, opposing replies and final games at the same declared budget. The historical 44k study below does not measure the current adaptive foreground profile.
 
+The retained `learned-0007` (`Rb1`, gain) and `learned-0015` (`Qxb5 …axb5`, loss) comparisons reached four and five plies respectively. They do not isolate an ordering effect. Reuse them only as consumed diagnostic controls, with free opposing replies at a common completed horizon; they are not the default next experiment. Include sound sacrifices and close losing alternatives before fitting, rather than training only on losses.
+
 <details>
 <summary>Historical linear study and completed league</summary>
 

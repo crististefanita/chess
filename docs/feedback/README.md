@@ -9,6 +9,8 @@ Native Hard diagnostics below retain their own engine and oracle evidence. The [
 
 Work the [current Native priorities](hard.md) through the [A/B, game-audit and Elo protocol](../testing/hard-ab-elo.md). The older Native hint/review rows below remain source-bound diagnostics; they are not newly observed Stockfish defects and must not all compete as current P1 tasks. Changing the teacher does not close those Native mechanisms or create a new Native Elo.
 
+Follow the [ordered improvement steps](../testing/hard-progress.md): audit compatibility, A3 confirmation, a cause-level playing repair, excluded-family transfer and paired Elo. Completed repairs belong in technical documentation; retained diagnostic failures do not all remain active ToDo items.
+
 [Reviewing test moves between suites](../testing/README.md#test-changes-against-a-git-baseline) describes the Git baseline and coverage evidence.
 
 - [Experimental Hard A gates and remaining work](hard.md)
