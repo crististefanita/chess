@@ -54,7 +54,7 @@ Web coaching uses the pinned Stockfish engine for in-game hints, the manual boar
 If upload succeeds but deployment cannot find `github-pages`, inspect the run's
 artifact inventory first. This workflow combines upload and deployment in one
 job: rerunning that job can create a second same-named artifact. The official
-[artifact selector](https://github.com/actions/deploy-pages/blob/d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e/src/internal/api-client.js#L72-L82)
+[artifact selector](https://github.com/actions/deploy-pages/blob/368f82528645a54fb793d4d04e342629a3f51346/src/internal/api-client.js#L72-L82)
 rejects both an empty list and an ambiguous list.
 
 Keep the validated static commit and digest unchanged and start a fresh manual
@@ -62,6 +62,13 @@ workflow dispatch on `main` with those exact inputs. This creates an isolated ru
 without changing or rebuilding the qualified product. Confirm one artifact and
 a successful deployment, then verify the served bytes and browser behavior.
 Treat a failed fresh attempt or a byte mismatch as an open publication failure.
+If a fresh run repeats the error while the artifact inventory contains exactly
+one completed upload, inspect uploader/deployer compatibility before another
+attempt. The current pipeline pairs pinned upload-pages-artifact 5.0.0 with
+deploy-pages 5.0.1 and explicitly includes hidden files, preserving the qualified
+`.nojekyll`. [The component contract](../atf-tests/src/test/java/ro/atf/chess/PagesWorkflowComponentTest.java)
+protects both client pins and the verified upload path. Keep the static commit
+and tree digest unchanged when repairing the delivery pipeline.
 
 [Bundle structure](README.md#web-bundle-identity) ·
 [Test strategy](../docs/testing/README.md#updating-the-web-bundle) ·
