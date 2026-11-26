@@ -87,28 +87,40 @@
 }
 .quest-study .quest-study-score {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr) minmax(0, 45%);
   align-items: center;
-  min-block-size: 2.125rem;
+  min-block-size: 1.875rem;
   margin: .15rem .5rem .3rem;
-  padding: .35rem .55rem;
+  padding: .2rem .55rem;
+  gap: .35rem;
   border: 1px solid var(--quest-outline);
   border-radius: .55rem;
   background: #252e26;
-  font-size: .85rem;
+  font-size: .8rem;
   overflow-wrap: anywhere;
+}
+.quest-study #quest-study-score {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .quest-study .quest-study-dialog-head { flex-wrap: nowrap; justify-content: flex-start; gap: .35rem; }
 .quest-study .quest-study-series {
   justify-self: end;
   display: flex;
+  min-inline-size: 0;
+  max-inline-size: 100%;
   align-items: center;
   gap: .25rem;
   color: #ffbc78;
   font-size: .75rem;
+  overflow: hidden;
+  white-space: nowrap;
 }
 .quest-study .quest-study-series[aria-hidden="true"] { visibility: hidden; }
 .quest-study .quest-study-series svg { flex: none; width: 1em; height: 1em; fill: currentColor; }
+.quest-study #quest-study-current-series { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; }
 .quest-study .quest-study-progress { padding-inline: .5rem; color: var(--quest-muted); font-size: .85rem; }
 .quest-study #quest-study-milestone { text-align: end; }
 .quest-study progress {
@@ -196,6 +208,7 @@
 }
 .quest-study #quest-study-hint { color: var(--quest-accent); background: #344432; }
 .quest-study #quest-study-hint:disabled { color: var(--quest-muted); }
+.quest-study #quest-study-hint svg { inline-size: 1.25rem; block-size: 1.25rem; }
 .quest-study #quest-study-replay-next { grid-column: 3; }
 .quest-study #quest-study-replay-previous { grid-column: 1; }
 .quest-study #quest-study-threat { min-inline-size: max(6rem, 48px); color: #ffbc78; }
@@ -264,7 +277,7 @@
     --study-top-gap: 0px;
     --quest-action-size: 48px;
   }
-  .quest-study .quest-study-score { margin-block: .08rem .15rem; min-block-size: 0; }
+  .quest-study .quest-study-score { margin-block: .08rem .15rem; padding-block: .15rem; }
   .quest-study #quest-study-turn { --quest-turn-padding: .125rem; }
   .quest-study #quest-study-hint-label { max-inline-size: none; padding-inline: .5rem; }
   .quest-study #quest-study-explanation[data-replay] .quest-study-dialog { padding-inline: 0; }
@@ -272,8 +285,10 @@
 }
 @media (max-width: 20rem) {
   .quest-study .quest-study-score {
-    grid-template-columns: minmax(0, 1fr);
-    gap: .15rem;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 45%);
+    gap: .25rem;
+    padding-block: .1rem;
+    font-size: .75rem;
   }
-  .quest-study .quest-study-series { justify-self: start; }
+  .quest-study .quest-study-series { justify-self: end; gap: .15rem; font-size: .68rem; }
 }

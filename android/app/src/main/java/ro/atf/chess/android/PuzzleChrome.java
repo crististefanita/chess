@@ -64,10 +64,10 @@ final class PuzzleChrome extends FrameLayout {
         int headerHeight = PuzzleChromeLayout.fit(0, dp(48), label.getLineHeight(), 0, 0, 0).headerHeight();
         content.addView(header, new LinearLayout.LayoutParams(-1, headerHeight));
 
-        points = text(13, TEXT);
+        points = text(12, TEXT);
         points.setId(R.id.puzzle_points);
         points.setTypeface(points.getTypeface(), android.graphics.Typeface.BOLD);
-        streak = text(12, FLAME);
+        streak = text(11, FLAME);
         streak.setId(R.id.puzzle_streak);
         streak.setCompoundDrawablePadding(dp(4));
         streak.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.quest_flame, 0, 0, 0);
@@ -120,6 +120,7 @@ final class PuzzleChrome extends FrameLayout {
 
     void styleLamp(ImageButton lamp) {
         lamp.setBackground(buttonSurface(true));
+        lamp.setPadding(dp(14), dp(14), dp(14), dp(14));
         lamp.setImageTintList(iconColors(true));
     }
 
@@ -255,7 +256,7 @@ final class PuzzleChrome extends FrameLayout {
             super(PuzzleChrome.this.getContext());
             setGravity(Gravity.CENTER_VERTICAL);
             setBackground(surface(0xff252e26, 9));
-            setPadding(dp(10), dp(6), dp(10), dp(6));
+            setPadding(dp(10), dp(2), dp(10), dp(2));
             float pointsWidth = points.getPaint().measureText(getContext().getString(R.string.earned_points, 99, 99_999));
             float seriesWidth = streak.getPaint().measureText(getContext().getString(R.string.puzzle_series, 1_238));
             reservedWidth = (int) Math.ceil(pointsWidth + seriesWidth) + dp(24);
@@ -276,7 +277,7 @@ final class PuzzleChrome extends FrameLayout {
                 streak.setLayoutParams(new LinearLayout.LayoutParams(-2, -2));
                 setGravity(stacked ? Gravity.START : Gravity.CENTER_VERTICAL);
             }
-            int minimum = Math.max(dp(34), fit.scoreHeight() + getPaddingTop() + getPaddingBottom());
+            int minimum = fit.scoreContainerHeight(dp(30), getPaddingTop() + getPaddingBottom());
             if (getMinimumHeight() != minimum) setMinimumHeight(minimum);
             super.onMeasure(widthSpec, heightSpec);
         }

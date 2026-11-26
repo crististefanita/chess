@@ -51,6 +51,20 @@ class PuzzleChromeLayoutTest {
                 new BoardPanelLayout.WithDetails(0, 0), layout.boardAndDetails(280, 200, 48, 27, 62));
     }
 
+    @Test void trimsTheCompactScoreRowWithoutReducingTheFooterTouchTargets(Checks check) {
+        var phone320 = PuzzleChromeLayout.fit(272, 48, 27, 18, 264, 36);
+        check.same("At 320 dp the measured points and streak share one compact row", 1, phone320.scoreLines());
+        check.same("A single score row respects the compact visual minimum", 30, phone320.scoreContainerHeight(30, 4));
+        check.same("Previous, hint, and next retain the same 48 dp hit area plus guidance", 84, phone320.navigationHeight());
+
+        var phone280 = PuzzleChromeLayout.fit(232, 48, 27, 18, 264, 36);
+        check.same("At 280 dp only content that cannot fit takes two lines", 2, phone280.scoreLines());
+        check.same("The exceptional two-line score adds only its measured text and compact insets",
+                40, phone280.scoreContainerHeight(30, 4));
+        check.same("The hint label remains reserved when the board space is allocated", 36,
+                phone280.navigationHeight() - 48);
+    }
+
     @Test void fitsTheFullWidthSquareWithoutOverlappingTheOpenMenu(Checks check) {
         int details = PuzzleChromeLayout.detailsMinimum(54, 38, 319, 210);
         check.same("The menu and fixed footer can share the space below the square", 109, details);
