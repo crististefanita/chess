@@ -95,7 +95,7 @@ public final class StockfishTransport implements AutoCloseable {
                 if (line.rank() != rows.size() + 1) { rows.clear(); return; }
                 rows.add(line);
                 if (line.rank() == 1) exactTops.add(line);
-                if (rows.size() == expected) {
+                if (rows.size() == expected && rows.stream().map(ExternalEngineAnalysis.Line::root).distinct().count() == expected) {
                     var batch = validated(match, ply, context, line.depth(), rows);
                     completed.put(line.depth(), batch);
                 }

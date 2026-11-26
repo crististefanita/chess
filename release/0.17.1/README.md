@@ -1,4 +1,4 @@
-# Chess Lab 0.17.0
+# Chess Lab 0.17.1
 
 ## Overview
 

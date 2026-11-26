@@ -43,6 +43,13 @@ class StockfishCoachingComponentTest {
         c.rejects("Missing WDL cannot be presented as a measured score", IllegalArgumentException.class,
                 () -> StockfishTransport.info("info depth 8 score cp 30 nodes 20 time 1 pv e2e4"));
         engine.close();
+        var duplicate = new Fake(); duplicate.duplicateRoots = true;
+        try (var isolated = new StockfishTransport(duplicate, PROVIDER, 200000, 3)) {
+            var retained = isolated.search(ChessMatch.start(), 0, null);
+            c.same("Repeated roots cannot certify a deeper three-choice cohort", false, retained.completed().containsKey(9));
+            c.same("A duplicate tail retains the previous distinct completed horizon", 8, retained.batch().depth());
+            c.same("All retained alternatives are distinct", 3L, retained.batch().lines().stream().map(ExternalEngineAnalysis.Line::root).distinct().count());
+        }
     }
 
     @Test void pendingStockfishCannotBlockOrAlterAnyNativeOpponentDecision(Checks c) throws Exception {
@@ -227,7 +234,7 @@ class StockfishCoachingComponentTest {
     private static final class Fake implements StockfishTransport.Channel {
         final ArrayDeque<String> rows = new ArrayDeque<>(); final List<String> commands = new ArrayList<>();
         String position = "", engineName = "Stockfish 19", lastSearch;
-        boolean partial, badPv, longPv, mixedBoundRound, forcedDifferentDepth; volatile boolean closed; int multi = 3, searches; CountDownLatch block;
+        boolean partial, duplicateRoots, badPv, longPv, mixedBoundRound, forcedDifferentDepth; volatile boolean closed; int multi = 3, searches; CountDownLatch block;
         @Override public void send(String command) {
             commands.add(command);
             if (command.equals("uci")) {
@@ -253,6 +260,11 @@ class StockfishCoachingComponentTest {
                     rows.add(info(forcedDifferentDepth && forced != null ? 9 : 8, rank, pv));
                 }
                 if (partial) rows.add(info(9, 1, best));
+                if (duplicateRoots) {
+                    rows.add(info(9, 1, best));
+                    rows.add(info(9, 2, choices.get(1).uci()));
+                    rows.add(info(9, 3, choices.get(1).uci()));
+                }
                 if (mixedBoundRound) {
                     rows.add(info(9, 1, best));
                     rows.add(info(9, 1, choices.get(3).uci()).replace(" score cp 39 ", " score cp 39 lowerbound "));
