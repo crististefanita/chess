@@ -31,7 +31,7 @@ The [coaching contract](docs/feedback/stockfish-web.md) governs Stockfish hints,
 
 ### Shared rules, platform-owned interaction
 
-Android and Web submit commands to the same state contract. Legal moves, catalog decisions and saved-game transitions stay in Java; each adapter owns screen interaction, local storage integration and rendering. The Web analysis broker connects Stockfish to Java's validated analysis projection.
+Android and Web submit commands to the same state contract. Legal moves, catalog decisions and saved-game transitions stay in Java; each adapter owns screen interaction, local storage integration and rendering. The Lite analysis broker connects Stockfish to Java's validated analysis projection.
 
 ```mermaid
 %%{init: {"theme":"neutral","themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":20,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24}}}%%
@@ -54,7 +54,7 @@ flowchart LR
 <summary>Legend — shared engine and adapter boundaries</summary>
 
 - The diagram follows runtime commands. The Web worker contains the engine compiled with TeaVM; it does not call a remote JVM to decide legal moves.
-- Java owns rules, native AI search, catalog interpretation and save contracts. The Web broker runs Stockfish analysis and Java validates the returned variants; Android retains its native analysis path. [Analysis ownership](web/stockfish.md)
+- Java owns rules, native AI search, catalog interpretation and save contracts. The Web broker and Android process run Stockfish Lite analysis; Java validates the returned variants independently of Native opponent search. [Analysis ownership](web/stockfish.md)
 - A JVM or worker assertion establishes a state transition. Native pixels, browser layout, accessibility and process restart require the corresponding platform probe. [Architecture atlas](docs/architecture.md)
 
 </details>

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The [requested Lite coaching contract](../feedback/stockfish-web.md) makes Stockfish the provider for complete and interim review, the bar and selected-move graph on both platforms. Do not mix providers or compare free/played roots at different completed depths. The baseline below is not a claim that Android Lite delivery is finished; APK/RAG qualification remains with its separate owner.
+The [requested Lite coaching contract](../feedback/stockfish-web.md) makes Stockfish the provider for complete and interim review, the bar and selected-move graph on both platforms. Do not mix providers or compare free/played roots at different completed depths. Platform qualification is recorded per edition; durable partial Android journals remain separate from RAM reuse and completed archives.
 
 Game Review aggregates complete provider-bound Stockfish Lite comparisons on Web and Android. Older reviews retain their original source. Stored opening references and the replay static delta have separate provenance: [analysis source map](analysis-sources.md) · [Web validation and journals](../../web/stockfish.md).
 
