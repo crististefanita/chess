@@ -57,11 +57,18 @@ Păstrați commitul static și digestul validate și porniți o declanșare manu
 
 Dacă rularea nouă repetă eroarea, deși inventarul conține exact un upload
 încheiat, verificați compatibilitatea clienților de upload și deploy înaintea
-altei încercări. Fluxul curent fixează upload-pages-artifact 5.0.0 împreună cu
-deploy-pages 5.0.1 și include explicit fișierele ascunse, păstrând `.nojekyll`
-calificat. [Contractul de componentă](../atf-tests/src/test/java/ro/atf/chess/PagesWorkflowComponentTest.java)
-protejează ambele versiuni și calea verificată a uploadului. Reparația fluxului
-de livrare păstrează commitul static și amprenta arborelui.
+altei încercări. Fluxul curent păstrează ID-ul exact al artefactului încărcat,
+verifică prin REST numele, expirarea și rularea curentă, apoi folosește OIDC cu
+[API-ul oficial Pages](https://github.com/actions/deploy-pages/blob/368f82528645a54fb793d4d04e342629a3f51346/src/internal/api-client.js#L115-L153).
+Nu redescoperă recepția prin lista de artefacte limitată la contextul runtime.
+Upload-pages-artifact 5.0.0 fixat include explicit fișierele ascunse, păstrând
+`.nojekyll` calificat; github-script 8 fixat execută deploy-ul limitat și anularea.
+[Componentele](../atf-tests/src/test/java/ro/atf/chess/PagesWorkflowComponentTest.java)
+execută chiar corpul scriptului din workflow, cu răspunsuri API controlate,
+inclusiv recepții străine, eroare și timeout. Reparația păstrează commitul static
+și amprenta arborelui. Actualizarea versiunilor clienților singură nu a rezolvat
+eroarea listei runtime în studiul 2026-11-26; numai deploy-ul confirmat și octeții
+serviți pot închide publicarea.
 
 [Schema pachetului](README.md#identitatea-pachetului-web) ·
 [Strategia de testare](../docs/testing/README.md#actualizarea-pachetului-web) ·
