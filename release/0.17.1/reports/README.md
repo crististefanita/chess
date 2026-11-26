@@ -18,3 +18,5 @@
 | [Context RAG](rag.txt) · [semnătură](signing-transition.json) | Selecție consultativă, revizuirea rutelor noi și compatibilitate pentru upgrade. |
 
 Jurnalele parțiale Android au reutilizare în RAM; persistența lor după oprirea procesului rămâne în feedback. Rapoartele Extent păstrează octeții și aserțiunile originale, inclusiv capturile. Nu este declarat un câștig Elo Native.
+
+[Retenția edițiilor](release-retention.json) păstrează 0.17.1 și 0.16.2; tagurile istorice rămân disponibile.

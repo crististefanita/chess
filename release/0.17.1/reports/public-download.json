@@ -1,10 +1,10 @@
 {
   "status": "PASS",
-  "observedUtc": "2026-11-26T10:53:19.2299539Z",
+  "observedUtc": "2026-11-26T11:03:07.5223431Z",
   "channel": "public browser-equivalent HTTP",
   "repository": "crististefanita/chess",
-  "readmeScope": "reviewed local candidate before README promotion",
-  "readmeCommit": "c7f6e7862dad728891c93bf0207ef61205cae983",
+  "readmeScope": "remote main README",
+  "readmeCommit": "9f574610b35a03633737fa1e4b590059f2171fec",
   "readmeBlob": "1ecab0ffb0af099166de24b1a3b4b1544524dfaa",
   "tag": "v0.17.1",
   "targetCommit": "83fd97c72ebf514da365af6c55a1eb1223ff8fcf",

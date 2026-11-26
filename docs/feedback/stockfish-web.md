@@ -13,7 +13,7 @@ Stockfish Lite deține indiciile calculate, bara de evaluare și Analiza interme
 
 Scorul așteptat WDL din bară nu este probabilitatea umană de câștig sau Elo. O PV mai lungă nu dovedește o adâncime încheiată mai mare sau un joc mai puternic. [Convențiile surselor](../board/analysis-sources.md)
 
-## Candidatul implementat
+## Ediția verificată
 
 - Modificările live pentru variația deschiderilor și MultiPV complet sunt păstrate. Ambele adaptoare limitează recomandările vizibile la trei; un lot mai adânc întrerupt păstrează ultima cohortă exactă întreagă.
 - Web distribuie loaderul/WASM Lite fixate independent și un spațiu de jurnal Lite distinct. Jurnalele Lite noi nu pot moșteni observații Full. Arhivele mai vechi păstrează sursa.
@@ -26,13 +26,14 @@ Scorul așteptat WDL din bară nu este probabilitatea umană de câștig sau Elo
 
 | Prioritate | Lacună | Dovadă de închidere |
 |---|---|---|
-| P0 | Acceptarea curentă pe platforme și publicarea | APK semnat identificat pe emulator și bundle Lite servit verificat prin Browser MCP, cu aserțiuni originale, UCI, identitate sursă/build și capturi. Buildul sau raportul unui predecesor Full nu sunt suficiente. |
 | P1 | Lucru parțial durabil pentru review Android | Persistarea și revalidarea comparațiilor recomandat/jucat pe semimutare după moartea procesului. Reutilizarea RAM Android și analizele finale durabile au domenii separate. Verificați lipsuri, ramuri, scrieri eșuate, schimbări de istoric/furnizor și agregarea finală. |
 | P1 | Înregistrarea studiului offline | Păstrați observațiile Lite efective înaintea fiecărei mutări Albe/Negre, decizia Native și review-ul final complet. Indiciile reconstruite ulterior nu pot fi redenumite observații originale. |
 | P1 | Calibrarea calității Lite | Comparați contexte independente noi și sacrificii/recapturi cu un profesor mai puternic identificat separat; consemnați diferențe CP/mat/WDL și incertitudinea. Mărimea pachetului nu dovedește forță Full sau Elo Native. |
 | P2 | Matricea ciclului de viață și randării | Completați RO/EN cu text mărit, rotație, restaurarea redării deschise și anulare/restart pe APK-ul semnat și artefactul Web servit. Componentele dovedesc propriul domeniu. |
 
 ## Dovezi și promovare
+
+[Ediția 0.17.1](../../release/0.17.1/reports/README.md) închide acceptarea identificată: 735 de componente, 67 de aserțiuni native pe APK-ul exact, review și trei taburi pe Web prin MCP, plus download complet din README-ul main pe ambele canale. Domeniul manual este explicit; matricea extinsă de randare și lucrările P1 de mai sus rămân deschise.
 
 Păstrați buildul, UCI brut, recepțiile originale și Extent autonom în `C:\work\sah`. Studiul curent este `studii/2026-11-26-stockfish-lite-release`; predările mai vechi `.studii/stockfish-lite-web` și `.studii/stockfish-android-build` rămân intrări istorice, inclusiv instalările Full eșuate și compilarea nativă anterioară patchului. Nu sunt calificare Lite.
 
