@@ -1,12 +1,4 @@
 testChanges:
-  - id: CHESS-LITE-SOURCE-REBIND-RO
-    base: "e0a4faa433881475066b9cb75f3e060bcf57d751"
-    from: atf-tests/src/test/java/ro/atf/chess/ExternalEngineAnalysisTest.java
-    replacement: atf-tests/src/test/java/ro/atf/chess/ExternalEngineAnalysisTest.java
-    test: ro.atf.chess.ExternalEngineAnalysisTest#rebindsOnlyTheSameMeasuredPrefixWithoutRelabellingTheOriginal
-    contract: "Păstrează contractul acceptat și verifică independent analiza Stockfish Lite, metadatele originale și izolarea adversarului nativ"
-    allowDelete: false
-
   - id: CHESS-LITE-ANALYSIS-INVENTORY-RO
     base: "e0a4faa433881475066b9cb75f3e060bcf57d751"
     from: atf-tests/src/test/java/ro/atf/chess/ChessWebAnalysisStudyTest.java
@@ -47,14 +39,6 @@ testChanges:
     contract: "Păstrează contractul acceptat și verifică independent analiza Stockfish Lite, metadatele originale și izolarea adversarului nativ"
     allowDelete: false
 
-  - id: CHESS-LITE-WEB-CAPTURE-RO
-    base: "e0a4faa433881475066b9cb75f3e060bcf57d751"
-    from: atf-tests/src/test/java/ro/atf/chess/ChessWebStockfishPlaywrightE2e.java
-    replacement: atf-tests/src/test/java/ro/atf/chess/ChessWebStockfishTransportTest.java
-    test: ro.atf.chess.ChessWebStockfishTransportTest#compiledPortsRunTheRealShippedEngine
-    contract: "Păstrează contractul acceptat și verifică independent analiza Stockfish Lite, metadatele originale și izolarea adversarului nativ"
-    allowDelete: false
-
   - id: CHESS-LITE-PROOF-BOUNDARY-RO
     base: "e0a4faa433881475066b9cb75f3e060bcf57d751"
     from: atf-tests/src/test/java/ro/atf/chess/CoachingProofTest.java
@@ -92,14 +76,6 @@ testChanges:
     from: atf-tests/src/test/java/ro/atf/chess/NavigationGovernanceTest.java
     replacement: atf-tests/src/test/java/ro/atf/chess/NavigationGovernanceTest.java
     test: ro.atf.chess.NavigationGovernanceTest#androidMatchHistoryUsesTheExternalOwnerAndReleasesItOnClose
-    contract: "Păstrează contractul acceptat și verifică independent analiza Stockfish Lite, metadatele originale și izolarea adversarului nativ"
-    allowDelete: false
-
-  - id: CHESS-STOCKFISH-TRANSPORT-FIXTURES-RO
-    base: "e0a4faa433881475066b9cb75f3e060bcf57d751"
-    from: atf-tests/src/test/java/ro/atf/chess/ChessWebStockfishTransportTest.java
-    replacement: atf-tests/src/test/java/ro/atf/chess/ChessWebStockfishTransportTest.java
-    test: ro.atf.chess.ChessWebStockfishTransportTest#compiledPortsRunTheRealShippedEngine
     contract: "Păstrează contractul acceptat și verifică independent analiza Stockfish Lite, metadatele originale și izolarea adversarului nativ"
     allowDelete: false
 
