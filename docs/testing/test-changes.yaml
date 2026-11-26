@@ -1,6 +1,6 @@
 testChanges:
   - id: CHESS-RELEASE-MODULE-1
-    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    base: "ca7cfe06c994a869d9e488bf968eea6b4eda6c56"
     from: pom.xml
     replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseModuleLayoutTest.java
     test: ro.atf.chess.ReleaseModuleLayoutTest#reactorConsumesOneIndependentReleaseArtifact
@@ -8,7 +8,7 @@ testChanges:
     allowDelete: false
 
   - id: CHESS-RELEASE-MODULE-2
-    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    base: "ca7cfe06c994a869d9e488bf968eea6b4eda6c56"
     from: atf-tests/pom.xml
     replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseModuleLayoutTest.java
     test: ro.atf.chess.ReleaseModuleLayoutTest#reactorConsumesOneIndependentReleaseArtifact
@@ -16,7 +16,7 @@ testChanges:
     allowDelete: false
 
   - id: CHESS-RELEASE-MODULE-3
-    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    base: "ca7cfe06c994a869d9e488bf968eea6b4eda6c56"
     from: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
     replacement: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
     test: ro.atf.chess.DocumentationGovernanceTest#projectReadmeArchitectureMatchesTheExecutableBuild
@@ -24,7 +24,7 @@ testChanges:
     allowDelete: false
 
   - id: CHESS-RELEASE-MODULE-4
-    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    base: "ca7cfe06c994a869d9e488bf968eea6b4eda6c56"
     from: atf-tests/src/test/java/ro/atf/chess/ProjectDocumentationIdentityTest.java
     replacement: atf-tests/src/test/java/ro/atf/chess/ProjectDocumentationIdentityTest.java
     test: ro.atf.chess.ProjectDocumentationIdentityTest#activeGuidesUseTheCurrentRepositoryIdentity
@@ -32,7 +32,7 @@ testChanges:
     allowDelete: false
 
   - id: CHESS-RELEASE-MODULE-5
-    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    base: "ca7cfe06c994a869d9e488bf968eea6b4eda6c56"
     from: atf-tests/src/test/java/ro/atf/chess/PublishedReleaseArchiveTest.java
     replacement: atf-tests/src/test/java/ro/atf/chess/PublishedReleaseArchiveTest.java
     test: ro.atf.chess.PublishedReleaseArchiveTest#ragSelectsLocalDeliveryVerificationForPublicationChanges
@@ -40,7 +40,7 @@ testChanges:
     allowDelete: false
 
   - id: CHESS-RELEASE-MODULE-6
-    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    base: "ca7cfe06c994a869d9e488bf968eea6b4eda6c56"
     from: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java
     replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java
     test: ro.atf.chess.ReleaseGovernanceTest#signingRecoveryUsesTheProtectedIdentityAndExplicitlyGatesRotation
@@ -48,7 +48,7 @@ testChanges:
     allowDelete: false
 
   - id: CHESS-RELEASE-MODULE-7
-    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    base: "ca7cfe06c994a869d9e488bf968eea6b4eda6c56"
     from: atf-tests/src/test/java/ro/atf/chess/SignedSourceReplayReceiptTest.java
     replacement: atf-tests/src/test/java/ro/atf/chess/SignedSourceReplayReceiptTest.java
     test: ro.atf.chess.SignedSourceReplayReceiptTest#projectSigningRecordIsRelativeAndContainsNoPlaintextPassword
@@ -56,7 +56,7 @@ testChanges:
     allowDelete: false
 
   - id: CHESS-RELEASE-MODULE-8
-    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    base: "ca7cfe06c994a869d9e488bf968eea6b4eda6c56"
     from: scripts/Initialize-J7Signing.ps1
     replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseModuleLayoutTest.java
     test: ro.atf.chess.ReleaseModuleLayoutTest#reactorConsumesOneIndependentReleaseArtifact
@@ -64,7 +64,7 @@ testChanges:
     allowDelete: true
 
   - id: CHESS-RELEASE-MODULE-9
-    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    base: "ca7cfe06c994a869d9e488bf968eea6b4eda6c56"
     from: scripts/verify-signing-continuity.ps1
     replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseModuleLayoutTest.java
     test: ro.atf.chess.ReleaseModuleLayoutTest#reactorConsumesOneIndependentReleaseArtifact
@@ -72,7 +72,7 @@ testChanges:
     allowDelete: true
 
   - id: CHESS-RELEASE-MODULE-10
-    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    base: "ca7cfe06c994a869d9e488bf968eea6b4eda6c56"
     from: scripts/verify-authenticated-download.ps1
     replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseModuleLayoutTest.java
     test: ro.atf.chess.ReleaseModuleLayoutTest#reactorConsumesOneIndependentReleaseArtifact
@@ -80,7 +80,7 @@ testChanges:
     allowDelete: true
 
   - id: CHESS-RELEASE-MODULE-11
-    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    base: "ca7cfe06c994a869d9e488bf968eea6b4eda6c56"
     from: scripts/sync-published-release.ps1
     replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseModuleLayoutTest.java
     test: ro.atf.chess.ReleaseModuleLayoutTest#reactorConsumesOneIndependentReleaseArtifact
