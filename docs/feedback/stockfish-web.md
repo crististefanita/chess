@@ -11,7 +11,7 @@ Stockfish Lite deține indiciile calculate, bara de evaluare și Analiza interme
 | Analiza intermediară și finală | Rădăcinile libere și jucate au aceeași adâncime încheiată și același furnizor. Redeschiderea păstrează identitatea; lucrul parțial sau străin nu este complet. |
 | Explicațiile problemelor | Redarea catalogului rămâne cunoaștere verificată prin reguli. Orice linie sau scor calculat cere furnizorul Lite declarat; rutele pentru mutări greșite și câștig trebuie auditate separat. |
 
-Scorul așteptat WDL din bară nu este probabilitatea umană de câștig sau Elo. O PV mai lungă nu dovedește o adâncime încheiată mai mare sau un joc mai puternic. [Convențiile surselor](../board/analysis-sources.md)
+Bara verticală folosește acum proiecția progresivă comună în centipioni, independent de saturarea WDL. WDL Stockfish rămâne dovadă pentru analiza partidei; niciuna dintre valori nu este Elo uman. Scara și ambele adaptoare de producție sunt acoperite prin componente offline. O PV mai lungă nu dovedește o adâncime încheiată mai mare sau un joc mai puternic. [Convențiile surselor](../board/analysis-sources.md)
 
 ## Ediția verificată
 

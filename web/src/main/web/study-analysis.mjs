@@ -107,7 +107,7 @@ export function renderAnalysisMeter(meter, fill, evaluation, blackBelow, locale)
         fill.style.height = '0%';
         return;
     }
-    const share = Math.round(evaluation.whiteShare * 100);
+    const share = evaluation.whiteShare * 100;
     meter.setAttribute('aria-valuenow', share);
     meter.setAttribute('aria-valuetext', analysisScore(evaluation, locale));
     fill.style.height = share + '%';

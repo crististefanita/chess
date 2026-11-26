@@ -15,7 +15,7 @@ Candidatul curent folosește **Stockfish Lite** pentru indicii calculate, bara d
 | Soluția problemei și teoria redactată | Catalog verificat și redare legală | Catalogul Java comun |
 | Mutarea adversarului | Native Basic, Advanced sau Hard | Politica Java comună a partidei |
 
-Bara arată evaluarea motorului pentru Alb și scorul așteptat WDL. Nu este o măsurare Elo sau probabilitatea măsurată de câștig a unui om. Schimbarea nivelului adversarului nu poate slăbi analiza sau selecta alt furnizor.
+Bara afișează evaluarea albului pe scara progresivă comună în centipioni. +1 pion ocupă 60%, iar +8 aproximativ 83%; scorurile finite păstrează ambele culori vizibile. WDL observat rămâne neschimbat pentru analiză și clasificare. Scara vizuală nu măsoară Elo sau probabilitatea umană de câștig. Schimbarea nivelului adversarului nu slăbește motorul de analiză și nu schimbă furnizorul.
 
 ## Cerere și validare
 

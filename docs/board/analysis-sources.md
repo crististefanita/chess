@@ -43,6 +43,8 @@ Diagrama separă analiza calculată de catalog. Web rulează local motorul fixat
 
 ## Convențiile scorurilor
 
+- **Bara verticală de avantaj:** metoda Java comună `MatchEvaluation.whiteShare()` transformă scorul măsurat al albului `cp` în `0.5 + 0.5 × cp / (400 + |cp|)`. Egalitatea rămâne la 50%; +1, +3 și +8 pioni ocupă aproximativ 60%, 71% și 83%. Orice scor finit în centipioni păstrează vizibil celălalt segment. Estimările de mat și rezultatele finale păstrează capetele; remiza rămâne centrată. Web și Android folosesc aceeași proiecție în partide, deschideri și tabla de analiză. Orientarea inversează numai direcția barei. Scara vizuală nu este WDL sau probabilitate calibrată; CP, distanța de mat, WDL, PV legală și proveniența rămân intacte pentru analiză și clasificare. [Contracte executabile pentru scară și adaptoare](../../atf-tests/src/test/java/ro/atf/chess/EvaluationBarScaleTest.java)
+
 - **Scorul referinței:** centipioni pentru Alb la orizontul măsurat. **Ref. Δ** este scorul prefixului curent minus cel al părintelui. Orientarea nu schimbă semnul.
 - **Estimarea redării:** diferență statică final–inițial din perspectiva culorii la mutare în sursa redării. Diferă de Ref. Δ; sursa cu Negrul la mutare folosește altă perspectivă. Nu pot fi prezentate drept aceeași măsurare Stockfish.
 - **Analiza partidei:** scorurile Native vechi la orizont egal devin pierdere în miimi, categorii și precizie conform [game-review.yaml](../../chess-core/src/main/resources/game-review.yaml). Review-urile externe păstrează WDL Stockfish la adâncime comună; același contract se aplică migrării Android. O partidă eligibilă poate adăuga estimarea ratingului potrivit politicii adversarului; schimbarea analizei nu recalibrează adversarul.

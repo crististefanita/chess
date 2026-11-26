@@ -25,11 +25,10 @@ public final class CoachingPresentation {
         return ExternalEngineAnalysis.context(match, ply).contextKey();
     }
 
-    /** Use the engine's observed WDL, rather than mapping centipawns to a made-up probability. */
+    /** Display the shared gradual advantage scale; preserve observed WDL for review and evidence. */
     public static double whiteShare(MatchHint hint, ChessPosition position) {
         var observed = hint.external().orElseThrow(() -> new IllegalArgumentException("An external observation is required"));
-        int points = observed.best().expectedPoints();
-        return (position.turn() == ChessPosition.Side.WHITE ? points : 1000 - points) / 1000.0;
+        return observed.best().evaluation(position.turn()).whiteShare();
     }
 
     public static boolean legacy(GameReview review) { return review != null && review.external() == null; }

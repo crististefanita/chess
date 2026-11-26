@@ -41,7 +41,7 @@ class AndroidStockfishCoachingTest {
         }
     }
 
-    @Test void barUsesObservedWdlWithTheCorrectColorAndDoesNotInventAProbability(Checks c) throws Exception {
+    @Test void barUsesTheSharedAdvantageScaleAndPreservesObservedWdl(Checks c) throws Exception {
         try (var loader = presentation(c)) {
             var type = loader.loadClass("ro.atf.chess.android.CoachingPresentation");
             var share = type.getMethod("whiteShare", MatchHint.class, ChessPosition.class);
@@ -49,14 +49,16 @@ class AndroidStockfishCoachingTest {
             var black = white.play(fromUci("e2e4"));
             for (var match : List.of(white, black)) {
                 String root = match.position().turn() == ChessPosition.Side.WHITE ? "e2e4" : "e7e5";
-                var line = new ExternalEngineAnalysis.Line(1, 12, 0, null, List.of(100, 300, 600), List.of(fromUci(root)));
+                var line = new ExternalEngineAnalysis.Line(1, 12, 100, null, List.of(1000, 0, 0), List.of(fromUci(root)));
                 var batch = new ExternalEngineAnalysis.Batch(ExternalEngineAnalysis.context(match, match.ply()),
                         ExternalEngineAnalysisTest.PROVIDER, 12, List.of(line));
                 var hint = MatchHint.external(match.position(), ExternalEngineAnalysis.batch(match, match.ply(), batch.json()));
-                c.same("Observed expected points, not the equal-centipawn fallback: " + match.position().turn(),
-                        match.position().turn() == ChessPosition.Side.WHITE ? .25 : .75, share.invoke(null, hint, match.position()));
+                c.same("One pawn stays moderate even when observed WDL saturates: " + match.position().turn(),
+                        match.position().turn() == ChessPosition.Side.WHITE ? .6 : .4, share.invoke(null, hint, match.position()));
+                c.same("The raw WDL observation is unchanged", List.of(1000, 0, 0), hint.external().orElseThrow().best().wdl());
+                c.same("The recorded expected points retain their original meaning", 1000, hint.external().orElseThrow().best().expectedPoints());
             }
-            c.rejects("Missing provider evidence cannot be shown as an external probability", InvocationTargetException.class,
+            c.rejects("Missing provider evidence cannot produce an external advantage", InvocationTargetException.class,
                     () -> share.invoke(null, new MatchHint(List.of()), white.position()));
         }
     }
