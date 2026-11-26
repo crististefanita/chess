@@ -1,0 +1,42 @@
+{
+  "scope": "MANUAL_BROWSER_MCP_OBSERVATION",
+  "observedUtc": "2026-11-26T10:59:14.5423508Z",
+  "url": "https://crististefanita.github.io/chess/#ai",
+  "runtime": "824ce609a8594585d3475d3511cc7d019e7e7f916fd2662e3cab408fab23db79",
+  "providerLabel": "Stockfish 19 Lite",
+  "opponent": "Native Basic",
+  "observedHistory": "e2e4 c7c6 f2f4 g8f6 g1f3 f6e4",
+  "review": {
+    "comparisonTable": true,
+    "plies": 6,
+    "elo": "Unavailable for unfinished game",
+    "opened": true,
+    "engine": "Stockfish 19 Lite"
+  },
+  "initialPositionHint": {
+    "tabY": [
+      454.8374938964844,
+      454.8374938964844,
+      454.8374938964844
+    ],
+    "count": 3,
+    "depth": 14,
+    "tabWidth": [
+      105.6125030517578,
+      105.6125030517578,
+      105.6125030517578
+    ],
+    "roots": [
+      "e2e4",
+      "g1f3",
+      "d2d4"
+    ]
+  },
+  "restored": {
+    "nextDisabled": true,
+    "lastMove": "3… f6–e4",
+    "actualMovesChanged": false,
+    "status": ""
+  },
+  "limits": "Manual DOM/AX observation; concurrency is proved by component tests, not inferred from UI timing."
+}
