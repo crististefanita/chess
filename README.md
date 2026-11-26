@@ -2,14 +2,14 @@
 
 Chess Lab permite partide cu AI, probleme și studiul deschiderilor pe Android și în browser. Codul Java comun deține jocul legal și starea învățării. Analiza calculată folosește Stockfish Lite pe Web și Android; adversarul mută cu motorul Native independent. Adaptoarele prezintă jocul, iar testele și livrarea fac auditabile comportamentul și artefactele.
 
-[Contractul analizei](docs/feedback/stockfish-web.md) guvernează indiciile, bara și Analiza partidei pe ambele platforme. Îmbunătățirea Native Hard are un [protocol A/B și Elo](docs/testing/hard-ab-elo.md) separat. Downloadul de mai jos rămâne ultimul APK publicat; publicarea candidatului Lite necesită în continuare verificarea downloadului.
+[Contractul analizei](docs/feedback/stockfish-web.md) guvernează indiciile, bara și Analiza partidei pe ambele platforme. Îmbunătățirea Native Hard are un [protocol A/B și Elo](docs/testing/hard-ab-elo.md) separat.
 
 <a id="play"></a>
 <a id="jocul"></a>
 
 ## Jocul
 
-- [Descarcă APK Chess Lab 0.16.2](https://github.com/crististefanita/chess/releases/download/v0.16.2/ChessLab-0.16.2.apk)
+- [Descarcă APK Chess Lab 0.17.1](https://github.com/crististefanita/chess/releases/download/v0.17.1/ChessLab-0.17.1.apk)
 - [Joacă în browser](https://crististefanita.github.io/chess/)
 
 ## Pe scurt
@@ -160,7 +160,7 @@ flowchart LR
 
 ## Ediția publicată
 
-- [Chess Lab 0.16.2 · note de versiune](https://github.com/crististefanita/chess/releases/tag/v0.16.2)
+- [Chess Lab 0.17.1 · note de versiune](https://github.com/crististefanita/chess/releases/tag/v0.17.1)
 
 ## Puncte de intrare
 

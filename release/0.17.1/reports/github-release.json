@@ -1,0 +1,14 @@
+{
+  "notesUtf8": "PASS",
+  "sourceCommit": "83fd97c72ebf514da365af6c55a1eb1223ff8fcf",
+  "tag": "v0.17.1",
+  "bytes": 4062638,
+  "assetId": 795448667,
+  "releaseUrl": "https://github.com/crististefanita/chess/releases/tag/v0.17.1",
+  "releaseId": 459280729,
+  "digest": "sha256:cb46d0f5cca5e4caa88cb014c68c696be70c0818e8b74d57e9c68b28655db58d",
+  "assetUrl": "https://github.com/crististefanita/chess/releases/download/v0.17.1/ChessLab-0.17.1.apk",
+  "publishedUtc": "2026-11-26T10:50:52Z",
+  "draft": false,
+  "targetCommit": "83fd97c72ebf514da365af6c55a1eb1223ff8fcf"
+}

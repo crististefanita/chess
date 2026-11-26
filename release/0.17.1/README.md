@@ -10,6 +10,8 @@ Indiciile și bara folosesc Stockfish Lite; adversarul își calculează mutarea
 - **Rulare paralelă:** analiza blocată sau anulată nu modifică mutarea adversarului Basic, Advanced sau Hard.
 - **Deschideri:** varietate între mutări măsurate pentru istoricul exact; analiza păstrează sursa și perspectiva scorului.
 
+- **Partide salvate:** review-ul păstrează lotul complet cu rădăcini distincte când o actualizare MultiPV repetă o mutare.
+
 ## Instalare
 
-Candidatul semnat este calificat; linkul APK din [README-ul proiectului](../../README.md#jocul) rămâne la ediția publicată până la încărcarea asset-ului. [Dovezi](reports/README.md).
+[APK semnat](https://github.com/crististefanita/chess/releases/download/v0.17.1/ChessLab-0.17.1.apk) · [README-ul proiectului](../../README.md#jocul) · [Dovezile ediției](reports/README.md)
