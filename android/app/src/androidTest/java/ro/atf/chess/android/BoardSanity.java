@@ -205,9 +205,11 @@ public final class BoardSanity extends Instrumentation {
             var row = new org.json.JSONObject(new String(bytes, java.nio.charset.StandardCharsets.UTF_8));
             if (row.getLong("createdAtMillis") < started) continue;
             String transcript = row.getString("rawUCITranscript");
-            if (!"ACTUAL_ANDROID_STOCKFISH_UCI_SEARCH".equals(row.getString("scope"))
-                    || !stockfishSha(transcript.getBytes(java.nio.charset.StandardCharsets.UTF_8)).equals(row.getString("transcriptSha256"))
+            if (!stockfishSha(transcript.getBytes(java.nio.charset.StandardCharsets.UTF_8)).equals(row.getString("transcriptSha256"))
                     || !transcript.contains("bestmove ")) throw new AssertionError("The current engine journal is incomplete or substituted");
+            if ("ANDROID_STOCKFISH_CACHE_REVALIDATION".equals(row.getString("scope")) && row.getString("phase").startsWith("reuse:")) continue;
+            if (!"ACTUAL_ANDROID_STOCKFISH_UCI_SEARCH".equals(row.getString("scope")))
+                throw new AssertionError("A non-search journal cannot qualify an actual UCI observation");
             retained.add(row);
             raw.put(new org.json.JSONObject().put("file", file.getName()).put("bytes", bytes.length)
                     .put("sha256", stockfishSha(bytes)).put("original", row));

@@ -96,6 +96,8 @@ class StockfishCoachingComponentTest {
             c.same("Appending a future move need not repeat the same prefix", searches, fake.searches);
             c.same("Reuse is rebound to the current checkpoint", ExternalEngineAnalysis.context(longer, 1).contextKey(), reused.context().contextKey());
             c.same("Reuse is explicitly identified in the audit", true, audit.contains("reuse:free"));
+            c.same("A cache hit cannot masquerade as another observed search", 1L,
+                    audit.stream().filter("free"::equals).count());
             coaching.hint(ChessMatch.restore("2|analysis|g1f3 g8f6 f3g1 f6g8"), 4);
             c.same("Repetition history cannot hit an unrelated starting position", searches + 1, fake.searches);
         }
