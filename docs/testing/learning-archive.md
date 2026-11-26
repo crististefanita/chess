@@ -194,6 +194,8 @@ respingerea experimentului slab de către poartă; nu califică motorul.
 
 Modelele de ordonare prioritizează mutări legale; nu furnizează soluția cunoscută a unui puzzle și nu schimbă oracolul de acceptare. Păstrați pozițiile echivalente ca origine în aceeași partiție. Comparați ordonarea, deciziile complete, replicile adverse și partidele finale la același buget declarat. Studiul istoric de 44k de mai jos nu măsoară profilul adaptiv curent din prim-plan.
 
+Comparațiile păstrate learned-0007 (Rb1, câștig) și learned-0015 (Qxb5 …axb5, pierdere) au ajuns la patru, respectiv cinci semimutări. Nu izolează ordonarea. Refolosește-le doar ca martori diagnostici consumați, cu replici libere la același orizont complet; nu sunt experimentul implicit următor. Include sacrificii corecte și alternative apropiate pierzătoare înaintea antrenării, în locul unui lot doar cu înfrângeri.
+
 <details>
 <summary>Studiul liniar istoric și liga încheiată</summary>
 

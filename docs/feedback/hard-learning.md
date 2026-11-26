@@ -1,17 +1,12 @@
-# Învățarea Hard din partide arhivate
+# Învățarea ordonării · dovezi restante
 
 ## Pe scurt
 
-Acest registru deține dovezile încă necesare înaintea promovării unei ordonări învățate. [Ghidul de admitere](../testing/learning-archive.md#studii-de-ordonare-învățată) păstrează experimentul istoric încheiat și limitele sale.
+Alege experimentul următor din [prioritățile Hard curente](hard.md) și [procesul ordonat](../testing/hard-progress.md). Acest registru păstrează doar lipsurile de învățare. [Ghidul admiterii](../testing/learning-archive.md#studii-de-ordonare-învățată) păstrează studiile încheiate și controalele diagnostice consumate.
 
 | Prioritate | Lacună | Criteriu de închidere |
 |---|---|---|
-| P1 | Exemplele doar din pierderi pot confunda sacrificiile corecte cu piesele lăsate în priză. | Înghețați mutări bune păstrate, sacrificii cu replică adversă verificată și alternative pierzătoare apropiate înaintea ajustării; separați după origine. |
-| P1 | Pe 36 de familii excluse, ordinea rădăcinii se schimbă în 34 de cazuri, dar toate deciziile complete rămân identice. | Îmbunătățiți deciziile complete și continuările adverse pe familii noi, la orizonturi și bugete egale, fără regresii tactice. |
-| P1 | Liga istorică de 44k nu stabilește un câștig util de forță și nu măsoară politica adaptivă din prim-plan. | Calificați întâi transferul, apoi folosiți protocolul fixat pentru partide pereche și ancora Stockfish; raportați încrederea, neterminatele și costul. |
-
-## Următorul contrast
-
-Păstrați atât `learned-0007` (`Rb1`, câștig), cât și `learned-0015` (`Qxb5 …axb5`, pierdere). Comparațiile candidat/reper inspectate au atins patru, respectiv cinci semimutări, deci nu izolează efectul ordonării. Verificați replica adversă liberă la un orizont complet comun înaintea generalizării.
+| P2 | Lecții echilibrate din primele pierderi confirmate | Îngheață mutări corecte, sacrificii, apărări optime libere și alternative apropiate pierzătoare înaintea reglajului. YAML descrie precondiții reutilizabile, nu suprascrieri FEN-mutare. Partiționează pe partida-sursă, transpoziție și familia echivalentă prin culoare. |
+| P2 | Transferul real al unui mecanism învățat | Decizii complete, continuări adverse și conversie mai bune pe familii excluse, la aceleași orizonturi/bugete. Schimbarea ordonării rădăcinii nu ajunge. Folosește protocolul curent de partide pereche după transfer, fără a moșteni vechiul rating la 44k. |
 
 [Protocol AI](../board/ai-quality.md#control-la-fiecare-schimbare) · [Profil adaptiv](../board/ai-quality.md#buget-adaptiv-în-prim-plan)

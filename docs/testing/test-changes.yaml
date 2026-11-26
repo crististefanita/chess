@@ -1,4 +1,20 @@
 testChanges:
+  - id: CHESS-LIVE-DOC-RO
+    base: "2c25cdbc38f5edd17008829dffca38a8d12a07c7"
+    from: atf-tests/src/test/java/ro/atf/chess/HardDocumentationTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/HardDocumentationTest.java
+    test: ro.atf.chess.HardDocumentationTest#currentFeedbackRoutesToTheOrderedProcessAndSeparateCoachingOwner
+    contract: "Păstrează regresiile originale și adaugă controalele live de documentație și identitate a arhivei"
+    allowDelete: false
+
+  - id: CHESS-LIVE-AUDIT-RO
+    base: "2c25cdbc38f5edd17008829dffca38a8d12a07c7"
+    from: atf-tests/src/test/java/ro/atf/chess/LearningGameAuditTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/LearningGameAuditTest.java
+    test: ro.atf.chess.LearningGameAuditTest#optionalNativeMetadataPreservesLegacyBytesAndNewObservations
+    contract: "Păstrează regresiile originale și adaugă controalele live de documentație și identitate a arhivei"
+    allowDelete: false
+
   - id: CHESS-DISTINCT-COHORT-1-RO
     base: "2c25cdbc38f5edd17008829dffca38a8d12a07c7"
     from: pom.xml

@@ -2,6 +2,8 @@
 
 ## Pe scurt
 
+Acest ghid păstrează contractele auditului Native. Analiza calculată nouă aparține [contractului Stockfish Lite](../feedback/stockfish-web.md); jurnalele vechi își păstrează furnizorul, fără redenumirea indiciilor. [Procesul ordonat](hard-progress.md) separă corectitudinea auditului, viteza și forța de joc.
+
 - **O singură căutare pe poziție.** `ChessMatch.analyzeBot(HARD)` întoarce mutarea aleasă și raportul aceleiași decizii native. `HardAuditedGame` păstrează recepția până când o mutare legală avansează checkpoint-ul.
 - **Fiecare semimutare jucată.** Mutările de deschidere înghețate și replicile Stockfish cer și ele o analiză Hard înainte de joc. Sugestia de control rămâne separată de mutarea efectivă.
 - **Calificare.** [Contractele de componentă](../../atf-tests/src/test/java/ro/atf/chess/HardAuditedGameTest.java) resping dovezile lipsă sau străine. [Publicatorul ligii](../../atf-tests/src/test/java/ro/atf/chess/HardLeagueAuditTest.java) rejucă recepțiile brute înainte de publicarea ratingului în Extent.
@@ -12,7 +14,13 @@ Fixează commit-ul, clasele compilate, resursele motorului, lansatorul, binarul 
 
 Fiecare recepție conține checkpoint-ul complet și FEN-ul, culoarea și semimutarea, alegerea nativă efectivă și rangul, referința teoretică, adâncimea încheiată, nodurile suplimentare taxate și fiecare PV întors, cu scor nativ, material și final. Scorurile native pot include credit istoric de orizont. Nu sunt evaluări Stockfish sau probabilități calibrate de victorie.
 
-Hard normal pornește cu 100k noduri suplimentare și poate continua până la 200k. Repertoriul și căile explicite își păstrează politica. Distinge acest buget de plafonul total unic de 200k al indiciului. Auditul apelează API-ul efectiv al partidei, păstrând istoricul, alegerea remizei și repetițiile; o a doua căutare de indiciu doar pe poziție nu poate înlocui acea decizie. [Politici](../board/ai-quality.md)
+Hard normal pornește cu 100k noduri suplimentare și poate continua până la 200k. Repertoriul și căile explicite își păstrează politica. Indiciul Native istoric are alocația ordinară și o rezervă separată taxată pentru dovada forțată; cei 200k ordinari nu sunt plafon total. Analiza Stockfish păstrează propriul furnizor și propria politică. Auditul apelează API-ul efectiv al partidei, păstrând istoricul, alegerea remizei și repetițiile; o a doua căutare de indiciu doar pe poziție nu poate înlocui acea decizie. [Politici](../board/ai-quality.md)
+
+## Metadate opționale ale deciziei și recepții vechi
+
+LearningGameAudit.mapper() omite doar cele patru câmpuri BotDecision noi dacă sunt nule: accounting, engine, stop și certificate. O politică globală non-null ar elimina și câmpuri vechi semnificative, schimbând digesturile istorice. Câmpurile existente și cadrul original fixat rămân neschimbate; metadatele noi reale se păstrează, se restaurează și contribuie la identitatea canonică.
+
+LearningGameAuditTest verifică forma JSON veche, metadatele reale, schimbarea identității și contabilizarea invalidă. CoachingProofTest#retainsActualReserveWorkAndHistoricalReceiptShapes verifică digestul original și recepția dovezii forțate fără schimbarea fixture-ului. Aceste componente verifică arhiva Native; nu califică un jurnal Stockfish Lite nou.
 
 ## Validarea recepțiilor
 

@@ -9,6 +9,8 @@ Diagnosticele Native Hard păstrează propriul motor și oracol. [Contractul Sto
 
 Parcurgeți [prioritățile Native curente](hard.md) prin [protocolul A/B, audit și Elo](../testing/hard-ab-elo.md). Rândurile Native vechi rămân diagnostice legate de sursă; nu sunt defecte Stockfish observate nou și nu sunt toate sarcini P1 curente. Schimbarea profesorului nu închide mecanisme Native sau creează Elo nou.
 
+Urmează [pașii ordonați de îmbunătățire](../testing/hard-progress.md): compatibilitatea auditului, confirmarea A3, reparația cauzei de joc, transferul pe familii excluse și Elo pereche. Reparațiile încheiate aparțin documentației tehnice; eșecurile diagnostice păstrate nu sunt toate ToDo-uri active.
+
 [Revizuirea mutărilor între suite](../testing/README.md#schimbarea-testelor-față-de-o-bază-git) descrie baza Git și dovezile de acoperire.
 
 - [Porțile și lucrul rămas pentru Hard A experimental](hard.md)

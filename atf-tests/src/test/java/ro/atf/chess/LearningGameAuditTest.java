@@ -24,6 +24,17 @@ class LearningGameAuditTest {
                 List.of(json.path("engine").asText(),json.path("stop").asText(),json.path("certificate").asText()));
         check.same("Current metadata survives deserialization",current,mapper.treeToValue(json,ChessMatch.BotDecision.class));
     }
+    @Test void realMetadataIsNotIgnoredByCanonicalAuditAndInvalidAccountingIsRejected(Checks check)throws Exception {
+        var mapper=LearningGameAudit.mapper();var current=new ChessMatch.BotDecision(move("e2e4"),6,1234);
+        var json=mapper.valueToTree(current);String canonical=HardLeagueAudit.canonical(json);
+        for(String field:List.of("engine","stop","certificate")) {
+            var changed=(com.fasterxml.jackson.databind.node.ObjectNode)json.deepCopy();changed.put(field,json.path(field).asText()+"-changed");
+            check.same("Actual "+field+" contributes to canonical audit identity",false,canonical.equals(HardLeagueAudit.canonical(changed)));
+        }
+        var invalid=(com.fasterxml.jackson.databind.node.ObjectNode)json.deepCopy();invalid.put("accounting","UNTRUSTED");
+        check.rejects("Unknown accounting cannot become a current observation",com.fasterxml.jackson.core.JsonProcessingException.class,
+                ()->mapper.treeToValue(invalid,ChessMatch.BotDecision.class));
+    }
     @Test void bothColorsRequireTheirOwnMaximumHintBeforePlaying(Checks check) {
         var journal=new ArrayList<LearningGameAudit.Envelope>();int[] nativeCalls={0},hintCalls={0},requested={0};
         var observer=fixture(journal,nativeCalls,hintCalls,requested);

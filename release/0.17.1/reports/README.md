@@ -2,7 +2,7 @@
 
 ## Pe scurt
 
-Sursa înghețată este `8cdaeb9`. Poarta strictă a reconciliat 735 de teste de componentă și 30 de aserțiuni Android pentru același APK și ID de calificare.
+Sursa înghețată este `83fd97c`. Poarta strictă a reconciliat 735 de teste de componentă și 30 de aserțiuni Android pentru același APK și ID de calificare.
 
 ## Verificări
 
@@ -11,3 +11,5 @@ Sursa înghețată este `8cdaeb9`. Poarta strictă a reconciliat 735 de teste de
 - [Stockfish Lite pe Android](android-stockfish-sanity.html): 37 de aserțiuni originale, UCI real și captură încorporată.
 
 Jurnalele parțiale Android au momentan reutilizare în RAM; reluarea lor durabilă după oprirea procesului rămâne în feedback. Dovezile de publicare și download se adaugă după încărcarea APK-ului.
+
+Modificările paralele ulterioare au adăugat doar teste și documentație Hard. Codul și resursele executabile sunt identice cu sursa calificată; controalele suplimentare au raport separat.

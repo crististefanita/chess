@@ -179,7 +179,7 @@ oferite și comparate, replicile, adâncimile și nodurile efective. [Rulare și
 
 Fiecare semimutare, inclusiv replica adversarului, cere analiza efectivă Hard cu istoric. Componentele resping recepții lipsă sau străine; publicatorul benchmark rejucă dovezile înainte de Elo și Extent. [Protocol, comandă și interpretare](hard-audit.md)
 
-Porniți altă campanie doar după ce un candidat numit schimbă o ratare păstrată printr-un mecanism general. Comparați întâi minimax independent, limite TT înguste/complet deschise, cache rece/cald, repetiții, ieșiri legale din șah și întreruperi. Problemele izolează cauza, păstrând etapele, sacrificiile și apărările. Înghețați familii noi înainte de profesor; cereți linie completă și conversie înainte de duel. Separați WDL/CP/mat de ΔElo și păstrați neterminatele. Alocarea redusă nu dovedește viteză, nici mai mult lucru cu aceleași alegeri forță. [Priorități și controale consultate](../feedback/hard.md#priorități)
+Porniți altă campanie doar după ce un candidat numit schimbă o ratare păstrată printr-un mecanism general. Comparați întâi minimax independent, limite TT înguste/complet deschise, cache rece/cald, repetiții, ieșiri legale din șah și întreruperi. Problemele izolează cauza, păstrând etapele, sacrificiile și apărările. Înghețați familii noi înainte de profesor; cereți linie completă și conversie înainte de duel. Separați WDL/CP/mat de ΔElo și păstrați neterminatele. Alocarea redusă nu dovedește viteză, nici mai mult lucru cu aceleași alegeri forță. [Priorități și controale consultate](../feedback/hard.md)
 
 ### Analiză Stockfish și transport Android
 
