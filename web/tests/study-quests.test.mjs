@@ -446,6 +446,13 @@ test('Puzzle replay keeps its actions outside the scrollable text and retains ei
     assert.match(css, /--quest-insets:\s*var\(--chess-page-insets\);/);
     assert.match(css, /#quest-study-hint-label\s*\{[^}]*min-block-size:\s*1lh;/);
     assert.match(compact, /#quest-study-hint-label\s*\{[^}]*max-inline-size:\s*none;/);
+    assert.match(css, /#quest-study-score\s*\{[^}]*overflow:\s*hidden;[^}]*text-overflow:\s*ellipsis;[^}]*white-space:\s*nowrap;/);
+    assert.match(css, /\.quest-study-score\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\) minmax\(0, 45%\);/);
+    assert.match(css, /#quest-study-hint\s+svg\s*\{\s*inline-size:\s*1\.25rem;\s*block-size:\s*1\.25rem;/);
+    const narrow = css.slice(css.indexOf('@media (max-width: 20rem)'));
+    assert.match(narrow, /grid-template-columns:\s*minmax\(0, 1fr\) minmax\(0, 45%\);/);
+    assert.match(narrow, /font-size:\s*\.75rem;/);
+    assert.doesNotMatch(narrow, /grid-template-columns:\s*minmax\(0, 1fr\);/);
     assert.match(compact, /\[data-replay\] \.quest-study-dialog\s*\{\s*padding-inline:\s*0;/);
     assert.match(css, /\.quest-study-board-and-details,[^}]*grid-template-rows:\s*auto minmax\(2lh, 1fr\);/);
     assert.match(css, /#quest-study-replay-board\s*\{[^}]*width: min\(100%, var\(--replay-board-side, var\(--play-board-limit\)\), var\(--play-board-limit\)\);/);

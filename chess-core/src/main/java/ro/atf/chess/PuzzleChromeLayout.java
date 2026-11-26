@@ -15,6 +15,11 @@ public record PuzzleChromeLayout(int headerHeight, int scoreHeight, int scoreLin
                 scoreLines * scoreLineHeight, scoreLines, touchTarget + guidanceHeight);
     }
 
+    /** Includes the row's vertical insets while preserving its minimum compact tap-safe height. */
+    public int scoreContainerHeight(int minimumHeight, int verticalInsets) {
+        return Math.max(Math.max(0, minimumHeight), scoreHeight + Math.max(0, verticalInsets));
+    }
+
     public BoardPanelLayout.WithDetails boardAndDetails(int width, int screenHeight, int systemBarsHeight,
                                                            int playerLabelsHeight, int detailsMinimum) {
         int available = Math.max(0, screenHeight - systemBarsHeight - headerHeight - scoreHeight - navigationHeight);
