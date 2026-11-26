@@ -1,0 +1,14 @@
+schema: 1
+scope: TEST_ONLY_DIDACTIC_PLAN_NOT_RUNTIME_MOVE_OVERRIDE_OR_TRANSFER_PROOF
+referenceWitness: training-021-stage-2
+referenceDepth: 19
+idea: A quiet king move can remove an absolute pin and enable an attacking rook check.
+plan: [g5g7, f7e6, h2h3, d6b8, g3e3]
+pinnedFen: 3r4/6Q1/3qk3/5p2/8/6R1/6PK/8 w - - 3 46
+rookCheck: g3e3
+quietUnpin: h2h3
+storedDefense: d6b8
+counterexample:
+  scope: SYNTHETIC_LEGALITY_COUNTEREXAMPLE_NOT_AN_INDEPENDENT_FAMILY
+  fen: 3r4/6Q1/3qk3/5b2/8/6R1/6PK/8 w - - 0 46
+  reason: A bishop on f5 attacks h3; the same king move is illegal.

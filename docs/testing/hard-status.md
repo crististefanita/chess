@@ -1,5 +1,7 @@
 # Measured Native Hard status
 
+For the current three-profile baseline and its original 300-game cohort, use [current calibration](current-profile-calibration.md). The Elo table below remains the earlier, separately identified sample; it is not merged with the current cohort or a candidate Delta Elo.
+
 The baseline snapshot belongs to source **`85b1c478575d3c31065161c55aa02cffcd0e7eee`**. The current objective-blind replay includes the bounded queen-reply and outside-pawn corrections below; the curriculum, ordinary 100k→200k allowance and displayed app ratings stay unchanged. The Elo table still belongs to the baseline, not the corrected player. Baseline calibration is independent of candidate-promotion gates: an incomplete puzzle catalog does not prevent measuring the existing player, and a rating estimate does not qualify a candidate.
 
 ## Puzzle results

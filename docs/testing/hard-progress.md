@@ -4,6 +4,8 @@
 
 [Open feedback](../feedback/hard.md) · [Measurement protocol](hard-ab-elo.md) · [Stockfish Lite ownership](../feedback/stockfish-web.md)
 
+The [current calibration](current-profile-calibration.md) measures all three profiles and authored puzzle routes, with original-prefix technical continuations and explicit quality failures. Use its scope before interpreting a newer Elo point as an algorithmic gain.
+
 Treat root correctness and the explanation's continuation as separate gates. The [checked-frontier study](native-forcing-frontier.md) captures a winning Native first move followed by an unclosed queen offer; a first-choice PASS alone cannot close that mechanism. Preserve the stored counterexample without requiring future engines to repeat its bad PV.
 
 ## Working baseline

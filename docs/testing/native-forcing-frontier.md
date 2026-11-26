@@ -36,6 +36,10 @@ The test-only YAML fixtures retain explicit origins/history, original UCI, binar
 
 ## Next bounded intervention
 
+The follow-up [current calibration](current-profile-calibration.md) retains a quiet-plan component: after `Qg7+ Ke6`, Qd6 pins Rg3 to Kh2. The captured Stockfish H19 line uses **Kh3**, then meets Qb8 with **Re3+**. The synthetic bishop-on-f5 counterexample makes Kh3 illegal. This is a general legality/plan lesson, not an unconditional king-move rule or a runtime FEN override.
+
+Isolated selected-root probes of the checked-frontier child still prefer Qxf5+ over Qg7+: at H6, +90 versus −20 Native cp; at H8, +89 versus −15. Both H10 probes exhaust their own two-million-node allowances without an exact score. These are independent per-root probes of the rejected child, not actual shared public-game budgets. More depth through H8 did not fix the ranking; incomplete H10 cannot be reported as a success. Inspect free quiet defenses and the quiet unpin plan before another budget-only retry.
+
 Compare Qg7+ with Qxf5+ using free defenses at the same ordinary and forcing horizon, retaining Kxd8 in the captured-rook line. Inspect why Native prefers Qf6 over Ke7 after Qxf5+: the isolated H6 windows score them +90/+92. The Ke7 branch remains +91 at H8; the other H8 branch does not finish within its own 200k probe. These isolated probes do not form a shared full-game allowance or prove a draw.
 
 The rejected actual training-021 decisions finish H6 with budget remaining, so node exhaustion alone cannot explain the failure. Preserve root and full-continuation quality as separate gates. Any future receipt must name its actual forcing mode and charged work; never widen a check-only certificate to accept arbitrary quiet extra plies. Excluded-family transfer and paired games follow the relevant gates.
