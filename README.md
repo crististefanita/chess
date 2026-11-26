@@ -40,10 +40,13 @@ flowchart LR
     Web["Web UI"]
     Worker["TeaVM worker"]
     Engine["chess-core<br/>reguli și stare"]
+    Stockfish["Stockfish<br/>analiză Lite"]
     Projection["Poziție și acțiuni legale"]
     Android -->|transmite comenzi| Engine
     Web -->|trimite cereri cu revizie| Worker
     Worker -->|rulează motorul compilat| Engine
+    Worker -->|cere analiză| Stockfish
+    Stockfish -->|întoarce variante evaluate| Worker
     Engine -->|întoarce proiecția publică| Projection
 ```
 
@@ -51,8 +54,7 @@ flowchart LR
 <summary>Legendă — motor comun și limitele adaptoarelor</summary>
 
 - Diagrama urmărește comenzile la execuție. Workerul Web conține motorul compilat cu TeaVM; nu apelează un JVM la distanță pentru a decide mutările legale.
-- Motorul deține regulile, căutarea, interpretarea catalogului și contractele salvărilor. Preferințele Android și stocarea browserului integrează acele contracte pe platformele proprii.
-Analiza calculată are propriul furnizor Stockfish Lite: [surse, opțiuni și verificări](web/stockfish.md).
+- Java deține regulile, căutarea adversarului Native, interpretarea catalogului și salvările. Brokerul Web și procesul Android rulează Stockfish Lite; Java validează variantele independent de căutarea adversarului. [surse, opțiuni și verificări](web/stockfish.md).
 
 - O aserțiune JVM sau de worker demonstrează o tranziție de stare. Pixelii nativi, layoutul browserului, accesibilitatea și restartul procesului cer proba de platformă corespunzătoare. [Atlasul arhitecturii](docs/architecture.md)
 

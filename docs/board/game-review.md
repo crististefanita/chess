@@ -2,7 +2,7 @@
 
 ## Pe scurt
 
-[Contractul Lite cerut](../feedback/stockfish-web.md) stabilește Stockfish drept furnizor pentru analiza completă și intermediară, bară și grafic pe ambele platforme. Nu amestecați furnizori sau rădăcini la adâncimi diferite. Baseline-ul de mai jos nu afirmă calificarea livrării Android Lite; APK/RAG păstrează acceptarea distinctă.
+[Contractul Lite cerut](../feedback/stockfish-web.md) stabilește Stockfish drept furnizor pentru analiza completă și intermediară, bară și grafic pe ambele platforme. Nu amestecați furnizori sau rădăcini la adâncimi diferite. Calificarea pe platforme este consemnată pe ediție; jurnalele parțiale Android durabile rămân separate de reutilizarea RAM și de arhivele complete.
 
 Analiza partidei agregă comparații complete Stockfish Lite pe Web și Android. Arhivele vechi păstrează sursa. Referințele deschiderilor și delta statică a redării au proveniență separată: [harta surselor](analysis-sources.md) · [Validare și jurnale Web](../../web/stockfish.md).
 
@@ -16,8 +16,8 @@ Analiza partidei agregă comparații complete Stockfish Lite pe Web și Android.
 ```mermaid
 %%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
 flowchart LR
-    Move["Mutare AI salvată"] -->|programează| Work["Comparație nativă completă"]
-    Work -->|salvează fiecare semimutare| Journal["Jurnal persistent"]
+    Move["Mutare AI salvată"] -->|programează| Work["Comparație completă cu furnizor identificat"]
+    Work -->|salvează fiecare semimutare| Journal["Observații pe semimutare"]
     Final["Analiza partidei"] -->|așteaptă lucrul lipsă| Work
     Journal -->|agregă fără căutare| Report["Categorii, grafic și precizie"]
     Report -->|adaugă când este eligibil| Elo["Elo din rezultat"]
@@ -39,7 +39,7 @@ flowchart LR
 
 - **Comparații Stockfish.** Înainte de fiecare mutare păstrați FEN inițial și istoricul complet. Comparați recomandarea liberă și rădăcina jucată la cea mai mare adâncime comună încheiată, același build și politică. Doar rândurile exacte complete sunt admise; lotul incomplet, comparația lipsă sau PV ilegală blochează review-ul complet. Păstrați CP/mat, WDL, noduri, adâncime selectivă și timp. Plafonul cerut și lungimea PV nu sunt lucru efectiv sau adâncime încheiată. Android respectă același contract, fără fallback Native.
 
-- O semimutare este mutarea unei singure culori. Înaintea fiecăreia, motorul recuperează poziția și istoricul. La rădăcina căutării identifică mutările care duc imediat la remiză automată prin material, repetiție sau numărul de semimutări fără pion ori captură. Analiza compară cea mai bună variantă găsită și mutarea jucată la aceeași adâncime finalizată. Căutarea pornește de la trei semimutări și încearcă să ajungă la șase, cu extensie tactică și un buget ordinar de 85.000 de noduri suplimentare pe poziție. Dacă o iterație depășește bugetul, rămâne rezultatul iterației precedente. [Căutarea](../../chess-core/src/main/java/ro/atf/chess/TacticalAnalysis.java) · [Configurația](../../chess-core/src/main/resources/game-review.yaml)
+- **Domeniul Native istoric.** O semimutare este mutarea unei singure culori. Înaintea fiecăreia, motorul recuperează poziția și istoricul. La rădăcina căutării identifică mutările care duc imediat la remiză automată prin material, repetiție sau numărul de semimutări fără pion ori captură. Analiza compară cea mai bună variantă găsită și mutarea jucată la aceeași adâncime finalizată. Căutarea pornește de la trei semimutări și încearcă să ajungă la șase, cu extensie tactică și un buget ordinar de 85.000 de noduri suplimentare pe poziție. Dacă o iterație depășește bugetul, rămâne rezultatul iterației precedente. Aceste setări și formula de mai jos descriu dovezile Native istorice, nu politica Stockfish. [Căutarea](../../chess-core/src/main/java/ro/atf/chess/TacticalAnalysis.java) · [Configurația](../../chess-core/src/main/resources/game-review.yaml)
 
 ```mermaid
 flowchart LR
