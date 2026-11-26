@@ -26,6 +26,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
+      actions: read
       contents: read
       pages: write
       id-token: write
@@ -80,10 +81,38 @@ jobs:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
       - name: Upload the verified site
+        id: pages-artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: ${{ runner.temp }}/chess-site
           include-hidden-files: true
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        env:
+          CHESS_PAGES_ARTIFACT_ID: ${{ steps.pages-artifact.outputs.artifact_id }}
+        with:
+          script: |
+            const artifactId = Number(process.env.CHESS_PAGES_ARTIFACT_ID);
+            if (!Number.isSafeInteger(artifactId) || artifactId < 1) throw new Error('Missing exact upload receipt');
+            const scope = { owner: context.repo.owner, repo: context.repo.repo };
+            const artifact = (await github.rest.actions.getArtifact({ ...scope, artifact_id: artifactId })).data;
+            if (artifact.id !== artifactId || artifact.name !== 'github-pages' || artifact.expired
+                || artifact.workflow_run?.id !== context.runId) throw new Error('Foreign or expired Pages artifact');
+            const created = (await github.request('POST /repos/{owner}/{repo}/pages/deployments', {
+              ...scope, artifact_id: artifactId, pages_build_version: context.sha, oidc_token: await core.getIDToken()
+            })).data;
+            if (!created.id || !created.page_url) throw new Error('Missing Pages deployment receipt');
+            const deployment = { ...scope, deploymentId: created.id };
+            try {
+              for (let attempt = 0; attempt < 120; attempt++) {
+                const observed = (await github.request('GET /repos/{owner}/{repo}/pages/deployments/{deploymentId}', deployment)).data;
+                if (observed.status === 'succeed') { core.setOutput('page_url', created.page_url); return; }
+                if (/failed|cancelled|lost|purged/.test(observed.status ?? '')) throw new Error('Pages deployment: ' + observed.status);
+                await new Promise(resolve => setTimeout(resolve, 5000));
+              }
+              throw new Error('Pages deployment timed out');
+            } catch (failure) {
+              await github.request('POST /repos/{owner}/{repo}/pages/deployments/{deploymentId}/cancel', deployment).catch(() => {});
+              throw failure;
+            }

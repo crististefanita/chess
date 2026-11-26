@@ -64,11 +64,18 @@ a successful deployment, then verify the served bytes and browser behavior.
 Treat a failed fresh attempt or a byte mismatch as an open publication failure.
 If a fresh run repeats the error while the artifact inventory contains exactly
 one completed upload, inspect uploader/deployer compatibility before another
-attempt. The current pipeline pairs pinned upload-pages-artifact 5.0.0 with
-deploy-pages 5.0.1 and explicitly includes hidden files, preserving the qualified
-`.nojekyll`. [The component contract](../atf-tests/src/test/java/ro/atf/chess/PagesWorkflowComponentTest.java)
-protects both client pins and the verified upload path. Keep the static commit
-and tree digest unchanged when repairing the delivery pipeline.
+attempt. The current pipeline preserves the upload's exact artifact ID, validates
+its name, expiry and current run through REST, then uses OIDC with the official
+[Pages deployment API](https://github.com/actions/deploy-pages/blob/368f82528645a54fb793d4d04e342629a3f51346/src/internal/api-client.js#L115-L153).
+It does not rediscover the receipt through the runtime-scoped artifact list.
+Pinned upload-pages-artifact 5.0.0 includes hidden files explicitly, preserving
+the qualified `.nojekyll`; pinned github-script 8 executes the bounded deploy and
+cancel policy. [Components](../atf-tests/src/test/java/ro/atf/chess/PagesWorkflowComponentTest.java)
+execute that exact workflow body with controlled API replies, including foreign
+receipts, failure and timeout. Keep the static commit and tree digest unchanged
+when repairing delivery. A client-version update alone did not resolve the
+runtime-list failure in the 2026-11-26 study; only confirmed deployment and served
+bytes can close publication.
 
 [Bundle structure](README.md#web-bundle-identity) ·
 [Test strategy](../docs/testing/README.md#updating-the-web-bundle) ·

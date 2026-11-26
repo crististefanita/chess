@@ -1,4 +1,12 @@
 testChanges:
+  - id: CHESS-PAGES-EXACT-RECEIPT
+    base: "adb921f91b49fd182c843aa1729ba229a3fea977"
+    from: atf-tests/src/test/java/ro/atf/chess/PagesWorkflowComponentTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/PagesWorkflowComponentTest.java
+    test: ro.atf.chess.PagesWorkflowComponentTest#actualDeploymentScriptBindsTheUploadAndFailsClosedWithoutPublishingFalseSuccess
+    contract: "Use the exact current upload ID with validated run identity, OIDC, bounded status polling and cancellation; preserve immutable static evidence"
+    allowDelete: false
+
   - id: CHESS-GRADUAL-EVALUATION-1
     base: "3707753f57bbd54fdabe8b95198a3a95a8ed7cad"
     from: atf-tests/src/test/java/ro/atf/chess/MatchEvaluationTest.java
