@@ -1,5 +1,11 @@
 # Analysis sources and selectable lines
 
+## Required coaching contract
+
+The requested destination is **Stockfish Lite** for every calculated hint, evaluation bar, comparison and interim/final review, on Android, hosted Web and localhost. This applies in AI games, the manual board and openings. Opponent difficulty cannot weaken or replace the coaching provider. No missing result may silently select Native analysis. [Route matrix, incomplete work and delivery owner](../feedback/stockfish-web.md)
+
+The following scope table describes the current main baseline, not a completed Lite migration. Catalog solutions and deterministic rule checking retain their provenance; any calculated explanatory coaching line still belongs to Stockfish. A longer PV is not a completed depth, an exhaustive proof or an Elo gain. [Measurement protocol](../testing/hard-ab-elo.md)
+
 ## Scope
 
 Chess Lab consumes measured Stockfish 19 references in **Openings**. The APK and TeaVM worker share Java rules, catalogs and storage contracts. Android coaching retains the native Java engine. Web hints, opening analysis, the manual board and new Game Reviews use the local Stockfish WebAssembly engine. The generator’s executable and its stored reference YAML remain a separate source. [Web provider and validation](../../web/stockfish.md)

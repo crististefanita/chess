@@ -1,5 +1,11 @@
 # Stockfish analysis on the Web
 
+## Requested Lite migration
+
+The product requirement is **Stockfish Lite**, including all hints, the evaluation bar, openings, manual analysis and complete Game Review on Web and Android. Full is not the requested next package. The current-source description below remains the baseline until Lite's independent source/build/data pins, components and platform evidence qualify. [Requirements and source handoff](../docs/feedback/stockfish-web.md) · [Native opponent A/B and Elo](../docs/testing/hard-ab-elo.md)
+
+A Windows executable cannot run directly in the browser or APK. Web uses a local WebAssembly worker; Android needs a compatible native build and network. The proposed Lite assets are much smaller, but their size does not prove equivalent strength. Another AI owns the APK/RAG and publication task; this documentation update does not qualify or publish a Lite binary.
+
 ## Ownership
 
 The Web adapter uses the full single-thread Stockfish 19 engine for position analysis. Java still owns legal moves, catalogs, saved games and navigation. AI opponents retain their existing Java levels; their difficulty does not weaken the analysis engine.

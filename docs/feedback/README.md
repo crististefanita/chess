@@ -5,7 +5,9 @@
 The register tracks open gaps and closure criteria. The [board guide](../board/README.md)
 describes the behavior, and the [release catalog](../../release/README.md) points to the published evidence.
 
-Native Hard diagnostics below retain their own engine and oracle evidence. Web Stockfish coaching has a [separate provider contract](stockfish-web.md); its integration does not resolve or recalibrate Native Hard by substitution.
+Native Hard diagnostics below retain their own engine and oracle evidence. The [requested Stockfish Lite coaching contract](stockfish-web.md) covers every calculated hint, evaluation bar and review on Web and Android. Lite migration is not yet qualified. APK/RAG delivery belongs to the other AI; this review owns requirements, documentation and the next measured A/B steps.
+
+Work the [current Native priorities](hard.md) through the [A/B, game-audit and Elo protocol](../testing/hard-ab-elo.md). The older Native hint/review rows below remain source-bound diagnostics; they are not newly observed Stockfish defects and must not all compete as current P1 tasks. Changing the teacher does not close those Native mechanisms or create a new Native Elo.
 
 [Reviewing test moves between suites](../testing/README.md#test-changes-against-a-git-baseline) describes the Git baseline and coverage evidence.
 
@@ -15,6 +17,10 @@ Native Hard diagnostics below retain their own engine and oracle evidence. Web S
 - [APK/Web parity and rendered evidence](web-parity.md)
 - [Stockfish hints, analysis and saved-review integration on Web](stockfish-web.md)
 - [Game Review colors, end-of-game action and reusable analysis (WEB-06)](web-parity.md#web-06--game-review-color-result-action-and-analysis-reuse)
+
+## Retained Native diagnostic register
+
+The severity labels below describe the original Native investigation. They are reference cases for the current mechanism and regression work, not 29 simultaneous P1 assignments. Use the priorities in [Hard](hard.md) and the [Lite route matrix](stockfish-web.md) to select the next task; retain valid witnesses rather than calling old Native failures Stockfish regressions.
 
 | Priority | Area | Observation | Closure Criterion |
 |---|---|---|---|
