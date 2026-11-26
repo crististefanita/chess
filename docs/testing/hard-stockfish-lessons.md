@@ -6,6 +6,8 @@
 
 J7's coaching package is Stockfish.js 19.0.1, source `0d5dd7944f88c817c07a26bc4fb1905d5f9c46d6`, with the smaller Lite NNUE network. Lite changes the evaluation/network footprint; it does not turn the engine into a basic material counter. The maintainer documents its strength/size tradeoff in the [pinned upstream README](https://github.com/nmrugg/stockfish.js/blob/0d5dd7944f88c817c07a26bc4fb1905d5f9c46d6/README.md). J7's precise provider, build and options remain in the [integration contract](../../web/stockfish.md).
 
+Do not confuse that coach with the [rating anchor](current-profile-calibration.md). Coaching requests use 200k nodes without skill limiting; the desktop calibration anchor requests 6k with `UCI_LimitStrength=true` and `UCI_Elo=1500`. They are different experiments and configurations. Beating the weakened anchor cannot imply parity with unrestricted Lite. [Upstream strength-limiting options](https://official-stockfish.github.io/docs/stockfish-wiki/Stockfish-FAQ.html#how-do-skill-level-and-uci-elo-work).
+
 Stockfish combines trained NNUE evaluation, incremental updates, ordered alpha-beta/PVS search and selective tactical work. Its [evaluation documentation](https://official-stockfish.github.io/docs/stockfish-wiki/Advanced-topics.html#classical-versus-nnue-evaluation) explains training on millions of evaluated positions; its [NNUE implementation guide](https://official-stockfish.github.io/docs/nnue-pytorch-wiki/docs/nnue.html) describes features, accumulators and quantized inference. This suggests that adding budget alone cannot replace a better evaluator. It does not quantify which mechanism explains J7's gap: that requires controlled ablation.
 
 ## Ordered experiments
@@ -17,6 +19,8 @@ Stockfish combines trained NNUE evaluation, incremental updates, ordered alpha-b
 | Later | Train a small Native evaluation model from verified teacher labels | Deduplicate by source-game/position family before splitting. Keep evaluation sources withheld, record model/features/weights and a classical baseline. Never import a puzzle answer or live coaching response as the Native move. | Held-out WDL loss and severe blunders, whole-line conversion and a separately declared paired Delta Elo. Training accuracy and remembered catalog keys do not establish strength. |
 
 The implementation references are Stockfish 19's [search and quiescence](https://github.com/official-stockfish/Stockfish/blob/sf_19/src/search.cpp), [transposition types](https://github.com/official-stockfish/Stockfish/blob/sf_19/src/tt.h) and [move ordering](https://github.com/official-stockfish/Stockfish/blob/sf_19/src/movepick.cpp). They are reading targets, not evidence that their constants, reductions or pruning are safe in J7. Quiescence forbids stand pat while in check; a bounded answer is not an exact score. Preserve sound sacrifices and legal quiet evasions. Do not repeat the rejected forcing-everywhere probe under a new name.
+
+The first baseline already has a component oracle: [NativeMinimaxWindowTest](../../atf-tests/src/test/java/ro/atf/chess/NativeMinimaxWindowTest.java) independently enumerates every legal branch in small H1-H3 trees, using the declared shared leaf evaluator. Full PVS/alpha-beta, null-window boundaries, strict wins versus ties and warmed full searches must agree with it. The separate retained H5 witnesses protect the actual three continuation contexts. These checks do not establish a trained evaluator or an Elo improvement.
 
 ## Preserve causality and the running match
 
