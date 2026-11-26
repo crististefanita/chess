@@ -20,6 +20,8 @@ The bar's WDL expected score is not a human win probability or Elo. A longer PV 
 - Android Lite compiles for ARM64, x86_64 and ARMv7 at API 26 with 16 KB LOAD alignment. The disclosed native-only unique-pointer CLI patch and reproducible recipe accompany the source archive; binary/data/source pins are checked during APK builds.
 - Components and compiled Web integration verify legal PVs, exact history, score perspective, complete depths, cancellation, archives and independent opponent progress. Read the current Extent counts rather than inheriting an earlier prototype's PASS.
 
+- The MultiPV correction rejects duplicate roots and retains the last completed depth with distinct alternatives. The six-ply saved line reproduces the failure and verifies aggregation without extra searches; a repeated move cannot become a second recommendation.
+
 ## Remaining work in priority order
 
 | Priority | Gap | Closure evidence |

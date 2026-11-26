@@ -43,6 +43,7 @@ flowchart LR
     Stockfish["Stockfish<br/>Web analysis"]
     Projection["Position and legal actions"]
     Android -->|submits commands| Engine
+    Android -->|runs coaching separately| Stockfish
     Web -->|sends revisioned requests| Worker
     Worker -->|runs compiled engine| Engine
     Worker -->|requests analysis| Stockfish
