@@ -18,6 +18,7 @@
 | [RAG context](rag.txt) · [signing](signing-transition.json) | Advisory selection, review of new routes and upgrade compatibility. |
 | [Local delivery EN](local-delivery-en.html) · [RO](local-delivery-ro.html) · [identity](local-delivery-checks.json) | 66 checks per language, including seven latest-only archive controls. Qualification of the existing APK remains separate. |
 | [Delivery RAG EN](local-delivery-rag-en.txt) · [RO](local-delivery-rag-ro.txt) | Actual advisory retrieval selects the local handoff and its mandatory verification. |
+| [Release module EN](release-module-en.html) · [RO](release-module-ro.html) · [identity](release-module.json) | 79 checks per language; independent JAR, relocated scripts, single-carrier Git I/O and unchanged signer. [EN review proof](release-module-review-en.html) · [RO](release-module-review-ro.html). No new APK qualification. |
 
 Partial Android work currently reuses RAM; persistence after process death remains in feedback. Extent preserves original bytes and assertions, including captures. No Native Elo gain is claimed.
 

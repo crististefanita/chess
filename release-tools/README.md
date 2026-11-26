@@ -39,8 +39,10 @@ Build in an external worktree under `C:\work\sah`, with its own Maven repository
 
 ```powershell
 mvn -pl release-tools -am package
-java -jar release-tools/target/chess-release-tools-0.17.1-SNAPSHOT.jar links README.md
-java -cp release-tools/target/chess-release-tools-0.17.1-SNAPSHOT.jar ro.atf.chess.release.ReleaseRag release-tools pom.xml
+$version = ([xml](Get-Content -Raw pom.xml)).project.version
+$releaseJar = "release-tools/target/chess-release-tools-$version.jar"
+java -jar $releaseJar links README.md
+java -cp $releaseJar ro.atf.chess.release.ReleaseRag release-tools pom.xml
 ```
 
 The PowerShell adapters resolve the checkout from layout markers rather than the current directory or a fixed parent count. They can use the compiled module and `target/lib` automatically; an explicit classpath remains supported. Run the ATF components from the root with `-pl atf-tests -am`. [Suite selection](../docs/testing/README.md#jvm-suites)
