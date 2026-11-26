@@ -1,41 +1,43 @@
-# Progres Native Hard: pași și decizii
+# Native Hard progress: steps and decisions
 
-[Feedback deschis](../feedback/hard.md) · [Protocolul de măsurare](hard-ab-elo.md) · [Ownership Stockfish Lite](../feedback/stockfish-web.md)
+## Overview
 
-## Baza de lucru
+[Open feedback](../feedback/hard.md) · [Measurement protocol](hard-ab-elo.md) · [Stockfish Lite ownership](../feedback/stockfish-web.md)
 
-Pornește din main actual și păstrează fiecare experiment într-o copie identificată. A3 schimbă numai construirea cheii exacte din ocuparea tablei; nu schimbă bugetul, repertoriul, evaluarea sau mutările. Confirmarea vitezei și creșterea forței de joc sunt rezultate distincte. [Prima calificare A3 și experimentele respinse](hard-current-variants.md)
+## Working baseline
 
-## Ordinea de execuție
+Start from current main and identify every experimental copy. A3 changes only exact-key construction from board occupancy; it changes no budget, repertoire, evaluation or move. Speed confirmation and playing-strength improvement are separate outcomes. [Initial A3 qualification and rejected experiments](hard-current-variants.md)
 
-1. **Închide defectele de audit.** O recepție veche trebuie să păstreze forma și digestul originale. Câmpurile introduse ulterior lipsesc numai dacă sunt nule; datele reale noi rămân serializate și verificabile. Reproduce înainte, repară după, păstrează ambele Extent. Nu schimba fixture-ul ca să treacă.
-2. **Confirmă optimizarea înaintea integrării.** A3 a păstrat corectitudinea, dar confirmarea pe contexte dense nu a trecut; rămâne experimental. Pentru un candidat următor folosește controale dense și rare, ordine alternată și JVM-uri noi seriale. Aceleași mutări ordonate, PV-uri, adâncimi și noduri raportate trebuie să se păstreze. Nu este nevoie de o ligă Elo amplă ca să dovedești o refactorizare exactă; nici o medie favorabilă pe un singur tip de poziție nu o califică general.
-3. **Localizează prima cauză a rateului de joc.** În Larsen comparația izolată H6 și decizia reală nu sunt echivalente. Înregistrează iterațiile complete/incomplete, costul fiecărei rădăcini, tipul scorului, replica liberă și motivul opririi. Observarea unui scor mai bun într-o pereche forțată nu demonstrează că decizia completă îl poate adopta.
-4. **Testează un singur mecanism general într-un copil de forță.** Componente pentru cauza găsită și contraexemple, apoi familii excluse și conversie. Păstrează veto-urile justificate până când o dovadă contextuală le poate înlocui corect. PVS există deja; o opțiune deja activă nu este o îmbunătățire nouă.
-5. **Antrenează și verifică prin jocuri/puzzle-uri.** Primul declin WDL din fiecare partidă devine o poziție de studiu, cu apărări și contraexemple. Separă partida-sursă, transpozițiile și oglindirile într-o singură partiție. YAML păstrează lecția și condițiile generale, nu un FEN-to-move override creditat ca învățare.
-6. **Măsoară Delta Elo.** Un candidat legal poate primi un pilot diagnostic înaintea promovării; un FAIL tactic rămâne vizibil. Promovarea cere porțile convenite și confirmare pe 100 de perechi noi. Reține IC 95% pe perechi, W/D/L și neterminate. Nicio partidă nouă încheiată produce `NOT_MEASURED`, niciodată zero Elo fabricat.
+## Execution order
 
-După trei mecanisme nereușite, revizuiește cauza și familia de pierderi; nu continua aceeași variație de ordonare cu alte nume. O reglare de buget este un experiment separat de o schimbare a algoritmului. Bugetele sunt configurabile; adâncimea nu se reduce pentru a cosmetiza timpul.
+1. **Close audit defects.** An old receipt must retain its original shape and digest. Omit newly introduced fields only when null; preserve and verify actual new data. Reproduce, repair, and retain both Extent results. Keep the original fixture.
+2. **Confirm optimization before integration.** A3 preserved correctness but failed dense-context confirmation, so it remains experimental. Use dense and sparse controls, alternating order and fresh serial JVMs for the next candidate. Preserve ordered moves, PVs, depths and reported nodes. A large Elo league is unnecessary to prove an exact refactor; a favorable mean for one position type does not establish general speed.
+3. **Locate the first cause of a playing failure.** In Larsen, isolated H6 comparisons and the actual decision are different measurements. Record complete/incomplete iterations, per-root cost, score type, free reply and stopping reason. A better score in a forced pair does not prove that a complete decision can adopt it.
+4. **Test one general mechanism in a strength candidate.** Cover the cause and counterexamples with components, then excluded families and conversion. Preserve justified vetoes until contextual evidence can replace them. PVS already exists; an active option is not a new improvement.
+5. **Train and verify with games and puzzles.** Turn each game's first confirmed WDL decline into a study position with defenses and counterexamples. Keep the source game, transpositions and reflections in one partition. YAML records the lesson and general conditions, not a FEN-to-move override credited as learning.
+6. **Measure Delta Elo.** A legal candidate may receive a diagnostic pilot before promotion; tactical FAIL remains visible. Promotion requires the agreed gates and confirmation on 100 new pairs. Retain pair-aware 95% CI, W/D/L and unfinished games. No new completed games means `NOT_MEASURED`, never an invented zero Elo.
 
-## Cele două direcții după A3
+After three failed mechanisms, revisit the cause and loss family instead of renaming the same ordering variation. Budget adjustment is separate from algorithm change. Budgets are configurable; do not reduce depth to improve a timing claim.
 
-| Copil | Obiectiv | Dovadă înaintea promovării |
+## The two directions after A3
+
+| Candidate | Objective | Evidence before promotion |
 |---|---|---|
-| Viteză | Profil nou al A3; optimizarea unui singur cost real | Oracol, paritate și CPU măsurat. Exemple de ipoteze, nu promisiuni: cheie incrementală, copierea pozițiilor, alocările generării. |
-| Forță | Repararea mecanismului confirmat în decizia completă | Minimax și limite corecte, replici libere, martori, transfer și rezultate complete, apoi Delta Elo propriu. |
+| Speed | Reprofile A3; optimize one actual cost | Oracle, parity and measured CPU. Hypotheses include incremental keys, position copies and generation allocations; they are not promises. |
+| Strength | Repair the confirmed mechanism in a complete decision | Correct minimax and bounds, free replies, controls, transfer and complete results, then its own Delta Elo. |
 
-Măsoară fiecare copil față de aceeași bază. Combinarea lor este un nou braț identificat; nu atribui îmbunătățirea bugetului unui algoritm și nu schimba repertoriul pe ascuns.
+Compare each candidate against the same baseline. Combining them creates another identified arm; do not attribute extra-budget improvement to an algorithm or change repertoire silently.
 
-## Antrenorul și jurnalul de învățare
+## Coach and learning journal
 
-Stockfish Lite deține ținta pentru fiecare indiciu și evaluare calculată: joc AI, analiză manuală/locală, deschideri, explicații de puzzle, bară și analiză finală, pe Web/APK. Oponentul Native este separat. Integrarea și lipsurile platformelor sunt în [feedback-ul propriu](../feedback/stockfish-web.md), iar APK/RAG aparțin proprietarului livrării.
+Stockfish Lite owns the target for calculated hints and evaluations in AI games, manual/local analysis, openings, puzzle explanations, the bar and final review on Web/APK. The Native opponent is separate. Platform integration and gaps belong to [their feedback](../feedback/stockfish-web.md), while APK/RAG belongs to the delivery owner.
 
-La fiecare mutare efectivă alb/negru salvează observația Native reală și indiciul Lite anterior mutării, cu istoricul complet și identitatea motorului. La final păstrează analiza completă. Arbitrul offline separat compară libera alegere și mutarea jucată la același orizont; nu substituie decizia Hard și nu reconstruiește retroactiv observații lipsă.
+Before every actual White/Black move, retain the actual Native observation and pre-move Lite hint with complete history and engine identity. Retain the complete final analysis. The separate offline oracle compares free and played choices at a common horizon; it neither replaces Hard's decision nor reconstructs missing observations retrospectively.
 
-Pentru o poziție compusă, păstrează explicit FEN-ul de origine și mutările ulterioare. Un checkpoint de partidă construită artificial nu este suficient ca dovadă a originii. Verifică poziția Native restaurată înaintea arbitrajului; refuză perechile cu alte origini. În această rundă prima probă `training-012` a fost invalidată tocmai de acest control și refăcută cu origine explicită, fără a contabiliza tentativa invalidă ca rezultat de joc.
+For a composed position, preserve its initial FEN and subsequent moves explicitly. An artificial game checkpoint alone does not prove origin. Verify the restored Native position before oracle scoring and reject mismatched origins. The first `training-012` probe in this round was invalidated by this control and rerun with explicit origin; the invalid attempt is not a playing result.
 
-## Feedback și dovezi curate
+## Clean feedback and evidence
 
-Feedback-ul conține numai lipsuri actuale și criterii de închidere. După verificare, mută comportamentul durabil și lecția în documentul tehnic potrivit; păstrează legătura către dovadă și elimină ToDo-ul rezolvat. Un experiment respins rămâne documentat ca rezultat, fără să domine următoarea rundă.
+Feedback keeps current gaps and closure criteria. After verification, move durable behavior and lessons to the owning technical guide, retain the evidence link and remove the completed ToDo. A rejected experiment remains documented without dominating the next round.
 
-Toate build-urile și dovezile sunt externe, sub `C:\work\sah`, cu căi relative la această rădăcină. În dosarul studiului păstrează un index, Extent cu aserțiunile originale, PGN/jurnalul necesar și numai logurile care aduc informație nereprezentată în raport. Un raport importat nu este o nouă execuție de test.
+Keep builds and evidence externally under `C:\work\sah`, with paths relative to that root. Each study retains an index, Extent with original assertions, necessary PGN/journal data and only logs that add information absent from the report. An imported report is not a new test execution.

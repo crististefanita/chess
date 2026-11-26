@@ -1,27 +1,27 @@
-# Hard · priorități deschise
+# Hard · open priorities
 
-Selectorul public este `LEGACY`. A3 rămâne experimental: câștigul CPU inițial de 15,5% nu se confirmă pe contexte dense, unde CPU crește cu 8,85%. Nu este promovat ca optimizare generală și nu are creștere Elo demonstrată. [Rezultatele și limitele](../testing/hard-current-variants.md) · [Ordinea pașilor](../testing/hard-progress.md) · [Protocol A/B și Elo](../testing/hard-ab-elo.md)
+The public selector is `LEGACY`. A3 remains experimental: the initial 15.5% CPU saving failed confirmation on dense contexts, where CPU increased by 8.85%. It is not promoted as a general optimization and has no demonstrated Elo gain. [Results and limits](../testing/hard-current-variants.md) · [Ordered steps](../testing/hard-progress.md) · [A/B and Elo protocol](../testing/hard-ab-elo.md)
 
-## Ce rezolvăm acum
+## Current priorities
 
-| Prioritate | Pas deschis | Condiție de închidere |
+| Priority | Open step | Closure condition |
 |---|---|---|
-| P1 | HARD-03 · frontiera tactică înaintea altui reglaj la rădăcină | Proba mai ieftină pierde `training-012`: trece de la `…Rb1` H4 la `…h5` H5, cu `…Qxf2` la final și recapturi legale neincluse. Corroborarea H4/H6 rezolvă Larsen, dar pierde 500/498‰ WDL în `training-021`, în ambele culori. Repară evaluarea schimbului/replicii în componentă, cu sacrificiul corect drept contraexemplu; păstrează veto-ul și catalogul. |
-| P1 | HARD-04 · jocuri complet auditabile | La fiecare mutare alb/negru: decizia Native reală, indiciul Stockfish Lite dinaintea mutării, istoricul complet și analiza finală. Compatibilitatea arhivei și răspunsurile întârziate sunt verificate. Nu redenumi jurnalul Native vechi drept Stockfish. |
-| P1 | HARD-05 · transfer și Delta Elo | Familii excluse și conversie până la rezultat. Candidat legal: pilot diagnostic posibil; promovare numai după porți și confirmare pe 100 de perechi noi, cu IC 95% pe perechi și neterminate separate. |
-| P2 | HARD-06 · următoarea optimizare de viteză | Investighează de ce împachetarea rară pierde pe contexte dense. Profilează și testează o singură ipoteză, eventual alegerea după densitate ori alt cost real. Păstrează A3 drept martor experimental; cere controale dense și rare înaintea promovării. |
-| P2 | HARD-07 · lecții care se transferă | Din primele pierderi WDL confirmate extrage familii de puzzle-uri YAML: condiții generale, apărare optimă, contraexemplu și cazuri excluse. Măsoară prima mutare, linia întreagă și conversia separat. Memorarea unui FEN nu este progres de algoritm. |
+| P1 | HARD-03 · tactical frontier before another root adjustment | The cheaper probe loses `training-012`: `…Rb1` H4 becomes `…h5` H5, ending at `…Qxf2` before legal recaptures. H4/H6 corroboration repairs Larsen but loses 500/498‰ WDL in `training-021` in both colors. Repair exchange/reply evaluation in components, with a sound sacrifice as counterexample; preserve the veto and catalog. |
+| P1 | HARD-04 · fully auditable games | Before each White/Black move, retain the actual Native decision, Stockfish Lite hint, complete history and final analysis. Archive compatibility and delayed responses are verified. Never relabel an old Native journal as Stockfish. |
+| P1 | HARD-05 · transfer and Delta Elo | Excluded families and conversion to result. A legal candidate may receive a diagnostic pilot; promote only after gates and confirmation on 100 new pairs, with pair-aware 95% CI and unfinished games separate. |
+| P2 | HARD-06 · next speed optimization | Investigate sparse packing's loss on dense contexts. Profile and test one hypothesis, such as density-based selection or another measured cost. Keep A3 as an experimental control and require dense and sparse cases before promotion. |
+| P2 | HARD-07 · transferable lessons | Extract YAML puzzle families from first confirmed WDL losses: general conditions, best defense, counterexample and excluded cases. Measure first choice, whole line and conversion separately. Memorizing a FEN is not playing progress. |
 
-## Ownership și limite
+## Ownership and limits
 
-Stockfish **Lite** este ținta pentru toate indiciile calculate, bara evaluării, deschideri, tabla manuală, explicațiile calculate și Game Review, pe Web și Android. [Găurile de integrare și testele necesare](stockfish-web.md) se gestionează acolo. APK/RAG și publicarea aparțin celuilalt AI. Basic/Advanced/Hard rămân oponenți Native.
+Stockfish **Lite** owns the target for calculated hints, the evaluation bar, openings, manual board, calculated explanations and Game Review on Web and Android. [Integration gaps and required checks](stockfish-web.md) belong there. APK/RAG and publication belong to the other delivery owner. Basic/Advanced/Hard remain Native opponents.
 
-Înghețarea sursei, reperul efectiv, bugetul YAML, cache-ul, repartizarea familiilor și regulile de audit sunt parte din [protocol](../testing/hard-ab-elo.md), nu ToDo-uri repetitive. Compară separat algoritmul, bugetul și repertoriul. Păstrează adâncimea și toate replicile cerute; timpul este o măsurătoare, nu un motiv de a slăbi jocul.
+Source freeze, actual baseline, YAML budget, cache, family partitions and audit rules belong to the [protocol](../testing/hard-ab-elo.md), rather than repeated ToDo items. Compare algorithm, budget and repertoire separately. Preserve required depths and replies; time is a measurement, not a reason to weaken play.
 
-A1/A2, frontiera cu evaziuni și aspirația nereușită sunt rezultate de studiu, nu priorități active. Reparațiile deja protejate pentru `training-078` și continuările sale sunt în [contractul tehnic](../board/hard-candidates.md#measured-repair-of-training-078). Nu le redeschide ca sarcini fără o regresie nouă.
+A1/A2, the evasion frontier and failed aspiration remain study results rather than active priorities. Protected training-078 repairs and continuations belong to the [technical contract](../board/hard-candidates.md#measured-repair-of-training-078). Reopen them only for a new regression.
 
-Nici fereastra îngustă, nici corroborarea generală H4/H6 nu sunt promovate. Catalogul complet de 1.238 de prime decizii scade 1.214 → 1.213 în prima probă. Stockfish H17/H19 confirmă pierderea din `training-012`. `NativeHorizonGuardTest` păstrează tactica în ambele culori și perechea YAML schimb neterminat/sacrificiu corect. Rezultatele complete sunt în [dosarul tehnic](../testing/hard-current-variants.md); nu relansa aceeași strategie cu alte praguri înaintea cauzei de frontieră.
+Neither the narrow window nor general H4/H6 corroboration is promoted. The complete 1,238-first-choice catalog falls 1,214 → 1,213 in the first probe. Stockfish H17/H19 confirms the training-012 loss. NativeHorizonGuardTest preserves the tactic in both colors and the unfinished-exchange/sound-sacrifice YAML pair. Full results are in the [technical record](../testing/hard-current-variants.md); repair the frontier cause before retrying the same strategy with new thresholds.
 
-Compatibilitatea metadatelor opționale a trecut regresia originală și verificările noi: [contractul arhivei](../testing/hard-audit.md#optional-decision-metadata-and-old-receipts). Nu mai este ToDo; nu echivalează cu implementarea jurnalului Lite.
+Optional metadata compatibility passed the original regression and new checks: [archive contract](../testing/hard-audit.md#optional-decision-metadata-and-old-receipts). This is closed work; it does not establish a Lite journal implementation.
 
-Dovezi externe: rădăcină `C:\work\sah`, dosare relative `.studii/native-hard-current/` și `.studii/native-hard-next/`. Fără partide noi încheiate: `Delta Elo = NOT_MEASURED`. Nu recalibra repetat live neschimbat și nu prelua ratingul arbitrului.
+External evidence: root C:\work\sah, relative folders .studii/native-hard-current/ and .studii/native-hard-next/. With no new completed games, Delta Elo = NOT_MEASURED. Do not repeatedly recalibrate unchanged live code or inherit the oracle's rating.

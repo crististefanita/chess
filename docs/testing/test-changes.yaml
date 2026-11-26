@@ -1,4 +1,36 @@
 testChanges:
+  - id: CHESS-DISTINCT-COHORT-1-SYNC
+    base: "c396c32330aef21131f6810b22a2cd90a1d584a6"
+    from: pom.xml
+    replacement: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
+    test: ro.atf.chess.DocumentationGovernanceTest#projectReadmeArchitectureMatchesTheExecutableBuild
+    contract: "Retain the previous distinct completed MultiPV cohort when a newer horizon repeats a root; qualify the corrected patch APK"
+    allowDelete: false
+
+  - id: CHESS-DISTINCT-COHORT-2-SYNC
+    base: "c396c32330aef21131f6810b22a2cd90a1d584a6"
+    from: atf-tests/pom.xml
+    replacement: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
+    test: ro.atf.chess.DocumentationGovernanceTest#projectReadmeArchitectureMatchesTheExecutableBuild
+    contract: "Retain the previous distinct completed MultiPV cohort when a newer horizon repeats a root; qualify the corrected patch APK"
+    allowDelete: false
+
+  - id: CHESS-DISTINCT-COHORT-3-SYNC
+    base: "c396c32330aef21131f6810b22a2cd90a1d584a6"
+    from: android/app/build.gradle
+    replacement: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
+    test: ro.atf.chess.DocumentationGovernanceTest#projectReadmeArchitectureMatchesTheExecutableBuild
+    contract: "Retain the previous distinct completed MultiPV cohort when a newer horizon repeats a root; qualify the corrected patch APK"
+    allowDelete: false
+
+  - id: CHESS-DISTINCT-COHORT-4-SYNC
+    base: "c396c32330aef21131f6810b22a2cd90a1d584a6"
+    from: atf-tests/src/test/java/ro/atf/chess/StockfishCoachingComponentTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/StockfishCoachingComponentTest.java
+    test: ro.atf.chess.StockfishCoachingComponentTest#completedRoundsDoNotMixWithPartialOrBoundedHorizons
+    contract: "Retain the previous distinct completed MultiPV cohort when a newer horizon repeats a root; qualify the corrected patch APK"
+    allowDelete: false
+
   - id: CHESS-DISTINCT-COHORT-1
     base: "5aa49dee77170b9a7246a844a0ba993a7d870918"
     from: pom.xml

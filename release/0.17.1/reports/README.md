@@ -2,7 +2,7 @@
 
 ## Overview
 
-The frozen source is `8cdaeb9`. Strict qualification reconciled 735 component tests and 30 Android assertions for the same APK and qualification ID.
+The frozen source is `83fd97c`. Strict qualification reconciled 735 component tests and 30 Android assertions for the same APK and qualification ID.
 
 ## Checks
 
@@ -11,3 +11,5 @@ The frozen source is `8cdaeb9`. Strict qualification reconciled 735 component te
 - [Android Stockfish Lite](android-stockfish-sanity.html): 37 original assertions, real UCI and an embedded capture.
 
 Partial Android work currently has RAM reuse; durable resumption after process death remains in feedback. Publication and download receipts are added after APK upload.
+
+Later parallel changes added Hard tests and documentation only. Executable sources and resources match the qualified source; supplementary controls have a separate report.
