@@ -56,6 +56,6 @@ Interfața agreată oferă **cel mult trei linii selectabile**. Două sau trei a
 
 ## Dovezi și actualizări
 
-Generarea referinței consemnează digestul binarului Stockfish și setările fixe. Păstrați prefixul și UCI brut în afara checkout-ului; regenerați după schimbarea lecțiilor și rulați [selecția componentelor](../testing/README.md#componente-pentru-reutilizarea-analizei). [Contractul generării](openings.md#referințe-măsurate-ale-deschiderilor)
+Generarea referinței consemnează digestul binarului Stockfish și setările fixe. Păstrați prefixul și UCI brut în afara checkout-ului; regenerați după schimbarea lecțiilor și rulați [selecția componentelor](../testing/README.md#componente-pentru-reutilizarea-analizei). [Contractul generării](openings.md#referințe-măsurate-pentru-deschideri)
 
-Păstrați metadatele referinței separat de estimări statice și identitatea lucrului Native pentru review. Doar comparațiile complete intră în jurnal; nepotrivirile de politică/versiune declanșează recuperarea explicită a lipsurilor. [Contractul persistenței](game-review.md#lucru-persistent-pe-mutare)
+Păstrați metadatele referinței separat de estimări statice și identitatea lucrului Native pentru review. Doar comparațiile complete intră în jurnal; nepotrivirile de politică/versiune declanșează recuperarea explicită a lipsurilor. [Contractul persistenței](game-review.md#lucru-persistent-pe-fiecare-mutare)
