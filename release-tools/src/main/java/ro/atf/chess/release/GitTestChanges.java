@@ -31,9 +31,9 @@ public final class GitTestChanges {
             "scripts/sync-published-release.ps1",
             "release-tools/scripts/sync-published-release.ps1",
             "release-tools/scripts/ReleaseWorkspace.ps1");
-    private static final List<String> PATHS = List.of("atf-tests/src/test/", "android/app/src/androidTest/",
-            "pom.xml", ":(glob)**/pom.xml", "android/app/build.gradle", "android/settings.gradle",
-            "scripts/run-android-sanity.ps1");
+    private static final List<String> PATHS = java.util.stream.Stream.concat(
+            List.of("atf-tests/src/test/", "release-tools/src/test/", "android/app/src/androidTest/", "pom.xml", ":(glob)**/pom.xml").stream(),
+            CONFIGURATION.stream().sorted()).distinct().toList();
 
     private GitTestChanges() { }
 
