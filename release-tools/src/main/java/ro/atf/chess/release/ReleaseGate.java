@@ -16,6 +16,12 @@ public final class ReleaseGate {
     private ReleaseGate() { }
 
     public static void main(String[] args) throws IOException {
+        if (args.length > 0 && "local-delivery".equals(args[0])) {
+            if (args.length != 5) throw new IllegalArgumentException("Expected local-delivery <Git source> <publication SHA> <destination release> <verified APK>");
+            var result = PublishedReleaseArchive.verify(Path.of(args[1]), args[2], Path.of(args[3]), Path.of(args[4]));
+            System.out.printf("PASS local-delivery version=%s publication=%s files=%d%n", result.version(), result.sourceCommit(), result.files());
+            return;
+        }
         if (args.length == 2 && "links".equals(args[0])) {
             ReleaseEvidence.gameLinks(Files.readString(Path.of(args[1]))).forEach(System.out::println);
             return;

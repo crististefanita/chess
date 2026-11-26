@@ -1,4 +1,12 @@
 testChanges:
+  - id: CHESS-LOCAL-RELEASE-DELIVERY
+    base: "45b1196bf10afb0b44935713efad93b4d2a16d4d"
+    from: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java
+    test: ro.atf.chess.ReleaseGovernanceTest#ragRetrievesOnlyAffectedGuidanceAndVerifiesTheAnchor
+    contract: "Preserve the final README download and add mandatory verified local delivery as step nine"
+    allowDelete: false
+
   - id: CHESS-DISTINCT-COHORT-1-SYNC
     base: "c396c32330aef21131f6810b22a2cd90a1d584a6"
     from: pom.xml

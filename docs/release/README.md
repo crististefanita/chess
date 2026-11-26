@@ -36,6 +36,7 @@ Check the available version in the README from `origin/main`. If the local branc
 6. Run `ChessComponentSuite` and Game Review sanity under the same qualification ID. Pass the APK, commit, raw receipt directories, and Extent reports through `ReleaseGate qualification`. Check the expandable comparisons and captures for their steps in Extent. For a change to Opening theory or **Why?**, add the compact probe at a 1.3× font scale in RO and EN for the same APK and commit. [Shared replay](../testing/README.md#shared-replay-on-a-compact-screen) [Extent audit criteria](../testing/README.md#extent-reporting)
 7. After signing and qualification, push the candidate tag without rewriting history and publish the GitHub asset. Keep `currentVersion`, the comparison list, and the main README on the latest verified release until the new asset exists. Then promote the catalog and README on both branches. Keep only the new and immediately preceding releases on GitHub Releases and locally. Retire the other releases and folders after the new asset and README route pass verification. Keep the Git tags.
 8. Read the README from `main` on GitHub and download the APK from the displayed URL. Use `ReleaseGate publication` to verify the tag, channel, HTTP status, byte count, SHA-256, and CRC. Save the evidence, push the reports commit, and repeat the download from the final version of the README.
+9. Synchronize the current published edition into the developer checkout and pass `ReleaseGate local-delivery` before reporting completion. [Local published release](#local-published-release)
 
 - Keep the public and authenticated download receipts separately. The GitHub metadata must identify the qualified producer under `targetCommit`; the public receipt records the actual HTTP status, complete bytes, digest and CRC from the canonical README asset route. A successful authenticated download alone does not complete publication governance.
 
@@ -46,6 +47,28 @@ Check the available version in the README from `origin/main`. If the local branc
 - Keep generated Extent HTML byte for byte, including in the Git index, so that the qualification hashes remain valid. Apply the formatting check to manually edited files.
 
 - In the checkout, current-release governance recalculates HTML fingerprints for strict qualification and checks Android receipts against the source, APK, and total assertion count. Report and receipt paths must stay within the release folder.
+
+## Local published release
+
+Publication also delivers the current edition to the developer checkout's `release/` directory. A successful remote download alone does not complete this local handoff. The working source may contain parallel experiments and must remain untouched.
+
+- Pin the publication commit from the live branch, separately from the APK's qualified producer. Read the catalog and original report bytes from that immutable Git tree.
+- Keep **only the current edition** in this local projection, including the complete signed APK, Extent, receipts and edition README. The tracked publication catalog can retain its previous comparison edition; this local projection has its own `PUBLISHED_RELEASE_CHECKOUT` index.
+- Run [the synchronizer](../../scripts/sync-published-release.ps1) from the verified publication worktree. It checks qualification, tag identity, README route, both download receipts, APK size, digest and ZIP CRC before replacing anything.
+- Stage outside both checkouts under `C:\work\sah`. Preserve a prior local directory there for recovery, check for concurrent changes, then replace only the destination `release/`. Repeating an identical sync returns `UNCHANGED`.
+- Finish with `ReleaseGate local-delivery`. Missing, changed or extra files fail the gate. `local-sync.yaml` identifies the publication commit, qualified producer and exact inventory; it does not qualify experimental working source. The generated APK and this local receipt stay outside Git.
+
+```powershell
+git fetch origin
+$publication = git rev-parse origin/main_RO
+$destination = 'C:\work\1\atf_j7\release'
+$work = 'C:\work\sah\studii\release-sync'
+./scripts/sync-published-release.ps1 -PublicationCommit $publication -Destination $destination `
+  -WorkRoot $work -Apk $verifiedApk -Classpath $releaseClasspath
+java -cp $releaseClasspath ro.atf.chess.release.ReleaseGate local-delivery . $publication $destination $verifiedApk
+```
+
+The workspace must already exist. The classpath contains the compiled release tools and pinned SnakeYAML dependency. `PublishedReleaseArchiveTest` runs offline, with auditable negative cases for a stale README, retagged producer, truncated APK, changed Extent, missing download evidence and unsafe destinations. This adopts Whist's verified local-delivery boundary without coupling the two games' release schemas or qualifying the source checkout by association.
 
 ## Bilingual Documentation
 
