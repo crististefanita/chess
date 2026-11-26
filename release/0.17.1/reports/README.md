@@ -16,6 +16,8 @@
 | [Publicarea Web](web-publication.json) · [observația MCP](web-mcp-observation.json) | Octeți serviți identici, review deschis, trei taburi pe un rând și revenire la ultima mutare. Observația manuală nu este un test automat nou. |
 | [Download public](public-download.json) · [autentificat](distribution-verification.json) | HTTP 200, fișier complet și CRC APK; fiecare recepție declară sursa README. |
 | [Context RAG](rag.txt) · [semnătură](signing-transition.json) | Selecție consultativă, revizuirea rutelor noi și compatibilitate pentru upgrade. |
+| [Livrare locală EN](local-delivery-en.html) · [RO](local-delivery-ro.html) · [identitate](local-delivery-checks.json) | 66 de verificări per limbă, inclusiv șapte controale ale arhivei cu ediția curentă. Calificarea APK-ului existent rămâne separată. |
+| [RAG livrare EN](local-delivery-rag-en.txt) · [RO](local-delivery-rag-ro.txt) | Regăsirea consultativă efectivă selectează predarea locală și verificarea sa obligatorie. |
 
 Jurnalele parțiale Android au reutilizare în RAM; persistența lor după oprirea procesului rămâne în feedback. Rapoartele Extent păstrează octeții și aserțiunile originale, inclusiv capturile. Nu este declarat un câștig Elo Native.
 
