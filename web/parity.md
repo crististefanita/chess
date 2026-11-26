@@ -48,6 +48,15 @@ Analiza Web folosește motorul Stockfish fixat pentru indicii în partidă, tabl
     git ls-tree -r --full-tree "$SITE_COMMIT" | sha256sum
     ```
 
+   Înaintea ștergerii ramurilor sau tagurilor statice temporare, păstrați commitul
+   static calificat în istoricul ambelor ramuri `main` și `main_RO`. Numai pentru
+   acest arbore generat, folosiți
+   `git merge --strategy=ours --no-ff --allow-unrelated-histories <SITE_COMMIT>`
+   și cereți același ID al arborelui sursă înainte și după merge. Schimbările de
+   cod cer în continuare merge normal. Cererea de publicare păstrează SHA-ul static
+   și amprenta; nu mai este necesară o ramură sau un tag separat de publicare după
+   ce ambele ramuri principale de pe origin păstrează acea ascendență.
+
 4. Deschideți **Joacă în browser**. Verificați fișierele versionate declarate și reîncărcați cu memoria cache intactă. Verificați reluarea checkpointului și jocul fără rețea după prima încărcare; o filă deschisă poate păstra runtime-ul anterior până la reîncărcare.
 5. Înregistrați revizia sursă, commitul static publicat, amprenta runtime și recepțiile Extent. Verificați octeții serviți independent de memoria cache a browserului.
 
