@@ -16,6 +16,8 @@
 | [Web publication](web-publication.json) · [MCP observation](web-mcp-observation.json) | Matching served bytes, an opened review, three tabs in one row and restoration of the last move. Manual observation is not another automated test. |
 | [Public download](public-download.json) · [authenticated](distribution-verification.json) | HTTP 200, complete file and APK CRC; each receipt declares its README source. |
 | [RAG context](rag.txt) · [signing](signing-transition.json) | Advisory selection, review of new routes and upgrade compatibility. |
+| [Local delivery EN](local-delivery-en.html) · [RO](local-delivery-ro.html) · [identity](local-delivery-checks.json) | 66 checks per language, including seven latest-only archive controls. Qualification of the existing APK remains separate. |
+| [Delivery RAG EN](local-delivery-rag-en.txt) · [RO](local-delivery-rag-ro.txt) | Actual advisory retrieval selects the local handoff and its mandatory verification. |
 
 Partial Android work currently reuses RAM; persistence after process death remains in feedback. Extent preserves original bytes and assertions, including captures. No Native Elo gain is claimed.
 

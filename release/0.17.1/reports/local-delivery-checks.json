@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "scope": "Offline release delivery contracts; no new APK or platform qualification",
+  "qualifiedApkSource": "83fd97c72ebf514da365af6c55a1eb1223ff8fcf",
+  "observedUtc": "2026-11-26T14:42:56.101Z",
+  "en": {
+    "commit": "1958096a7403d1183f55d6f2f5ef03f9303c6347",
+    "reviewBase": "45b1196bf10afb0b44935713efad93b4d2a16d4d",
+    "tests": 66,
+    "deliveryTests": 7,
+    "extentSha256": "ff118febfcf5b3c910df5774865bbb66770eab052e235751622e013f776af799"
+  },
+  "ro": {
+    "commit": "1764919f644e364b5a29277e063f8f8b3f2f6f90",
+    "reviewBase": "74b52690af33b241acd67393b095c2de161bb532",
+    "tests": 66,
+    "deliveryTests": 7,
+    "extentSha256": "4c68ac5f8432dce75d4a4e04408af467f904a7da93b049726509376aa717bd1f"
+  }
+}
