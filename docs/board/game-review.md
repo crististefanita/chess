@@ -17,7 +17,7 @@ Game Review aggregates complete provider-bound Stockfish Lite comparisons on Web
 %%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
 flowchart LR
     Move["Durable AI move"] -->|queues| Work["Complete provider-bound comparison"]
-    Work -->|saves each ply| Journal["Persistent journal"]
+    Work -->|saves each ply| Journal["Per-ply observations"]
     Final["Game Review"] -->|joins missing work| Work
     Journal -->|aggregates without search| Report["Grades, graph and accuracy"]
     Report -->|adds when eligible| Elo["Result-based Elo"]
