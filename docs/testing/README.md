@@ -610,7 +610,8 @@ the game, profile, and progress preserved.
 
 | Probe | Contract covered |
 |---|---|
-| `PuzzleChromeLayoutTest` | Two-row header, score, and controls in limited space. The arrows and hint button are centered below the square board, with 48 dp targets. |
+| `PuzzleChromeLayoutTest` | Compact score height at 280/320 dp, measured one- or two-line fallback, and preserved 48 dp footer targets. |
+| `PuzzleChromePresentationComponentTest` | Android/Web score clipping, compact lamp glyphs and unchanged 48 dp touch targets. |
 | Android sanity with `-PuzzleUxOnly` | Checks all six chapters in Romanian and English. Opens options, flips the board, and returns with progress preserved. Checks board geometry and control locking at bounds, during a reply, or before a solve. |
 
 - Run `-PuzzleUxOnly -PuzzleLanguage ro` at 720 × 1280 and 320 dpi and `-PuzzleUxOnly -PuzzleLanguage en` at 1080 × 1920 and 440 dpi, both at a 1.3× font scale. Publish the six checkpoints from each run with `AndroidSanityPublication#publishPuzzleUxSanity`.
