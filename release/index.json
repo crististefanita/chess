@@ -1,12 +1,12 @@
 {
   "schemaVersion": 2,
   "repository": "crististefanita/chess",
-  "currentVersion": "0.16.2",
-  "previousVersion": "0.16.1",
+  "currentVersion": "0.17.1",
+  "previousVersion": "0.16.2",
   "version": "0.17.1",
   "versionCode": 41,
   "versions": [
-    "0.16.2",
-    "0.16.1"
+    "0.17.1",
+    "0.16.2"
   ]
 }

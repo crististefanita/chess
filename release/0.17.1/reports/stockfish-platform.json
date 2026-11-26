@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "scope": "ACTUAL_PACKAGED_STOCKFISH_AND_MANUAL_UI",
+  "sourceCommit": "83fd97c72ebf514da365af6c55a1eb1223ff8fcf",
+  "apkSha256": "cb46d0f5cca5e4caa88cb014c68c696be70c0818e8b74d57e9c68b28655db58d",
+  "runId": "a6e115e120be4b06b4dfa73488f74e19",
+  "assertions": 37,
+  "providerID": "stockfish-19.0.1-lite-single",
+  "extentSha256": "270244abce7c944de80742da018d12f265db20986206c45504f1edb13323e743",
+  "report": "android-stockfish-sanity.html"
+}

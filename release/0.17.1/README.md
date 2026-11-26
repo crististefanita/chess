@@ -10,6 +10,8 @@ Hints and the bar use Stockfish Lite; the opponent calculates its move independe
 - **Parallel execution:** stalled or cancelled coaching cannot alter the Basic, Advanced or Hard opponent's move.
 - **Openings:** variety among measured moves for the exact history; analysis preserves provider identity and score perspective.
 
+- **Saved games:** review retains the complete distinct-root cohort when a MultiPV update repeats a move.
+
 ## Installation
 
-The signed candidate is qualified; the APK link in the [project README](../../README.md#game) remains on the published edition until the asset is uploaded. [Evidence](reports/README.md).
+[Signed APK](https://github.com/crististefanita/chess/releases/download/v0.17.1/ChessLab-0.17.1.apk) · [Project README](../../README.md#game) · [Edition evidence](reports/README.md)

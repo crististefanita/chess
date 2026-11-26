@@ -10,8 +10,8 @@ The catalog identifies the available release and where to verify its evidence.
 
 | Role | Version | Evidence |
 |---|---|---|
-| Current | 0.16.2 | [APK notes and receipts](0.16.2/README.md) |
-| Previous | 0.16.1 | [Comparison release](0.16.1/README.md) |
+| Current | 0.17.1 | [APK notes and receipts](0.17.1/README.md) |
+| Previous | 0.16.2 | [Comparison release](0.16.2/README.md) |
 
 ## Evidence and Archiving
 
@@ -27,4 +27,4 @@ Qualify the candidate and publish the asset before updating
 `currentVersion` and the README links. Verification from the published README
 closes the process. [Order of operations](../docs/release/README.md#qualification-and-publication)
 
-[Release process](../docs/release/README.md) · [Published release evidence](0.16.2/reports/README.md) · [Previous comparison](0.16.1/reports/README.md)
+[Release process](../docs/release/README.md) · [Published release evidence](0.17.1/reports/README.md) · [Previous comparison](0.16.2/reports/README.md)

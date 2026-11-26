@@ -2,14 +2,14 @@
 
 Chess Lab lets you play chess against AI, solve puzzles and study openings on Android and in the browser. Shared Java code owns legal play and learning state. Calculated coaching uses Stockfish Lite on Web and Android; opponent moves use the independent Native engine. Platform adapters present the game, while the test and release tools make behavior and delivered artifacts auditable.
 
-The [coaching contract](docs/feedback/stockfish-web.md) governs Stockfish hints, the evaluation bar and Game Review on both platforms. Native Hard improvement follows a separate [A/B and Elo protocol](docs/testing/hard-ab-elo.md). The download below remains the last published APK; the Lite candidate is qualified separately before its download is promoted.
+The [coaching contract](docs/feedback/stockfish-web.md) governs Stockfish hints, the evaluation bar and Game Review on both platforms. Native Hard improvement follows a separate [A/B and Elo protocol](docs/testing/hard-ab-elo.md).
 
 <a id="play"></a>
 <a id="jocul"></a>
 
 ## Game
 
-- [Download Chess Lab 0.16.2 APK](https://github.com/crististefanita/chess/releases/download/v0.16.2/ChessLab-0.16.2.apk)
+- [Download Chess Lab 0.17.1 APK](https://github.com/crististefanita/chess/releases/download/v0.17.1/ChessLab-0.17.1.apk)
 - [Play in browser](https://crististefanita.github.io/chess/)
 
 ## Overview
@@ -159,7 +159,7 @@ flowchart LR
 
 ## Published Release
 
-- [Chess Lab 0.16.2 · release notes](https://github.com/crististefanita/chess/releases/tag/v0.16.2)
+- [Chess Lab 0.17.1 · release notes](https://github.com/crististefanita/chess/releases/tag/v0.17.1)
 
 ## Entry Points
 
