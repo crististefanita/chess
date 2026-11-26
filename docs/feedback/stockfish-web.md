@@ -20,6 +20,8 @@ Scorul așteptat WDL din bară nu este probabilitatea umană de câștig sau Elo
 - Lite Android se compilează pentru ARM64, x86_64 și ARMv7 la API 26 cu aliniere LOAD de 16 KB. Patchul nativ declarat al pointerului unic din CLI și rețeta reproductibilă însoțesc arhiva; pinii executabilelor/datelor/sursei sunt verificați la buildul APK.
 - Componentele și integrarea Web compilată verifică PV legale, istoric exact, perspectiva scorului, adâncimi complete, anulare, arhive și progres independent al adversarului. Folosiți numerele rulării Extent curente, fără a moșteni PASS-ul altui prototip.
 
+- Corecția lotului MultiPV respinge rădăcinile duplicate și păstrează ultima adâncime completă cu alternative distincte. Linia salvată de șase semimutări reproduce eroarea și verifică agregarea fără căutări suplimentare; repetarea unei mutări nu devine o a doua recomandare.
+
 ## Lucrări rămase în ordinea priorității
 
 | Prioritate | Lacună | Dovadă de închidere |

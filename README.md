@@ -43,6 +43,7 @@ flowchart LR
     Stockfish["Stockfish<br/>analiză Lite"]
     Projection["Poziție și acțiuni legale"]
     Android -->|transmite comenzi| Engine
+    Android -->|rulează analiza separat| Stockfish
     Web -->|trimite cereri cu revizie| Worker
     Worker -->|rulează motorul compilat| Engine
     Worker -->|cere analiză| Stockfish
