@@ -4,7 +4,8 @@ param(
     [Parameter(Mandatory)][string]$Apk,
     [ValidateSet('UPGRADE', 'CLEAN_INSTALL')][string]$Mode = 'UPGRADE',
     [string]$BaselineQualification = '',
-    [string]$Output
+    [string]$Output,
+    [string]$Classpath
 )
 
 $ErrorActionPreference = 'Stop'
@@ -48,7 +49,7 @@ $baseline = Get-Content -Raw -LiteralPath $baselinePath | ConvertFrom-Json
 $previousFingerprint = [string]$baseline.signingCertificateSha256
 if (!$previousFingerprint) { $previousFingerprint = [string]$baseline.certificateSha256 }
 if (!$previousFingerprint) { throw 'The published baseline has no recorded signing certificate fingerprint.' }
-$classes = Get-ChessReleaseClasspath -ModuleRoot $workspace.ModuleRoot
+$classes = if ($Classpath) { $Classpath } else { Get-ChessReleaseClasspath -ModuleRoot $workspace.ModuleRoot }
 $java = (Get-Command java -CommandType Application).Source
 $result = @(& $java -cp $classes ro.atf.chess.release.ReleaseGate signing-continuity `
     $previousFingerprint $candidateFingerprint $Mode 2>&1)
