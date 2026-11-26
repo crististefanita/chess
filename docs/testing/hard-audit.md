@@ -2,6 +2,8 @@
 
 ## Overview
 
+This guide describes the retained Native audit contracts. New calculated coaching is owned by the [Stockfish Lite contract](../feedback/stockfish-web.md); keep the original provider on older journals rather than relabelling their hints. The [ordered improvement process](hard-progress.md) separates audit correctness, speed and playing strength.
+
 - **One search per position.** `ChessMatch.analyzeBot(HARD)` returns the selected move and the report from that same native decision. `HardAuditedGame` caches its receipt until a legal move advances the checkpoint.
 - **Every played ply.** Frozen opening moves and Stockfish replies also require a Hard shadow analysis before play. The shadow suggestion stays separate from the actual move.
 - **Qualification.** [Component contracts](../../atf-tests/src/test/java/ro/atf/chess/HardAuditedGameTest.java) reject missing or foreign evidence. The [league publisher](../../atf-tests/src/test/java/ro/atf/chess/HardLeagueAuditTest.java) replays raw receipts before publishing the rating in Extent.
@@ -12,7 +14,13 @@ Pin the source commit, compiled classes, engine resources, runner, oracle binary
 
 Each receipt contains the full checkpoint and FEN, side and ply, actual native choice and rank, theory reference, completed depth, charged additional nodes, and every returned PV with native score, material change and ending. Native scores can include historical horizon credit. They are not Stockfish evaluations or calibrated win probabilities.
 
-Normal Hard starts with 100k additional nodes and can continue to 200k. Repertoire and explicit paths retain their own policy. This differs from the hint's single 200k total ceiling. The audit calls the actual game API, preserving history, draw selection and repetition; a second position-only hint search cannot impersonate that decision. [Policies](../board/ai-quality.md)
+Normal Hard starts with 100k additional nodes and can continue to 200k. Repertoire and explicit paths retain their own policy. The legacy Native hint has its ordinary allowance and a separately charged forcing-proof reserve; do not describe its 200k ordinary allowance as a total ceiling. Stockfish coaching retains its own provider and request policy. The audit calls the actual game API, preserving history, draw selection and repetition; a second position-only hint search cannot impersonate that decision. [Policies](../board/ai-quality.md)
+
+## Optional decision metadata and old receipts
+
+`LearningGameAudit.mapper()` omits only the four new `BotDecision` metadata fields when they are null: accounting, engine, stop and certificate. A global non-null policy would also remove older meaningful null fields and alter historical digests. Existing fields and the pinned pre-change frame remain unchanged; real new metadata remains present, round-trips and contributes to canonical identity.
+
+`LearningGameAuditTest` covers old JSON shape, actual metadata, canonical changes and invalid accounting. `CoachingProofTest#retainsActualReserveWorkAndHistoricalReceiptShapes` verifies the original archived digest and forcing receipt without changing the fixture. These are Native archive compatibility tests; they do not qualify a new Stockfish Lite game journal.
 
 ## Receipt validation
 

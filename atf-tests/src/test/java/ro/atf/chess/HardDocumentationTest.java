@@ -11,6 +11,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @Tag("governance")
 @ExtendWith(ExtentAudit.class)
 class HardDocumentationTest {
+    @Test void currentFeedbackRoutesToTheOrderedProcessAndSeparateCoachingOwner(Checks check)throws Exception {
+        var root=ProjectRoot.locate();String feedback=Files.readString(root.resolve("docs/feedback/hard.md"));
+        String process=Files.readString(root.resolve("docs/testing/hard-progress.md"));
+        check.same("Open priorities link to the ordered improvement process",true,feedback.contains("](../testing/hard-progress.md)"));
+        check.same("The process keeps common A/B rules in their owner",true,process.contains("](hard-ab-elo.md)"));
+        check.same("Calculated coaching routes to its independent owner",true,process.contains("](../feedback/stockfish-web.md)"));
+    }
     @Test void bothOwnerIndexesExposeTheirExperimentalHardGuide(Checks check) throws Exception {
         var root = ProjectRoot.locate();
         check.same("The board index links directly to its experimental search contract", true,
