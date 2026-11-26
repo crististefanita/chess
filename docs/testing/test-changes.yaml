@@ -95,7 +95,7 @@ testChanges:
     contract: "Păstrează contractul acceptat și verifică independent analiza Stockfish Lite, metadatele originale și izolarea adversarului nativ"
     allowDelete: false
 
-  - id: CHESS-STOCKFISH-TRANSPORT-FIXTURES-RO
+  - id: CHESS-STOCKFISH-TRANSPORT-FIXTURES-RO
     base: "e0a4faa433881475066b9cb75f3e060bcf57d751"
     from: atf-tests/src/test/java/ro/atf/chess/ChessWebStockfishTransportTest.java
     replacement: atf-tests/src/test/java/ro/atf/chess/ChessWebStockfishTransportTest.java
@@ -103,7 +103,7 @@ testChanges:
     contract: "Păstrează contractul acceptat și verifică independent analiza Stockfish Lite, metadatele originale și izolarea adversarului nativ"
     allowDelete: false
 
-  - id: CHESS-OPENING-REFERENCE-ROOTS-RO
+  - id: CHESS-OPENING-REFERENCE-ROOTS-RO
     base: "e0a4faa433881475066b9cb75f3e060bcf57d751"
     from: atf-tests/src/test/java/ro/atf/chess/OpeningReferenceComponentTest.java
     replacement: atf-tests/src/test/java/ro/atf/chess/OpeningReferenceComponentTest.java
@@ -111,7 +111,7 @@ testChanges:
     contract: "Păstrează contractul acceptat și verifică independent analiza Stockfish Lite, metadatele originale și izolarea adversarului nativ"
     allowDelete: false
 
-  - id: CHESS-OPENING-VARIETY-ROOTS-RO
+  - id: CHESS-OPENING-VARIETY-ROOTS-RO
     base: "e0a4faa433881475066b9cb75f3e060bcf57d751"
     from: atf-tests/src/test/java/ro/atf/chess/OpeningVarietyTest.java
     replacement: atf-tests/src/test/java/ro/atf/chess/OpeningVarietyTest.java
@@ -119,7 +119,7 @@ testChanges:
     contract: "Păstrează contractul acceptat și verifică independent analiza Stockfish Lite, metadatele originale și izolarea adversarului nativ"
     allowDelete: false
 
-  - id: CHESS-TEAVM-JAVA17-COLLECTION-API-RO
+  - id: CHESS-TEAVM-JAVA17-COLLECTION-API-RO
     base: "e0a4faa433881475066b9cb75f3e060bcf57d751"
     from: atf-tests/src/test/java/ro/atf/chess/TeaVmPortabilityGovernanceTest.java
     replacement: atf-tests/src/test/java/ro/atf/chess/TeaVmPortabilityGovernanceTest.java
@@ -127,7 +127,7 @@ testChanges:
     contract: "Păstrează contractul acceptat și verifică independent analiza Stockfish Lite, metadatele originale și izolarea adversarului nativ"
     allowDelete: false
 
-  - id: CHESS-STOCKFISH-RAG-ROUTES-RO
+  - id: CHESS-STOCKFISH-RAG-ROUTES-RO
     base: "e0a4faa433881475066b9cb75f3e060bcf57d751"
     from: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java
     replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java
