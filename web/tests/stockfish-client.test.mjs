@@ -10,7 +10,7 @@ const handshake = [
     'option name Threads type spin default 1 min 1 max 1', 'option name Hash type spin default 16 min 1 max 1024',
     'option name MultiPV type spin default 1 min 1 max 500', 'option name Skill Level type spin default 20 min 0 max 20',
     'option name Ponder type check default false', 'option name UCI_ShowWDL type check default false',
-    'option name UCI_LimitStrength type check default false', 'option name EvalFile type string default nn-1a298aa575a0.nnue', 'uciok',
+    'option name UCI_LimitStrength type check default false', 'option name EvalFile type string default nn-61e7af4bb97d.nnue', 'uciok',
 ];
 const info = (move = 'e2e4', depth = 6, rank = 1, bound = '') =>
     `info depth ${depth} seldepth ${depth + 2} multipv ${rank} score cp 30 ${bound} wdl 200 700 100 nodes 1234 time 2 pv ${move}`;
@@ -86,7 +86,7 @@ test('An incomplete final MultiPV round never borrows alternatives from another 
     assert.throws(() => rows.finish('a2a3'));
 });
 
-test('The production client is lazy, classic, full strength and reuses one worker', async t => {
+test('The production Lite client is lazy, classic, uses its unrestricted policy and reuses one worker', async t => {
     const WorkerCtor = workerType();
     const client = new StockfishClient({ WorkerCtor }); t.after(() => client.dispose());
     assert.equal(WorkerCtor.instances.length, 0);
@@ -143,12 +143,12 @@ test('A queued cancellation does not stop another consumer search', async t => {
     assert.equal(worker.go, 1);
 });
 
-test('Wrong engine identity and full-network substitutions are rejected', async t => {
+test('Wrong engine identity and Full network substitutions are rejected by Lite', async t => {
     for (const changed of [handshake.map(line => line.replace('Stockfish 19', 'Other engine')),
-        handshake.map(line => line.replace('nn-1a298aa575a0.nnue', 'nn-lite.nnue'))]) {
+        handshake.map(line => line.replace('nn-61e7af4bb97d.nnue', 'nn-1a298aa575a0.nnue'))]) {
         const WorkerCtor = workerType({ handshake: changed });
         const client = new StockfishClient({ WorkerCtor }); t.after(() => client.dispose());
-        await assert.rejects(client.analyze(request()), /identity|full-network/);
+        await assert.rejects(client.analyze(request()), /identity|lite-network/);
         assert.equal(WorkerCtor.instances[0].terminated, true);
         assert.equal(WorkerCtor.instances[0].go, 0);
     }

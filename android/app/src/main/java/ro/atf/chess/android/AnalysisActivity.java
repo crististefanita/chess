@@ -307,7 +307,11 @@ public final class AnalysisActivity extends LocalizedActivity {
     }
 
     @Override protected void onResume() { super.onResume(); render(); }
-    @Override protected void onPause() { analysis.suspend(); super.onPause(); }
+    @Override protected void onPause() {
+        analysis.suspend();
+        if (reviewDialog != null) reviewDialog.dismiss();
+        super.onPause();
+    }
     @Override protected void onDestroy() {
         if (reviewDialog != null) reviewDialog.dismiss();
         reviewWorker.shutdownNow();

@@ -1,5 +1,6 @@
 import { attachOptionsMenu } from './options-menu.mjs';
 import { rememberBoardSize } from './study-board-size.mjs';
+import { stockfishLabel } from './stockfish-label.mjs';
 import { renderLinePosition } from './line-navigation.mjs';
 import { renderMatchCaptures } from './match-captures.mjs';
 
@@ -67,7 +68,8 @@ function pawns(centipawns, locale) {
 export function analysisScore(evaluation, locale) {
     const words = copy[language(locale)];
     if (!evaluation) return words.pending;
-    const source = evaluation.engine?.providerID?.startsWith('stockfish-') ? 'Stockfish 19 · ' : '';
+    const engineLabel = stockfishLabel(evaluation.engine);
+    const source = engineLabel ? engineLabel + ' · ' : '';
     if (evaluation.ending === 'FINISHED') return words.finished;
     if (evaluation.ending === 'STALEMATE') return words.results.STALEMATE;
     if (evaluation.ending === 'CHECKMATE') {
@@ -120,7 +122,7 @@ export function renderAnalysisEvidence(target, preview, rootSide, locale, proofB
         const score = Number.isFinite(preview.mate) ? words.mate(Math.abs(preview.mate))
             + ' · ' + sideName(words, sign * preview.mate > 0 ? 'WHITE' : 'BLACK')
             : Number.isFinite(preview.centipawns) ? pawns(sign * preview.centipawns, locale) : words.pending;
-        target.textContent = 'Stockfish 19 · ' + words.depth(preview.depth) + ' · ' + score;
+        target.textContent = (stockfishLabel(preview.engine) || 'Stockfish 19') + ' · ' + words.depth(preview.depth) + ' · ' + score;
         return;
     }
     if (preview.kind === 'THEORY') {

@@ -1,11 +1,11 @@
 import { createHash } from 'node:crypto';
 
 export const pinnedStockfish = Object.freeze({
-    providerID: 'stockfish-19.0.1-full-single', version: '19.0.1',
+    providerID: 'stockfish-19.0.1-lite-single', version: '19.0.1',
     sourceCommit: '0d5dd7944f88c817c07a26bc4fb1905d5f9c46d6',
     assets: Object.freeze({
-        'stockfish-19-single.js': { bytes: 28_130, sha256: '8071dee87312f74805a859de933e1a1ef465579ab1a51fbd597388cdce9d444d' },
-        'stockfish-19-single.wasm': { bytes: 99_169_054, sha256: '991bede2f253ebb08ff01fcc48270f4b9c8e66b12d5bd5f8d6f52eb3e3b3a740' },
+        'stockfish-19-lite-single.js': { bytes: 28_230, sha256: 'ccb130d7ff29408531c47d859a49f91d59d4f482d05a53eb1a3231a4f624c91a' },
+        'stockfish-19-lite-single.wasm': { bytes: 1_845_971, sha256: 'ee4f115bdb2d32cadf96cada104a05b5ec257d7ad6f57582190b49bc71f096de' },
     }),
 });
 
@@ -13,6 +13,12 @@ const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 
 /** Build-time check against the independently pinned release, not just a self-authored manifest. */
 export function verifyStockfishPackage(files) {
+    const allowed = new Set([...Object.keys(pinnedStockfish.assets), 'manifest.json', 'README.md', 'COPYING.txt', 'AUTHORS']);
+    for (const name of files.keys()) {
+        if (name.startsWith('stockfish/') && !allowed.has(name.slice('stockfish/'.length))) {
+            throw new Error('Unexpected Stockfish asset; only the pinned Lite distribution may be published: ' + name);
+        }
+    }
     const asset = name => {
         const value = files.get('stockfish/' + name);
         if (!Buffer.isBuffer(value)) throw new Error('Missing Stockfish asset: ' + name);
@@ -27,6 +33,10 @@ export function verifyStockfishPackage(files) {
         if (!entry || typeof entry.path !== 'string' || entry.path.includes('/') || entry.path.includes('\\')
             || entries.has(entry.path)) throw new Error('Invalid or duplicate Stockfish manifest entry');
         entries.set(entry.path, entry);
+    }
+    if (entries.size !== Object.keys(pinnedStockfish.assets).length + 2
+        || [...entries.keys()].some(name => !pinnedStockfish.assets[name] && name !== 'COPYING.txt' && name !== 'AUTHORS')) {
+        throw new Error('Unexpected Stockfish manifest asset');
     }
     const checked = [];
     for (const name of [...Object.keys(pinnedStockfish.assets), 'COPYING.txt', 'AUTHORS']) {

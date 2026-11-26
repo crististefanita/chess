@@ -10,7 +10,7 @@ Choose the lowest test level that can observe the change. Build from a copy of t
 - [Android sanity](#android-sanity) and [Web parity](#web-engine-parity) cover rendering, lifecycle, and real assistive technology when needed.
 - [Extent evidence](#extent-reporting) ties assertions to the run. [Qualification](../release/README.md#qualification-and-publication) governs promotion.
 
-- [Web Stockfish qualification](../../web/stockfish.md#verification) separates protocol components, the real pinned WASM, the compiled Java projection and rendered browser sanity. `ChessWebStockfishTransportTest` imports the original Node assertion values and verdicts into Extent and rejects foreign or empty receipts. `ExternalEngineAnalysisTest` checks legal PVs, side normalization, archive compatibility and tampering. The native Hard engine and Android are separate qualification scopes.
+- [Stockfish qualification](../../web/stockfish.md#verification) separates components, real host transport, the pinned Web WASM and the actual Android APK. `ChessWebStockfishTransportTest` imports original Node assertion values and verdicts into Extent and rejects foreign or empty receipts. Shared provider validation does not make browser or host results into an Android device PASS. Native Hard remains the independent opponent.
 
 <details>
 <summary>Opening and repertoire evidence</summary>
@@ -177,6 +177,20 @@ compared variants, reply facts, actual depths and nodes. [Run and interpretation
 ### Native Hard game audit
 
 Every ply, including an opposing reply, requires the actual history-aware Hard analysis. Components reject missing or foreign receipts; the benchmark publisher replays evidence before Elo and Extent. [Protocol, command and interpretation](hard-audit.md)
+
+Start another campaign only after a named candidate changes a retained failure through a general mechanism. First compare independent minimax and narrow/full TT bounds, cold/warm cache behavior, repetitions, legal evasions and interruption. Use puzzles to isolate the cause, preserving accepted stages, sound sacrifices and free defenses. Then freeze fresh related families before teacher scoring, and require complete-line and conversion evidence before a paired candidate–parent duel. Keep WDL/CP/mate diagnostics separate from ΔElo and retain unfinished games. Allocation savings alone do not qualify speed; extra frontier work with unchanged choices does not qualify stronger play. [Current priorities and consumed controls](../feedback/hard.md#priorities)
+
+### Stockfish coaching and Android transport
+
+The shared [StockfishCoaching](../../chess-core/src/main/java/ro/atf/chess/StockfishCoaching.java) facade and [StockfishTransport](../../chess-core/src/main/java/ro/atf/chess/StockfishTransport.java) transport are separate from the Native opponent. Match, manual-board, opening and review requests must carry the full initial FEN/history, exact source/options and legal PVs. Free/played comparisons use one common completed depth, never mixed bounds or a partial MultiPV iteration. A longer PV is not a stronger move, a completed search is not an exhaustive proof, and the requested node cap is not actual consumed work.
+
+The component gate covers `StockfishCoachingComponentTest`, `AndroidStockfishCoachingTest` and `ExternalEngineAnalysisTest`: exact histories, complete cohorts, cancellation, archive integrity and WDL perspective. A stalled Stockfish search must allow the independently scheduled Native opponent to finish with the same move, horizon and work. The compiled Web probe checks this boundary with the real Java opponent as well. Extent retains the actual run counts and assertions; components alone do not qualify Android rendering.
+
+`StockfishNativeTransportTest` is an explicit opt-in real-host probe, enabled with `chess.stockfish.executable` and an external `chess.stockfish.receipts` directory. Its one current PASS retains the actual host process transcript, validated hints/review and process-close outcome. The source, executable digest and raw `position`/`go`/`info`/`bestmove` remain auditable; the host binary does not stand in for the Android package.
+
+Android targets API 26 with `arm64-v8a`, `x86_64` and `armeabi-v7a`, using local Stockfish Lite 19 and its compatible pinned small NNUE data. Verify the [package manifest](../../android/app/src/main/assets/stockfish/manifest.json), per-ABI binary/source/data hashes, corresponding-source notices and [Gradle package guard](../../android/stockfish-package.gradle). Gradle/build/lint and the prepared Stockfish-only BoardSanity probe are still pending acceptance here. The actual identified APK must start its packaged engine and exercise match/manual/opening/review behavior, cancellation and restart with raw UCI, assertions and captures; no emulator/device PASS is inferred from components or the host probe.
+
+Keep persistence scopes explicit: Web journals durably resume completed per-ply observations. Android currently retains a 64-entry in-memory search cache, at most 64 diagnostic raw receipts and durable completed archived reviews. The partial Android cache is not restored after process death. Test archive reopening separately from fresh missing-work calculation; do not claim durable incremental recovery that was not implemented. [Provider and storage contract](../../web/stockfish.md#saved-analyses)
 
 </details>
 

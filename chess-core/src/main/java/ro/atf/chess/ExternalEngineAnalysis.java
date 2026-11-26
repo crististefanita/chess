@@ -16,7 +16,7 @@ public final class ExternalEngineAnalysis {
 
     public record Context(String checkpoint, int ply, String contextKey, String initialFen, List<String> moves,
                           String rootFen, List<String> legalMoves, String result) {
-        public Context { moves = List.copyOf(moves); legalMoves = List.copyOf(legalMoves); }
+        public Context { moves = HardCollections.copyList(moves); legalMoves = HardCollections.copyList(legalMoves); }
         public String json() {
             return "{\"checkpoint\":" + quote(checkpoint) + ",\"ply\":" + ply + ",\"contextKey\":" + quote(contextKey)
                     + ",\"initialFen\":" + quote(initialFen) + ",\"moves\":" + strings(moves) + ",\"rootFen\":" + quote(rootFen)
@@ -53,7 +53,7 @@ public final class ExternalEngineAnalysis {
             this(rank, depth, cp, mate, wdl, pv, null, null, null);
         }
         public Line {
-            wdl = List.copyOf(wdl); pv = List.copyOf(pv);
+            wdl = HardCollections.copyList(wdl); pv = HardCollections.copyList(pv);
             if (rank < 1 || rank > 512 || depth < 1 || depth > 255 || (cp == null) == (mate == null)
                     || cp != null && Math.abs((long) cp) > 50000 || mate != null && (mate == 0 || Math.abs((long) mate) > 1000)
                     || pv.isEmpty() || pv.size() > 256 || wdl.size() != 3
@@ -77,13 +77,13 @@ public final class ExternalEngineAnalysis {
         String json() {
             return "{\"rank\":" + rank + ",\"depth\":" + depth + ",\"score\":{\"type\":" + quote(cp == null ? "mate" : "cp")
                     + ",\"value\":" + (cp == null ? mate : cp) + "},\"wdl\":[" + wdl.get(0) + "," + wdl.get(1) + "," + wdl.get(2)
-                    + "],\"pv\":" + strings(pv.stream().map(Move::uci).toList()) + ",\"bound\":\"EXACT\""
+                    + "],\"pv\":" + strings(pv.stream().map(Move::uci).collect(java.util.stream.Collectors.toList())) + ",\"bound\":\"EXACT\""
                     + ",\"nodes\":" + nodes + ",\"seldepth\":" + seldepth + ",\"timeMs\":" + timeMs + "}";
         }
     }
 
     public record Batch(Context context, Provider provider, int depth, List<Line> lines) {
-        public Batch { lines = List.copyOf(lines); }
+        public Batch { lines = HardCollections.copyList(lines); }
         public Line best() { return lines.get(0); }
         public String json() {
             var out = new StringBuilder(provider.json()); out.setLength(out.length() - 1);
@@ -97,7 +97,7 @@ public final class ExternalEngineAnalysis {
     public record ReviewedTurn(int ply, Batch free, Batch played) { }
     public record Review(String contextKey, List<ReviewedTurn> turns, boolean rated) {
         public Review(String contextKey, List<ReviewedTurn> turns) { this(contextKey, turns, false); }
-        public Review { turns = List.copyOf(turns); }
+        public Review { turns = HardCollections.copyList(turns); }
         public Provider provider() { return turns.get(0).free().provider(); }
         public String json() {
             var out = new StringBuilder("{\"contextKey\":").append(quote(contextKey)).append(",\"rated\":").append(rated).append(",\"turns\":[");
@@ -116,7 +116,7 @@ public final class ExternalEngineAnalysis {
         var moves = new ArrayList<String>();
         for (int i = 1; i <= ply; i++) moves.add(match.moveAt(i).uci());
         var board = match.positionAt(ply);
-        var legal = board.legalMoves().stream().map(Move::uci).toList();
+        var legal = board.legalMoves().stream().map(Move::uci).collect(java.util.stream.Collectors.toList());
         var line = match.continueFrom(ply);
         String ep = "-";
         if (ply > 0) {
@@ -147,8 +147,8 @@ public final class ExternalEngineAnalysis {
             String type = text(score, "type");
             if (!type.equals("cp") && !type.equals("mate") || !"EXACT".equals(text(row, "bound")))
                 throw new IllegalArgumentException("External engine score is not exact");
-            var pv = array(row.get("pv")).stream().map(v -> Move.fromUci(string(v))).toList();
-            var wdl = array(row.get("wdl")).stream().map(ExternalEngineAnalysis::integer).toList();
+            var pv = array(row.get("pv")).stream().map(v -> Move.fromUci(string(v))).collect(java.util.stream.Collectors.toList());
+            var wdl = array(row.get("wdl")).stream().map(ExternalEngineAnalysis::integer).collect(java.util.stream.Collectors.toList());
             var line = new Line(integer(row.get("rank")), integer(row.get("depth")), type.equals("cp") ? integer(score.get("value")) : null,
                     type.equals("mate") ? integer(score.get("value")) : null, wdl, pv,
                     optionalLong(row.get("nodes")), row.get("seldepth") == null ? null : integer(row.get("seldepth")), optionalLong(row.get("timeMs")));
@@ -212,13 +212,13 @@ public final class ExternalEngineAnalysis {
             char c = text.charAt(i);
             switch (c) { case '\\' -> out.append("\\\\"); case '"' -> out.append("\\\""); case '\n' -> out.append("\\n");
                 case '\r' -> out.append("\\r"); case '\t' -> out.append("\\t"); default -> {
-                    if (c < 32) { String hex = Integer.toHexString(c); out.append("\\u").append("0".repeat(4 - hex.length())).append(hex); }
+                    if (c < 32) { String hex = Integer.toHexString(c); out.append("\\u").append("0000".substring(hex.length())).append(hex); }
                     else out.append(c);
                 } }
         }
         return out.append('"').toString();
     }
-    private static String strings(List<String> values) { return "[" + String.join(",", values.stream().map(ExternalEngineAnalysis::quote).toList()) + "]"; }
+    private static String strings(List<String> values) { return "[" + String.join(",", values.stream().map(ExternalEngineAnalysis::quote).collect(java.util.stream.Collectors.toList())) + "]"; }
     private static String digest(String text) {
         var out = new StringBuilder();
         for (byte b : PortableSha256.digest(text.getBytes(StandardCharsets.UTF_8))) { int n = b & 255; if (n < 16) out.append('0'); out.append(Integer.toHexString(n)); }
@@ -260,7 +260,7 @@ public final class ExternalEngineAnalysis {
             }
             if (c == '[') { index++; var list = new ArrayList<Object>(); space(); if (take(']')) return list;
                 do { list.add(value(depth + 1)); space(); if (take(']')) return list; } while (take(',')); throw bad(); }
-            for (String literal : List.of("null", "true", "false")) if (text.startsWith(literal, index)) { index += literal.length(); return literal.equals("null") ? null : literal.equals("true"); }
+            for (String literal : HardCollections.list("null", "true", "false")) if (text.startsWith(literal, index)) { index += literal.length(); return literal.equals("null") ? null : literal.equals("true"); }
             int start = index; if (c == '-') index++; while (index < text.length() && text.charAt(index) >= '0' && text.charAt(index) <= '9') index++;
             String number = text.substring(start, index); if (!number.matches("-?(0|[1-9][0-9]*)")) throw bad();
             try { return Long.parseLong(number); } catch (NumberFormatException invalid) { throw bad(); }

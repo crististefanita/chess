@@ -10,7 +10,7 @@ const line = (move, depth, value = 20, rank = 1) => ({ rank, depth, seldepth: de
 function result(ctx, lines, earlier = [], completeBatch = true) {
     const completedDepthBatches = [...earlier.map(batch => ({ ...batch, expectedPvCount: batch.lines.length, completeBatch: true }))];
     if (completeBatch) completedDepthBatches.push({ depth: lines[0]?.depth, expectedPvCount: lines.length, completeBatch: true, lines });
-    return { providerID: 'stockfish-19.0.1-full-single', version: '19.0.1',
+    return { providerID: 'stockfish-19.0.1-lite-single', version: '19.0.1',
         buildSha256: 'a'.repeat(64), sourceCommit: 'b'.repeat(40), rootFen: ctx.rootFen,
         position: { initialFen: ctx.initialFen, moves: [...ctx.moves] },
         options: { threads: 1, hashMb: 32, nodes: 200_000, limitStrength: false },

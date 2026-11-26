@@ -47,6 +47,7 @@ import ro.atf.chess.GameReviewSession.Action;
 import ro.atf.chess.GameReviewTimeline;
 import ro.atf.chess.GameReviewTimeline.Branch;
 import ro.atf.chess.GameReviewTimeline.Snapshot;
+import ro.atf.chess.StockfishCoaching;
 
 final class GameReviewDialog {
     private static final int PRIMARY = 0xfff5f3ec;
@@ -93,6 +94,11 @@ final class GameReviewDialog {
     private Snapshot lastSnapshot;
     private MoveRows moveRows;
     private EvaluationGraph graph;
+    private Future<?> pending;
+    private StockfishCoaching coaching;
+    private Runnable reanalyze;
+    private boolean reanalyzing;
+    private volatile int analysisRequest;
 
     private GameReviewDialog(Context context, Side humanSide, boolean blackBelow, Mode mode, Function<Move, String> notation,
                              IntConsumer showPosition, BiConsumer<Integer, Runnable> continueFrom,
@@ -163,10 +169,16 @@ final class GameReviewDialog {
         var view = new GameReviewDialog(context, mode == Mode.STUDY ? Side.WHITE : match.setup().humanSide(), blackBelow, mode,
                 notation, showPosition, continueFrom, initialSnapshot, rememberSnapshot);
         AnalysisReplayDialog.showFullScreen(view.dialog);
-        var job = view.load(match, cached, worker, human, bot, remember, prepare);
+        view.reanalyze = () -> {
+            view.cancelAnalysis();
+            view.reanalyzing = true;
+            view.content.removeAllViews();
+            view.pending = view.load(match, null, worker, human, bot, remember, prepare);
+        };
+        view.pending = view.load(match, cached, worker, human, bot, remember, prepare);
         view.dialog.setOnDismissListener(dialog -> {
             if (view.replayWindow != null) view.replayWindow.dismiss();
-            if (job != null) job.cancel(true);
+            view.cancelAnalysis();
             onClose.run();
         });
         return view.dialog;
@@ -174,6 +186,7 @@ final class GameReviewDialog {
 
     private Future<?> load(ChessMatch match, GameReview cached, ExecutorService worker, String human, String bot,
                            Consumer<GameReview> remember, Function<IntConsumer, GameReview> prepare) {
+        int expectedRequest = ++analysisRequest;
         if (cached != null) {
             display(match, cached, human, bot);
             return null;
@@ -187,20 +200,26 @@ final class GameReviewDialog {
         return worker.submit(() -> {
             try {
                 IntConsumer update = ply -> content.post(() -> {
-                    if (!dialog.isShowing()) return;
+                    if (!dialog.isShowing() || expectedRequest != analysisRequest) return;
                     progress.setProgress(ply);
                     label.setText(context.getString(R.string.game_review_progress, ply, match.ply()));
                 });
-                var result = prepare != null ? prepare.apply(update)
-                        : mode.snapshot() ? GameReview.analyzeLine(match, update) : GameReview.analyze(match, update);
+                GameReview result;
+                if (prepare != null) result = prepare.apply(update);
+                else {
+                    var owner = beginCoaching(expectedRequest);
+                    result = owner.review(match, !mode.snapshot() && mode != Mode.MANUAL_MATCH, update);
+                }
+                if (result.external() == null) throw new IllegalStateException("New reviews require Stockfish observations");
                 content.post(() -> {
-                    if (!dialog.isShowing()) return;
+                    if (!dialog.isShowing() || expectedRequest != analysisRequest) return;
+                    pending = null;
                     remember.accept(result);
                     display(match, result, human, bot);
                 });
             } catch (ro.atf.chess.CoachingProof.Incomplete incomplete) {
                 content.post(() -> {
-                    if(!dialog.isShowing())return;
+                    if(!dialog.isShowing() || expectedRequest != analysisRequest)return;
                     label.setText(R.string.game_review_incomplete);
                     progress.setVisibility(View.GONE);
                 });
@@ -209,18 +228,41 @@ final class GameReviewDialog {
             } catch (RuntimeException | LinkageError failure) {
                 android.util.Log.e("GameReview", "Unable to analyze the game", failure);
                 content.post(() -> {
-                    if (!dialog.isShowing()) return;
+                    if (!dialog.isShowing() || expectedRequest != analysisRequest) return;
                     label.setText(R.string.game_review_failed);
                     progress.setVisibility(View.GONE);
                 });
+            } finally {
+                closeCoaching();
             }
         });
+    }
+
+    private void cancelAnalysis() {
+        analysisRequest++;
+        if (pending != null) pending.cancel(true);
+        pending = null;
+        closeCoaching();
+    }
+
+    private StockfishCoaching beginCoaching(int expectedRequest) {
+        synchronized (this) {
+            if (expectedRequest != analysisRequest || Thread.currentThread().isInterrupted()) throw new CancellationException();
+            coaching = AndroidStockfish.coaching(context);
+            return coaching;
+        }
+    }
+
+    private void closeCoaching() {
+        StockfishCoaching owner;
+        synchronized (this) { owner = coaching; coaching = null; }
+        if (owner != null) owner.close();
     }
 
     private void display(ChessMatch match, GameReview result, String human, String bot) {
         content.removeAllViews();
         content.setPadding(0, 0, 0, 0);
-        session = new GameReviewSession(match, result, initialSnapshot);
+        session = new GameReviewSession(match, result, reanalyzing ? null : initialSnapshot);
         timeline = session.timeline();
         lastSnapshot = timeline.snapshot();
         reviewBoard = new BoardView(context, ignored -> { });
@@ -299,6 +341,8 @@ final class GameReviewDialog {
         summary.addView(lineProgress);
         summary.addView(player(human, humanSide, humanSide == Side.WHITE ? result.white() : result.black()));
         summary.addView(player(bot, humanSide.other(), humanSide == Side.WHITE ? result.black() : result.white()));
+        summary.addView(text(CoachingPresentation.legacy(result) ? context.getString(R.string.game_review_legacy_engine)
+                : context.getString(R.string.game_review_stockfish_engine, result.external().provider().version()), 12, MUTED));
         summary.addView(text(context.getString(mode.ratingNote), 12, MUTED));
         summary.addView(comparison(result));
         list.addHeaderView(summary, null, false);
@@ -311,6 +355,7 @@ final class GameReviewDialog {
         review.setId(R.id.game_review_workspace);
         content.addView(review, new LinearLayout.LayoutParams(-1, -1));
         refreshTimeline();
+        if (reanalyzing) rememberSnapshot.accept(timeline.snapshot());
         if (timeline.explanationOpen()) openExplanation(result);
     }
 
@@ -408,6 +453,12 @@ final class GameReviewDialog {
 
     private void showActions(View anchor, GameReview result) {
         var menu = new PopupMenu(context, anchor);
+        if (CoachingPresentation.legacy(result)) {
+            menu.getMenu().add(R.string.game_review_stockfish_reanalyze).setOnMenuItemClickListener(item -> {
+                reanalyze.run();
+                return true;
+            });
+        }
         menu.getMenu().add(R.string.game_review_on_board).setOnMenuItemClickListener(item -> {
             int selected = timeline.ply();
             dialog.dismiss();

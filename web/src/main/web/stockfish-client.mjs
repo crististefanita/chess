@@ -1,10 +1,10 @@
 import { normalizeAnalysisRequest, parseInfoLine, parseBestmove, StockfishIterations, StockfishProtocolError } from "./stockfish-protocol.mjs";
 
 export const STOCKFISH_PROVIDER = Object.freeze({
-  id: "stockfish-19.0.1-full-single", name: "Stockfish 19 Full single-thread", version: "19.0.1", flavor: "full-single",
-  buildSha256: "991bede2f253ebb08ff01fcc48270f4b9c8e66b12d5bd5f8d6f52eb3e3b3a740",
-  scriptSha256: "8071dee87312f74805a859de933e1a1ef465579ab1a51fbd597388cdce9d444d",
-  sourceCommit: "0d5dd7944f88c817c07a26bc4fb1905d5f9c46d6", network: "nn-1a298aa575a0.nnue", license: "GPL-3.0"
+  id: "stockfish-19.0.1-lite-single", name: "Stockfish 19 Lite single-thread", version: "19.0.1", flavor: "lite-single",
+  buildSha256: "ee4f115bdb2d32cadf96cada104a05b5ec257d7ad6f57582190b49bc71f096de",
+  scriptSha256: "ccb130d7ff29408531c47d859a49f91d59d4f482d05a53eb1a3231a4f624c91a",
+  sourceCommit: "0d5dd7944f88c817c07a26bc4fb1905d5f9c46d6", network: "nn-61e7af4bb97d.nnue", license: "GPL-3.0"
 });
 
 function failure(message, code, name = "StockfishError") {
@@ -16,7 +16,7 @@ const frozenTranscript = entries => Object.freeze(entries.map(entry => Object.fr
 
 /** One lazily loaded classic Worker, shared by all callers; at most one UCI search is active. */
 export class StockfishClient {
-  constructor({ WorkerCtor = globalThis.Worker, workerUrl = new URL("./stockfish/stockfish-19-single.js", import.meta.url),
+  constructor({ WorkerCtor = globalThis.Worker, workerUrl = new URL("./stockfish/stockfish-19-lite-single.js", import.meta.url),
     timers = { setTimeout: (callback, delay) => globalThis.setTimeout(callback, delay), clearTimeout: timer => globalThis.clearTimeout(timer) },
     initializationTimeoutMs = 120000, readyTimeoutMs = 10000, searchTimeoutMs = 30000, stopTimeoutMs = 1500,
     hashMiB = 32, maxTranscriptChars = 2 * 1024 * 1024 } = {}) {
@@ -132,8 +132,8 @@ export class StockfishClient {
     for (const option of ["Threads", "Hash", "MultiPV", "Skill Level", "Ponder", "UCI_ShowWDL", "UCI_LimitStrength", "EvalFile"]) {
       if (!options.has(option)) throw new StockfishProtocolError(`Required Stockfish option missing: ${option}`, "STOCKFISH_ENGINE_MISMATCH");
     }
-    if (!/\bdefault nn-1a298aa575a0\.nnue(?:\s|$)/.test(options.get("EvalFile")) || !/\bmax 1(?:\s|$)/.test(options.get("Threads"))) {
-      throw new StockfishProtocolError("Expected the pinned full-network single-thread build", "STOCKFISH_ENGINE_MISMATCH");
+    if (!/\bdefault nn-61e7af4bb97d\.nnue(?:\s|$)/.test(options.get("EvalFile")) || !/\bmax 1(?:\s|$)/.test(options.get("Threads"))) {
+      throw new StockfishProtocolError("Expected the pinned lite-network single-thread build", "STOCKFISH_ENGINE_MISMATCH");
     }
     this._identity = Object.freeze({ uciName: name, uciAuthor: author, options: Object.freeze(Object.fromEntries(options)) });
   }

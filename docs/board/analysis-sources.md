@@ -4,22 +4,22 @@
 
 The requested destination is **Stockfish Lite** for every calculated hint, evaluation bar, comparison and interim/final review, on Android, hosted Web and localhost. This applies in AI games, the manual board and openings. Opponent difficulty cannot weaken or replace the coaching provider. No missing result may silently select Native analysis. [Route matrix, incomplete work and delivery owner](../feedback/stockfish-web.md)
 
-The following scope table describes the current main baseline, not a completed Lite migration. Catalog solutions and deterministic rule checking retain their provenance; any calculated explanatory coaching line still belongs to Stockfish. A longer PV is not a completed depth, an exhaustive proof or an Elo gain. [Measurement protocol](../testing/hard-ab-elo.md)
+The following table describes the Lite candidate and the separate stored-reference paths. Catalog solutions and deterministic rule checking retain their provenance; any calculated explanatory coaching line still belongs to Stockfish. A longer PV is not a completed depth, an exhaustive proof or an Elo gain. [Measurement protocol](../testing/hard-ab-elo.md)
 
 ## Scope
 
-Chess Lab consumes measured Stockfish 19 references in **Openings**. The APK and TeaVM worker share Java rules, catalogs and storage contracts. Android coaching retains the native Java engine. Web hints, opening analysis, the manual board and new Game Reviews use the local Stockfish WebAssembly engine. The generator’s executable and its stored reference YAML remain a separate source. [Web provider and validation](../../web/stockfish.md)
+Chess Lab consumes measured Stockfish 19 references in **Openings**. The APK and TeaVM worker share Java rules, catalogs and storage contracts. Web hints, opening analysis, the manual board and new Game Reviews use the local Stockfish WebAssembly engine. Android uses the local Lite transport for the same calculated coaching surfaces; platform acceptance remains separately reported. The generator's executable and stored reference YAML remain a separate source. [Current implementation and Android acceptance](../feedback/stockfish-web.md) · [Web provider and validation](../../web/stockfish.md)
 
 | Context | Calculation owner | Meaning |
 |---|---|---|
 | Known opening prefix: bar and recommended continuations | Stockfish 19, recorded in [opening-reference.yaml](../../chess-core/src/main/resources/opening-reference.yaml) | Exact lesson history, depth 16, Threads 1, Hash 16 MiB, MultiPV 3; retain at most three roots within 40 cp of the best. |
 | Opponent move at a covered opening prefix | The same stored Stockfish 19 roots, selected by the shared Java [OpeningRepertoire](../../chess-core/src/main/java/ro/atf/chess/OpeningRepertoire.java) | A saved per-game ordinal rotates pseudo-randomly among the measured roots. Exact history must match; verified repertoire overrides stay authoritative and uncovered positions use the existing curated theory/search behavior. No live engine call is added to opponent moves. |
-| Missing opening prefix on Android | [OpeningReference](../../chess-core/src/main/java/ro/atf/chess/OpeningReference.java) delegates to native MatchHint | One live analysis; the result carries no Stockfish reference metadata. |
+| Calculated opening coaching on Android | [StockfishCoaching](../../chess-core/src/main/java/ro/atf/chess/StockfishCoaching.java) with the full lesson history | Stockfish Lite supplies the displayed bar and recommendations. Missing stored data cannot select Native coaching. |
 | Web opening and manual-board analysis | [Local Stockfish engine](../../web/stockfish.md) with the Java context validator | A live source-bound search; its depth, WDL and PVs are separate from stored opening references. |
 | Documented theory paths | [OpeningTheory](../../chess-core/src/main/java/ro/atf/chess/OpeningTheory.java) | Up to three authored or ECO continuations in catalog order, without a claim that each is engine-best. |
-| AI-game hint | [MatchHint](../../chess-core/src/main/java/ro/atf/chess/MatchHint.java) validates the provider result | Android uses Native search; Web uses Stockfish. Both are independent of opponent level and offer only close alternatives. |
-| Intermediate and final game review | [GameReview](../../chess-core/src/main/java/ro/atf/chess/GameReview.java) validates best/played comparisons | Native [ReviewJournal](../../chess-core/src/main/java/ro/atf/chess/ReviewJournal.java) and the separate Web Stockfish journal retain their own evidence. Final aggregation requires complete same-provider samples. |
-| Board-to-board estimate inside replay | [HintPreview](../../chess-core/src/main/java/ro/atf/chess/HintPreview.java) | Native static material/position evaluation; it neither searches Stockfish nor changes the order of cached candidates. |
+| AI-game and manual-board hint | [MatchHint](../../chess-core/src/main/java/ro/atf/chess/MatchHint.java) validates the provider result | Web and Android use their pinned Stockfish Lite transports. Opponent difficulty never weakens the coaching engine. Only close alternatives are offered. |
+| Intermediate and final game review | [GameReview](../../chess-core/src/main/java/ro/atf/chess/GameReview.java) validates best/played comparisons | Native [ReviewJournal](../../chess-core/src/main/java/ro/atf/chess/ReviewJournal.java) is distinct from external Stockfish evidence. Android migration must preserve provider-bound journals; aggregation requires complete same-provider samples. |
+| Board-to-board estimate inside legacy replay | [HintPreview](../../chess-core/src/main/java/ro/atf/chess/HintPreview.java) | A static material/position delta is not a Stockfish measurement. If retained as an auxiliary value, it must be labelled separately and never substitute for the provider's evaluation or add an unscored PV suffix. |
 
 ```mermaid
 %%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
@@ -27,17 +27,17 @@ flowchart LR
     SF["Stockfish 19 offline"] -->|measures| YAML["Opening reference YAML"]
     YAML -->|loads exact prefix| Ref["Reference bar and lines"]
     YAML -->|selects a measured root| Opponent["Shared opponent move"]
-    Missing["Missing prefix"] -->|requests| Native["Java analysis"]
-    Native -->|saves actual comparisons| Journal["Review journal"]
+    Live["Calculated coaching"] -->|requests full history| SFLocal["Stockfish Lite"]
+    SFLocal -->|returns validated comparisons| Journal["Provider-bound work"]
     Journal -->|aggregates| Final["Final report"]
     Ref -->|replays legal moves| Preview["Replay board"]
     Preview -->|estimates displayed boards| Static["Native static delta"]
 ```
 
 <details>
-<summary>Legend — measured source and runtime work</summary>
+<summary>Legend — calculated coaching and catalog knowledge</summary>
 
-This diagram describes stored references and Native analysis. Stockfish runs during reference generation; Web also runs its separate pinned engine locally on demand. The shared Java core validates legal replay for either provider. Native game-review evidence retains its own policy and journal; it does not inherit the opening reference score or live Stockfish identity.
+The diagram describes calculated coaching separately from catalog knowledge. Web runs its pinned engine locally on demand; the Android Stockfish adapter is validated against its own executable and data pins. Java validates legal replay for both transports. Stored references keep their original measured depth and source; they are not relabelled as new live searches. Native proof-based catalog checking is independent of the coaching provider.
 
 </details>
 
@@ -45,7 +45,8 @@ This diagram describes stored references and Native analysis. Stockfish runs dur
 
 - **Reference score:** White centipawns at the recorded search horizon. **Ref. Δ** is the current exact-prefix score minus its parent-prefix score. Orientation does not change its sign.
 - **Replay estimate:** static endpoint minus static starting value, from the side to move at the replay source. This is a different calculation from Ref. Δ; a black-to-move source also uses a different perspective. The two values must not be presented as the same Stockfish measurement.
-- **Game Review:** native same-horizon scores become per-mille loss, grades and accuracy under [game-review.yaml](../../chess-core/src/main/resources/game-review.yaml). Web external reviews retain Stockfish WDL at a common completed depth. An eligible result can add a rating estimate under its existing opponent policy; changing the analyzer does not recalibrate an opponent. A depth-16 reference is neither a human Elo measurement nor a proof of every future defense.
+- **Game Review:** legacy native same-horizon scores become per-mille loss, grades and accuracy under [game-review.yaml](../../chess-core/src/main/resources/game-review.yaml). External reviews retain Stockfish WDL at a common completed depth; the same contract is required for the Android migration. An eligible result can add a rating estimate under its existing opponent policy; changing the analyzer does not recalibrate an opponent.
+- **Search evidence:** PV length, completed depth and selective depth are different quantities. Record actual nodes/time and the requested cap separately. A depth-16 reference or a longer PV is neither a human Elo measurement nor a proof of every future defense; free/played comparisons require the same context, provider and completed horizon.
 
 ## Selectable lines
 

@@ -207,14 +207,19 @@ class CoachingProofTest {
         }
     }
 
-    @Test void nativeConsumersKeepIncompleteVerificationDistinctFromGameOver(Checks check)throws Exception {
+    @Test void androidConsumersKeepUnavailableExternalEvidenceDistinctFromGameOver(Checks check)throws Exception {
         var root=ProjectRoot.locate();String hint=java.nio.file.Files.readString(root.resolve("android/app/src/main/java/ro/atf/chess/android/MatchAnalysisView.java"));
         String review=java.nio.file.Files.readString(root.resolve("android/app/src/main/java/ro/atf/chess/android/GameReviewDialog.java"));
-        check.same("The hint binds its incomplete receipt to a distinct presentation",true,hint.contains("analyzed.proof().filter(p->!p.complete()).isPresent()")&&hint.contains("incomplete?R.string.match_analysis_incomplete:R.string.match_analysis_ended"));
+        check.same("The hint refuses missing external evidence and never labels it game over",true,
+                hint.contains("if (analyzed.external().isEmpty() || evaluation == null)")
+                        && hint.contains("setText(R.string.match_analysis_failed)")
+                        && hint.contains("evaluationBar.setWhiteShare(Double.NaN)"));
         check.same("Review handles the typed incomplete result before generic failures",true,review.contains("catch (ro.atf.chess.CoachingProof.Incomplete incomplete)")&&review.contains("label.setText(R.string.game_review_incomplete)"));
         for(String folder:List.of("values","values-ro")) {
             String strings=java.nio.file.Files.readString(root.resolve("android/app/src/main/res/"+folder+"/strings.xml"));
-            check.same("Both localized incomplete states exist in "+folder,true,strings.contains("name=\"match_analysis_incomplete\"")&&strings.contains("name=\"game_review_incomplete\""));
+            check.same("Provider unavailability and historical incomplete proof remain distinct in "+folder,true,
+                    strings.contains("name=\"match_analysis_failed\"") && strings.contains("name=\"match_analysis_incomplete\"")
+                            && strings.contains("name=\"game_review_incomplete\""));
         }
         for(String name:List.of("CoachingProof.java","TacticalAnalysis.java")) {
             String source=java.nio.file.Files.readString(root.resolve("chess-core/src/main/java/ro/atf/chess/"+name));

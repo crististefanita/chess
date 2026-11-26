@@ -1,99 +1,78 @@
-# Stockfish analysis on the Web
+# Stockfish analysis on Web and Android
 
 ## Requested Lite migration
 
-The product requirement is **Stockfish Lite**, including all hints, the evaluation bar, openings, manual analysis and complete Game Review on Web and Android. Full is not the requested next package. The current-source description below remains the baseline until Lite's independent source/build/data pins, components and platform evidence qualify. [Requirements and source handoff](../docs/feedback/stockfish-web.md) · [Native opponent A/B and Elo](../docs/testing/hard-ab-elo.md)
-
-A Windows executable cannot run directly in the browser or APK. Web uses a local WebAssembly worker; Android needs a compatible native build and network. The proposed Lite assets are much smaller, but their size does not prove equivalent strength. Another AI owns the APK/RAG and publication task; this documentation update does not qualify or publish a Lite binary.
+The current candidate uses **Stockfish Lite** for calculated hints, the evaluation bar, opening analysis, the manual board and Game Review. Native Basic, Advanced and Hard remain independent opponents. Catalog solutions and stored opening references retain their recorded provenance. [Acceptance and remaining work](../docs/feedback/stockfish-web.md) · [Native A/B and Elo](../docs/testing/hard-ab-elo.md)
 
 ## Ownership
 
-The Web adapter uses the full single-thread Stockfish 19 engine for position analysis. Java still owns legal moves, catalogs, saved games and navigation. AI opponents retain their existing Java levels; their difficulty does not weaken the analysis engine.
+| Route | Calculation | State owner |
+|---|---|---|
+| AI-game hint and evaluation bar | Stockfish Lite | Selected Java match position and complete history |
+| Manual analysis board | Stockfish Lite | Java study line and bookmark |
+| Calculated opening analysis | Stockfish Lite | Exact opening lesson prefix |
+| Interim and final Game Review | Stockfish Lite free/played comparisons | Recorded Java game and validated provider evidence |
+| Puzzle solution and authored theory | Verified catalog and legal replay | Shared Java catalog |
+| Opponent move | Native Basic, Advanced or Hard | Shared Java match policy |
 
-| Route | Analysis source | State owner |
-| --- | --- | --- |
-| In-game evaluation and lightbulb | Stockfish | The selected Java match position |
-| Manual analysis board | Stockfish | The Java study line and bookmark |
-| Opening analysis | Stockfish | The Java opening lesson and selected position |
-| New Game Review | Stockfish free and played-move comparisons | The recorded Java game |
-| Puzzle solution and opening theory | The verified catalog or authored theory | The shared Java catalog |
-| Android hints and review | Existing native engine | The Android adapter and shared core |
+The bar displays White's engine evaluation and WDL expected score. It is not an Elo measurement or a measured human win probability. Changing opponent level cannot weaken the coaching engine or select another analysis provider.
 
 ## Request and validation
 
 ```mermaid
 sequenceDiagram
-    participant UI as Web UI
-    participant Java as Java worker
-    participant Broker as Page broker
-    participant SF as Stockfish worker
-    UI->>Java: Prepare the displayed position
-    Java->>Broker: Context and complete move history
-    Broker->>SF: UCI search
-    SF-->>Broker: Scores and principal variations
-    Broker-->>Java: Source-bound completed results
-    Java-->>UI: Validated analysis and legal replay
+    participant UI as Displayed position
+    participant Native as Native opponent worker
+    participant Coach as Stockfish Lite worker
+    participant Java as Java validator
+    UI->>Native: Calculate an opponent move
+    UI->>Coach: Analyze full history independently
+    Coach-->>Java: Exact scores and legal principal variations
+    Java-->>UI: Source-bound hint and evaluation
+    Native-->>UI: Revision-bound opponent decision
 ```
 
 <details>
-<summary>Legend — calculation and state are separate</summary>
+<summary>Legend — independent computation and state</summary>
 
-The page owns one lazy Stockfish client. Replacing a Java consumer cancels that consumer's pending calculations; it does not create another large engine for the next board frame. Java validates the returned position, history identity, source, depths and every PV move before publishing the view.
+Android uses separate executors for the opponent, displayed coaching and review. Web uses a dedicated Native turn worker and independent analysis consumers served by the Stockfish broker. A pending or failed coaching request cannot supply the opponent move or block its calculation. Replacing the displayed position cancels its coaching owner; old replies cannot overwrite the new bar. Components stall the coaching calculation while comparing the actual Native decision, horizon and work.
 
 </details>
 
-The UCI position contains the original FEN and the complete move prefix. The displayed board placement alone is insufficient: castling, en passant, clocks and repetition history also matter. A changed revision rejects a delayed result, including a return from A to B and then to the same visible A.
+Every request carries the original FEN and full move prefix, including side, rights, clocks and repetition history. Equal board placement does not establish equal context. Java validates provider/build/options, exact depth, source identity and every PV move. Failed startup or incomplete evidence reports unavailability; there is no Native coaching fallback.
 
-The client serializes searches. Cancellation sends `stop` and drains the old `bestmove` before another position is submitted; a failed engine is closed and reported as unavailable. It does not silently replace a failed Stockfish result with a Hard result.
-
-The initial policy is 200,000 requested nodes and three principal variations. In-game recommendations always retain the best exact line and offer at most two further exact roots when they are close: within 60 centipawns and 50 expected-score points of the best at the same completed depth. The Java projection caps the selectable set at three; weaker observations remain in the raw audit batch but are not presented as equal choices. [Policy and orchestration](src/main/web/stockfish-analysis.mjs) keep the limit separate from opponent difficulty. The returned rows retain their reported work and source options; a requested budget is not the measured cost of one branch.
-
-The TeaVM compiler targets Java 17 even when the Android/JVM test process runs on Java 21. Keep TeaVM-reachable core on the Java 17 library surface; the TeaVM portability governance test guards against SequencedCollection-only calls that can pass JVM tests but fail the shipped Web build.
+[StockfishCoaching](../chess-core/src/main/java/ro/atf/chess/StockfishCoaching.java) and [StockfishTransport](../chess-core/src/main/java/ro/atf/chess/StockfishTransport.java) implement native orchestration. [AndroidStockfish](../android/app/src/main/java/ro/atf/chess/android/AndroidStockfish.java) verifies the packaged engine and network. Web's [policy](src/main/web/stockfish-analysis.mjs) uses the separately pinned WASM worker.
 
 ## Scores, hints and review
 
-Stockfish reports scores for the side to move. The Java projection normalizes the visible evaluation to White and preserves mate values separately from ordinary centipawns. WDL is an engine-model estimate, not a measured human win rate.
+Both platforms request one thread, 32 MiB hash, 200,000 nodes and MultiPV 3 without skill limiting. Requested nodes and observed work remain distinct. Stockfish reports the side-to-move score; the displayed bar normalizes it to White, independently of orientation.
 
-Only comparable exact rows from a completed depth are grouped together. A candidate batch is complete only when Stockfish finished the MultiPV iteration and returned every requested rank with an exact score and PV at that depth. If a deeper iteration stops after returning only some ranks, discard that partial batch and keep the latest complete common-depth batch; never combine ranks across depths or replace a full top-three batch with a partial single line. The lightbulb, destination tap and playable line share the accepted result. Large-loss alternatives are not offered as equally good hints, so the visible set can contain fewer than three when no further root meets the closeness thresholds.
+Only fully completed exact MultiPV cohorts are comparable. The latest complete common-depth batch survives an interrupted deeper iteration; ranks from different depths are never combined. Offer at most three selectable lines: always the leader, plus alternatives within 60 cp and 50 expected-score points, or with the same mate distance. Three close lines remain visible when available. A sole sound line has no empty selector row. Tabs share one row, preserve independent replay cursors and do not run another search. The outline bulb uses the same muted color across Openings, AI and the Analysis board.
 
-For each recorded move, Game Review compares the free recommendation and the played root at their highest common completed depth. The free observation retains the completed top-three MultiPV batch as audit evidence; an interrupted deeper partial batch cannot replace it. Grading and the visible recommended branch use its best line, alongside the played line. The played root has its own constrained search when it differs from the best root. Failure to complete a comparison prevents a partial review from being saved as a completed review.
+Game Review compares the free root with the actual played root at their highest common completed depth. It retains the complete observed PV and provider identity. A bounded search is not an exhaustive tactical proof. No unscored Native continuation or static leaf score is appended to an external PV.
 
-The native opponent still uses the shared Java move provider on Web and Android. At an exact opening prefix covered by `opening-reference.yaml`, a new game rotates pseudo-randomly among the stored Stockfish 19 roots (up to three, each within 40 cp of the measured leader). The saved per-game ordinal makes a resumed game choose the same move, and every eligible root is visited before a cycle repeats. Verified repertoire overrides remain authoritative. If the played prefix is not covered, the existing curated theory and search behavior applies. This uses measured data; opponent moves do not start a live Stockfish search, and Stockfish does not become the Web opponent. The same policy and YAML are packaged into the APK and Web bundle.
-
-A completed UCI search is bounded engine evidence. It is not labeled as a native Hard tactical certificate or an exhaustive proof. Existing opponent-rating eligibility remains distinct from the identity of the analysis engine; switching the analyzer does not establish a new Elo calibration.
+Covered opponent opening histories reuse the independently measured roots from `opening-reference.yaml`, up to three within 40 cp. The persisted per-game ordinal rotates eligible choices before repetition and restores the same choice after restart. Verified repertoire overrides remain first; uncovered histories keep their existing Native theory/search policy. Opponent turns do not launch a Stockfish coaching search.
 
 ## Saved analyses
 
-Existing native review versions remain readable without automatic recalculation. Their provider remains visible. Reanalysis with Stockfish is explicit, keeps the game identity and played history, and writes the external provider's evidence separately from native proof fields.
+The Web incremental collector stores complete per-ply free/played observations in the Lite-specific namespace. Exact initial FEN, full history, engine build and options govern reuse. Final review aggregates validated complete work; missing, modified or foreign evidence cannot be saved as complete. Old Full and Native archives keep their original provider until explicit reanalysis.
 
-Current Stockfish reviews retain the engine build, source commit, options and per-position identity. Opening a saved review does not run the engine again. Navigation and line replay operate on the stored, validated moves.
-
-The incremental collector uses a separate Stockfish storage namespace. It saves each completed pair of free/played observations and resumes after interruption. When a game grows, reuse requires the same initial position, full move prefix, current FEN, played move and engine policy. Java revalidates every reused PV and comparison. A final review supplied with a journal aggregates that evidence without another search; incomplete, modified or foreign evidence fails explicitly. Native journals and archived native reviews keep their original identity.
+Android currently retains a 64-entry RAM search cache, up to 64 diagnostic UCI receipts and durable completed reviews. The RAM cache is not a durable per-game work journal after process death. Completed-review reopening and partial-work recovery are different acceptance scopes; the latter remains in feedback. This limitation must not be represented as a completed incremental-persistence contract.
 
 ## Distribution
 
-The pinned engine is Stockfish.js 19.0.1, full single-thread, from source commit `0d5dd7944f88c817c07a26bc4fb1905d5f9c46d6`. The loader and 99,169,054-byte WASM are local assets in the same immutable runtime directory. They load when analysis is requested; there is no remote analysis service.
+The source is Stockfish.js 19.0.1 at `0d5dd7944f88c817c07a26bc4fb1905d5f9c46d6`. The Lite Web loader is 28,230 bytes and WASM is 1,845,971 bytes, independently pinned to the upstream release. [Vendor notices and manifest](src/main/web/stockfish/README.md) · [Build verifier](tools/verify-stockfish.mjs)
 
-[Build validation](tools/verify-stockfish.mjs) checks the independently pinned upstream hashes as well as the package manifest, GPL text, authors and corresponding-source notice. [Engine package and notices](src/main/web/stockfish/README.md) · [Upstream source](https://github.com/nmrugg/stockfish.js/tree/0d5dd7944f88c817c07a26bc4fb1905d5f9c46d6)
+Android uses the compatible `nn-61e7af4bb97d.nnue` network and the same fork's `LITE_NET=yes` build. API 26, PIE and 16 KB ELF LOAD alignment are checked for `arm64-v8a`, `x86_64` and `armeabi-v7a`. The unmodified source archive, GPL notices, reproducible recipe and disclosed native-only `uci.loop()` → `uci->loop()` patch accompany the package. [Native package](../android/app/src/main/assets/stockfish/README.md) · [Independent package guard](../android/stockfish-package.gradle)
 
-The packager preserves vendor bytes and adjacent loader/WASM paths. Git attributes keep those bytes unchanged through staging and checkout. The existing publication process preserves earlier runtime directories for open tabs. [Web publication](parity.md#publishing-the-link)
+Lite has a smaller network; package size establishes neither equivalent Full strength nor a new Native Hard Elo. Cold Web loading is asynchronous and local computation needs no remote analysis service. Previously published immutable runtimes retain their bytes for older open tabs.
 
 ## Verification
 
-Use component tests for parsing, queueing, cancellation, source identity, stale results, common-depth comparison and saved-review compatibility. The new Node fixtures emit original expected/actual assertion rows for ATF reporting; importing those rows does not rerun the underlying assertions or reinterpret predicate assertions as string equality.
+`ChessWebStockfishTransportTest` imports the original Node expected/actual/verdict rows into Extent. With `chess.stockfish.bundle`, it also executes the real pinned WASM through the compiled Java projection: hints, complete top-three batches, openings, journals, old archives and substituted-PV rejection. Rendered Browser MCP acceptance remains a separate observation. [Test strategy](../docs/testing/README.md)
 
-Real WASM execution, the compiled Java projection and the rendered browser flow have separate observations. Mock success does not substitute for engine startup or browser behavior. Keep build logs, native receipts, transcripts, captures and Extent in the working evidence directory outside the checkout. [Testing strategy](../docs/testing/README.md) · [Open acceptance](../docs/feedback/stockfish-web.md)
+`StockfishCoachingComponentTest`, `AndroidStockfishCoachingTest` and `ExternalEngineAnalysisTest` cover exact histories, common completed depths, partial/bounded cohorts, cancellation, independent opponent progress, WDL perspective, legal PVs, closed owners and archive negatives. `StockfishNativeTransportTest` is a separately enabled host-process probe and cannot qualify an Android executable.
 
-Run `ChessWebStockfishTransportTest` with `-Dchess.stockfish.bundle=<external-site>` and a fresh `-Dchess.extent=<external-report>`. Its component inventory covers UCI parsing, lifecycle, source pins, score display and journals. The opt-in compiled test uses the production Java projection and the actual pinned WASM, then checks hints, openings, journal aggregation, illegal substituted PV rejection and saved-review reopening. Run `ExternalEngineAnalysisTest` for the JVM boundary and codec negatives. The rendered browser check remains a separate scope.
+The signed APK must start its packaged engine and retain raw UCI, original assertions and a capture in Extent. Package/build success and mocked components are not a device PASS. Font, rotation and source-sized replay retain their existing component and platform scopes. [Release procedure](../docs/release/README.md#qualification-and-publication) · [Unmet acceptance](../docs/feedback/stockfish-web.md)
 
-`ChessWebStockfishPlaywrightE2e` publishes the minimal rendered flow through ATF reporting, with actions, assertions and embedded PNGs. Supply the site, browser executable and a fresh `chess.stockfish.browser.extent` path. The test closes its isolated browser profile and leaves ordinary browser sessions alone.
-
-Native numeric expectations remain mandatory in the JVM component `MatchAnalysisParityTest`. The slow compiled Native historical-search comparison is retained as an explicit opt-in benchmark (`chess.web.nativeCompatibility=true`), using the test-only `native-analysis-reference.mjs` adapter. It is not the production Web coaching provider and its skipped status is not a PASS. The real-WASM integration and browser sanity qualify Stockfish instead; archived Native data and the shared rules remain independently checked.
-
-Legacy search subprocesses have a separate bounded execution timeout. It does not change their node budget or numeric expectations and is not a latency acceptance threshold. UCI initialization, search, stop/drain and cancellation retain their own independently tested timeouts.
-
-The manual board uses its intrinsic height. Position, evaluation, hint and history follow it as one compact group; unused viewport height stays outside that group. Hint disclosure reserves its row and cannot shift the square. `ChessWebAnalysisLayoutTest` checks the component contract, while the rendered sanity measures actual gaps and fit at 390 × 844, 360 × 640 and 740 × 420, including 130% text.
-
-Cold engine loading is asynchronous: the manual board renders first and requests its evaluation separately. Errors are shown for retry; another engine is not substituted. The large full-engine download is intentional and remains lazy.
-
-The rendered test waits for first-engine readiness within the transport's existing initialization, ready and search bounds (120 + 10 + 30 seconds). Ordinary UI actions retain their 45-second bound. These are execution limits, not chess-quality or latency acceptance thresholds; a startup failure records visible state, engine responses and a capture before the browser closes.
+TeaVM targets Java 17 even when tests run on Java 21. The portability guard rejects Java 21-only collection methods. Keep native diagnostic benchmarks separate from the production Stockfish provider, and retain explicit skips rather than calling them PASS.

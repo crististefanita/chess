@@ -1,4 +1,84 @@
 testChanges:
+  - id: CHESS-LITE-ANDROID-CONFIG
+    base: "65a29ab023a6a1da11a0da1b3476da717bee5baf"
+    from: android/app/build.gradle
+    replacement: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
+    test: ro.atf.chess.DocumentationGovernanceTest#projectReadmeArchitectureMatchesTheExecutableBuild
+    contract: "Retain the existing accepted contract while adding independently validated Stockfish Lite coaching and provider isolation"
+    allowDelete: false
+
+  - id: CHESS-LITE-ROOT-POM
+    base: "65a29ab023a6a1da11a0da1b3476da717bee5baf"
+    from: pom.xml
+    replacement: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
+    test: ro.atf.chess.DocumentationGovernanceTest#projectReadmeArchitectureMatchesTheExecutableBuild
+    contract: "Retain the existing accepted contract while adding independently validated Stockfish Lite coaching and provider isolation"
+    allowDelete: false
+
+  - id: CHESS-LITE-TEST-POM
+    base: "65a29ab023a6a1da11a0da1b3476da717bee5baf"
+    from: atf-tests/pom.xml
+    replacement: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
+    test: ro.atf.chess.DocumentationGovernanceTest#projectReadmeArchitectureMatchesTheExecutableBuild
+    contract: "Retain the existing accepted contract while adding independently validated Stockfish Lite coaching and provider isolation"
+    allowDelete: false
+
+  - id: CHESS-LITE-NATIVE-PROBE
+    base: "65a29ab023a6a1da11a0da1b3476da717bee5baf"
+    from: android/app/src/androidTest/java/ro/atf/chess/android/BoardSanity.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/AndroidStockfishSanityEvidenceTest.java
+    test: ro.atf.chess.AndroidStockfishSanityEvidenceTest#rawUciMustRetainTheSameHistoricalPositionBudgetRootAndExactOutput
+    contract: "Retain the existing accepted contract while adding independently validated Stockfish Lite coaching and provider isolation"
+    allowDelete: false
+
+  - id: CHESS-LITE-WEB-CAPTURE
+    base: "65a29ab023a6a1da11a0da1b3476da717bee5baf"
+    from: atf-tests/src/test/java/ro/atf/chess/ChessWebStockfishPlaywrightE2e.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ChessWebStockfishTransportTest.java
+    test: ro.atf.chess.ChessWebStockfishTransportTest#compiledPortsRunTheRealShippedEngine
+    contract: "Retain the existing accepted contract while adding independently validated Stockfish Lite coaching and provider isolation"
+    allowDelete: false
+
+  - id: CHESS-LITE-PROOF-BOUNDARY
+    base: "65a29ab023a6a1da11a0da1b3476da717bee5baf"
+    from: atf-tests/src/test/java/ro/atf/chess/CoachingProofTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/CoachingProofTest.java
+    test: ro.atf.chess.CoachingProofTest#androidConsumersKeepUnavailableExternalEvidenceDistinctFromGameOver
+    contract: "Retain the existing accepted contract while adding independently validated Stockfish Lite coaching and provider isolation"
+    allowDelete: false
+
+  - id: CHESS-LITE-REPLAY
+    base: "65a29ab023a6a1da11a0da1b3476da717bee5baf"
+    from: atf-tests/src/test/java/ro/atf/chess/HintReplayPresentationTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/HintReplayPresentationTest.java
+    test: ro.atf.chess.HintReplayPresentationTest#calculatedAndTheoryHintsShareTheFullscreenNativeAdapter
+    contract: "Retain the existing accepted contract while adding independently validated Stockfish Lite coaching and provider isolation"
+    allowDelete: false
+
+  - id: CHESS-LITE-AUDIT-CODEC
+    base: "65a29ab023a6a1da11a0da1b3476da717bee5baf"
+    from: atf-tests/src/test/java/ro/atf/chess/LearningGameAudit.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/LearningGameAuditTest.java
+    test: ro.atf.chess.LearningGameAuditTest#optionalNativeMetadataPreservesLegacyBytesAndNewObservations
+    contract: "Retain the existing accepted contract while adding independently validated Stockfish Lite coaching and provider isolation"
+    allowDelete: false
+
+  - id: CHESS-LITE-AUDIT-FIXTURE
+    base: "65a29ab023a6a1da11a0da1b3476da717bee5baf"
+    from: atf-tests/src/test/java/ro/atf/chess/LearningGameAuditTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/LearningGameAuditTest.java
+    test: ro.atf.chess.LearningGameAuditTest#optionalNativeMetadataPreservesLegacyBytesAndNewObservations
+    contract: "Retain the existing accepted contract while adding independently validated Stockfish Lite coaching and provider isolation"
+    allowDelete: false
+
+  - id: CHESS-LITE-NAVIGATION
+    base: "65a29ab023a6a1da11a0da1b3476da717bee5baf"
+    from: atf-tests/src/test/java/ro/atf/chess/NavigationGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/NavigationGovernanceTest.java
+    test: ro.atf.chess.NavigationGovernanceTest#androidMatchHistoryUsesTheExternalOwnerAndReleasesItOnClose
+    contract: "Retain the existing accepted contract while adding independently validated Stockfish Lite coaching and provider isolation"
+    allowDelete: false
+
   - id: CHESS-STOCKFISH-TRANSPORT-FIXTURES
     base: "65a29ab023a6a1da11a0da1b3476da717bee5baf"
     from: atf-tests/src/test/java/ro/atf/chess/ChessWebStockfishTransportTest.java

@@ -16,7 +16,7 @@ Game Review aggregates complete provider-bound comparisons: Native on Android an
 ```mermaid
 %%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
 flowchart LR
-    Move["Durable AI move"] -->|queues| Work["Complete native comparison"]
+    Move["Durable AI move"] -->|queues| Work["Complete provider-bound comparison"]
     Work -->|saves each ply| Journal["Persistent journal"]
     Final["Game Review"] -->|joins missing work| Work
     Journal -->|aggregates without search| Report["Grades, graph and accuracy"]
@@ -37,7 +37,9 @@ flowchart LR
 
 ## Evaluating a ply
 
-- A ply is a move by one side. Before each ply, the engine retrieves the position and history. At the search root, it identifies moves that immediately lead to an automatic draw by material, repetition, or the number of plies without a pawn move or capture. Analysis compares the best line found and the played move at the same completed depth. The search starts at three plies and attempts to reach six, with a tactical extension and an ordinary budget of 85,000 additional nodes per position. When an iteration exceeds the budget, the previous iteration's result is retained. [Search](../../chess-core/src/main/java/ro/atf/chess/TacticalAnalysis.java) · [Configuration](../../chess-core/src/main/resources/game-review.yaml)
+- **Stockfish comparisons.** Before each played move, retain the full initial FEN and history. Compare the free recommendation and, when different, the constrained played root at their highest common completed depth under the same engine build and resource policy. Only exact completed rows qualify; an incomplete batch, missing comparison or illegal PV prevents a completed review. Preserve raw CP/mate, WDL, actual nodes, selective depth and time. A requested node cap is not the work reported by a branch, and PV length is not completed depth or strength. Android must satisfy this same contract before qualification; failure must not invoke Native analysis.
+
+- **Native legacy scope.** A ply is a move by one side. The original analyzer identifies root moves that immediately lead to an automatic draw by material, repetition or the quiet-move counter. It compares both roots at one completed depth, starting at three plies and attempting six with a tactical extension and an ordinary allowance of 85,000 additional nodes. Exhaustion retains the previous completed result. These native settings and the formula below describe historical/native evidence, not the Stockfish policy. [Search](../../chess-core/src/main/java/ro/atf/chess/TacticalAnalysis.java) · [Configuration](../../chess-core/src/main/resources/game-review.yaml)
 
 ```mermaid
 flowchart LR
@@ -63,7 +65,7 @@ flowchart LR
 
 </details>
 
-- The internal score is relative to the side to move. The engine evaluates ordinary positions in centipawns and assigns extreme scores to provable mates. Analysis converts the score to a 0–1,000 scale and compares the two values.
+- Native legacy scores are relative to the side to move and use the following local conversion. Stockfish WDL diagnostics instead use `W + D/2` in per mille for that same side; retain raw CP/mate when WDL saturates. Visible evaluation is normalized to White once, independently of board orientation. A Stockfish mate estimate is not a native `CoachingProof` or an exhaustive proof, and no such certificate is invented.
 
 ```text
 points(cp) = round(1000 / (1 + exp(-cp / 220)))
@@ -72,9 +74,9 @@ loss = max(0, points(recommendation) - points(played move))
 
 - For example, if the recommendation scores +220 cp and the played move scores 0 cp, the values are 731‰ and 500‰. The loss is **231‰**. On the graph, 500‰ means balance. For a move by Black, the plotted value is `1000 − points(played move)`, so the upper side always favors White. The first point uses the evaluation of the recommendation in the starting position. [Calculation and graph](../../chess-core/src/main/java/ro/atf/chess/GameReview.java) · [Android display](../../android/app/src/main/java/ro/atf/chess/android/GameReviewDialog.java)
 
-- In exact positions from the verified repertoire, the report recommends the repertoire reply and evaluates both lines at the same completed depth. A proven terminal line or automatic draw at the root keeps priority. If the local evaluation of the played move exceeds the recommendation score, the loss stays zero. [Repertoire](../../chess-core/src/main/resources/ai-repertoire.yaml)
+- In native legacy positions from the verified repertoire, the report recommends the repertoire reply and evaluates both lines at the same completed depth. A proven terminal line or automatic draw at the root keeps priority. If the local evaluation of the played move exceeds the recommendation score, the loss stays zero. External comparisons preserve both actual free/constrained scores, including finite-search selectivity differences. [Repertoire](../../chess-core/src/main/resources/ai-repertoire.yaml)
 
-- A triggered unresolved frontier may use the separately accounted `CoachingProof` reserve. Its node ceiling and incomplete status remain separate from the ordinary review budget and inherited H3 bootstrap. Retain the full work receipt after restart. [Reserve and exact-score contract](ai-quality.md#dynamic-coaching-frontier)
+- The native legacy analyzer may use its separately accounted `CoachingProof` reserve. Its ceiling and incomplete status remain separate from the ordinary budget and inherited H3 bootstrap. External Stockfish observations retain their own provenance and work instead. Retain the applicable source's complete receipt after restart. [Native reserve contract](ai-quality.md#dynamic-coaching-frontier)
 
 ## Grades and accuracy
 
@@ -193,9 +195,9 @@ The subsequent Sicilian exact-tie hint preference also preserves the sixty match
 
 ## Persistent per-move work
 
-[ReviewJournal](../../chess-core/src/main/java/ro/atf/chess/ReviewJournal.java) retains contiguous, complete native comparisons for actual played moves. After a durable AI-game checkpoint, the background collector fills missing plies without blocking input. The final review joins pending work and then calls **aggregate**, which performs no search and refuses missing evidence. An older game without work explicitly catches up first.
+[ReviewJournal](../../chess-core/src/main/java/ro/atf/chess/ReviewJournal.java) retains legacy native comparisons; Web Stockfish uses a separate durable external journal. Its final aggregation performs no search and refuses missing or foreign evidence; explicit analysis fills missing work first. Android Stockfish currently retains a bounded in-memory prefix cache and atomic diagnostic UCI receipts, not a reloadable partial-comparison journal. Completed external reviews are durable through the versioned archive codec. After process death, unfinished Android work is recomputed with Stockfish; it never borrows Native samples or claims a no-search aggregation.
 
-- **Evidence before grades.** Persist best/played/alternative points, common depth, both legal lines, sacrifice, native work count and any complete forcing proof. Ordinary complete comparisons may have no forcing proof. Final assembly recalculates ECO context, grades, accuracy and eligible Elo from these samples; opening-reference scores and gameplay hint values are never substituted.
+- **Evidence before grades.** Persist best/played observations, common depth, both complete legal lines and source-specific work. Native samples retain any actual sacrifice and forcing receipt; Stockfish samples retain build/source/options, CP/mate, WDL and reported work without a fabricated native proof. Final assembly derives grades and accuracy from those samples. Existing rating eligibility belongs to the finished game and its native opponent policy; replacing the analyzer does not measure a new opponent Elo or candidate ΔElo. Opening-reference scores and gameplay hint values are never substituted.
 - **Restart and branches.** Bind work to stable game ID, original setup and exact move history. Reload keeps the common prefix; taking back or branching discards the changed suffix. Replacing or evicting a game prevents late writes. A versioned fingerprint covers review, rules, search, evaluation, repertoire and proof YAML. Increment the journal version when search/evaluation code changes invalidate prior evidence.
-- **Persistence.** Android uses the shared MatchStore preferences transaction; Web keeps the same Java journal beside the game ledger in localStorage. Both retain work only for retained games. Write failures stay visible and cannot mark the final report complete. Web serializes checkpoint writes and waits for them before final aggregation; each completed ply survives a later calculation failure.
+- **Persistence.** Native Android storage uses the MatchStore preferences transaction; Web external work has its own Stockfish namespace beside the game ledger. Android's new provider must likewise bind each sample to the exact history, engine build and options. Retain old Native archives with their original provider; explicit Stockfish reanalysis replaces analysis atomically while preserving the game ID and played history. Write failures stay visible and cannot mark a partial report complete.
 - **Scheduling.** One background collector coalesces rapid checkpoints. A final request joins the work already in flight. A destroyed native screen cancels collection without late notifications. If the user finishes faster than analysis, the final screen waits only for missing work. The independent study-board review remains on demand. [Tests](../testing/README.md#analysis-reuse-components)

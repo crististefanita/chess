@@ -7,6 +7,8 @@
     <item name="hint_compare_best" type="id"/>
     <item name="hint_compare_other" type="id"/>
     <item name="hint_compare_third" type="id"/>
+    <item name="hint_compare_fourth" type="id"/>
+    <item name="hint_compare_fifth" type="id"/>
     <item name="hint_preview_step" type="id"/>
     <item name="hint_preview_previous" type="id"/>
     <item name="hint_preview_next" type="id"/>

@@ -22,6 +22,9 @@
     <string name="hint_preview_change">%1$s → %2$s · Δ %3$s</string>
     <string name="hint_preview_change_spoken">Start %1$s. After defence %2$s. Change %3$s.</string>
     <string name="hint_compare_depth">Depth %1$d plies</string>
+    <string name="hint_stockfish_summary">Stockfish %1$s · Depth %2$d</string>
+    <string name="hint_stockfish_root_score">%1$s · Starting position</string>
+    <string name="hint_stockfish_line_note">Recorded engine variation. The score evaluates the starting position; browsing replays these moves without a new evaluation.</string>
     <string name="hint_compare_choice">%1$d · %2$s</string>
     <string name="hint_compare_recommended_spoken">Recommended line %1$d. %2$s. Score %3$s.</string>
     <string name="hint_compare_choice_spoken">Line %1$d. %2$s. Score %3$s.</string>

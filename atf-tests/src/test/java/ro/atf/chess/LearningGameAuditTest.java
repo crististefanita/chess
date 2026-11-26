@@ -11,6 +11,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 class LearningGameAuditTest {
     private static final String FEN="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     private static final LearningGameAudit.Identity ID=new LearningGameAudit.Identity("component-audit","a".repeat(40),"b".repeat(64),"c".repeat(64));
+    @Test void optionalNativeMetadataPreservesLegacyBytesAndNewObservations(Checks check) throws Exception {
+        var mapper=LearningGameAudit.mapper();
+        String old="{\"move\":{\"from\":12,\"to\":28,\"promotion\":null},\"depth\":5,\"extraNodes\":44000}";
+        var legacy=mapper.readValue(old,ChessMatch.BotDecision.class);
+        check.same("Missing old metadata is not fabricated",null,legacy.accounting());
+        check.same("Old decision retains its exact JSON fields",mapper.readTree(old),mapper.valueToTree(legacy));
+        var current=new ChessMatch.BotDecision(move("e2e4"),6,44000);
+        var json=mapper.valueToTree(current);
+        check.same("New work retains its actual accounting", "LEGACY_EXTRA",json.path("accounting").asText());
+        check.same("New work retains engine, stop and certificate",List.of("legacy-v1","LEGACY","NOT_RUN"),
+                List.of(json.path("engine").asText(),json.path("stop").asText(),json.path("certificate").asText()));
+        check.same("Current metadata survives deserialization",current,mapper.treeToValue(json,ChessMatch.BotDecision.class));
+    }
     @Test void bothColorsRequireTheirOwnMaximumHintBeforePlaying(Checks check) {
         var journal=new ArrayList<LearningGameAudit.Envelope>();int[] nativeCalls={0},hintCalls={0},requested={0};
         var observer=fixture(journal,nativeCalls,hintCalls,requested);

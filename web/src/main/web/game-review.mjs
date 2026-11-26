@@ -19,6 +19,7 @@ import { createReviewImport } from './review-import.mjs';
 import { matchReviewActionState, reviewGradeTone } from './review-presentation.mjs';
 import { createReviewProgressStore, createReviewCollection } from './review-progress.mjs';
 import { createEngineWorker, disposeStockfishBroker } from './stockfish-broker.mjs';
+import { stockfishLabel } from './stockfish-label.mjs';
 
 const storageKey = 'chesslab.game-review.v1';
 const ledgerKey = 'chesslab.match-ledger.v1';
@@ -29,7 +30,7 @@ const studyRoutes = {
     analysis: ['home-analysis', createAnalysisStudy],
 };
 const botDelayMillis = 650;
-const reviewProgressKey = 'chesslab.review-work.stockfish19.v1';
+const reviewProgressKey = 'chesslab.review-work.stockfish19.lite-single.v1';
 const reviewWorkStore = createReviewProgressStore(localStorage, () => [...savedMatches, ...finishedMatches].map(row => row.id), { key: reviewProgressKey });
 const reviewCollection = createReviewCollection({ load: id => reviewWorkStore.load(id), compute: computeReviewWork,
     save: (request, work, expected) => {
@@ -519,7 +520,7 @@ function render() {
     reviewImport.show(mode, Boolean(archive), Boolean(liveReviewOrigin));
     if (!visibleReview) return;
     const legacyReview = view.engine?.providerID === 'native' && Boolean(view.reviewCheckpoint);
-    find('review-provider').textContent = view.engine?.providerID?.startsWith('stockfish-') ? 'Stockfish 19' : 'Chess Lab';
+    find('review-provider').textContent = stockfishLabel(view.engine) || 'Chess Lab';
     find('reanalyze-stockfish').hidden = !legacyReview;
     find('why-actions').hidden = !explaining || (!archiveReviewId && !analysisReview && !legacyReview);
     find('title').textContent = explaining ? words['why-title'] : words.title;

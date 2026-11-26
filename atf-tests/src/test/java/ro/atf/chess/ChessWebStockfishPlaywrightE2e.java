@@ -54,7 +54,7 @@ class ChessWebStockfishPlaywrightE2e {
                  var context = browser.newContext(new Browser.NewContextOptions().setViewportSize(390, 844).setLocale("en-US"))) {
                 var page = context.newPage(); var errors = new ArrayList<String>(); page.onPageError(errors::add);
                 var engineResponses = new ArrayList<String>();
-                page.onResponse(response -> { if (response.url().contains("stockfish-19-single")) engineResponses.add(response.status() + " " + response.url()); });
+                page.onResponse(response -> { if (response.url().contains("stockfish-19-lite-single")) engineResponses.add(response.status() + " " + response.url()); });
                 page.setDefaultTimeout(45000);
                 phase.observation(new ReportObservation("Native run and shipped bundle", List.of(
                         new ReportField("Run ID", UUID.randomUUID().toString()),

@@ -5,8 +5,8 @@ final class WebExternalAnalysis {
     private WebExternalAnalysis() { }
 
     static void requireCurrent(ExternalEngineAnalysis.Provider provider) {
-        if (!provider.providerID().equals("stockfish-19.0.1-full-single") || !provider.version().equals("19.0.1")
-                || !provider.buildSha256().equals("991bede2f253ebb08ff01fcc48270f4b9c8e66b12d5bd5f8d6f52eb3e3b3a740")
+        if (!provider.providerID().equals("stockfish-19.0.1-lite-single") || !provider.version().equals("19.0.1")
+                || !provider.buildSha256().equals("ee4f115bdb2d32cadf96cada104a05b5ec257d7ad6f57582190b49bc71f096de")
                 || !provider.sourceCommit().equals("0d5dd7944f88c817c07a26bc4fb1905d5f9c46d6")) {
             throw new IllegalArgumentException("The result is not from the configured Web engine");
         }
