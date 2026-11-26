@@ -81,12 +81,14 @@ const labels = {
     en: {
         show: 'Show AI line', nextHint: 'Show next AI line', shown: 'AI line shown', meter: 'Evaluation for White',
         replay: 'Open the calculated line on a board', line: 'Calculated line', close: 'Return to the position',
-        previous: 'Previous move', next: 'Next move', choice: 'Line', step: 'Step', of: 'of', failed: 'AI analysis is unavailable.',
+        previous: 'Previous move', next: 'Next move', choice: (number, move) => 'Line ' + number + ' · ' + move,
+        recommendations: 'Recommended lines', step: 'Step', of: 'of', failed: 'AI analysis is unavailable.',
     },
     ro: {
         show: 'Arată varianta AI', nextHint: 'Arată următoarea variantă AI', shown: 'Varianta AI afișată', meter: 'Evaluarea albului',
         replay: 'Deschide varianta recomandată pe tablă', line: 'Linie calculată', close: 'Revino la poziție',
-        previous: 'Mutarea anterioară', next: 'Mutarea următoare', choice: 'Linia', step: 'Pasul', of: 'din',
+        previous: 'Mutarea anterioară', next: 'Mutarea următoare', choice: (number, move) => 'Linia ' + number + ' · ' + move,
+        recommendations: 'Variante recomandate', step: 'Pasul', of: 'din',
         failed: 'Analiza AI este indisponibilă.',
     },
 };
@@ -154,11 +156,18 @@ export function bindInlineMatchAnalysis({ find, locale, createWorker, createBoar
         renderLinePosition(position, { ply: preview.ply, total: preview.total,
             text: words.step + ' ' + preview.ply + ' ' + words.of + ' ' + preview.total
                 + (preview.lastMove ? ' · ' + notation(preview.lastMove) : '') });
+        branches.setAttribute('role', 'group');
+        label(branches, words.recommendations);
         const key = preview.branches.join(' ');
         if (branches.dataset.moves !== key) {
             branches.dataset.moves = key;
-            branches.replaceChildren(...preview.branches.map((_, index) =>
-                makeButton(words.choice + ' ' + (index + 1), () => session.command('preview-branch', index))));
+            branches.replaceChildren(...preview.branches.map((move, index) => {
+                const title = words.choice(index + 1, notation(move));
+                const button = makeButton(title, () => session.command('preview-branch', index));
+                button.title = title;
+                label(button, title);
+                return button;
+            }));
         }
         for (const [index, button] of Array.from(branches.children).entries()) button.setAttribute('aria-pressed', index === preview.branch);
         renderAnalysisEvidence(find('match-inline-evidence'), preview, owner.match.sideToMove, locale,

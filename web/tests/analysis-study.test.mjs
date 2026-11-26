@@ -282,7 +282,7 @@ test('Analysis places evaluation to the left and all history controls in APK ord
 
     const { root: replay } = await mountAnalysis(frame(1, 1, { history: ['e2e4'], promotions: [], preview: {
         kind: 'THEORY', sideToMove: 'BLACK', ply: 0, total: 4, branch: 0,
-        branches: ['e7e5', 'c7c5'], name: { en: 'Italian Game' }, eco: 'C54', idea: { en: 'Control the center' },
+        branches: ['e7e5', 'c7c5', 'e7e6'], name: { en: 'Italian Game' }, eco: 'C54', idea: { en: 'Control the center' },
     } }));
     const details = replay.children.find(item => item.className === 'analysis-study-replay-details');
     const replayToolbar = replay.children.find(item => item.className?.includes('analysis-study-toolbar'));
@@ -291,8 +291,9 @@ test('Analysis places evaluation to the left and all history controls in APK ord
     assert.equal(variants.attributes.has('data-chess-lines'), true);
     assert.equal(replayToolbar.attributes.has('data-chess-navigation'), true);
     assert.equal(replayToolbar.children[1].dataset.boundary, 'START');
-    assert.deepEqual(variants.children.map(item => item.textContent), ['Line 1', 'Line 2']);
+    assert.deepEqual(variants.children.map(item => item.textContent), ['Line 1 · e7 → e5', 'Line 2 · c7 → c5', 'Line 3 · e7 → e6']);
     assert.equal(variants.children[1].attributes.get('aria-label'), 'Line 2 · c7 → c5');
+    assert.deepEqual(variants.children.map(item => item.attributes.get('aria-pressed')), [true, false, false]);
     assert.match(details.children[0].textContent, /Control the center/);
     assert.equal(details.children.includes(replayToolbar), false);
     assert.equal(replayToolbar.children[2].hidden, true);

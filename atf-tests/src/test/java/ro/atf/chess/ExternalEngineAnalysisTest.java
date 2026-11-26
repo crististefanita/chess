@@ -59,6 +59,25 @@ class ExternalEngineAnalysisTest {
         c.same("Black mate estimate is signed for White", -2, mate.evaluation(ChessPosition.Side.BLACK).whiteMateMoves());
     }
 
+    @Test void offersAtMostThreeNearBestStockfishRecommendations(Checks c) {
+        var game = ChessMatch.start();
+        var observed = batch(game, 0,
+                line(1, 70, "e2e4 e7e5"), line(2, 55, "d2d4 d7d5"), line(3, 30, "c2c4 e7e5"),
+                line(4, 20, "g1f3 d7d5"), line(5, 9, "b1c3 d7d5"));
+        var validated = ExternalEngineAnalysis.batch(game, 0, observed.json());
+        var hint = MatchHint.external(game.position(), validated);
+        c.same("Only the top three close-scoring recommendations are selectable",
+                List.of("e2e4", "d2d4", "c2c4"), hint.lines().stream().map(item -> item.move().uci()).toList());
+        c.same("The raw Stockfish observation remains intact for audit", 5, hint.external().orElseThrow().lines().size());
+        c.same("The capped result can be cycled without starting another search", 3, hint.count());
+        hint.revealNext();
+        c.same("The first recommendation can be selected", "e2e4", hint.revealedMove().uci());
+        hint.revealNext();
+        c.same("The second recommendation can be selected", "d2d4", hint.revealedMove().uci());
+        hint.revealNext();
+        c.same("The third recommendation can be selected", "c2c4", hint.revealedMove().uci());
+    }
+
     @Test void rejectsForeignOrIncompleteObservations(Checks c) {
         var m = ChessMatch.start(); String valid = batch(m, 0, line(1, 30, "e2e4 e7e5")).json();
         for (String bad : List.of(valid.replace("e2e4", "e2e5"), valid.replace("EXACT", "LOWER"),

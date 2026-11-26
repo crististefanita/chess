@@ -1,10 +1,10 @@
 import { assert, test } from './support/atf-node.mjs';
-import { createStockfishAnalysis, externalResult } from '../src/main/web/stockfish-analysis.mjs';
+import { createStockfishAnalysis, externalResult, stockfishAnalysisPolicy } from '../src/main/web/stockfish-analysis.mjs';
 
 const context = () => ({ contextKey: 'context-1', initialFen: 'startpos', moves: [],
     rootFen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
     legalMoves: ['e2e4', 'd2d4'], ply: 0, reviewPly: 1, played: 'd2d4' });
-const line = (move, depth, value = 20) => ({ rank: 1, depth, seldepth: depth + 2,
+const line = (move, depth, value = 20, rank = 1) => ({ rank, depth, seldepth: depth + 2,
     score: { type: 'cp', value }, wdl: [400, 300, 300], nodes: 1234, timeMs: 8,
     pv: [move], bound: 'EXACT' });
 function result(ctx, lines, earlier = []) {
@@ -39,6 +39,28 @@ test('Match projection sends the complete Java context and applies one source-bo
     assert.equal(applied[0].key, ctx.contextKey);
     assert.equal(applied[0].body.lines[0].nodes, 1234);
     assert.equal(applied[0].body.rawUCITranscript, undefined);
+});
+
+test('AI match requests exactly the three-line Stockfish allowance', async () => {
+    const ctx = { ...context(), legalMoves: ['e2e4', 'd2d4', 'c2c4', 'g1f3', 'b1c3'] };
+    const calls = [];
+    const applied = [];
+    const worker = createStockfishAnalysis({
+        engine: {
+            prepareExternalMatchAnalysis: () => ({ request: ctx }),
+            applyExternalMatchAnalysis: (_revision, _key, body) => { applied.push(JSON.parse(body)); return JSON.stringify({ state: 'APPLIED' }); },
+        },
+        analyze: async request => {
+            calls.push(request);
+            return result(ctx, ['e2e4', 'd2d4', 'c2c4'].map((move, index) => line(move, 9, 30 - index * 10, index + 1)));
+        },
+    });
+    const response = await worker.match({ checkpoint: 'checkpoint', ply: 0, expectedRevision: 2 });
+    assert.equal(stockfishAnalysisPolicy.multiPV, 3);
+    assert.equal(calls.length, 1);
+    assert.deepEqual([calls[0].multiPV, calls[0].expectedPvCount], [3, 3]);
+    assert.equal(applied[0].lines.length, 3);
+    assert.deepEqual(response, { state: 'APPLIED' });
 });
 
 test('Study applies an action once and uses the prepared revision, including same-position revisits', async () => {

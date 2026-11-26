@@ -1,9 +1,11 @@
 package ro.atf.chess;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import ro.atf.chess.ChessPosition.Move;
 import ro.atf.chess.MatchSetup.Level;
@@ -38,9 +40,29 @@ final class OpeningRepertoire {
         if (entries.stream().anyMatch(entry -> entry.reviewOnly() && entry.levels().contains(level)
                 && entry.position().sameForRepetition(position))) return null;
         var moves = OpeningTheory.CURRENT.playMoves(position);
-        if (openingChoice > 0 && !moves.isEmpty()) return moves.get((int) ((openingChoice - 1) % moves.size()));
+        if (openingChoice > 0 && !moves.isEmpty()) return variedMove(position, moves, openingChoice);
         var paths = OpeningTheory.CURRENT.choices(position);
         return paths.isEmpty() ? null : paths.get(0).move();
+    }
+
+    /** Stable pseudo-random cycle: every authored move is used once, with no repeat at its boundary. */
+    private static Move variedMove(ChessPosition position, List<Move> moves, long choice) {
+        int size = moves.size();
+        long ordinal = choice - 1;
+        long cycle = ordinal / size;
+        int offset = (int) (ordinal % size);
+        var permutation = permutation(position, moves, cycle);
+        if (cycle > 0 && size > 1 && permutation.getFirst().equals(permutation(position, moves, cycle - 1).getLast())) {
+            Collections.swap(permutation, 0, 1);
+        }
+        return permutation.get(offset);
+    }
+
+    private static ArrayList<Move> permutation(ChessPosition position, List<Move> moves, long cycle) {
+        var shuffled = new ArrayList<>(moves);
+        long seed = ((long) position.searchKey().hashCode() << 32) ^ cycle ^ 0x9E3779B97F4A7C15L;
+        Collections.shuffle(shuffled, new Random(seed));
+        return shuffled;
     }
 
     Move reviewReply(ChessPosition position) {

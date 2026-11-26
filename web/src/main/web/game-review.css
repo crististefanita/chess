@@ -355,7 +355,15 @@ dialog::backdrop { background: #121613a8; }
   overscroll-behavior: contain;
 }
 #match-inline-branches { flex-wrap: nowrap; }
-#match-inline-branches button { flex: 1; min-inline-size: 0; padding-inline: .25rem; font-size: .8rem; }
+#match-inline-branches button {
+  flex: 1;
+  min-inline-size: 0;
+  padding-inline: .25rem;
+  overflow: hidden;
+  font-size: .8rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 @media (max-height: 480px) {
   .match-caption { display: flex; justify-content: center; gap: .6rem; }
   .match-caption > .turn {

@@ -95,7 +95,7 @@ public final class MatchHint {
         var offered = observed.lines().stream().filter(line -> line.rank() == 1
                 || best.mate() != null && best.mate().equals(line.mate())
                 || best.cp() != null && line.cp() != null && Math.abs(best.cp() - line.cp()) <= 60
-                    && Math.abs(best.expectedPoints() - line.expectedPoints()) <= 50).limit(5).toList();
+                    && Math.abs(best.expectedPoints() - line.expectedPoints()) <= 50).limit(3).toList();
         var hint = new MatchHint(position, offered.stream().map(ExternalEngineAnalysis.Line::variation).toList(), null);
         hint.external = observed;
         return hint;

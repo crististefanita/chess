@@ -460,8 +460,9 @@ export function createAnalysisStudy({ root, locale, call, home, board, openRevie
             if (key !== controls.variants.dataset.branches) {
                 controls.variants.replaceChildren(...preview.branches.map((move, index) => {
                     const name = words.choice(index + 1);
-                    const choice = button(name + ' · ' + notation(move), () => void request('preview-branch', { index }));
-                    choice.textContent = name;
+                    const title = name + ' · ' + notation(move);
+                    const choice = button(title, () => void request('preview-branch', { index }));
+                    choice.title = title;
                     return choice;
                 }));
                 controls.variants.dataset.branches = key;
