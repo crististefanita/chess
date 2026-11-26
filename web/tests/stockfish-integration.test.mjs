@@ -27,7 +27,10 @@ test('Compiled Web ports use the real pinned WASM for hints, openings and persis
         const match = await coaching.match({ checkpoint, ply: 1, expectedRevision: 5 });
         assert.equal(match.outcome, 'APPLIED');
         assert.equal(match.analysis.engine.providerID, 'stockfish-19.0.1-full-single');
-        const wdl = requests[0].lines[0].wdl;
+        assert.equal(match.analysis.hint.count, 3, 'the close top-three roots are selectable in an actual AI-game hint');
+        const complete = requests[0].completedDepthBatches.at(-1);
+        assert.equal(complete.completeBatch, true);
+        const wdl = complete.lines[0].wdl;
         assert.equal(match.analysis.evaluation.whiteShare, (1000 - Math.round(wdl[0] + wdl[1] / 2)) / 1000);
         const hinted = parse(engine.matchAnalysisAction(5, 'hint', 0));
         assert.equal(hinted.analysis.hint.move, requests[0].bestmove);
@@ -67,6 +70,8 @@ test('Compiled Web ports use the real pinned WASM for hints, openings and persis
         assert.equal(reopened.moves.length, 4);
         assert.equal(reopened.rated, false);
         const envelope = JSON.parse(journal); const raw = JSON.parse(envelope.body);
+        assert.equal(raw.turns[0].turn.free.lines.length, 3, 'the completed review retains the close Stockfish top-three batch');
+        assert.equal(raw.turns[0].turn.played.lines.length, 1, 'the recorded move comparison remains a separate exact root');
         raw.turns[0].turn.free.lines[0].pv = ['e2e5'];
         const body = JSON.stringify(raw);
         await assert.rejects(coaching.review(mate, digest, () => {}, { journal: JSON.stringify({ body, sha256: createHash('sha256').update(body).digest('hex') }) }));

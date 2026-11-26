@@ -86,6 +86,17 @@ export function analysisHintDescription(hint, locale) {
     return words.hintVariant(hint.number, hint.count) + '. ' + move + promotion + (family ? '. ' + family : '') + '.';
 }
 
+function outlineBulb(document) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('focusable', 'false');
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', 'M9 18h6m-5 3h4m-5-6.2a7 7 0 1 1 6 0c-.8.7-1.3 1.7-1.5 3.2h-3c-.2-1.5-.7-2.5-1.5-3.2Z');
+    svg.append(path);
+    return svg;
+}
+
 export function renderAnalysisMeter(meter, fill, evaluation, blackBelow, locale) {
     meter.setAttribute('aria-hidden', evaluation == null);
     if (!evaluation) {
@@ -345,7 +356,9 @@ export function createAnalysisStudy({ root, locale, call, home, board, openRevie
         playback.hidden = true;
         const next = button(words.next, () => void seek((state.preview ?? state).ply + 1), '›');
         const latest = button(words.latest, () => void seek((state.preview ?? state).total), '»');
-        const hint = button(words.hint, () => void request('hint'), '💡');
+        const hint = button(words.hint, () => void request('hint'), '');
+        hint.className += ' analysis-study-hint-button';
+        hint.append(outlineBulb(document));
         const replay = button(words.preview, async () => {
             if ((await request('preview'))?.preview) backButton.focus();
         });

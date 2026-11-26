@@ -43,3 +43,10 @@ test('Coaching names the engine and normalizes a Black PV without manufacturing 
     assert.match(target.textContent, /Mate in 3.*Black/);
     assert.doesNotMatch(target.textContent, /NaN|undefined/);
 });
+
+test('Analysis lightbulb stays muted while idle and uses a visible active color only after disclosure', async () => {
+    const styles = await readFile(new URL('../src/main/web/study-analysis.css', import.meta.url), 'utf8');
+    assert.match(styles, /\.analysis-study-hint-button\s*\{\s*color:\s*#a8a69e\s*!important;\s*\}/);
+    assert.match(styles, /\.analysis-study-hint-button\[aria-pressed="true"\]\s*\{\s*color:\s*#57e0b4\s*!important;\s*\}/);
+    assert.match(styles, /\.analysis-study-hint-button svg\s*\{[^}]*fill:\s*none;[^}]*stroke:\s*currentColor;/);
+});

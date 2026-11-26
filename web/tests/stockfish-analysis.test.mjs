@@ -7,13 +7,15 @@ const context = () => ({ contextKey: 'context-1', initialFen: 'startpos', moves:
 const line = (move, depth, value = 20, rank = 1) => ({ rank, depth, seldepth: depth + 2,
     score: { type: 'cp', value }, wdl: [400, 300, 300], nodes: 1234, timeMs: 8,
     pv: [move], bound: 'EXACT' });
-function result(ctx, lines, earlier = []) {
+function result(ctx, lines, earlier = [], completeBatch = true) {
+    const completedDepthBatches = [...earlier.map(batch => ({ ...batch, expectedPvCount: batch.lines.length, completeBatch: true }))];
+    if (completeBatch) completedDepthBatches.push({ depth: lines[0]?.depth, expectedPvCount: lines.length, completeBatch: true, lines });
     return { providerID: 'stockfish-19.0.1-full-single', version: '19.0.1',
         buildSha256: 'a'.repeat(64), sourceCommit: 'b'.repeat(40), rootFen: ctx.rootFen,
         position: { initialFen: ctx.initialFen, moves: [...ctx.moves] },
         options: { threads: 1, hashMb: 32, nodes: 200_000, limitStrength: false },
-        searchFinished: true, bestmove: lines[0]?.pv[0], lines,
-        completedDepthBatches: [...earlier, { depth: lines[0]?.depth, lines }], rawUCITranscript: ['fixture only'] };
+        searchFinished: true, bestmove: lines[0]?.pv[0], lines, expectedPvCount: lines.length, completeBatch,
+        completedDepthBatches, rawUCITranscript: ['fixture only'] };
 }
 
 test('Match projection sends the complete Java context and applies one source-bound DTO', async () => {
@@ -39,6 +41,23 @@ test('Match projection sends the complete Java context and applies one source-bo
     assert.equal(applied[0].key, ctx.contextKey);
     assert.equal(applied[0].body.lines[0].nodes, 1234);
     assert.equal(applied[0].body.rawUCITranscript, undefined);
+});
+
+test('An interrupted deeper MultiPV cannot displace the last complete top-three batch', async () => {
+    const ctx = { ...context(), legalMoves: ['e2e4', 'd2d4', 'c2c4', 'g1f3'] };
+    const applied = [];
+    const earlier = ['e2e4', 'd2d4', 'c2c4'].map((move, index) => line(move, 12, 20 - index * 5, index + 1));
+    const worker = createStockfishAnalysis({
+        engine: {
+            prepareExternalMatchAnalysis: () => ({ request: ctx }),
+            applyExternalMatchAnalysis: (_revision, _key, body) => { applied.push(JSON.parse(body)); return '{"state":"APPLIED"}'; },
+        },
+        analyze: async () => result(ctx, [line('g1f3', 13, 0, 1)], [{ depth: 12, lines: earlier }], false),
+    });
+    await worker.match({ checkpoint: 'checkpoint', ply: 0, expectedRevision: 2 });
+    assert.equal(applied[0].depth, 12);
+    assert.deepEqual(applied[0].lines.map(candidate => candidate.rank), [1, 2, 3]);
+    assert.deepEqual(applied[0].lines.map(candidate => candidate.pv[0]), ['e2e4', 'd2d4', 'c2c4']);
 });
 
 test('AI match requests exactly the three-line Stockfish allowance', async () => {
@@ -140,6 +159,23 @@ test('Review reuses the same observed best line when it is the recorded move', a
     const review = await worker.review('checkpoint', 'digest');
     assert.equal(queries, 1);
     assert.deepEqual(review.turns[0].free, review.turns[0].played);
+});
+
+test('End-of-game review retains the completed top-three Stockfish batch as evidence', async () => {
+    const ctx = context();
+    const worker = createStockfishAnalysis({ engine: {
+        validateExternalReviewTurn: () => true,
+        prepareExternalReview: () => ({ contextKey: 'review-context', requests: [ctx] }),
+        applyExternalReview: (_checkpoint, _digest, body) => JSON.parse(body),
+    }, analyze: async request => request.searchMoves
+        ? result(ctx, [line('d2d4', 8, 35)])
+        : result(ctx, [line('e2e4', 8, 40, 1), line('d2d4', 8, 30, 2), line('c2c4', 8, 20, 3)]) });
+    const review = await worker.review('checkpoint', 'digest');
+    assert.equal(review.turns[0].free.lines.length, 3);
+    assert.deepEqual(review.turns[0].free.lines.map(candidate => candidate.rank), [1, 2, 3]);
+    assert.deepEqual(review.turns[0].free.lines.map(candidate => candidate.pv[0]), ['e2e4', 'd2d4', 'c2c4']);
+    assert.equal(review.turns[0].played.bestmove, 'd2d4');
+    assert.equal(review.turns[0].free.depth, review.turns[0].played.depth);
 });
 
 test('Review without a common completed horizon publishes no partial review', async () => {

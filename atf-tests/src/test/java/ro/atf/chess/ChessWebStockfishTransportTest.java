@@ -36,7 +36,7 @@ class ChessWebStockfishTransportTest {
             var names = pattern.matcher(Files.readString(path));
             while (names.find()) if (!inventory.add(names.group(1))) throw new IllegalArgumentException("Duplicate native case name");
         }
-        c.same("The native transport inventory retains all 37 fixtures", 37, inventory.size());
+        c.same("The native transport inventory retains all 41 fixtures", 41, inventory.size());
         var pb = new ProcessBuilder(command).directory(root.toFile()).redirectErrorStream(true).redirectOutput(output.resolve("transport.tap").toFile());
         pb.environment().put("ATF_NODE_RUN_ID", run);
         var process = pb.start(); boolean finished = process.waitFor(60, TimeUnit.SECONDS);

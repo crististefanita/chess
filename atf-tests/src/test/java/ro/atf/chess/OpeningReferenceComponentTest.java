@@ -77,6 +77,25 @@ class OpeningReferenceComponentTest {
         check.same("A continuation cannot be replayed on an unrelated board", true, first.playback(ChessPosition.initial()).isEmpty());
     }
 
+    @Test void opponentRootsAreTheStoredCloseStockfishLinesForThatExactHistory(Checks check) {
+        var opening = OpeningCatalog.load().getFirst();
+        int ply = 4;
+        String prefix = OpeningReference.prefix(opening, ply);
+        var board = opening.positionAt(ply);
+        var measured = OpeningReference.analyze(opening, ply).lines().stream().map(TacticalAnalysis.Variation::move).toList();
+        var playable = OpeningReference.playingMoves(prefix, board);
+        check.same("Opponent options reuse the measured Stockfish roots in their evaluated order", measured, playable);
+        check.same("The displayed opening reference and opponent selection share the maximum-three contract", true,
+                !playable.isEmpty() && playable.size() <= 3);
+        check.same("A different board cannot borrow roots from an exact history key", List.of(),
+                OpeningReference.playingMoves(prefix, ChessPosition.initial()));
+        var recorded = ChessMatch.restore("2|analysis|e2e4 e7e5 g1f3 b8c6 f1b5 a7a6").position();
+        var transposed = ChessMatch.restore("2|analysis|e2e4 e7e5 g1f3 a7a6 f1b5 b8c6").position();
+        check.same("The control really reaches the same board through another legal history", recorded.searchKey(), transposed.searchKey());
+        check.same("A transposed board with a different history does not borrow Stockfish roots", List.of(),
+                OpeningReference.playingMoves("e2e4 e7e5 g1f3 a7a6 f1b5 b8c6", transposed));
+    }
+
     private static Map<String, Object> copy() throws Exception {
         var json = new ObjectMapper();
         return json.readValue(json.writeValueAsBytes(ChessYaml.resource("opening-reference.yaml")), Map.class);

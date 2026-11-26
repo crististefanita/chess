@@ -13,6 +13,7 @@ Chess Lab consumes measured Stockfish 19 references in **Openings**. The APK and
 | Context | Calculation owner | Meaning |
 |---|---|---|
 | Known opening prefix: bar and recommended continuations | Stockfish 19, recorded in [opening-reference.yaml](../../chess-core/src/main/resources/opening-reference.yaml) | Exact lesson history, depth 16, Threads 1, Hash 16 MiB, MultiPV 3; retain at most three roots within 40 cp of the best. |
+| Opponent move at a covered opening prefix | The same stored Stockfish 19 roots, selected by the shared Java [OpeningRepertoire](../../chess-core/src/main/java/ro/atf/chess/OpeningRepertoire.java) | A saved per-game ordinal rotates pseudo-randomly among the measured roots. Exact history must match; verified repertoire overrides stay authoritative and uncovered positions use the existing curated theory/search behavior. No live engine call is added to opponent moves. |
 | Missing opening prefix on Android | [OpeningReference](../../chess-core/src/main/java/ro/atf/chess/OpeningReference.java) delegates to native MatchHint | One live analysis; the result carries no Stockfish reference metadata. |
 | Web opening and manual-board analysis | [Local Stockfish engine](../../web/stockfish.md) with the Java context validator | A live source-bound search; its depth, WDL and PVs are separate from stored opening references. |
 | Documented theory paths | [OpeningTheory](../../chess-core/src/main/java/ro/atf/chess/OpeningTheory.java) | Up to three authored or ECO continuations in catalog order, without a claim that each is engine-best. |
@@ -25,6 +26,7 @@ Chess Lab consumes measured Stockfish 19 references in **Openings**. The APK and
 flowchart LR
     SF["Stockfish 19 offline"] -->|measures| YAML["Opening reference YAML"]
     YAML -->|loads exact prefix| Ref["Reference bar and lines"]
+    YAML -->|selects a measured root| Opponent["Shared opponent move"]
     Missing["Missing prefix"] -->|requests| Native["Java analysis"]
     Native -->|saves actual comparisons| Journal["Review journal"]
     Journal -->|aggregates| Final["Final report"]
@@ -47,7 +49,7 @@ This diagram describes stored references and Native analysis. Stockfish runs dur
 
 ## Selectable lines
 
-The agreed interface offers **at most three selectable lines**. Two or three alternatives show their selectors; one line needs no selector row. When shown, all selectors stay in one row and share the available width; long labels truncate visually while retaining their full accessible name and a 48 CSS px Web or 48 dp native target height. A tab changes only the replay branch. Each branch keeps its own ply while the dialog is open, and closing returns to the unchanged source position. Native HintPreviewDialog has three stable branch IDs; reference loading rejects a fourth line before projection.
+The agreed interface offers **at most three selectable lines**. Two or three alternatives show their selectors; one line needs no selector row. Web accepts only a complete exact MultiPV batch at one finished depth; if a deeper search is interrupted partway through, it retains the latest complete batch. It never combines ranks across depths. Close alternatives are filtered after that batch is selected, so the interface shows three when three meet the thresholds and fewer when the others are materially worse. When shown, all selectors stay in one row and share the available width; long labels truncate visually while retaining their full accessible name and a 48 CSS px Web or 48 dp native target height. A tab changes only the replay branch. Each branch keeps its own ply while the dialog is open, and closing returns to the unchanged source position. Native HintPreviewDialog has three stable branch IDs; reference loading rejects a fourth line before projection.
 
 [HintSelectableLinesComponentTest](../../atf-tests/src/test/java/ro/atf/chess/HintSelectableLinesComponentTest.java) checks real catalog frames, one/two/three-line fixtures and the fourth-line negative. The Web DOM component cases exercise every selector in RO/EN, preserved cursors, Back/Next and one completed analysis request. These components do not certify pixel rendering.
 

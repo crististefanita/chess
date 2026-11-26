@@ -44,7 +44,7 @@ final class OpeningTheory {
                         .putIfAbsent(moves, new Theory(lesson.eco(), lesson.title(), lesson.variation(), steps));
             }
         }
-        // Distinct authored moves govern play, independently of the hint display limit.
+        // Distinct authored moves remain the fallback when no measured prefix or override applies.
         // Shared lesson prefixes must not weight the same move more than once.
         var playing = new HashMap<SearchKey, List<Move>>();
         authored.forEach((key, paths) -> playing.put(key, paths.values().stream()

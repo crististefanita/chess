@@ -39,6 +39,10 @@
   background: #373632;
 }
 
+.analysis-study-hint-button { color: #a8a69e !important; }
+.analysis-study-hint-button[aria-pressed="true"] { color: #57e0b4 !important; }
+.analysis-study-hint-button svg { inline-size: 24px; block-size: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
 .analysis-study-menu-items {
   inline-size: min(20rem, calc(100vw - 2rem));
   padding: .35rem;
