@@ -21,14 +21,25 @@ final class NativeFrontierWitnesses {
     }
     static Witness read(JsonNode item) {
         require(item.path("history").isArray()&&item.path("nativeGuard").isBoolean(),"Missing explicit history or guard scope");
-        var game=game(item);String fen=StudyFen.replay(item.path("initialFen").asText(),strings(item.path("history")).stream().map(ChessPosition.Move::fromUci).toList());
+        var game=game(item);String origin=item.path("initialFen").asText();
+        if(item.has("oracleInitialFen")){
+            var normalized=origin.split(" ");require(normalized.length==6,"Invalid composed origin");normalized[4]="0";
+            require(item.path("oracleInitialFen").asText().equals(String.join(" ",normalized)),"A composed-clock correction cannot substitute another board or rights");
+            origin=item.path("oracleInitialFen").asText();
+        }
+        String fen=StudyFen.replay(origin,strings(item.path("history")).stream().map(ChessPosition.Move::fromUci).toList());
         var seen=new HashSet<String>();require(item.path("phases").size()==6,"Missing captured phase");
         for(var phase:item.path("phases")){
             int depth=phase.path("depth").asInt();String root=phase.path("move").asText(null);
             require(phase.path("depth").isIntegralNumber()&&(depth==17||depth==19)&&phase.path("caseId").equals(item.path("id"))&&seen.add(depth+"/"+root),"Foreign or repeated phase");
             require(phase.path("nativeFen").asText().equals(fen),"Foreign teacher board or clocks");
-            String position="position fen "+item.path("initialFen").asText()+(item.path("history").isEmpty()?"":" moves "+String.join(" ",strings(item.path("history"))));
-            require(phase.path("positionCommand").asText().equals(position)&&strings(phase.path("commands")).equals(List.of(position,"go depth "+depth+(root==null?"":" searchmoves "+root))),"Foreign position/search commands");
+            String position="position fen "+origin+(item.path("history").isEmpty()?"":" moves "+String.join(" ",strings(item.path("history"))));
+            String cap="";
+            if(phase.has("nodeSafetyCap")){
+                require(phase.path("nodeSafetyCap").isIntegralNumber()&&phase.path("nodeSafetyCap").asLong()>0&&phase.path("nodeSafetyCap").asLong()<=10_000_000,"Invalid declared teacher safety cap");
+                cap=" nodes "+phase.path("nodeSafetyCap").asLong();
+            }
+            require(phase.path("positionCommand").asText().equals(position)&&strings(phase.path("commands")).equals(List.of(position,"go depth "+depth+cap+(root==null?"":" searchmoves "+root))),"Foreign position/search commands");
             List<String> exact=null;String best=null;for(String line:strings(phase.path("raw"))){
                 var tokens=Arrays.asList(line.split(" "));if(line.startsWith("bestmove "))best=tokens.get(1);
                 if(line.startsWith("info depth ")&&tokens.contains("score")&&tokens.contains("wdl")&&tokens.contains("pv")&&!tokens.contains("lowerbound")&&!tokens.contains("upperbound")&&Integer.parseInt(tokens.get(tokens.indexOf("depth")+1))==depth)exact=tokens;

@@ -6,6 +6,8 @@
 
 The [current calibration](current-profile-calibration.md) measures all three profiles and authored puzzle routes, with original-prefix technical continuations and explicit quality failures. Use its scope before interpreting a newer Elo point as an algorithmic gain.
 
+The [continuation copies](hard-continuation-copies.md) qualify the next intervention: preserve selective replay's recoveries, repair three genuine regressions and correct the source/goal mismatch in training-060. A benchmark reference must be independently validated before it becomes a learning target.
+
 Treat root correctness and the explanation's continuation as separate gates. The [checked-frontier study](native-forcing-frontier.md) captures a winning Native first move followed by an unclosed queen offer; a first-choice PASS alone cannot close that mechanism. Preserve the stored counterexample without requiring future engines to repeat its bad PV.
 
 ## Working baseline
