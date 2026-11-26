@@ -2,7 +2,7 @@
 
 ## Overview
 
-Chess Lab shares Java rules, catalogs and saved-game state between Android and the TeaVM worker. The Web application uses [Stockfish for hints and analysis](stockfish.md); each adapter owns input, rendering, navigation and local storage. Android retains its existing analysis engine in this integration step.
+Chess Lab shares Java rules, catalogs and saved-game state between Android and the TeaVM worker. The Web application uses [Stockfish for hints and analysis](stockfish.md); each adapter owns input, rendering, navigation and local storage. Android uses its independently pinned native Lite transport for calculated coaching.
 
 Stored opening references remain separate from live Web Stockfish searches. [Source and score conventions](../docs/board/analysis-sources.md)
 

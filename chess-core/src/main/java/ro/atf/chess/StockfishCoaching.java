@@ -93,8 +93,7 @@ public final class StockfishCoaching implements AutoCloseable {
 
     private static ExternalEngineAnalysis.Batch rebind(ChessMatch match, int ply, ExternalEngineAnalysis.Context context,
                                                        ExternalEngineAnalysis.Batch batch) {
-        return ExternalEngineAnalysis.batch(match, ply,
-                new ExternalEngineAnalysis.Batch(context, batch.provider(), batch.depth(), batch.lines()).json());
+        return ExternalEngineAnalysis.rebind(match, ply, batch);
     }
 
     /** Must not wait for a long synchronized search on the UI thread. */

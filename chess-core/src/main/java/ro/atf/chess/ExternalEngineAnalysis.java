@@ -133,6 +133,15 @@ public final class ExternalEngineAnalysis {
 
     public static Batch batch(ChessMatch match, int ply, String json) { return batch(match, context(match, ply), object(parse(json))); }
 
+    /** Reuse a measured prefix after later game moves without changing its original observation. */
+    public static Batch rebind(ChessMatch match, int ply, Batch observed) {
+        var target = context(match, ply);
+        var source = observed.context();
+        if (!target.initialFen().equals(source.initialFen()) || !target.moves().equals(source.moves())
+                || !target.rootFen().equals(source.rootFen())) throw new IllegalArgumentException("Different measured history");
+        return batch(match, ply, new Batch(target, observed.provider(), observed.depth(), observed.lines()).json());
+    }
+
     private static Batch batch(ChessMatch match, Context context, Map<String, Object> data) {
         if (!context.contextKey().equals(text(data, "contextKey")) || !context.rootFen().equals(text(data, "rootFen")))
             throw new IllegalArgumentException("External analysis belongs to another full context");

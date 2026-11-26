@@ -47,6 +47,20 @@ class ExternalEngineAnalysisTest {
         c.same("Castling rights and fullmove survive", "b kq - 5 4", ExternalEngineAnalysis.context(castle, 7).rootFen().split(" ", 2)[1]);
     }
 
+    @Test void rebindsOnlyTheSameMeasuredPrefixWithoutRelabellingTheOriginal(Checks c) {
+        var first = game("e2e4"); var later = game("e2e4 e7e5");
+        var observed = batch(first, 1, line(1, 20, "e7e5 g1f3"));
+        var reused = ExternalEngineAnalysis.rebind(later, 1, observed);
+        c.same("A later checkpoint can reuse the exact measured history", ExternalEngineAnalysis.context(later, 1), reused.context());
+        c.same("Measured provider, horizon and raw line remain intact", observed.lines(), reused.lines());
+        c.same("The original measurement retains its own checkpoint identity", ExternalEngineAnalysis.context(first, 1), observed.context());
+        c.rejects("Another historical prefix cannot borrow the observation", IllegalArgumentException.class,
+                () -> ExternalEngineAnalysis.rebind(game("d2d4"), 1, observed));
+        var initial = batch(ChessMatch.start(), 0, line(1, 20, "e2e4"));
+        c.rejects("Equal placement after a repetition is not the measured prefix", IllegalArgumentException.class,
+                () -> ExternalEngineAnalysis.rebind(game("g1f3 g8f6 f3g1 f6g8"), 4, initial));
+    }
+
     @Test void preservesBlackPerspectiveAndFiltersWeakHints(Checks c) {
         var m = game("e2e4");
         var b = ExternalEngineAnalysis.batch(m, 1, batch(m, 1, line(1, 45, "e7e5 g1f3"), line(2, -400, "a7a6")).json());

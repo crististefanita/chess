@@ -90,9 +90,11 @@ final class AndroidStockfishSanityEvidence {
             require(receiptIds.add(text(row, "receiptID")), "Duplicate actual engine receipt ID");
             require(text(row, "receiptID").matches("[a-f0-9-]{36}")
                     && text(wrapper, "file").endsWith("-" + text(row, "receiptID") + ".json"), "Journal filename belongs to another receipt ID");
-            var matching = observations.stream().filter(o -> o.batch().context().contextKey().equals(row.path("context").path("contextKey").asText())).findFirst().orElse(null);
+            var measured = ChessMatch.restore(text(row.path("context"), "checkpoint"));
+            int measuredPly = row.path("context").path("ply").asInt(-1);
+            var context = ExternalEngineAnalysis.context(measured, measuredPly);
+            var matching = observations.stream().filter(o -> samePrefix(context, o.batch().context())).findFirst().orElse(null);
             require(matching != null, "An unrelated journal cannot qualify this smoke");
-            var context = ExternalEngineAnalysis.context(matching.match(), matching.ply());
             require(JSON.readTree(context.json()).equals(row.path("context"))
                     && sha(context.json().getBytes(StandardCharsets.UTF_8)).equals(text(row, "contextSha256")), "Native journal context or history hash differs");
             String transcript = text(row, "rawUCITranscript");
@@ -103,16 +105,19 @@ final class AndroidStockfishSanityEvidence {
             verifyCommands(transcript, context, forced, text(row, "bestmove"));
             var candidates = new ArrayList<JsonNode>(); candidates.add(row.path("batch"));
             require(row.path("completedDepthBatches").isArray(), "Missing completed-depth inventory");
+            require(java.util.stream.StreamSupport.stream(row.path("completedDepthBatches").spliterator(), false)
+                    .anyMatch(row.path("batch")::equals), "Selected hint is not a complete observed iteration");
             row.path("completedDepthBatches").forEach(candidates::add);
             for (var candidate : candidates) {
-                var batch = ExternalEngineAnalysis.batch(matching.match(), matching.ply(), candidate.toString());
+                var batch = ExternalEngineAnalysis.batch(measured, measuredPly, candidate.toString());
                 require(batch.provider().equals(provider), "Foreign provider in a retained completed iteration");
-                if (candidate == row.path("batch")) require(batch.best().root().uci().equals(text(row, "bestmove")), "Selected batch differs from actual raw bestmove");
                 for (var line : batch.lines()) require(rawContains(transcript, line), "The raw UCI output does not contain a retained exact score/WDL/PV");
                 validated.add(batch);
             }
         }
-        for (var observation : observations) require(validated.contains(observation.batch()), "No raw exact UCI evidence for " + observation.name());
+        for (var observation : observations) require(validated.stream().anyMatch(batch -> samePrefix(batch.context(), observation.batch().context())
+                && ExternalEngineAnalysis.rebind(observation.match(), observation.ply(), batch).equals(observation.batch())),
+                "No raw exact UCI evidence for " + observation.name());
         var integrity = List.of(
                 fact("Original orchestrator exit", "0", Integer.toString(execution.path("exitCode").intValue())),
                 fact("One native run, JSON and screenshot", run, run),
@@ -123,6 +128,10 @@ final class AndroidStockfishSanityEvidence {
                 fact("Raw exact output joins", "Every observed score/WDL/PV", observations.size() + " observations with raw exact output"),
                 fact("Capture bytes and native marker", text(nativeReceipt.markers(), "capture_stockfish-analysis"), sha(png)));
         return new Evidence(root, execution, smoke, nativeReceipt.rows(), integrity, png, Map.copyOf(inputs), journals.size());
+    }
+
+    private static boolean samePrefix(ExternalEngineAnalysis.Context one, ExternalEngineAnalysis.Context two) {
+        return one.initialFen().equals(two.initialFen()) && one.moves().equals(two.moves()) && one.rootFen().equals(two.rootFen());
     }
 
     static NativeReceipt readNative(String content, String run) {

@@ -218,15 +218,18 @@ public final class BoardSanity extends Instrumentation {
         for (var observed : observations) {
             boolean found = false;
             for (var row : retained) {
+                var original = row.getJSONObject("context");
+                var measured = ChessMatch.restore(original.getString("checkpoint"));
+                int measuredPly = original.getInt("ply");
+                if (!ro.atf.chess.ExternalEngineAnalysis.context(measured, measuredPly).moves().equals(observed.batch().context().moves())) continue;
                 var selected = row.getJSONObject("batch");
-                if (selected.getString("contextKey").equals(observed.batch().context().contextKey())
-                        && ro.atf.chess.ExternalEngineAnalysis.batch(observed.match(), observed.ply(), selected.toString()).equals(observed.batch())) found = true;
+                var measuredBatch = ro.atf.chess.ExternalEngineAnalysis.batch(measured, measuredPly, selected.toString());
+                if (ro.atf.chess.ExternalEngineAnalysis.rebind(observed.match(), observed.ply(), measuredBatch).equals(observed.batch())) found = true;
                 var completed = row.getJSONArray("completedDepthBatches");
                 for (int index = 0; index < completed.length(); index++) {
                     var item = completed.getJSONObject(index);
-                    if (!item.getString("contextKey").equals(observed.batch().context().contextKey())) continue;
-                    var accepted = ro.atf.chess.ExternalEngineAnalysis.batch(observed.match(), observed.ply(), item.toString());
-                    if (accepted.equals(observed.batch())) found = true;
+                    var accepted = ro.atf.chess.ExternalEngineAnalysis.batch(measured, measuredPly, item.toString());
+                    if (ro.atf.chess.ExternalEngineAnalysis.rebind(observed.match(), observed.ply(), accepted).equals(observed.batch())) found = true;
                 }
             }
             compare("Original completed UCI evidence binds " + observed.name(), true, found);

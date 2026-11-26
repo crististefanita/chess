@@ -1,4 +1,20 @@
 testChanges:
+  - id: CHESS-LITE-SOURCE-REBIND
+    base: "65a29ab023a6a1da11a0da1b3476da717bee5baf"
+    from: atf-tests/src/test/java/ro/atf/chess/ExternalEngineAnalysisTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ExternalEngineAnalysisTest.java
+    test: ro.atf.chess.ExternalEngineAnalysisTest#rebindsOnlyTheSameMeasuredPrefixWithoutRelabellingTheOriginal
+    contract: "Reuse a measured historical prefix after later moves without rewriting the source; reject another prefix and equal-placement repetition"
+    allowDelete: false
+
+  - id: CHESS-LITE-ANALYSIS-INVENTORY
+    base: "65a29ab023a6a1da11a0da1b3476da717bee5baf"
+    from: atf-tests/src/test/java/ro/atf/chess/ChessWebAnalysisStudyTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ChessWebAnalysisStudyTest.java
+    test: ro.atf.chess.ChessWebAnalysisStudyTest#analysisStudyUsesMockWorkersWithoutABrowser
+    contract: "Retain every previous mock-worker assertion and include the new muted-outline lightbulb case in the exact native inventory"
+    allowDelete: false
+
   - id: CHESS-LITE-ANDROID-CONFIG
     base: "65a29ab023a6a1da11a0da1b3476da717bee5baf"
     from: android/app/build.gradle

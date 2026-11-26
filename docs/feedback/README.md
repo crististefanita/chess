@@ -5,7 +5,7 @@
 The register tracks open gaps and closure criteria. The [board guide](../board/README.md)
 describes the behavior, and the [release catalog](../../release/README.md) points to the published evidence.
 
-Native Hard diagnostics below retain their own engine and oracle evidence. The [requested Stockfish Lite coaching contract](stockfish-web.md) covers every calculated hint, evaluation bar and review on Web and Android. Lite migration is not yet qualified. APK/RAG delivery belongs to the other AI; this review owns requirements, documentation and the next measured A/B steps.
+Native Hard diagnostics below retain their own engine and oracle evidence. The [requested Stockfish Lite coaching contract](stockfish-web.md) covers every calculated hint, evaluation bar and review on Web and Android. The integration candidate retains separate component, native-runtime and served-Web acceptance scopes; current evidence and unmet work remain with the provider owner.
 
 Work the [current Native priorities](hard.md) through the [A/B, game-audit and Elo protocol](../testing/hard-ab-elo.md). The older Native hint/review rows below remain source-bound diagnostics; they are not newly observed Stockfish defects and must not all compete as current P1 tasks. Changing the teacher does not close those Native mechanisms or create a new Native Elo.
 
