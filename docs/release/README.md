@@ -32,7 +32,7 @@ Versiunea disponibilă se verifică în README-ul din `origin/main`. Dacă ramur
 2. Alegeți versiunea din seria 0.x. O corecție urcă patch-ul, iar o funcție nouă sau o schimbare de contract urcă minorul. Aliniați `versionName`, `versionCode`, versiunea Maven și numele APK-ului. În `release/index.json`, `currentVersion` este ediția curentă, iar `versions` conține curentul urmat de o singură ediție anterioară pentru comparație. Candidatul rămâne separat până la publicare. [Catalogul edițiilor](../../release/README.md)
 3. Actualizați notele și ghidurile afectate în ambele ramuri. Mutați regulile confirmate din feedback în ghidul responsabil. În `main` folosiți **Play** și **Published Release**. În `main_RO` folosiți **Jocul** și **Ediția publicată**. Așezați linkurile APK și browser în această ordine sub titlul de joc. Puneți notele GitHub sub arhitectură. [Documentație bilingvă](#documentație-bilingvă) · [Publicarea Web](../../web/parity.md#publicarea-linkului)
 4. Creați commitul candidat în worktree-ul Git curat din TMP. Declarați SHA-ul bazei de revizuire, strămoș distinct al candidatului. Rulați DocumentationGovernanceTest, ReleaseGovernanceTest, ExtentGovernanceTest, TestChangeReview și ReleaseGate preflight înainte de semnare. Păstrați rapoartele și recepția reviziei Git. Activați probele AI când diff-ul afectează motorul sau corpusul. [Suitele JVM](../testing/README.md#suite-jvm) · [Schimbarea testelor](../testing/README.md#schimbarea-testelor-față-de-o-bază-git)
-5. Încărcați identitatea prin dot-sourcing `scripts/Initialize-J7Signing.ps1`; o înregistrare criptată existentă în proiect este detectată automat. Pentru o cheie nouă după o ediție publicată, folosiți explicit `-StartNewIdentity`; scriptul refuză rotația implicită și protejează cheia cu ACL și DPAPI. Construiți APK-ul și testele Android cu Gradle, verificați semnătura, `versionCode` și compatibilitatea prin `scripts/verify-signing-continuity.ps1`. Rulați pe emulator parcursul potrivit schimbării și păstrați hash-ul APK-ului instalat și Extent-ul. Dacă semnarea s-a rotit și emulatorul păstrează ediția veche, nu dezinstalați instalarea cu date valoroase pentru a forța testul. Un APK sanity cu alt `applicationId` este suplimentar și nu califică binarul distribuibil.
+5. Încărcați identitatea prin dot-sourcing `release-tools/scripts/Initialize-J7Signing.ps1`; o înregistrare criptată existentă în proiect este detectată automat. Pentru o cheie nouă după o ediție publicată, folosiți explicit `-StartNewIdentity`; scriptul refuză rotația implicită și protejează cheia cu ACL și DPAPI. Construiți APK-ul și testele Android cu Gradle, verificați semnătura, `versionCode` și compatibilitatea prin `release-tools/scripts/verify-signing-continuity.ps1`. Rulați pe emulator parcursul potrivit schimbării și păstrați hash-ul APK-ului instalat și Extent-ul. Dacă semnarea s-a rotit și emulatorul păstrează ediția veche, nu dezinstalați instalarea cu date valoroase pentru a forța testul. Un APK sanity cu alt `applicationId` este suplimentar și nu califică binarul distribuibil.
 6. Rulați `ChessComponentSuite` și sanity Game Review sub același ID de calificare. Treceți APK-ul, commitul, directoarele recepțiilor brute și rapoartele Extent prin `ReleaseGate qualification`. Verificați în Extent comparațiile extensibile și capturile din pașii lor. Pentru o schimbare în Teoria deschiderilor sau **De ce?**, adăugați proba compactă la font 1,3× în RO și EN pe același APK și commit. [Redarea comună](../testing/README.md#redare-comună-pe-ecran-compact) [Criterii de audit Extent](../testing/README.md#raportare-extent)
 7. După semnare și calificare, împingeți tagul candidat fără a rescrie istoricul și publicați asset-ul GitHub. Păstrați `currentVersion`, lista de comparație și README-ul principal pe ultima ediție verificată până când asset-ul nou există. Apoi promovați catalogul și README-ul în ambele ramuri. Păstrați în GitHub Release și local doar ediția nouă și ediția imediat anterioară; retrageți celelalte release-uri și dosare după ce noul asset și ruta din README au trecut verificarea. Nu ștergeți tagurile Git.
 8. Citiți README-ul din `main` pe GitHub și descărcați APK-ul de la URL-ul afișat. Verificați prin `ReleaseGate publication` tagul, canalul, statusul HTTP, octeții, SHA-256 și CRC. Salvați dovezile, împingeți commitul cu rapoartele și repetați descărcarea de pe versiunea finală a README-ului.
@@ -48,22 +48,26 @@ Versiunea disponibilă se verifică în README-ul din `origin/main`. Dacă ramur
 
 - În checkout, guvernanța ediției curente recalculează amprentele HTML pentru calificarea strictă și compară recepțiile Android cu sursa, APK-ul și totalul de aserțiuni. Căile rapoartelor și ale recepțiilor trebuie să rămână în dosarul ediției.
 
+## Modulul de release
+
+[Modulul release-tools](../../release-tools/README.md) deține porțile Java, adaptoarele de livrare și identitatea protejată. Construiește JAR-ul înaintea comenzilor CLI; `atf-tests` consumă acel artefact prin Maven. Testele ATF de integrare rămân în suitele auditabile. Buildul jocului și identitatea APK-ului calificat rămân neschimbate.
+
 ## Ediția publicată în checkout-ul local
 
 Publicarea livrează ediția curentă și în directorul `release/` al checkout-ului de dezvoltare. Descărcarea reușită de pe GitHub nu încheie singură această predare locală. Sursele pot conține experimente paralele și trebuie păstrate intacte.
 
 - Fixează commitul de publicare din ramura live, separat de sursa calificată a APK-ului. Citește catalogul și octeții originali ai rapoartelor din acel arbore Git imuabil.
 - Păstrează **doar ediția curentă** în această proiecție locală, cu APK-ul semnat complet, Extent, recepțiile și README-ul ediției. Catalogul publicat poate păstra ediția anterioară pentru comparație; proiecția locală are propriul index `PUBLISHED_RELEASE_CHECKOUT`.
-- Rulează [sincronizatorul](../../scripts/sync-published-release.ps1) din worktree-ul publicării verificate. Verifică calificarea, identitatea tagului, ruta README, ambele recepții de download, dimensiunea, amprenta și CRC-ul APK-ului înainte de înlocuire.
+- Rulează [sincronizatorul](../../release-tools/scripts/sync-published-release.ps1) din worktree-ul publicării verificate. Verifică calificarea, identitatea tagului, ruta README, ambele recepții de download, dimensiunea, amprenta și CRC-ul APK-ului înainte de înlocuire.
 - Pregătește copia în afara ambelor checkout-uri, sub `C:\work\sah`. Păstrează acolo vechiul director local pentru recuperare, verifică modificările concurente și înlocuiește doar `release/` de la destinație. Repetarea aceleiași sincronizări întoarce `UNCHANGED`.
 - Încheie prin `ReleaseGate local-delivery`. Fișierele lipsă, modificate sau suplimentare blochează poarta. `local-sync.yaml` identifică publicarea, producătorul calificat și inventarul exact; nu califică sursele experimentale din checkout. APK-ul generat și această recepție locală rămân în afara Git.
 
 ```powershell
 git fetch origin
 $publication = git rev-parse origin/main_RO
-$destination = 'C:\work\1\atf_j7\release'
+$destination = Join-Path $developmentCheckout 'release'
 $work = 'C:\work\sah\studii\release-sync'
-./scripts/sync-published-release.ps1 -PublicationCommit $publication -Destination $destination `
+./release-tools/scripts/sync-published-release.ps1 -PublicationCommit $publication -Destination $destination `
   -WorkRoot $work -Apk $verifiedApk -Classpath $releaseClasspath
 java -cp $releaseClasspath ro.atf.chess.release.ReleaseGate local-delivery . $publication $destination $verifiedApk
 ```
@@ -101,7 +105,7 @@ rescrieți un artefact calificat.
 Construiți cele două worktree-uri secvențial când folosesc același depozit Maven local: inițializarea de la root instalează binarele ATF, iar Windows poate bloca un JAR deja încărcat de celălalt JVM. Directoarele target independente nu izolează acel depozit. Buildurile paralele cer depozite locale pregătite separat și proveniență verificată a bibliotecilor.
 
 ```powershell
-java -cp atf-tests/target/classes ro.atf.chess.release.ReleaseGate documentation-pair . $enCommit $roCommit
+java -cp release-tools/target/classes ro.atf.chess.release.ReleaseGate documentation-pair . $enCommit $roCommit
 git push --atomic origin "${enCommit}:refs/heads/main" "${roCommit}:refs/heads/main_RO"
 ```
 
@@ -160,7 +164,7 @@ Dot-source scriptul în sesiunea de build pentru a încărca `J7_SIGNING_STORE` 
   verifică poarta.
 
   Chess păstrează și înregistrarea criptată cerută explicit în proiect,
-  [`.atf-signing`](../../.atf-signing/README.md). Un director existent este
+  [`.atf-signing`](../../release-tools/.atf-signing/README.md). Un director existent este
   încărcat automat; `-ProjectIdentity -StartNewIdentity` inițializează unul
   lipsă numai după aprobarea explicită a schimbării certificatului. Căile din
   manifest sunt relative. Parola PKCS12 rămâne protejată prin DPAPI pentru
@@ -185,7 +189,7 @@ pentru controalele de documentație, release și Extent.
 ```powershell
 mvn test "-Dtest=ChessGovernanceSuite" "-Dchess.extent=$governanceExtent"
 mvn test "-Dtest=TestChangeReview" "-Dchess.testChanges.base=$reviewBase" "-Dchess.extent=$testChangeExtent"
-java -cp atf-tests/target/classes ro.atf.chess.release.ReleaseGate preflight atf-tests/target/surefire-reports . $reviewBase
+java -cp release-tools/target/classes ro.atf.chess.release.ReleaseGate preflight atf-tests/target/surefire-reports . $reviewBase
 ```
 
 - Rulați suitele din același checkout TMP și alegeți căi noi pentru rapoarte.
@@ -201,7 +205,7 @@ mvn -pl atf-tests -am test "-Dtest=ChessComponentSuite" "-Dsurefire.failIfNoSpec
   "-Dchess.extent=$componentExtent" "-Dchess.qualification.commit=$commit" "-Dchess.qualification.runId=$runId"
   # Mutați recepțiile Surefire ale suitei în $componentReceipts înainte de publicarea Android.
   # Rulați sanity-ul semnat cu -SourceCommit $commit -QualificationRunId $runId.
-java -cp atf-tests/target/classes ro.atf.chess.release.ReleaseGate qualification `
+java -cp release-tools/target/classes ro.atf.chess.release.ReleaseGate qualification `
   $version $commit $apk $componentReceipts $componentExtent $nativeRun $nativeExtent
 ```
 
@@ -300,7 +304,7 @@ Dacă ediția schimbă și tabla sau indiciile, rulați parcursul de analiză cu
 - După publicare, rulați verificarea cu autentificarea GitHub existentă în Git Credential Manager. Directorul de ieșire este nou și rămâne în TMP.
 
 ```powershell
-./scripts/verify-authenticated-download.ps1 -Repository crististefanita/chess `
+./release-tools/scripts/verify-authenticated-download.ps1 -Repository crististefanita/chess `
   -Version <versiune> -CandidateCommit <sha> -QualifiedApk <apk-calificat> `
   -Classes <copia-TMP>/atf-tests/target/classes -OutputDirectory <director-TMP-nou>
 ```
@@ -315,7 +319,7 @@ După compilare, apelați `ReleaseRag` din copia TMP cu rădăcina sursei și c�
 
 ```powershell
 $paths = @(git -C $checkout diff --name-only $previousTag $candidateCommit)
-java -cp "$scratch/atf-tests/target/classes" ro.atf.chess.release.ReleaseRag $scratch @paths
+java -cp "$scratch/release-tools/target/classes" ro.atf.chess.release.ReleaseRag $scratch @paths
 ```
 
 - Transmiteți căile din checkout-ul Git comenzii din TMP. RAG raportează fiecare cale drept `COVERED` sau `NEEDS_REVIEW`, inclusiv listele mixte.

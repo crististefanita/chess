@@ -3,14 +3,20 @@
 param(
     [string]$DataRoot = 'C:\work\chess_back',
     [string]$JavaHome = 'C:\tools\Java21\jdk-21.0.12.1+1',
+    [string]$WorkRoot = 'C:\work\sah\studii\chess-signing',
     [switch]$ProjectIdentity,
     [switch]$StartNewIdentity
 )
 
 $ErrorActionPreference = 'Stop'
-$projectRoot = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
+. (Join-Path $PSScriptRoot 'ReleaseWorkspace.ps1')
+$workspace = Get-ChessReleaseWorkspace -ScriptDirectory $PSScriptRoot
+$projectRoot = $workspace.ProjectRoot
+if (Test-Path -LiteralPath (Join-Path $projectRoot '.atf-signing')) {
+    throw 'Legacy root signing record still exists. Relocate it explicitly before loading an identity.'
+}
 $ProjectIdentity = $ProjectIdentity -or (!$PSBoundParameters.ContainsKey('DataRoot') -and
-    (Test-Path -LiteralPath (Join-Path $projectRoot '.atf-signing') -PathType Container))
+    (Test-Path -LiteralPath $workspace.Signing -PathType Container))
 $dataRoot = [IO.Path]::GetFullPath($DataRoot)
 $tempRoot = [IO.Path]::GetFullPath([IO.Path]::GetTempPath()).TrimEnd('\', '/')
 if (!$ProjectIdentity -and ($dataRoot.Equals($projectRoot, [StringComparison]::OrdinalIgnoreCase) -or
@@ -20,8 +26,9 @@ if (!$ProjectIdentity -and ($dataRoot.Equals($projectRoot, [StringComparison]::O
     throw 'Signing data must stay outside the source checkout and the operating-system temporary directory.'
 }
 
-$directory = if ($ProjectIdentity) { Join-Path $projectRoot '.atf-signing' } else { Join-Path $dataRoot 'infrastructure/signing' }
-$logDirectory = if ($ProjectIdentity) { [IO.Path]::GetFullPath($env:TEMP) } else { $directory }
+$directory = if ($ProjectIdentity) { $workspace.Signing } else { Join-Path $dataRoot 'infrastructure/signing' }
+$logDirectory = Assert-ChessExternalDirectory -Path $WorkRoot -ProjectRoot $projectRoot
+New-Item -ItemType Directory -Force -Path $logDirectory | Out-Null
 if ($logDirectory.Equals($projectRoot, [StringComparison]::OrdinalIgnoreCase) -or
     $logDirectory.StartsWith($projectRoot + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) {
     throw 'Signing logs must stay outside the source checkout.'

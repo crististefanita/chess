@@ -5,15 +5,14 @@ param(
     [Parameter(Mandatory)][ValidatePattern('^\d+\.\d+\.\d+$')][string]$Version,
     [Parameter(Mandatory)][ValidatePattern('^[a-f0-9]{40}$')][string]$CandidateCommit,
     [Parameter(Mandatory)][string]$QualifiedApk,
-    [Parameter(Mandatory)][string]$Classes,
+    [Alias('Classes')][string]$Classpath,
     [Parameter(Mandatory)][string]$OutputDirectory
 )
 $ErrorActionPreference = 'Stop'
-$tempRoot = [IO.Path]::GetFullPath($env:TEMP).TrimEnd([IO.Path]::DirectorySeparatorChar) + [IO.Path]::DirectorySeparatorChar
-$output = [IO.Path]::GetFullPath($OutputDirectory)
-if (!$output.StartsWith($tempRoot, [StringComparison]::OrdinalIgnoreCase) -or (Test-Path -LiteralPath $output)) {
-    throw 'Use a fresh output folder in TMP.'
-}
+. (Join-Path $PSScriptRoot 'ReleaseWorkspace.ps1')
+$workspace = Get-ChessReleaseWorkspace -ScriptDirectory $PSScriptRoot
+$output = Assert-ChessExternalDirectory -Path $OutputDirectory -ProjectRoot $workspace.ProjectRoot -MustBeFresh
+if (!$Classpath) { $Classpath = Get-ChessReleaseClasspath -ModuleRoot $workspace.ModuleRoot }
 $env:GCM_INTERACTIVE = 'never'
 $env:GIT_TERMINAL_PROMPT = '0'
 $credential = @{}
@@ -33,7 +32,7 @@ if ($readme.path -cne 'README.md' -or $readme.encoding -cne 'base64') { throw 'U
 $null = New-Item -ItemType Directory $output
 $readmeFile = Join-Path $output 'README.md'
 [IO.File]::WriteAllBytes($readmeFile, [Convert]::FromBase64String($readme.content))
-$links = @(& java -cp $Classes ro.atf.chess.release.ReleaseGate links $readmeFile)
+$links = @(& java -cp $Classpath ro.atf.chess.release.ReleaseGate links $readmeFile)
 if ($LASTEXITCODE -or $links.Count -ne 2) { throw 'Expected the canonical release and APK links in the README.' }
 
 $tag = "v$Version"
@@ -52,7 +51,7 @@ $size = (Get-Item -LiteralPath $download).Length
 if ($size -ne $asset.size) { throw 'Downloaded file size differs from GitHub asset metadata.' }
 $sha = (Get-FileHash -LiteralPath $download).Hash.ToLowerInvariant()
 if ($asset.digest -and $asset.digest -cne "sha256:$sha") { throw 'Downloaded file hash differs from GitHub asset metadata.' }
-& java -cp $Classes ro.atf.chess.release.ReleaseGate publication $Version $CandidateCommit $QualifiedApk $tagRef.sha $readmeCommit `
+& java -cp $Classpath ro.atf.chess.release.ReleaseGate publication $Version $CandidateCommit $QualifiedApk $tagRef.sha $readmeCommit `
     $readmeFile $Repository $links[1] 'AUTHENTICATED' ([int]$response.StatusCode) $download
 if ($LASTEXITCODE) { throw 'Download verification rejected the response.' }
 [ordered]@{

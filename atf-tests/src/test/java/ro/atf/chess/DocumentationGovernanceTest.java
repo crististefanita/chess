@@ -44,7 +44,8 @@ class DocumentationGovernanceTest {
     @Test void currentDocumentationResolvesEveryLocalTargetAndHeading(Checks check) throws IOException {
         Path root = ProjectRoot.locate();
         Path readme = root.resolve("README.md");
-        var documents = new ArrayList<>(List.of(readme, root.resolve("release/README.md")));
+        var documents = new ArrayList<>(List.of(readme, root.resolve("release/README.md"), root.resolve("release-tools/README.md"),
+                root.resolve("release-tools/.atf-signing/README.md")));
         WEB_GUIDES.stream().map(root::resolve).forEach(documents::add);
         try (var libraries = Files.newDirectoryStream(root.resolve("lib"), "README*.md")) {
             for (Path library : libraries) if (Files.isRegularFile(library)) documents.add(library);
@@ -74,7 +75,8 @@ class DocumentationGovernanceTest {
 
     @Test void authoredGuidesKeepPortableMarkdownAndExplainedDiagrams(Checks check) throws IOException {
         Path root = ProjectRoot.locate();
-        var documents = new ArrayList<>(List.of(root.resolve("README.md")));
+        var documents = new ArrayList<>(List.of(root.resolve("README.md"), root.resolve("release-tools/README.md"),
+                root.resolve("release-tools/.atf-signing/README.md")));
         WEB_GUIDES.stream().map(root::resolve).forEach(documents::add);
         for (String directory : List.of("docs", "lib")) {
             try (var paths = Files.walk(root.resolve(directory))) {
@@ -416,24 +418,20 @@ class DocumentationGovernanceTest {
 
     @Test void documentedArchitectureRejectsMissingSourcesExtraModulesAndScopeDrift(Checks check) throws Exception {
         var readme = List.of("## Arhitectura Chess",
-                "- **Maven** compilează `atf-tests`, `chess-core/src/main/java`, `chess-core/src/main/resources` și `release-tools/src/main/java`.",
+                "- **Maven** compilează `release-tools`, `atf-tests`, `chess-core/src/main/java`, `chess-core/src/main/resources` și `release-tools/src/main/java`.",
                 "- **Gradle** construiește `:app` din `chess-core/src/main/java` și",
                 "  `chess-core/src/main/resources`.",
                 "- **Biblioteci ATF** folosește `atf-reporting`, `atf-test-kit`, cu scope `test`.",
                 "## Puncte de intrare");
-        String reactor = "<project><modules><module>atf-tests</module></modules></project>";
+        String reactor = "<project><modules><module>release-tools</module><module>atf-tests</module></modules></project>";
         String tests = """
                 <project><dependencies>
+                  <dependency><groupId>ro.atf</groupId><artifactId>chess-release-tools</artifactId><version>${project.version}</version></dependency>
                   <dependency><groupId>atf.api</groupId><artifactId>atf-reporting</artifactId><scope>test</scope></dependency>
                   <dependency><groupId>atf.api</groupId><artifactId>atf-test-kit</artifactId><scope>test</scope></dependency>
                 </dependencies><build>
                   <sourceDirectory>../chess-core/src/main/java</sourceDirectory>
                   <resources><resource><directory>../chess-core/src/main/resources</directory></resource></resources>
-                  <plugins><plugin><groupId>org.codehaus.mojo</groupId><artifactId>build-helper-maven-plugin</artifactId>
-                    <executions><execution><goals><goal>add-source</goal></goals><configuration><sources>
-                      <source>../release-tools/src/main/java</source>
-                    </sources></configuration></execution></executions>
-                  </plugin></plugins>
                 </build></project>
                 """;
         String settings = "include ':app'";
@@ -449,8 +447,8 @@ class DocumentationGovernanceTest {
         check.same("A renamed Gradle resource path in prose is detected", List.of("Gradle"), architectureDrift(staleReadme, intact));
         check.same("An added Maven module invalidates the documented module set", List.of("Maven"), architectureDrift(readme,
                 new BuildDeclarations(reactor.replace("</modules>", "<module>chess-core</module></modules>"), tests, settings, gradle)));
-        check.same("A release-tools path under the wrong Maven goal is ignored", List.of("Maven"), architectureDrift(readme,
-                new BuildDeclarations(reactor, tests.replace("<goal>add-source</goal>", "<goal>add-test-source</goal>"), settings, gradle)));
+        check.same("A release dependency under test scope cannot own production tools", List.of("Maven"), architectureDrift(readme,
+                new BuildDeclarations(reactor, tests.replace("chess-release-tools</artifactId>", "chess-release-tools</artifactId><scope>test</scope>"), settings, gradle)));
         check.same("A commented Gradle resource path does not count", List.of("Gradle"), architectureDrift(readme,
                 new BuildDeclarations(reactor, tests, settings, gradle.replace("sourceSets.main.resources", "// sourceSets.main.resources"))));
         String wrongSourceSets = gradle.replace("main.java", "main.tmp").replace("main.resources", "main.java").replace("main.tmp", "main.resources");
@@ -482,6 +480,11 @@ class DocumentationGovernanceTest {
                 + addedSources, tests, XPathNodes.class)) {
             maven.add(repositoryPath("atf-tests", source.getTextContent()));
         }
+
+        String releaseDependency = "/project/dependencies/dependency[groupId='ro.atf' and artifactId='chess-release-tools']";
+        String releaseScope = xpath.evaluate(releaseDependency + "/scope", tests).strip();
+        if (maven.contains("release-tools") && xpath.evaluateExpression(releaseDependency, tests, XPathNodes.class).size() == 1
+                && List.of("", "compile").contains(releaseScope)) maven.add("release-tools/src/main/java");
 
         var gradle = new HashSet<String>();
         for (var include : GRADLE_INCLUDE.matcher(declarations.gradleSettings()).results().toList()) {

@@ -1,4 +1,92 @@
 testChanges:
+  - id: CHESS-RELEASE-MODULE-1
+    base: "a177b4ed6ed8641ce7232f37309536e9b463c164"
+    from: pom.xml
+    replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseModuleLayoutTest.java
+    test: ro.atf.chess.ReleaseModuleLayoutTest#reactorConsumesOneIndependentReleaseArtifact
+    contract: "Extrage JAR-ul de release și adaptoarele; păstrează identitatea, dovezile imuabile și independența buildurilor jocului"
+    allowDelete: false
+
+  - id: CHESS-RELEASE-MODULE-2
+    base: "a177b4ed6ed8641ce7232f37309536e9b463c164"
+    from: atf-tests/pom.xml
+    replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseModuleLayoutTest.java
+    test: ro.atf.chess.ReleaseModuleLayoutTest#reactorConsumesOneIndependentReleaseArtifact
+    contract: "Extrage JAR-ul de release și adaptoarele; păstrează identitatea, dovezile imuabile și independența buildurilor jocului"
+    allowDelete: false
+
+  - id: CHESS-RELEASE-MODULE-3
+    base: "a177b4ed6ed8641ce7232f37309536e9b463c164"
+    from: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
+    test: ro.atf.chess.DocumentationGovernanceTest#projectReadmeArchitectureMatchesTheExecutableBuild
+    contract: "Extrage JAR-ul de release și adaptoarele; păstrează identitatea, dovezile imuabile și independența buildurilor jocului"
+    allowDelete: false
+
+  - id: CHESS-RELEASE-MODULE-4
+    base: "a177b4ed6ed8641ce7232f37309536e9b463c164"
+    from: atf-tests/src/test/java/ro/atf/chess/ProjectDocumentationIdentityTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ProjectDocumentationIdentityTest.java
+    test: ro.atf.chess.ProjectDocumentationIdentityTest#activeGuidesUseTheCurrentRepositoryIdentity
+    contract: "Extrage JAR-ul de release și adaptoarele; păstrează identitatea, dovezile imuabile și independența buildurilor jocului"
+    allowDelete: false
+
+  - id: CHESS-RELEASE-MODULE-5
+    base: "a177b4ed6ed8641ce7232f37309536e9b463c164"
+    from: atf-tests/src/test/java/ro/atf/chess/PublishedReleaseArchiveTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/PublishedReleaseArchiveTest.java
+    test: ro.atf.chess.PublishedReleaseArchiveTest#ragSelectsLocalDeliveryVerificationForPublicationChanges
+    contract: "Extrage JAR-ul de release și adaptoarele; păstrează identitatea, dovezile imuabile și independența buildurilor jocului"
+    allowDelete: false
+
+  - id: CHESS-RELEASE-MODULE-6
+    base: "a177b4ed6ed8641ce7232f37309536e9b463c164"
+    from: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java
+    test: ro.atf.chess.ReleaseGovernanceTest#signingRecoveryUsesTheProtectedIdentityAndExplicitlyGatesRotation
+    contract: "Extrage JAR-ul de release și adaptoarele; păstrează identitatea, dovezile imuabile și independența buildurilor jocului"
+    allowDelete: false
+
+  - id: CHESS-RELEASE-MODULE-7
+    base: "a177b4ed6ed8641ce7232f37309536e9b463c164"
+    from: atf-tests/src/test/java/ro/atf/chess/SignedSourceReplayReceiptTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/SignedSourceReplayReceiptTest.java
+    test: ro.atf.chess.SignedSourceReplayReceiptTest#projectSigningRecordIsRelativeAndContainsNoPlaintextPassword
+    contract: "Extrage JAR-ul de release și adaptoarele; păstrează identitatea, dovezile imuabile și independența buildurilor jocului"
+    allowDelete: false
+
+  - id: CHESS-RELEASE-MODULE-8
+    base: "a177b4ed6ed8641ce7232f37309536e9b463c164"
+    from: scripts/Initialize-J7Signing.ps1
+    replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseModuleLayoutTest.java
+    test: ro.atf.chess.ReleaseModuleLayoutTest#reactorConsumesOneIndependentReleaseArtifact
+    contract: "Extrage JAR-ul de release și adaptoarele; păstrează identitatea, dovezile imuabile și independența buildurilor jocului"
+    allowDelete: true
+
+  - id: CHESS-RELEASE-MODULE-9
+    base: "a177b4ed6ed8641ce7232f37309536e9b463c164"
+    from: scripts/verify-signing-continuity.ps1
+    replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseModuleLayoutTest.java
+    test: ro.atf.chess.ReleaseModuleLayoutTest#reactorConsumesOneIndependentReleaseArtifact
+    contract: "Extrage JAR-ul de release și adaptoarele; păstrează identitatea, dovezile imuabile și independența buildurilor jocului"
+    allowDelete: true
+
+  - id: CHESS-RELEASE-MODULE-10
+    base: "a177b4ed6ed8641ce7232f37309536e9b463c164"
+    from: scripts/verify-authenticated-download.ps1
+    replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseModuleLayoutTest.java
+    test: ro.atf.chess.ReleaseModuleLayoutTest#reactorConsumesOneIndependentReleaseArtifact
+    contract: "Extrage JAR-ul de release și adaptoarele; păstrează identitatea, dovezile imuabile și independența buildurilor jocului"
+    allowDelete: true
+
+  - id: CHESS-RELEASE-MODULE-11
+    base: "a177b4ed6ed8641ce7232f37309536e9b463c164"
+    from: scripts/sync-published-release.ps1
+    replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseModuleLayoutTest.java
+    test: ro.atf.chess.ReleaseModuleLayoutTest#reactorConsumesOneIndependentReleaseArtifact
+    contract: "Extrage JAR-ul de release și adaptoarele; păstrează identitatea, dovezile imuabile și independența buildurilor jocului"
+    allowDelete: true
+
   - id: CHESS-LOCAL-RELEASE-DELIVERY
     base: "74b52690af33b241acd67393b095c2de161bb532"
     from: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java

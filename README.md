@@ -72,7 +72,7 @@ flowchart LR
 
 ### Compunerea surselor și dovezile
 
-Aceste zone nu sunt cinci module Maven. [POM-ul rădăcină](pom.xml) declară doar `atf-tests`; POM-ul său compilează motorul și adaugă sursele instrumentelor de livrare, iar Android și Web au propriile puncte de intrare pentru build.
+[POM-ul rădăcină](pom.xml) declară două module Maven: `release-tools` produce biblioteca și CLI-ul de release, iar `atf-tests` consumă acel artefact. Android și Web își păstrează punctele proprii de construire.
 
 ```mermaid
 %%{init: {"theme":"neutral","themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":20,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24}}}%%
@@ -88,7 +88,7 @@ flowchart LR
     Source -->|Gradle împachetează| Android
     Source -->|TeaVM compilează| Worker
     Source -->|Maven compilează| Tests
-    Tools -->|Maven adaugă surse| Tests
+    Tools -->|furnizează JAR-ul| Tests
     Receipts -->|publică observații verificate| Tests
     Tests -->|înregistrează aserțiuni| Extent
     Android -->|identitate candidat| Gate
@@ -99,7 +99,7 @@ flowchart LR
 <summary>Legendă — builduri, rapoarte și scopul acceptanței</summary>
 
 - **Gradle** declară `:app` și include `chess-core/src/main/java` și `chess-core/src/main/resources` în buildul Android.
-- **Maven** declară doar `atf-tests`, compilând `chess-core/src/main/java` și `release-tools/src/main/java` și încărcând `chess-core/src/main/resources`.
+- **Maven** declară `release-tools` și `atf-tests`; compilează `release-tools/src/main/java` într-un JAR independent. Consumatorul compilează `chess-core/src/main/java` și încarcă `chess-core/src/main/resources`.
 - **Biblioteci ATF** oferă `atf-reporting` și `atf-test-kit` cu scope `test`. [POM-ul testelor](atf-tests/pom.xml) · [Gradle Android](android/app/build.gradle)
 - Buildul Web pregătește aceleași resurse de catalog pentru TeaVM. Paritatea workerului compară comportamentul pachetului efectiv cu așteptările JVM; este o verificare explicită, fără a fi dedusă din sursele comune.
 - Extent înregistrează aserțiunile selectate și dovezile de platformă importate. Recepțiile absente, străine sau incomplete nu trebuie transformate în rezultate acceptate de dispozitiv/browser.

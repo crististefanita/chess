@@ -43,9 +43,9 @@ class ReleaseGovernanceTest {
         Path reports = root.resolve("release").resolve(version).resolve("reports");
         Path published = Files.isRegularFile(reports.resolve("qualification.json"))
                 ? reports.resolve("qualification.json") : reports.resolve("build-artifact.json");
-        var identity = mapper.readTree(root.resolve(".atf-signing/identity.json").toFile());
+        var identity = mapper.readTree(root.resolve("release-tools/.atf-signing/identity.json").toFile());
         var baseline = mapper.readTree(published.toFile());
-        Path certificate = root.resolve(".atf-signing/certificate.der");
+        Path certificate = root.resolve("release-tools/.atf-signing/certificate.der");
         check.same("The committed certificate identifies the published signer", true,
                 projectCertificateMatches(certificate, identity, baseline));
 
@@ -337,7 +337,7 @@ class ReleaseGovernanceTest {
 
     @Test void signingRecoveryUsesTheProtectedIdentityAndExplicitlyGatesRotation(Checks check) throws IOException {
         Path root = ProjectRoot.locate();
-        String initializer = Files.readString(root.resolve("scripts/Initialize-J7Signing.ps1"));
+        String initializer = Files.readString(root.resolve("release-tools/scripts/Initialize-J7Signing.ps1"));
         check.same("Signing secrets use a protected external DPAPI record", true,
                 initializer.contains("password.dpapi") && initializer.contains("ConvertFrom-SecureString")
                         && initializer.contains("SetAccessRuleProtection"));
@@ -352,9 +352,9 @@ class ReleaseGovernanceTest {
         check.same("The actual keystore alias is checked against the protected certificate manifest", true,
                 initializer.contains("identity-verification.log") && initializer.contains("stored keystore certificate differs")
                         && initializer.contains("(Get-Content -Raw -LiteralPath $credential).Trim()"));
-        var rag = ReleaseRag.inspect(root, List.of("scripts/Initialize-J7Signing.ps1", "scripts/verify-signing-continuity.ps1"));
-        check.same("Both signing operations cite the same owner guidance", List.of("docs/release/README.md"),
-                rag.citations().stream().map(ReleaseRag.Citation::path).distinct().toList());
+        var rag = ReleaseRag.inspect(root, List.of("release-tools/scripts/Initialize-J7Signing.ps1", "release-tools/scripts/verify-signing-continuity.ps1"));
+        check.same("Both signing operations cite module and signer ownership", java.util.Set.of("docs/release/README.md", "release-tools/README.md"),
+                rag.citations().stream().map(ReleaseRag.Citation::path).collect(java.util.stream.Collectors.toSet()));
         check.same("The signer path is fully governed", List.of(), rag.needsReview());
     }
 

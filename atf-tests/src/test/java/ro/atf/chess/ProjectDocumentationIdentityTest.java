@@ -74,7 +74,7 @@ class ProjectDocumentationIdentityTest {
     }
 
     private static boolean activeGuide(String path) {
-        return path.equals("README.md") || path.equals(".atf-signing/README.md")
+        return path.equals("README.md") || path.equals("release-tools/README.md") || path.equals("release-tools/.atf-signing/README.md")
                 || path.startsWith("docs/") || path.startsWith("web/") || path.startsWith("lib/");
     }
 
