@@ -8,6 +8,8 @@ The [current calibration](current-profile-calibration.md) measures all three pro
 
 The [continuation copies](hard-continuation-copies.md) qualify the next intervention: preserve selective replay's recoveries, repair three genuine regressions and correct the source/goal mismatch in training-060. A benchmark reference must be independently validated before it becomes a learning target.
 
+The [selective repair](hard-selective-repair.md) now retains all eight first-key gains and repairs the three actual continuations in an experimental corroborated-veto copy. Its complete catalog reaches 1,222 keys / 1,193 routes. A 24-source preliminary transfer has only one extra confirmation, so the fixed paired match and broader mechanism activity remain necessary before a strength or integration claim.
+
 Treat root correctness and the explanation's continuation as separate gates. The [checked-frontier study](native-forcing-frontier.md) captures a winning Native first move followed by an unclosed queen offer; a first-choice PASS alone cannot close that mechanism. Preserve the stored counterexample without requiring future engines to repeat its bad PV.
 
 ## Working baseline
