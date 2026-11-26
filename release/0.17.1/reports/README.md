@@ -2,14 +2,19 @@
 
 ## Overview
 
-The frozen source is `83fd97c`. Strict qualification reconciled 735 component tests and 30 Android assertions for the same APK and qualification ID.
+[Strict qualification](qualification.json) binds source 83fd97c, the signed APK, 735 component tests without skips and 30 Android assertions to one run ID. [GitHub publication](github-release.json) identifies the asset. Download receipts explicitly identify the README revision and access channel used.
 
 ## Checks
 
-- [Components](components.html): no skipped cases; includes independent opponent progress and Stockfish analysis.
-- [Android Game Review](android-game-review.html): navigation and resumption in a new process.
-- [Android Stockfish Lite](android-stockfish-sanity.html): 37 original assertions, real UCI and an embedded capture.
+| Evidence | Scope |
+|---|---|
+| [Components](components.html) | Independent opponent progress, stalled/cancelled analysis, distinct MultiPV cohorts and aggregation of six saved plies. |
+| [Android Game Review](android-game-review.html) · [receipt](game-review-execution.json) | 30 assertions on the exact APK, with separate processes for resumption. |
+| [Android Stockfish Lite](android-stockfish-sanity.html) · [identity](stockfish-platform.json) | 37 assertions, actual packaged-engine UCI, hints, comparisons and an embedded capture. |
+| [EN governance and post-sync controls](governance.html) · [RO](governance-ro.html) | 71 EN checks; separate RO report. Executable code matches the frozen source; parallel changes are tests and documentation. An isolated Maven cache keeps executions independent. |
+| [Test-change review](test-change-review.html) · [executed proof](test-change-review.html.proof.html) · [identity](test-change-review-execution.json) | Review of the qualified source against an explicit Git baseline. |
+| [Web publication](web-publication.json) · [MCP observation](web-mcp-observation.json) | Matching served bytes, an opened review, three tabs in one row and restoration of the last move. Manual observation is not another automated test. |
+| [Public download](public-download.json) · [authenticated](distribution-verification.json) | HTTP 200, complete file and APK CRC; each receipt declares its README source. |
+| [RAG context](rag.txt) · [signing](signing-transition.json) | Advisory selection, review of new routes and upgrade compatibility. |
 
-Partial Android work currently has RAM reuse; durable resumption after process death remains in feedback. Publication and download receipts are added after APK upload.
-
-Later parallel changes added Hard tests and documentation only. Executable sources and resources match the qualified source; supplementary controls have a separate report.
+Partial Android work currently reuses RAM; persistence after process death remains in feedback. Extent preserves original bytes and assertions, including captures. No Native Elo gain is claimed.
