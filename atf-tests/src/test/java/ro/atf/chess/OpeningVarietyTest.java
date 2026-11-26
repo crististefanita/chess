@@ -1,6 +1,7 @@
 package ro.atf.chess;
 
 import atf.testkit.AtfComponentTest;
+import java.util.ArrayList;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -28,14 +29,27 @@ class OpeningVarietyTest {
             var moves = OpeningTheory.CURRENT.playMoves(board);
             check.same("The authored pool has genuine branching at " + prefix, true, moves.size() >= 3);
             for (var level : Level.values()) {
-                var cycle = new HashSet<Move>();
-                for (long choice = 1; choice <= moves.size(); choice++) {
-                    var selected = OpeningRepertoire.CURRENT.playReply(board, level, choice);
-                    check.same("A unique documented legal move is used before repeating", true,
-                            moves.contains(selected) && board.legalMoves().contains(selected) && cycle.add(selected));
+                List<Move> previousCycle = List.of();
+                var cycleOrders = new HashSet<List<Move>>();
+                for (long cycleIndex = 0; cycleIndex < 3; cycleIndex++) {
+                    var actualCycle = new ArrayList<Move>();
+                    for (long offset = 0; offset < moves.size(); offset++) {
+                        long choice = cycleIndex * moves.size() + offset + 1;
+                        var selected = OpeningRepertoire.CURRENT.playReply(board, level, choice);
+                        check.same("The deterministic shuffle uses a documented legal move", true,
+                                moves.contains(selected) && board.legalMoves().contains(selected));
+                        check.same("Restarting with the same saved choice restores the same first move", selected,
+                                OpeningRepertoire.CURRENT.playReply(board, level, choice));
+                        actualCycle.add(selected);
+                    }
+                    check.same("Every authored move appears once before any opening repeats", moves.size(),
+                            new HashSet<>(actualCycle).size());
+                    cycleOrders.add(List.copyOf(actualCycle));
+                    if (!previousCycle.isEmpty()) check.same("A cycle boundary never repeats its previous opening",
+                            false, previousCycle.getLast().equals(actualCycle.getFirst()));
+                    previousCycle = List.copyOf(actualCycle);
                 }
-                check.same("The next cycle is explicit and reproducible", moves.getFirst(),
-                        OpeningRepertoire.CURRENT.playReply(board, level, moves.size() + 1L));
+                check.same("Opening order varies pseudo-randomly between cycles", true, cycleOrders.size() > 1);
             }
         }
     }
@@ -67,6 +81,7 @@ class OpeningVarietyTest {
     @Test void atomicNewGamesRotateAcrossRestartAndTenSlotReplacement(Checks check) {
         var disk = new MemoryPreferences();
         var openings = new HashSet<Move>();
+        Move previousOpening = null;
         for (int number = 1; number <= 12; number++) {
             var store = store(disk);
             var match = store.prepareAiMatch(SETUP);
@@ -75,7 +90,10 @@ class OpeningVarietyTest {
             check.same("The slot and choice commit together", true, store.startMatch(slot, match, true, false, false));
             var reopened = store(disk).readMatch(slot);
             check.same("Process restart preserves the checkpoint byte for byte", match.checkpoint(), reopened.checkpoint());
-            openings.add(reopened.chooseBotMove());
+            var opening = reopened.chooseBotMove();
+            check.same("Adjacent new games do not repeat the same first move", false, opening.equals(previousOpening));
+            openings.add(opening);
+            previousOpening = opening;
         }
         check.same("New games genuinely vary White's first move", true, openings.size() >= 3);
         check.same("Retention remains ten slots", 10, store(disk).savedMatchSlots().size());

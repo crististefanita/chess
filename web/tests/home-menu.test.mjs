@@ -14,10 +14,11 @@ const base = new URL('../../', import.meta.url);
 const read = path => readFile(new URL(path, base), 'utf8');
 
 test('Inline analysis starts unchecked and shares the board frame geometry', async () => {
-    const [layout, html, styles] = await Promise.all([
+    const [layout, html, styles, studyStyles] = await Promise.all([
         read('android/app/src/main/res/layout/match_setup.xml'),
         read('web/src/main/web/index.html'),
         read('web/src/main/web/game-review.css'),
+        read('web/src/main/web/study-analysis.css'),
     ]);
     const native = layout.match(/<CheckBox android:id="@\+id\/match_analysis_option"[^>]+>/)?.[0];
     assert.ok(native);
@@ -33,6 +34,9 @@ test('Inline analysis starts unchecked and shares the board frame geometry', asy
     const history = html.match(/<nav id="match-history"[^>]*>([^]*?)<\/nav>/)?.[1] ?? '';
     assert.match(history, /id="match-previous"[^]*id="match-next"[^]*id="match-inline-hint"/);
     assert.match(styles, /\.match-board-frame\s*\{[^}]*inline-size:\s*min\(100%,\s*var\(--play-board-limit\)\)/);
+    assert.match(styles, /#match-inline-branches\s*\{\s*flex-wrap:\s*nowrap;\s*\}/);
+    assert.match(styles, /#match-inline-branches button\s*\{[^}]*text-overflow:\s*ellipsis;[^}]*white-space:\s*nowrap;/);
+    assert.match(studyStyles, /\.analysis-study-replay \.analysis-study-variants\s*\{[^}]*flex-wrap:\s*nowrap;/);
 });
 
 test('Home ends with native settings and archive tools belong to standalone review', async () => {
@@ -265,10 +269,25 @@ test('Inline analysis projects the score, lamp and playable theory for the displ
     assert.deepEqual(cues.at(-1), ['e2e4', true]);
     replay.click();
     assert.equal(worker.messages.at(-1).action, 'preview');
-    const line = { kind: 'THEORY', ply: 0, total: 6, branch: 0, branches: ['e2e4', 'd2d4'], name, eco: 'C50' };
+    const line = { kind: 'THEORY', ply: 0, total: 6, branch: 0, branches: ['e2e4', 'd2d4', 'c2c4'], name, eco: 'C50' };
     answer({ ...shown, preview: line });
     assert.equal(dialog.open, true);
     assert.equal(dialog.style['--replay-board-side'], '328.8px', 'capture the board, excluding its evaluation rail');
+    const recommendationTabs = find('match-inline-branches');
+    assert.equal(recommendationTabs.getAttribute('role'), 'group');
+    assert.equal(recommendationTabs.getAttribute('aria-label'), 'Variante recomandate');
+    assert.deepEqual(recommendationTabs.children.map(button => button.textContent),
+        ['Linia 1 · e2–e4', 'Linia 2 · d2–d4', 'Linia 3 · c2–c4']);
+    assert.deepEqual(recommendationTabs.children.map(button => button.getAttribute('aria-pressed')),
+        ['true', 'false', 'false']);
+    recommendationTabs.children[1].click();
+    assert.equal(worker.messages.at(-1).action, 'preview-branch');
+    assert.equal(worker.messages.at(-1).index, 1);
+    answer({ ...shown, preview: { ...line, branch: 1 } });
+    assert.deepEqual(recommendationTabs.children.map(button => button.getAttribute('aria-pressed')),
+        ['false', 'true', 'false']);
+    recommendationTabs.children[0].click();
+    answer({ ...shown, preview: line });
     find('match-board').width = 560;
     assert.match(find('match-inline-evidence').textContent, /Partida italiană · C50/);
     assert.equal(find('match-inline-previous').disabled, true);
