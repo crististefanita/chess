@@ -34,11 +34,18 @@ final class OpeningRepertoire {
     }
 
     Move playReply(ChessPosition position, Level level, long openingChoice) {
+        return playReply(position, level, openingChoice, null);
+    }
+
+    /** Uses measured Stockfish roots only for a newly created, exact-history opening choice. */
+    Move playReply(ChessPosition position, Level level, long openingChoice, String prefix) {
         if (openingChoice < 0) throw new IllegalArgumentException("Negative opening choice");
         var verified = reply(position, level);
         if (verified != null) return verified;
         if (entries.stream().anyMatch(entry -> entry.reviewOnly() && entry.levels().contains(level)
                 && entry.position().sameForRepetition(position))) return null;
+        var measured = openingChoice > 0 && prefix != null ? OpeningReference.playingMoves(prefix, position) : List.<Move>of();
+        if (!measured.isEmpty()) return variedMove(position, measured, openingChoice);
         var moves = OpeningTheory.CURRENT.playMoves(position);
         if (openingChoice > 0 && !moves.isEmpty()) return variedMove(position, moves, openingChoice);
         var paths = OpeningTheory.CURRENT.choices(position);
@@ -52,7 +59,7 @@ final class OpeningRepertoire {
         long cycle = ordinal / size;
         int offset = (int) (ordinal % size);
         var permutation = permutation(position, moves, cycle);
-        if (cycle > 0 && size > 1 && permutation.getFirst().equals(permutation(position, moves, cycle - 1).getLast())) {
+        if (cycle > 0 && size > 1 && permutation.get(0).equals(permutation(position, moves, cycle - 1).get(size - 1))) {
             Collections.swap(permutation, 0, 1);
         }
         return permutation.get(offset);

@@ -40,6 +40,7 @@ class ChessWebAnalysisStudyTest {
                 "Reported analysis score uses the same side, mate and decimal policy as Android",
                 "A revealed analysis hint names its moves and opening for screen readers",
                 "Analysis places evaluation to the left and all history controls in APK order",
+                "Analysis bulb is a muted outline until a recommendation is revealed",
                 "Analysis uses the AI match capture trays at the selected ply and clears them in replay",
                 "Selecting an offscreen analysis move scrolls only the strip in either direction",
                 "Analysis replay captures the source before hiding its meter and keeps the size through stepping",

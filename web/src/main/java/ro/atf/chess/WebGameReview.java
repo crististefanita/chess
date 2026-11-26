@@ -71,6 +71,7 @@ final class WebGameReview {
         var evidence = explanation == null ? null : explanation.evidence().orElse(null);
         boolean history = snapshot.branch() == Branch.HISTORY;
         return "{\"revision\":" + revision + ",\"fen\":" + quote(placement(position))
+                + ",\"reviewCheckpoint\":" + quote(archive.match().checkpoint()) + ",\"rated\":" + archive.rated()
                 + ",\"sideToMove\":" + quote(position.turn().name())
                 + ",\"atEntry\":" + timeline.atEntry()
                 + ",\"nextKey\":" + timeline.nextKeyMomentPly().isPresent()
@@ -120,6 +121,7 @@ final class WebGameReview {
         }
         var opening = review.opening();
         return ",\"moves\":" + moves.append(']') + ",\"gradeKeys\":" + grades.append(']') + ",\"whitePoints\":" + points.append(']')
+                + ",\"engine\":" + WebExternalAnalysis.provider(review)
                 + ",\"opening\":" + (opening == null ? "null" : "{\"eco\":" + quote(opening.eco()) + ",\"name\":" + quote(opening.name()) + "}")
                 + ",\"humanSide\":" + quote(human.name()) + ",\"level\":" + quote(match.setup().level().name())
                 + ",\"gradeCounts\":" + counts.append(']') + ",\"players\":{\"WHITE\":" + player(review.white()) + ",\"BLACK\":" + player(review.black()) + "}";

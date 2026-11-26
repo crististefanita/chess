@@ -9,8 +9,40 @@ final class WebMatchAnalysis {
     private final WebHintReplay replay = new WebHintReplay();
     private final MatchAnalysisCache cache = new MatchAnalysisCache();
     private Frame frame;
+    private ExternalEngineAnalysis.Context externalContext;
+
+    String prepareExternal(String checkpoint, int ply, int revision) {
+        if (frame != null && revision < frame.revision()) return prepared(state("STALE"), null);
+        var match = ChessMatch.restore(checkpoint);
+        var context = ExternalEngineAnalysis.context(match, ply);
+        boolean same = frame != null && revision == frame.revision() && checkpoint.equals(frame.checkpoint()) && ply == frame.ply()
+                && externalContext != null && context.contextKey().equals(externalContext.contextKey());
+        if (!same) {
+            String evaluation = ply == match.ply() && match.result() != Result.IN_PROGRESS
+                    ? WebBoardState.terminalEvaluation(match.result()) : "null";
+            frame = new Frame(checkpoint, ply, revision, match.positionAt(ply), null, evaluation);
+            replay.close(); externalContext = context;
+        }
+        boolean needs = match.analysisEnabled() && context.result().equals("IN_PROGRESS") && frame.hint() == null && "null".equals(frame.evaluation());
+        return prepared(state("APPLIED"), needs ? context : null);
+    }
+
+    String applyExternal(int revision, String key, String result) {
+        if (frame == null || externalContext == null || revision != frame.revision() || !key.equals(externalContext.contextKey())) return state("STALE");
+        var observed = ExternalEngineAnalysis.batch(ChessMatch.restore(frame.checkpoint()), frame.ply(), result);
+        WebExternalAnalysis.requireCurrent(observed.provider());
+        var hint = MatchHint.external(frame.position(), observed);
+        frame = new Frame(frame.checkpoint(), frame.ply(), frame.revision(), frame.position(), hint, WebExternalAnalysis.evaluation(frame.position(), observed));
+        replay.close();
+        return state("APPLIED");
+    }
+
+    private static String prepared(String state, ExternalEngineAnalysis.Context context) {
+        return "{\"state\":" + state + ",\"request\":" + (context == null ? "null" : context.json()) + "}";
+    }
 
     String open(String checkpoint, int ply, int revision) {
+        externalContext = null;
         if (frame != null && revision <= frame.revision()) {
             boolean sameFrame = revision == frame.revision() && ply == frame.ply() && checkpoint.equals(frame.checkpoint());
             return state(sameFrame ? "APPLIED" : "STALE");
@@ -67,7 +99,9 @@ final class WebMatchAnalysis {
         String fields = "{\"outcome\":" + quote(outcome) + ",\"analysis\":";
         if (frame == null) return fields + "null}";
         return fields + "{\"revision\":" + frame.revision() + ",\"ply\":" + frame.ply()
-                + ",\"evaluation\":" + frame.evaluation() + ",\"hint\":" + hint(frame.hint()) + ",\"preview\":" + replay.state() + "}}";
+                + ",\"evaluation\":" + frame.evaluation() + ",\"hint\":" + hint(frame.hint()) + ",\"preview\":" + replay.state()
+                + (externalContext == null ? "" : ",\"contextKey\":" + quote(externalContext.contextKey()) + ",\"pending\":" + (frame.hint() == null && "null".equals(frame.evaluation()))
+                    + ",\"engine\":" + (frame.hint() == null ? "null" : frame.hint().external().map(batch -> batch.provider().json()).orElse("null"))) + "}}";
     }
 
     private static String hint(MatchHint hint) {

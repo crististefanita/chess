@@ -75,8 +75,12 @@ class HintReplayPresentationTest {
         String worker = Files.readString(root.resolve("web/src/main/java/ro/atf/chess/WebHintReplay.java"));
         check.same("Calculated and theory hints select their mode in the same native surface", true,
                 calculated.contains("AnalysisReplayDialog.Mode.CALCULATED") && calculated.contains("AnalysisReplayDialog.Mode.THEORY"));
-        check.same("The native adapter uses the same defended replay model as the Web worker", true,
-                calculated.contains("HintPreview.openDefended(root, line)") && worker.contains("HintPreview.openDefended(root, line)"));
+        String presentation = Files.readString(root.resolve("android/app/src/main/java/ro/atf/chess/android/CoachingPresentation.java"));
+        check.same("An external PV is replayed without a native leaf estimate", true,
+                calculated.contains("CoachingPresentation.preview(root, line)") && presentation.contains("HintPreview.open(root, line)")
+                        && !calculated.contains("HintPreview.openDefended("));
+        check.same("Root engine scores retain their original provider and completed depth", true,
+                calculated.contains("external.provider().version(), external.depth()") && calculated.contains("observed.evaluation(root.turn())"));
         check.same("Calculated hints use the measured fullscreen workspace with fixed controls", true,
                 surface.contains("new GameReviewWorkspace(context, board, controls, scroll, sourceBoardSide)")
                         && workspace.contains("ReplayBoardLayout.fit(") && workspace.contains("GameReviewLayout.fit("));

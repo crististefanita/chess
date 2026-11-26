@@ -278,15 +278,19 @@ test('Inline analysis projects the score, lamp and playable theory for the displ
     assert.equal(recommendationTabs.getAttribute('aria-label'), 'Variante recomandate');
     assert.deepEqual(recommendationTabs.children.map(button => button.textContent),
         ['Linia 1 · e2–e4', 'Linia 2 · d2–d4', 'Linia 3 · c2–c4']);
+    assert.deepEqual(recommendationTabs.children.map(button => button.getAttribute('aria-label')),
+        ['Linia 1 · e2–e4', 'Linia 2 · d2–d4', 'Linia 3 · c2–c4']);
     assert.deepEqual(recommendationTabs.children.map(button => button.getAttribute('aria-pressed')),
         ['true', 'false', 'false']);
     recommendationTabs.children[1].click();
     assert.equal(worker.messages.at(-1).action, 'preview-branch');
     assert.equal(worker.messages.at(-1).index, 1);
+    assert.equal(workers.length, 1, 'selecting a candidate line does not launch another Stockfish worker');
     answer({ ...shown, preview: { ...line, branch: 1 } });
     assert.deepEqual(recommendationTabs.children.map(button => button.getAttribute('aria-pressed')),
         ['false', 'true', 'false']);
     recommendationTabs.children[0].click();
+    assert.equal(worker.messages.at(-1).index, 0);
     answer({ ...shown, preview: line });
     find('match-board').width = 560;
     assert.match(find('match-inline-evidence').textContent, /Partida italiană · C50/);

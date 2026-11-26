@@ -11,13 +11,13 @@ import java.util.stream.Collectors;
 import ro.atf.chess.ChessPosition.Move;
 import ro.atf.chess.ChessPosition.Side;
 
-/** Measured, versioned opening references; never an input to the playing AI. */
+/** Measured, versioned opening references for opening study and covered opponent choices. */
 public final class OpeningReference {
     private static final class Current {
         static final OpeningReference VALUE = read(ChessYaml.resource("opening-reference.yaml"));
     }
 
-    private record Entry(int whiteCp, int delta, List<TacticalAnalysis.Variation> lines) { }
+    private record Entry(ChessPosition position, int whiteCp, int delta, List<TacticalAnalysis.Variation> lines) { }
     private final String engine;
     private final int depth;
     private final Map<String, Entry> entries;
@@ -30,6 +30,16 @@ public final class OpeningReference {
 
     public static MatchHint analyze(OpeningCatalog.Opening opening, int ply) {
         return Current.VALUE.analyze(opening, ply, () -> MatchHint.analyze(opening.positionAt(ply)));
+    }
+
+    static List<Move> playingMoves(String prefix, ChessPosition position) {
+        return Current.VALUE.movesFor(prefix, position);
+    }
+
+    private List<Move> movesFor(String prefix, ChessPosition position) {
+        var entry = entries.get(prefix);
+        if (entry == null || !entry.position().sameForRepetition(position)) return List.of();
+        return entry.lines().stream().map(TacticalAnalysis.Variation::move).toList();
     }
 
     MatchHint analyze(OpeningCatalog.Opening opening, int ply, Supplier<MatchHint> live) {
@@ -85,7 +95,7 @@ public final class OpeningReference {
             }
             if (lines.isEmpty() || lines.size() > 3 || lines.get(0).score() != score * sign)
                 throw new IllegalArgumentException("Reference score and leader differ");
-            entries.put(moves, new Entry(score, ChessYaml.number(row, "delta-white-cp"), List.copyOf(lines)));
+            entries.put(moves, new Entry(board, score, ChessYaml.number(row, "delta-white-cp"), List.copyOf(lines)));
         }
         for (var row : entries.entrySet()) {
             String path = row.getKey();

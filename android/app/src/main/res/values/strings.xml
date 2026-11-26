@@ -108,6 +108,7 @@
     <string name="match_bot_wins">Checkmate · AI wins</string>
     <string name="match_analysis_option">AI analysis for a new game</string>
     <string name="match_analysis_pending">AI analysis…</string>
+    <string name="match_analysis_failed">Stockfish is unavailable. Reopen analysis to retry.</string>
     <string name="match_analysis_ended">AI analysis · Game over</string>
     <string name="match_analysis_incomplete">Tactical verification incomplete · No final score</string>
     <string name="match_analysis_advantage">%1$s · %2$s</string>
@@ -267,6 +268,9 @@
     <string name="game_review_close">Close</string>
     <string name="game_review_progress">Analyzing moves %1$d / %2$d</string>
     <string name="game_review_failed">Analysis could not finish. Close this screen and open Game review again.</string>
+    <string name="game_review_legacy_engine">Archived Chess Lab analysis · Previous engine. Read-only until reanalysis.</string>
+    <string name="game_review_stockfish_engine">Stockfish %1$s · Full-strength analysis</string>
+    <string name="game_review_stockfish_reanalyze">Reanalyze with Stockfish</string>
     <string name="game_review_incomplete">Tactical verification could not finish. No final scores were saved.</string>
     <string name="game_review_unknown_opening">Opening unidentified in the local catalog</string>
     <string name="game_review_graph">Evaluation by move · White above the center</string>

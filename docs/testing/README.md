@@ -5,9 +5,12 @@
 Alegeți cel mai mic nivel de testare care poate observa schimbarea. Construiți dintr-o copie a sursei în TMP.
 
 - [Statusul măsurat al Hard nativ](hard-status.md) separă dovada matelor cu toate apărările, conversia materială și instantaneul Elo pe perechi.
+- [Native Hard A/B și Elo](hard-ab-elo.md) guvernează brațele de viteză/forță, observațiile Stockfish pe mutare, transferul pe familii noi și comparațiile de rating pe perechi. Algoritmul, bugetul și timpul sunt experimente separate.
 - [Suitele JVM](#suite-jvm) verifică regulile, adaptoarele și guvernanța fără emulator.
 - [Sanity Android](#sanity-android) și [paritatea Web](#paritatea-web-a-motorului) acoperă, când e nevoie, randarea, ciclul de viață și tehnologiile asistive reale.
 - [Dovezile Extent](#raportare-extent) leagă aserțiunile de rulare. [Calificarea](../release/README.md#calificare-și-publicare) guvernează promovarea.
+
+- [Calificarea Stockfish](../../web/stockfish.md#verificare) separă componentele, transportul host real, WASM Web fixat și APK-ul Android efectiv. ChessWebStockfishTransportTest importă așteptat/observat/verdict original în Extent și respinge recepții străine sau goale. Validarea comună nu transformă rezultatele browserului ori hostului în PASS Android. Native Hard rămâne adversar independent.
 
 <details>
 <summary>Dovezi pentru deschideri și repertoriu</summary>
@@ -176,6 +179,19 @@ oferite și comparate, replicile, adâncimile și nodurile efective. [Rulare și
 
 Fiecare semimutare, inclusiv replica adversarului, cere analiza efectivă Hard cu istoric. Componentele resping recepții lipsă sau străine; publicatorul benchmark rejucă dovezile înainte de Elo și Extent. [Protocol, comandă și interpretare](hard-audit.md)
 
+Porniți altă campanie doar după ce un candidat numit schimbă o ratare păstrată printr-un mecanism general. Comparați întâi minimax independent, limite TT înguste/complet deschise, cache rece/cald, repetiții, ieșiri legale din șah și întreruperi. Problemele izolează cauza, păstrând etapele, sacrificiile și apărările. Înghețați familii noi înainte de profesor; cereți linie completă și conversie înainte de duel. Separați WDL/CP/mat de ΔElo și păstrați neterminatele. Alocarea redusă nu dovedește viteză, nici mai mult lucru cu aceleași alegeri forță. [Priorități și controale consultate](../feedback/hard.md#priorități)
+
+### Analiză Stockfish și transport Android
+
+Fațada [StockfishCoaching](../../chess-core/src/main/java/ro/atf/chess/StockfishCoaching.java) și transportul [StockfishTransport](../../chess-core/src/main/java/ro/atf/chess/StockfishTransport.java) sunt separate de adversarul Native. Partida, tabla manuală, deschiderea și review-ul cer FEN/istoric complet, identitate exactă de sursă/opțiuni și PV legale. Comparațiile liber/jucat au adâncime comună încheiată, fără limite amestecate sau lot MultiPV parțial. PV mai lungă nu dovedește forță; căutarea încheiată nu este dovadă exhaustivă, iar plafonul cerut nu este lucrul consumat.
+
+Componentele `StockfishCoachingComponentTest`, `AndroidStockfishCoachingTest` și `ExternalEngineAnalysisTest` verifică istorice, cohorte complete, anulare, arhive și perspectiva WDL. Stockfish blocat permite adversarului Native programat independent să încheie cu aceeași mutare, orizont și lucru. Proba Web compilată verifică și ea această graniță cu adversarul Java real. Extent păstrează numerele și aserțiunile rulării; componentele nu califică randarea Android.
+
+`StockfishNativeTransportTest` este probă host reală activată prin `chess.stockfish.executable` și `chess.stockfish.receipts` extern. PASS-ul propriu păstrează transcriptul, indicii/review validate și închiderea procesului. Sursa, digestul și UCI `position`/`go`/`info`/`bestmove` rămân auditabile; binarul host nu substituie pachetul Android.
+
+Android țintește API 26 pe ARM64, x86_64 și ARMv7, cu Stockfish Lite 19 local și rețeaua mică compatibilă. Verificați [manifestul](../../android/app/src/main/assets/stockfish/manifest.json), pinii binar/sursă/date pe ABI, notificările GPL și [controlul Gradle](../../android/stockfish-package.gradle). Build/lint și proba Stockfish-only păstrează acceptarea separată. APK-ul identificat trebuie să pornească motorul și să exercite partidă/tablă/deschidere/review, anulare și restart, cu UCI, aserțiuni și capturi; fără PASS dispozitiv dedus din componente sau host.
+
+Persistența are domenii explicite: jurnalele Web reiau durabil observații complete pe semimutare. Android păstrează cache RAM de 64 de căutări, maximum 64 de recepții brute de diagnostic și review-uri arhivate finale durabile. Cache-ul parțial nu se restaurează după moartea procesului. Testați separat redeschiderea arhivei și calculul lipsurilor; fără afirmații despre recuperare incrementală neimplementată. [Contractul stocării](../../web/stockfish.md#analize-salvate)
 </details>
 
 ## Paritatea Web a motorului

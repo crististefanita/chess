@@ -72,10 +72,49 @@ class OpeningVarietyTest {
     @Test void nativeDecisionUsesTheSavedChoiceForEveryProfile(Checks check) {
         for (var level : Level.values()) for (long choice = 1; choice <= 4; choice++) {
             var game = ChessMatch.start(new MatchSetup(Side.WHITE, level, true), choice).play(Move.fromUci("e2e4"));
-            var expected = OpeningRepertoire.CURRENT.playReply(game.position(), level, choice);
+            var expected = OpeningRepertoire.CURRENT.playReply(game.position(), level, choice, "e2e4");
             check.same("The actual native decision follows this game's opening choice", expected, game.chooseBotMove());
             check.same("Restart retains the same actual decision", game.botDecision(), ChessMatch.restore(game.checkpoint()).botDecision());
         }
+    }
+
+    @Test void coveredOpponentChoicesRotateOnlyAmongMeasuredStockfishRoots(Checks check) {
+        int coveredFrames = 0;
+        int multiRootFrames = 0;
+        int threeRootFrames = 0;
+        for (var lesson : OpeningCatalog.load()) for (int ply = 0; ply < lesson.steps().size(); ply++) {
+            var board = lesson.positionAt(ply);
+            String prefix = OpeningReference.prefix(lesson, ply);
+            var measured = OpeningReference.playingMoves(prefix, board);
+            if (measured.isEmpty()) continue;
+            coveredFrames++;
+            if (measured.size() > 1) multiRootFrames++;
+            if (measured.size() == 3) threeRootFrames++;
+            for (var level : Level.values()) {
+                var verified = OpeningRepertoire.CURRENT.reply(board, level);
+                var firstChoice = OpeningRepertoire.CURRENT.playReply(board, level, 1, prefix);
+                if (firstChoice == null) {
+                    for (int choice = 2; choice <= measured.size(); choice++) {
+                        check.same("A review-only exclusion remains outside opponent play", null,
+                                OpeningRepertoire.CURRENT.playReply(board, level, choice, prefix));
+                    }
+                    continue;
+                }
+                var eligible = verified == null ? measured : List.of(verified);
+                var selected = new HashSet<Move>();
+                for (int choice = 1; choice <= eligible.size(); choice++) {
+                    var move = OpeningRepertoire.CURRENT.playReply(board, level, choice, prefix);
+                    check.same(lesson.id() + "/" + ply + " preserves the verified override or chooses a measured legal root",
+                            true, eligible.contains(move) && board.legalMoves().contains(move));
+                    selected.add(move);
+                }
+                check.same(lesson.id() + "/" + ply + " visits each eligible override or measured alternative once",
+                        new HashSet<>(eligible), selected);
+            }
+        }
+        check.same("The measured book covers exact catalog positions", true, coveredFrames > 100);
+        check.same("At least 90% of covered positions expose multiple close alternatives", true, multiRootFrames * 100 >= coveredFrames * 90);
+        check.same("At least 80% of covered positions expose all three validated roots", true, threeRootFrames * 100 >= coveredFrames * 80);
     }
 
     @Test void atomicNewGamesRotateAcrossRestartAndTenSlotReplacement(Checks check) {
@@ -186,6 +225,12 @@ class OpeningVarietyTest {
                     OpeningRepertoire.CURRENT.playReply(legacy.position(), level, 2));
             check.same("The existing profile search, horizon and costs remain unchanged", legacy.botDecision(level), replay(2, exit).botDecision(level));
         }
+        var exact = replay(2, "e2e4 e7e5 g1f3");
+        var differentHistory = replay(2, "e2e4 e7e5 b1c3");
+        check.same("The measured roots are bound to their exact recorded prefix", List.of(),
+                OpeningReference.playingMoves("e2e4 e7e5 b1c3", differentHistory.position()));
+        check.same("The known exact prefix retains its measured alternatives", true,
+                OpeningReference.playingMoves("e2e4 e7e5 g1f3", exact.position()).size() > 1);
     }
 
     @Test void openingRotationCannotAlterThePublicHintOrFinalReview(Checks check) {

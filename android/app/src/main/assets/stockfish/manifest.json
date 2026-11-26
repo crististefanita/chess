@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "buildStatus": "BUILT_AND_PINNED",
+  "version": "19.0.1",
+  "flavor": "lite",
+  "sourceCommit": "0d5dd7944f88c817c07a26bc4fb1905d5f9c46d6",
+  "minSdk": 26,
+  "elfPageAlignment": 16384,
+  "ndkVersion": "30.0.16248370",
+  "sourceArchive": {
+    "path": "stockfish-js-19.0.1-lite-source.tar.gz",
+    "bytes": 426352,
+    "sha256": "e5289a920554bf0069a6601c228e81d957c00522bb31c4343588dc5d7d251879",
+    "url": "https://github.com/nmrugg/stockfish.js/archive/0d5dd7944f88c817c07a26bc4fb1905d5f9c46d6.tar.gz"
+  },
+  "sourcePatch": {
+    "path": "source/native-main-unique-ptr.patch",
+    "sha256": "e5b023f014e4644dbcbf87a328ff8cd897530877621e8a5b2a4626f9f16236ef",
+    "bytes": 236,
+    "scope": "NATIVE_ONLY_UNIQUE_PTR_ENTRY_CORRECTION",
+    "patchedMainSha256": "b6c41d12a0cac6266ccdd995038ac50c75e9792d4f20761a0ed07ad2b6618626"
+  },
+  "network": {
+    "path": "nn-61e7af4bb97d.nnue",
+    "bytes": 1166381,
+    "sha256": "61e7af4bb97d51eeeb25d322916f86513b5cd3a827ce189c98c6e31946f99e5b",
+    "url": "https://tests.stockfishchess.org/api/nn/nn-61e7af4bb97d.nnue"
+  },
+  "binaries": [
+    {
+      "abi": "arm64-v8a",
+      "providerID": "stockfish-19.0.1-android-lite-arm64-v8a",
+      "path": "arm64-v8a/libstockfish.so",
+      "bytes": 1113112,
+      "sha256": "35254c2d02a2891b2b9c9d1b87bf327f49420b3558ef294c83c91b75fd65a894"
+    },
+    {
+      "abi": "x86_64",
+      "providerID": "stockfish-19.0.1-android-lite-x86_64",
+      "path": "x86_64/libstockfish.so",
+      "bytes": 1149296,
+      "sha256": "39406bfa7bfb8845961d85bebe228a30781e1e1a56efc2b1f3f73186a36b8935"
+    },
+    {
+      "abi": "armeabi-v7a",
+      "providerID": "stockfish-19.0.1-android-lite-armeabi-v7a",
+      "path": "armeabi-v7a/libstockfish.so",
+      "bytes": 728504,
+      "sha256": "4eb00bff96f97e1f529cefe9cf4c05198941efc75af05c56f6bc8664f240049b"
+    }
+  ]
+}

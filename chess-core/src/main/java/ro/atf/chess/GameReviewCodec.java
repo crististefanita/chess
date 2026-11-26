@@ -21,6 +21,7 @@ import ro.atf.chess.GameReview.Rating;
 /** Versioned analysis cache bound to the exact completed checkpoint. */
 public final class GameReviewCodec {
     private static final int VERSION = 3;
+    private static final int EXTERNAL_VERSION = 4;
     static final int MAX_LINE_LENGTH = 64;
 
     private GameReviewCodec() { }
@@ -32,6 +33,13 @@ public final class GameReviewCodec {
     static String encode(GameReview review, String digest) {
         var bytes = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(bytes)) {
+            if (review.external() != null) {
+                out.writeInt(EXTERNAL_VERSION); out.writeUTF(digest);
+                byte[] evidence = review.external().json().getBytes(StandardCharsets.UTF_8);
+                if (evidence.length > 4_000_000) throw new IllegalArgumentException("External review is too large");
+                out.writeInt(evidence.length); out.write(evidence); out.write(PortableSha256.digest(evidence));
+                return Base64.getEncoder().encodeToString(bytes.toByteArray());
+            }
             out.writeInt(VERSION);
             out.writeUTF(digest);
             out.writeBoolean(review.opening() != null);
@@ -70,8 +78,18 @@ public final class GameReviewCodec {
     static GameReview decodeLine(ChessMatch match, String encoded, String digest) {
         try (var in = new DataInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(encoded)))) {
             int version=in.readInt();
-            if ((version<1||version>VERSION) || !digest.equals(in.readUTF())) {
+            if ((version<1||version>EXTERNAL_VERSION) || !digest.equals(in.readUTF())) {
                 throw new IllegalArgumentException("Review belongs to another checkpoint or version");
+            }
+            if (version == EXTERNAL_VERSION) {
+                int size = in.readInt();
+                if (size < 1 || size > 4_000_000) throw new IllegalArgumentException("Invalid external review size");
+                byte[] evidence = new byte[size]; in.readFully(evidence);
+                byte[] observedHash = new byte[32]; in.readFully(observedHash);
+                if (!java.util.Arrays.equals(observedHash, PortableSha256.digest(evidence)))
+                    throw new IllegalArgumentException("External review evidence was modified");
+                if (in.read() != -1) throw new IllegalArgumentException("Unexpected external review data");
+                return GameReview.external(match, ExternalEngineAnalysis.review(match, new String(evidence, StandardCharsets.UTF_8)));
             }
             var opening = in.readBoolean() ? new GameReview.Opening(in.readUTF(), in.readUTF()) : null;
             int book = in.readInt();

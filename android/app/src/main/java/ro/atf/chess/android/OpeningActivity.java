@@ -253,6 +253,7 @@ public final class OpeningActivity extends BackNavigableActivity {
             aiEnabled = !aiEnabled;
             if (!aiEnabled) {
                 if (analysis.revealedMove() != null) clearSelection();
+                analysis.suspend();
             }
             render();
         });
@@ -574,7 +575,7 @@ public final class OpeningActivity extends BackNavigableActivity {
     @Override protected void onPause() {
         resumed = false;
         main.removeCallbacks(bookReply);
-        if (analysis != null) analysis.cancel();
+        if (analysis != null) analysis.suspend();
         super.onPause();
     }
 

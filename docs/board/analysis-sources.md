@@ -1,51 +1,61 @@
 # Sursele analizei și liniile selectabile
 
+## Contractul analizei cerute
+
+Destinația cerută este **Stockfish Lite** pentru fiecare indiciu calculat, bară, comparație și analiză intermediară/finală pe Android, Web găzduit și localhost. Se aplică partidelor AI, tablei de analiză și deschiderilor. Nivelul adversarului nu poate slăbi sau înlocui furnizorul analizei. Lipsa unui rezultat nu poate selecta implicit Native. [Matrice, lucru incomplet și responsabilul livrării](../feedback/stockfish-web.md)
+
+Tabelul descrie candidatul Lite și rutele distincte ale referințelor memorate. Soluțiile catalogului și verificarea deterministă păstrează proveniența; orice explicație calculată aparține Stockfish. O PV mai lungă nu este adâncime încheiată, dovadă exhaustivă sau câștig Elo. [Protocolul de măsurare](../testing/hard-ab-elo.md)
+
 ## Domeniu
 
-Chess Lab folosește referințe măsurate cu Stockfish 19 în **Deschideri**. Jocul, indiciile live și Analiza partidei folosesc motorul Java comun. APK-ul și workerul TeaVM încarcă același YAML; niciunul nu rulează executabilul Stockfish folosit de generator.
+Chess Lab consumă referințe Stockfish 19 măsurate în **Deschideri**. APK și TeaVM împart reguli Java, catalog și contracte de stocare. Indiciile Web, analiza deschiderilor, tabla manuală și review-urile noi folosesc motorul WebAssembly local. Android folosește transportul Lite local pentru aceleași calcule; acceptarea platformei se raportează separat. Executabilul generatorului și YAML-ul de referință rămân o sursă distinctă. [Implementare și acceptare Android](../feedback/stockfish-web.md) · [Furnizor și validare Web](../../web/stockfish.md)
 
 | Context | Cine calculează | Semnificație |
 |---|---|---|
-| Prefix cunoscut de deschidere: bară și continuări recomandate | Stockfish 19, consemnat în [opening-reference.yaml](../../chess-core/src/main/resources/opening-reference.yaml) | Istoricul exact al lecției, depth 16, Threads 1, Hash 16 MiB, MultiPV 3; cel mult trei mutări la maximum 40 cp de lider. |
-| Prefix de deschidere absent | [OpeningReference](../../chess-core/src/main/java/ro/atf/chess/OpeningReference.java) deleagă către MatchHint nativ | O singură analiză live; rezultatul nu poartă metadate de referință Stockfish. |
-| Trasee documentate de teorie | [OpeningTheory](../../chess-core/src/main/java/ro/atf/chess/OpeningTheory.java) | Cel mult trei continuări din lecții sau ECO, în ordinea catalogului, fără a pretinde că fiecare este cea mai bună a motorului. |
-| Indiciu în partida cu AI | [MatchHint](../../chess-core/src/main/java/ro/atf/chess/MatchHint.java) și TacticalAnalysis | Căutare nativă, independentă de nivelul adversarului; politica actuală admite cel mult trei alternative apropiate. |
-| Analiza intermediară și finală a partidei | [GameReview](../../chess-core/src/main/java/ro/atf/chess/GameReview.java) și [ReviewJournal](../../chess-core/src/main/java/ro/atf/chess/ReviewJournal.java) | Comparațiile native recomandat/jucat se salvează pe mutare; raportul final agregă datele complete și completează explicit lipsurile înainte. |
-| Estimarea dintre tablele redării | [HintPreview](../../chess-core/src/main/java/ro/atf/chess/HintPreview.java) | Evaluare statică nativă de material/poziție; nu caută cu Stockfish și nu schimbă ordinea candidaților memorați. |
+| Prefix cunoscut: bară și continuări recomandate | Stockfish 19, în [opening-reference.yaml](../../chess-core/src/main/resources/opening-reference.yaml) | Istoric exact, depth 16, Threads 1, Hash 16 MiB, MultiPV 3; cel mult trei rădăcini la maximum 40 cp de lider. |
+| Mutarea adversarului la prefix acoperit | Aceleași rădăcini Stockfish 19 memorate, selectate de [OpeningRepertoire](../../chess-core/src/main/java/ro/atf/chess/OpeningRepertoire.java) comun | Ordinalul salvat rotește opțiunile pseudoaleator. Istoricul trebuie să coincidă; suprascrierile verificate au prioritate, iar pozițiile neacoperite păstrează teoria/căutarea existentă. Fără apel live al motorului pentru adversar. |
+| Analiza calculată a deschiderii Android | [StockfishCoaching](../../chess-core/src/main/java/ro/atf/chess/StockfishCoaching.java) cu istoricul lecției | Lite furnizează bara și recomandările. Datele memorate lipsă nu pot selecta Native. |
+| Analiza Web a deschiderii și tablei manuale | [Motorul Stockfish local](../../web/stockfish.md) cu validatorul contextului Java | Căutare live legată de sursă; adâncimea, WDL și PV sunt distincte de referințele memorate. |
+| Căi teoretice documentate | [OpeningTheory](../../chess-core/src/main/java/ro/atf/chess/OpeningTheory.java) | Până la trei continuări redactate sau ECO, fără a pretinde că fiecare este cea mai bună a motorului. |
+| Indiciu AI și tabla manuală | [MatchHint](../../chess-core/src/main/java/ro/atf/chess/MatchHint.java) validează rezultatul furnizorului | Web și Android folosesc transporturile Lite fixate. Nivelul adversarului nu slăbește analiza. Sunt oferite doar alternative apropiate. |
+| Analiza intermediară și finală | [GameReview](../../chess-core/src/main/java/ro/atf/chess/GameReview.java) validează comparațiile | [ReviewJournal](../../chess-core/src/main/java/ro/atf/chess/ReviewJournal.java) Native este distinct de dovezile externe. Migrarea Android păstrează identitatea furnizorului; agregarea cere date complete din aceeași sursă. |
+| Estimarea dintre table în redarea veche | [HintPreview](../../chess-core/src/main/java/ro/atf/chess/HintPreview.java) | Delta statică nu este măsurare Stockfish. Dacă este păstrată auxiliar, trebuie etichetată distinct și nu poate înlocui evaluarea sau adăuga un sufix PV fără scor. |
 
 ```mermaid
 %%{init: {"themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":22,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24,"wrap":true}}}%%
 flowchart LR
-    SF["Stockfish 19 offline"] -->|măsoară| YAML["YAML de referință"]
+    SF["Stockfish 19 offline"] -->|măsoară| YAML["Referințe YAML"]
     YAML -->|încarcă prefixul exact| Ref["Bara și liniile de referință"]
-    Missing["Prefix absent"] -->|solicită| Native["Analiză Java"]
-    Native -->|salvează comparațiile reale| Journal["Jurnalul analizei"]
+    YAML -->|selectează o rădăcină măsurată| Opponent["Mutarea comună a adversarului"]
+    Live["Analiză calculată"] -->|cere istoricul complet| SFLocal["Stockfish Lite"]
+    SFLocal -->|întoarce comparații validate| Journal["Lucru legat de furnizor"]
     Journal -->|agregă| Final["Raport final"]
-    Ref -->|redă mutările legale| Preview["Tabla redării"]
-    Preview -->|estimează tablele afișate| Static["Delta statică nativă"]
+    Ref -->|redă mutări legale| Preview["Tabla redării"]
+    Preview -->|estimează tablele afișate| Static["Delta statică Native"]
 ```
 
 <details>
-<summary>Legendă — sursa măsurată și calculul din aplicație</summary>
+<summary>Legendă — analiză calculată și cunoașterea catalogului</summary>
 
-Stockfish rulează la generarea referințelor. Motorul comun validează și redă liniile memorate. O estimare statică nativă separată explică tablele redării. Dovezile analizei partidei au propria politică și propriul jurnal; nu moștenesc scorul de referință al deschiderii.
+Diagrama separă analiza calculată de catalog. Web rulează local motorul fixat la cerere; adaptorul Android este validat față de propriii pini ai executabilului și datelor. Java validează redarea legală pentru ambele transporturi. Referințele memorate păstrează adâncimea și sursa inițială, fără a fi redenumite căutări noi. Verificarea Native a catalogului pe bază de dovezi este independentă de furnizorul analizei.
 
 </details>
 
 ## Convențiile scorurilor
 
-- **Scor de referință:** centipioni din perspectiva albului la orizontul măsurat. **Ref. Δ** este scorul prefixului exact curent minus scorul prefixului părinte. Orientarea nu îi schimbă semnul.
-- **Estimarea redării:** valoarea statică finală minus cea inițială, din perspectiva culorii aflate la mutare în sursa redării. Este un calcul diferit de Ref. Δ; o sursă cu negrul la mutare folosește și altă perspectivă. Cele două valori nu trebuie prezentate drept aceeași măsurătoare Stockfish.
-- **Analiza partidei:** scorurile native la orizont comun devin pierdere în miimi, categorii și precizie conform [game-review.yaml](../../chess-core/src/main/resources/game-review.yaml). Rezultatul eligibil poate adăuga o estimare de rating. O referință la depth 16 nu măsoară Elo uman și nu dovedește toate apărările viitoare.
+- **Scorul referinței:** centipioni pentru Alb la orizontul măsurat. **Ref. Δ** este scorul prefixului curent minus cel al părintelui. Orientarea nu schimbă semnul.
+- **Estimarea redării:** diferență statică final–inițial din perspectiva culorii la mutare în sursa redării. Diferă de Ref. Δ; sursa cu Negrul la mutare folosește altă perspectivă. Nu pot fi prezentate drept aceeași măsurare Stockfish.
+- **Analiza partidei:** scorurile Native vechi la orizont egal devin pierdere în miimi, categorii și precizie conform [game-review.yaml](../../chess-core/src/main/resources/game-review.yaml). Review-urile externe păstrează WDL Stockfish la adâncime comună; același contract se aplică migrării Android. O partidă eligibilă poate adăuga estimarea ratingului potrivit politicii adversarului; schimbarea analizei nu recalibrează adversarul.
+- **Dovada căutării:** lungimea PV, adâncimea încheiată și cea selectivă sunt diferite. Se înregistrează separat nodurile/timpul efectiv și plafonul cerut. Referința la depth 16 sau PV mai lungă nu măsoară Elo uman ori toate apărările viitoare; comparațiile liber/jucat cer același context, furnizor și orizont încheiat.
 
 ## Linii selectabile
 
-Interfața agreată oferă **cel mult trei linii selectabile**. Două sau trei alternative afișează selectoarele; o singură linie nu are nevoie de rând de selecție. Când apar, toate selectoarele rămân pe un rând și împart lățimea disponibilă; etichetele lungi se trunchiază vizual, păstrând numele accesibil complet și o țintă de 48 CSS px pe Web sau 48 dp nativ. Un tab schimbă doar ramura redării. Fiecare ramură își păstrează semimutarea cât dialogul este deschis, iar închiderea revine la sursa neschimbată. HintPreviewDialog nativ are trei ID-uri stabile; încărcarea referinței respinge a patra linie înainte de proiectare.
+Interfața agreată oferă **cel mult trei linii selectabile**. Două sau trei alternative arată selectoarele; una singură nu cere rând de selectoare. Web acceptă doar lot MultiPV exact complet la aceeași adâncime; întreruperea unei căutări mai adânci păstrează ultimul lot complet. Nu combină ranguri de la adâncimi diferite. Filtrarea apropierii se face după alegerea lotului, astfel încât apar trei când trei respectă pragurile și mai puține când celelalte sunt mult mai slabe. Selectoarele împart un rând și lățimea disponibilă; etichetele lungi sunt scurtate vizual, păstrând numele accesibil complet și țintele de 48 CSS px Web sau 48 dp native. Tabul schimbă numai ramura. Fiecare ramură păstrează cursorul în dialog; închiderea revine la sursa neschimbată. HintPreviewDialog are trei ID-uri stabile de ramură; încărcarea referinței respinge a patra linie înainte de proiecție.
 
-[HintSelectableLinesComponentTest](../../atf-tests/src/test/java/ro/atf/chess/HintSelectableLinesComponentTest.java) verifică toate cadrele reale, cazuri cu una/două/trei linii și refuzul celei de-a patra. Componentele DOM Web apasă fiecare selector în RO/EN și verifică păstrarea cursorilor, Înapoi/Înainte și o singură cerere de analiză completă. Aceste componente nu certifică randarea în pixeli.
+[HintSelectableLinesComponentTest](../../atf-tests/src/test/java/ro/atf/chess/HintSelectableLinesComponentTest.java) verifică pozițiile catalogului, redarea cu una/două/trei linii și negativul celei de-a patra. Componentele DOM Web verifică fiecare selector în RO/EN, cursoare, Înapoi/Înainte și o cerere de analiză încheiată. Nu certifică randarea pixelilor.
 
 ## Dovezi și actualizări
 
-Generarea referinței consemnează amprenta exactă a binarului Stockfish și setările fixe. Păstrează intrările și transcriptul UCI brut în afara checkout-ului; regenerează după modificarea traseelor lecțiilor și rulează [selecția de componente](../testing/README.md#componente-pentru-reutilizarea-analizei). [Contractul generării](openings.md#referințe-măsurate-pentru-deschideri)
+Generarea referinței consemnează digestul binarului Stockfish și setările fixe. Păstrați prefixul și UCI brut în afara checkout-ului; regenerați după schimbarea lecțiilor și rulați [selecția componentelor](../testing/README.md#componente-pentru-reutilizarea-analizei). [Contractul generării](openings.md#referințe-măsurate-ale-deschiderilor)
 
-Separă metadatele referinței de estimările statice native și identitatea jurnalului de analiză. În jurnal intră doar comparațiile complete; politica sau versiunea nepotrivită declanșează completarea explicită a lucrului lipsă. [Contractul persistenței](game-review.md#lucru-persistent-pe-fiecare-mutare)
+Păstrați metadatele referinței separat de estimări statice și identitatea lucrului Native pentru review. Doar comparațiile complete intră în jurnal; nepotrivirile de politică/versiune declanșează recuperarea explicită a lipsurilor. [Contractul persistenței](game-review.md#lucru-persistent-pe-mutare)

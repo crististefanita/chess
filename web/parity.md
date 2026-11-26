@@ -37,6 +37,8 @@ Ghidurile jocului dețin regulile de produs și comportamentul platformelor. [Pa
 
 ## Publicarea linkului
 
+Analiza Web folosește motorul Stockfish fixat pentru indicii în partidă, tabla manuală, deschideri și review-uri noi. Android folosește procesul Lite fixat; ambele păstrează adversarii Native independenți. Legalitatea, catalogul și stocarea rămân comune; scorurile și PV sunt specifice furnizorului. Arhivele Native rămân lizibile și se recalculează numai la cerere. [Sursă, jurnale și calificare](stockfish.md)
+
 1. Construiți și calificați pachetul în TMP. Păstrați arborele static exact la un commit sau tag imuabil; folosiți un worktree separat pentru fișierele pregătite.
 2. Păstrați octet cu octet directoarele `runtime/<SHA-256>/` deja publicate și adresele vechi din rădăcină folosite de filele deschise. Includeți noul director runtime, `index.html`, `.nojekyll` și `.gitattributes` generat în același commit. Regula `* -text` împiedică Git să modifice octeții calificați; comparați bloburile din index cu bundle-ul măsurat înainte de publicare.
 3. Puneți commitul static calificat și amprenta arborelui brut în [cererea de publicare](publication.request), apoi împingeți fișierul pe `main`. Numai schimbarea lui declanșează [fluxul Pages](../.github/workflows/chess-pages.yml); acesta validează cele două identități înainte de a descărca arborele static. Declanșarea manuală cu aceleași valori rămâne disponibilă. Ramura `main_RO` nu publică.
@@ -49,10 +51,9 @@ Ghidurile jocului dețin regulile de produs și comportamentul platformelor. [Pa
 4. Deschideți **Joacă în browser**. Verificați fișierele versionate declarate și reîncărcați cu memoria cache intactă. Verificați reluarea checkpointului și jocul fără rețea după prima încărcare; o filă deschisă poate păstra runtime-ul anterior până la reîncărcare.
 5. Înregistrați revizia sursă, commitul static publicat, amprenta runtime și recepțiile Extent. Verificați octeții serviți independent de memoria cache a browserului.
 
-Dacă încărcarea reușește, dar GitHub Pages nu găsește temporar artifactul
-`github-pages`, păstrați neschimbate commitul static și cererea validate. Reluați
-numai jobul de publicare eșuat, apoi comparați octeții serviți cu pachetul
-calificat. O nouă eroare sau o diferență de octeți rămâne un eșec de publicare.
+Dacă uploadul reușește, dar deploy-ul nu găsește `github-pages`, verificați inventarul artefactelor rulării. Acest flux combină uploadul și deploy-ul într-un job: reluarea lui poate produce încă un artefact cu același nume. [Selectorul oficial](https://github.com/actions/deploy-pages/blob/d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e/src/internal/api-client.js#L72-L82) respinge atât lipsa, cât și ambiguitatea listei.
+
+Păstrați commitul static și digestul validate și porniți o declanșare manuală nouă pe `main` cu aceleași intrări. Obțineți o rulare izolată, fără modificarea sau reconstruirea produsului calificat. Confirmați un singur artefact și deploy reușit, apoi octeții serviți și comportamentul browserului. O nouă eroare sau diferență de octeți rămâne eșec de publicare.
 
 [Schema pachetului](README.md#identitatea-pachetului-web) ·
 [Strategia de testare](../docs/testing/README.md#actualizarea-pachetului-web) ·

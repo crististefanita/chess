@@ -2,6 +2,7 @@ import { backLabel } from './screen-chrome.mjs';
 import { boardPlacement } from './study-board.mjs';
 import { renderLinePosition } from './line-navigation.mjs';
 import { rememberBoardSize } from './study-board-size.mjs';
+import { stockfishLabel } from './stockfish-label.mjs';
 
 const checkpointKey = 'chesslab.opening-session.v1';
 const vocabulary = {
@@ -540,12 +541,14 @@ export function createOpeningStudy({ root, locale, call, home, board }) {
 
   function evaluationText(evaluation) {
     if (!evaluation) return text.ended;
+    const engineLabel = stockfishLabel(evaluation.engine);
+    const source = engineLabel ? engineLabel + ' · ' : '';
     if (evaluation.ending === 'CHECKMATE') {
-      return text.mate(evaluation.whiteMateMoves > 0 ? text.white : text.black, Math.abs(evaluation.whiteMateMoves));
+      return source + text.mate(evaluation.whiteMateMoves > 0 ? text.white : text.black, Math.abs(evaluation.whiteMateMoves));
     }
     if (evaluation.ending === 'STALEMATE') return text.stalemate;
     const centipawns = evaluation.whiteCentipawns;
-    return pawnLabel(centipawns) + ' · ' + (centipawns === 0 ? text.balanced : centipawns > 0 ? text.white : text.black);
+    return source + pawnLabel(centipawns) + ' · ' + (centipawns === 0 ? text.balanced : centipawns > 0 ? text.white : text.black);
   }
 
   function pawnLabel(centipawns) {

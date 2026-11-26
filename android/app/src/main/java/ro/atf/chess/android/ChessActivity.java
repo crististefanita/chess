@@ -71,6 +71,7 @@ public final class ChessActivity extends BackNavigableActivity {
     private final ExecutorService bot = Executors.newSingleThreadExecutor();
     private final ExecutorService reviewWorker = Executors.newSingleThreadExecutor();
     private ro.atf.chess.ReviewCollector reviewCollector;
+    private ro.atf.chess.StockfishCoaching reviewCoaching;
     private Future<?> botJob;
     private int botGeneration;
     private List<Chapter> chapters;
@@ -140,8 +141,13 @@ public final class ChessActivity extends BackNavigableActivity {
         allIds = chapters.stream().flatMap(chapter -> chapter.ids().stream()).collect(Collectors.toList());
         store = new ChessProgressStore(this);
         reviewCollector = new ro.atf.chess.ReviewCollector(reviewWorker,
-                request -> store.matches().prepareReview(request.id(), request.match(), false, ignored -> { }),
-                failure -> main.post(this::showSaveError));
+                request -> prepareStockfishReview(request.match(), false, ignored -> { }),
+                failure -> {
+                    android.util.Log.e("GameReview", "Stockfish background analysis unavailable", failure);
+                    main.post(() -> {
+                        if (resumed) Toast.makeText(this, R.string.match_analysis_failed, Toast.LENGTH_SHORT).show();
+                    });
+                });
         store.matches().migrateCompletedMatches();
         progress = store.quests().read(allIds);
         rewards = store.quests().readRewards();
@@ -871,7 +877,24 @@ public final class ChessActivity extends BackNavigableActivity {
                 }, this::reviewMatch, this::confirmContinuation, () -> {
                     reviewDialog = null;
                     scheduleBot();
-                }, update -> store.matches().prepareReview(id, snapshot, !manualUsed, update));
+                }, update -> prepareStockfishReview(snapshot, !manualUsed, update));
+    }
+
+    /** Coaching uses a separate owner from the native opponent and from each hint view. */
+    private GameReview prepareStockfishReview(ChessMatch snapshot, boolean rated, java.util.function.IntConsumer progress) {
+        ro.atf.chess.StockfishCoaching owner;
+        synchronized (this) {
+            if (Thread.currentThread().isInterrupted()) throw new java.util.concurrent.CancellationException();
+            if (reviewCoaching == null) reviewCoaching = AndroidStockfish.coaching(this);
+            owner = reviewCoaching;
+        }
+        return owner.review(snapshot, rated, progress);
+    }
+
+    private void cancelReviewAnalysis() {
+        ro.atf.chess.StockfishCoaching owner;
+        synchronized (this) { owner = reviewCoaching; reviewCoaching = null; }
+        if (owner != null) owner.close();
     }
 
     private void showMatchActions(View anchor) {
@@ -1138,7 +1161,7 @@ public final class ChessActivity extends BackNavigableActivity {
 
     private void renderMatch() {
         String reviewId = archivedMatch == null ? store.matches().archivedId(matchSlot) : archivedMatch.id();
-        if (store.matches().usesAi(reviewId)) reviewCollector.submit(reviewId, match);
+        if (match.analysisEnabled() && store.matches().usesAi(reviewId)) reviewCollector.submit(reviewId, match);
         boolean reviewing = reviewedPly >= 0;
         int ply = reviewing ? reviewedPly : match.ply();
         var shownPosition = match.positionAt(ply);
@@ -1268,6 +1291,8 @@ public final class ChessActivity extends BackNavigableActivity {
         main.removeCallbacks(reply);
         cancelBot();
         if (inMatch && matchAnalysis != null) matchAnalysis.suspend();
+        if (reviewDialog != null) reviewDialog.dismiss();
+        cancelReviewAnalysis();
         if (payoffDialog != null) suspendedMate = payoffDialog.savedState();
         if (payoffDialog != null) payoffDialog.dismiss();
         super.onPause();
@@ -1279,6 +1304,7 @@ public final class ChessActivity extends BackNavigableActivity {
         if (payoffDialog != null) payoffDialog.dismiss();
         bot.shutdown();
         if (reviewCollector != null) reviewCollector.close();
+        cancelReviewAnalysis();
         reviewWorker.shutdownNow();
         if (matchAnalysis != null) matchAnalysis.close();
         super.onDestroy();

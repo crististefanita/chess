@@ -105,11 +105,23 @@ final class LearningGameAudit {
         });
         module.addKeyDeserializer(ChessPosition.Move.class,new com.fasterxml.jackson.databind.KeyDeserializer(){@Override public Object deserializeKey(String key,com.fasterxml.jackson.databind.DeserializationContext context){return ChessPosition.Move.fromUci(key);}});
         return new ObjectMapper().registerModule(module)
+                .addMixIn(ChessMatch.BotDecision.class,OptionalBotMetadata.class)
                 .addMixIn(TacticalAnalysis.HintSearch.class,OptionalProof.class)
                 .addMixIn(GameReview.Turn.class,OptionalProof.class)
                 .addMixIn(HintAuditSession.Search.class,OptionalProof.class)
                 .addMixIn(HintAuditSession.Decision.class,OptionalProof.class)
                 .addMixIn(CoachingProof.Work.class,OptionalCounterplay.class);
+    }
+    /** New optional Native metadata must not change the digest of an older serialized decision. */
+    private abstract static class OptionalBotMetadata {
+        @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+        abstract ChessMatch.NodeAccounting accounting();
+        @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+        abstract String engine();
+        @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+        abstract String stop();
+        @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+        abstract String certificate();
     }
     private abstract static class OptionalProof {
         @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)

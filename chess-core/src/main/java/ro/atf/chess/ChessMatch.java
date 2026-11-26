@@ -267,7 +267,7 @@ public final class ChessMatch {
 
     Move hardBookMove() {
         if (result != Result.IN_PROGRESS) return null;
-        var reply = OpeningRepertoire.CURRENT.playReply(position(), MatchSetup.Level.HARD, openingChoice);
+        var reply = OpeningRepertoire.CURRENT.playReply(position(), MatchSetup.Level.HARD, openingChoice, openingPrefix());
         if (reply == null || quietPlies >= 8 && occurrences(position(), ply() - 1) >= 2) return null;
         return mayReachAutomaticDrawIn(1) && !automaticDrawMoves().isEmpty() ? null : reply;
     }
@@ -284,7 +284,7 @@ public final class ChessMatch {
         var policy = MatchAiPolicy.CURRENT.repetition;
         var repetitionOffers = cycle ? repetitionOffers(board) : Set.<Move>of();
         var search = TacticalAnalysis.botAnalysis(board, level, cycle ? policy.maxScoreLossCp() : 0, repetitionOffers,
-                searchHistory(),quietPlies,openingChoice);
+                searchHistory(),quietPlies,openingChoice,openingPrefix());
         Move chosen = null;
         int fewestVisits = Integer.MAX_VALUE;
         int mostActivity = Integer.MIN_VALUE;
@@ -311,6 +311,15 @@ public final class ChessMatch {
             }
         }
         return new BotAnalysis(new BotDecision(chosen, search.depth(), search.extraNodes()), search);
+    }
+
+    private String openingPrefix() {
+        var prefix = new StringBuilder();
+        for (var move : moves) {
+            if (prefix.length() > 0) prefix.append(' ');
+            prefix.append(move.uci());
+        }
+        return prefix.toString();
     }
 
     private int visitsAfter(Move move) {

@@ -14,6 +14,7 @@ import ro.atf.chess.ChessPosition;
 import ro.atf.chess.ChessPosition.Move;
 import ro.atf.chess.HintComparison;
 import ro.atf.chess.HintPreview;
+import ro.atf.chess.ExternalEngineAnalysis;
 import ro.atf.chess.MatchHint;
 import ro.atf.chess.OpeningReplay;
 import ro.atf.chess.OpeningCatalog.Text;
@@ -22,19 +23,20 @@ import ro.atf.chess.ReplayCheckpoint;
 
 /** Plays the suggested branch on its own board and returns to the original cursor. */
 final class HintPreviewDialog {
-    private static final int[] BRANCH_IDS = {R.id.hint_compare_best, R.id.hint_compare_other, R.id.hint_compare_third};
+    private static final int[] BRANCH_IDS = {R.id.hint_compare_best, R.id.hint_compare_other, R.id.hint_compare_third,
+            R.id.hint_compare_fourth, R.id.hint_compare_fifth};
 
     private HintPreviewDialog() { }
 
     record Session(Dialog dialog, Supplier<ReplayCheckpoint> checkpoint) { }
 
-    static Session show(Context context, ChessPosition root, MatchHint.Playback study,
+    static Session show(Context context, ChessPosition root, MatchHint.Playback study, ExternalEngineAnalysis.Batch external,
                        boolean blackBelow, Function<Move, String> notation, int sourceBoardSide,
                        String source, String suggestion, int offer, ReplayCheckpoint restored) {
         var workspace = new AnalysisReplayDialog(context, AnalysisReplayDialog.Mode.CALCULATED, blackBelow,
                 study.lines().size() > 1, null, () -> { }, sourceBoardSide);
-        workspace.setSummary(study.depth() > 0 ? context.getString(R.string.hint_compare_depth, study.depth()) : null);
-        var branches = branches(context, root, study, workspace, notation);
+        workspace.setSummary(context.getString(R.string.hint_stockfish_summary, external.provider().version(), external.depth()));
+        var branches = branches(context, root, study, external, workspace, notation);
         var playback = new Playback(context, root, workspace, notation, branches);
         int selected = 0;
         for (int index = 0; index < branches.size(); index++) {
@@ -89,25 +91,23 @@ final class HintPreviewDialog {
         return context.getString(R.string.hint_theory_source, source, theory.eco());
     }
 
-    private static List<Branch> branches(Context context, ChessPosition root, MatchHint.Playback study,
+    private static List<Branch> branches(Context context, ChessPosition root, MatchHint.Playback study, ExternalEngineAnalysis.Batch external,
                                          AnalysisReplayDialog workspace, Function<Move, String> notation) {
         var branches = new ArrayList<Branch>(study.lines().size());
         for (int index = 0; index < study.lines().size(); index++) {
             var line = study.lines().get(index);
-            var preview = HintPreview.openDefended(root, line).orElseThrow();
-            String evaluation = preview.estimate().map(estimate -> pawns(context, estimate.finalCp()))
-                    .orElseGet(() -> terminalLabel(context, preview));
+            var preview = CoachingPresentation.preview(root, line);
+            var observed = external.lines().stream().filter(value -> value.root().equals(line.move())).findFirst().orElseThrow();
+            var value = observed.evaluation(root.turn());
+            String evaluation = value.whiteMateMoves() == 0 ? value.pawnLabel(context.getResources().getConfiguration().getLocales().get(0))
+                    : context.getString(R.string.match_analysis_mate,
+                            context.getString(value.whiteMateMoves() > 0 ? R.string.white : R.string.black), Math.abs(value.whiteMateMoves()));
             String title = context.getString(R.string.hint_compare_choice, index + 1, ChessActivity.compactNotation(line.move()));
             int spoken = index == 0 ? R.string.hint_compare_recommended_spoken : R.string.hint_compare_choice_spoken;
             String description = context.getString(spoken, index + 1, notation.apply(line.move()), evaluation);
             var button = workspace.addBranch(BRANCH_IDS[index], title, description, () -> { });
-            String score = preview.estimate().map(estimate -> context.getString(R.string.hint_preview_change,
-                    pawns(context, estimate.initialCp()), evaluation, pawns(context, estimate.changeCp())))
-                    .orElse(evaluation);
-            String scoreDescription = preview.estimate().map(estimate -> context.getString(R.string.hint_preview_change_spoken,
-                    pawns(context, estimate.initialCp()), evaluation, pawns(context, estimate.changeCp())))
-                    .orElse(evaluation);
-            branches.add(new Branch(preview, button, score, scoreDescription, study.comparison(root, index)));
+            String score = context.getString(R.string.hint_stockfish_root_score, evaluation);
+            branches.add(new Branch(preview, button, score, score, Optional.empty()));
         }
         return branches;
     }
@@ -159,8 +159,7 @@ final class HintPreviewDialog {
             String step = context.getString(R.string.hint_preview_step, preview.step(), preview.length(), move);
             var proof = branch.comparison().flatMap(HintComparison::decisive)
                     .filter(candidate -> !branches.get(proofBranch(candidate)).replay().addedDefense());
-            String explanation = proof.map(candidate -> decisive(context, candidate, proofBranch(candidate) + 1, notation))
-                    .orElseGet(() -> reason(context, root, preview.evidence(), notation));
+            String explanation = context.getString(R.string.hint_stockfish_line_note);
             workspace.render(new AnalysisReplayDialog.Frame(position, last, cue, step, preview.hasPrevious(), preview.hasNext(),
                     branch.score(), explanation));
             workspace.setCaptionDescription(branch.scoreDescription());

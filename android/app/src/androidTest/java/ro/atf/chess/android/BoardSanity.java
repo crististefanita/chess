@@ -108,6 +108,7 @@ public final class BoardSanity extends Instrumentation {
     @Override public void onCreate(Bundle arguments) {
         super.onCreate(arguments);
         phase = arguments.getString("phase", "");
+        if ("true".equals(arguments.getString("stockfishOnly"))) phase = "stockfish-only";
         runId = arguments.getString("runId", "");
         externalFrames = "true".equals(arguments.getString("externalFrames"));
         puzzleLanguage = arguments.getString("puzzleLanguage", "ro");
@@ -120,7 +121,8 @@ public final class BoardSanity extends Instrumentation {
         receipt.putString("pid", Integer.toString(android.os.Process.myPid()));
         if (!runId.isEmpty()) receipt.putString("runId", runId);
         try {
-            if ("open-replay-rotation".equals(phase)) checkOpenReplayRotation();
+            if ("stockfish-only".equals(phase)) checkStockfish();
+            else if ("open-replay-rotation".equals(phase)) checkOpenReplayRotation();
             else if (sourceReplayPhase()) checkSourceSizedReplay();
             else if ("openings".equals(phase)) checkOpenings();
             else if ("game-review".equals(phase)) checkGameReview();
@@ -158,6 +160,161 @@ public final class BoardSanity extends Instrumentation {
             }
             finish(Activity.RESULT_CANCELED, receipt);
         }
+    }
+
+    /** Real packaged-engine smoke. This deliberately does not call any native coaching search. */
+    private void checkStockfish() throws Exception {
+        compare("The signed Stockfish probe has a fresh explicit run identity", true, runId.matches("[a-f0-9]{32}"));
+        compare("The probe uses the production APK, without an application ID suffix", "ro.atf.chess.android", getTargetContext().getPackageName());
+        long started = System.currentTimeMillis();
+        var game = ChessMatch.restore("2|analysis|e2e4 e7e5");
+        var reviewSource = game.resign();
+        var observations = new ArrayList<StockfishObservation>();
+        GameReview review;
+        try (var owner = AndroidStockfish.coaching(getTargetContext())) {
+            stockfishHint(owner, "match", game, 2, observations);
+            var manual = new AnalysisLine(game, 1);
+            stockfishHint(owner, "manual", manual.line(), manual.ply(), observations);
+            var opening = ro.atf.chess.OpeningCatalog.load().get(0);
+            var prefix = CoachingPresentation.opening(opening, Math.min(4, opening.steps().size()));
+            stockfishHint(owner, "opening", prefix, prefix.ply(), observations);
+            review = owner.review(reviewSource, false, ignored -> { });
+        }
+        compare("The full two-ply review has original external observations", true, review.external() != null);
+        compare("Both played moves are present", 2, review.turns().size());
+        boolean matched = true;
+        for (var turn : review.external().turns()) {
+            matched &= turn.free().depth() == turn.played().depth() && turn.free().depth() > 0;
+            matched &= turn.played().best().root().equals(game.moveAt(turn.ply()));
+            observations.add(new StockfishObservation("review-free-" + turn.ply(), reviewSource, turn.ply() - 1, turn.free()));
+            observations.add(new StockfishObservation("review-played-" + turn.ply(), reviewSource, turn.ply() - 1, turn.played()));
+        }
+        compare("Each review turn compares its actual played root at one common completed depth", true, matched);
+        compare("The explicitly unrated review never invents a player rating", true,
+                review.white().rating().isEmpty() && review.black().rating().isEmpty());
+        String encoded = ro.atf.chess.GameReviewCodec.encode(reviewSource, review);
+        compare("The archived external evidence survives its actual codec round trip", review.external().json(),
+                ro.atf.chess.GameReviewCodec.decode(reviewSource, encoded).external().json());
+
+        var raw = new org.json.JSONArray();
+        File[] journals = new File(getTargetContext().getFilesDir(), "stockfish-audit").listFiles((dir, name) -> name.endsWith(".json"));
+        if (journals == null) throw new AssertionError("The real Android Stockfish journal is absent");
+        var retained = new ArrayList<org.json.JSONObject>();
+        for (File file : journals) {
+            byte[] bytes = stockfishRead(file);
+            var row = new org.json.JSONObject(new String(bytes, java.nio.charset.StandardCharsets.UTF_8));
+            if (row.getLong("createdAtMillis") < started) continue;
+            String transcript = row.getString("rawUCITranscript");
+            if (!stockfishSha(transcript.getBytes(java.nio.charset.StandardCharsets.UTF_8)).equals(row.getString("transcriptSha256"))
+                    || !transcript.contains("bestmove ")) throw new AssertionError("The current engine journal is incomplete or substituted");
+            if ("ANDROID_STOCKFISH_CACHE_REVALIDATION".equals(row.getString("scope")) && row.getString("phase").startsWith("reuse:")) continue;
+            if (!"ACTUAL_ANDROID_STOCKFISH_UCI_SEARCH".equals(row.getString("scope")))
+                throw new AssertionError("A non-search journal cannot qualify an actual UCI observation");
+            retained.add(row);
+            raw.put(new org.json.JSONObject().put("file", file.getName()).put("bytes", bytes.length)
+                    .put("sha256", stockfishSha(bytes)).put("original", row));
+        }
+        compare("Fresh actual UCI journals are retained, with original transcript hashes", true, !retained.isEmpty());
+        for (var observed : observations) {
+            boolean found = false;
+            for (var row : retained) {
+                var original = row.getJSONObject("context");
+                var measured = ChessMatch.restore(original.getString("checkpoint"));
+                int measuredPly = original.getInt("ply");
+                if (!ro.atf.chess.ExternalEngineAnalysis.context(measured, measuredPly).moves().equals(observed.batch().context().moves())) continue;
+                var selected = row.getJSONObject("batch");
+                var measuredBatch = ro.atf.chess.ExternalEngineAnalysis.batch(measured, measuredPly, selected.toString());
+                if (ro.atf.chess.ExternalEngineAnalysis.rebind(observed.match(), observed.ply(), measuredBatch).equals(observed.batch())) found = true;
+                var completed = row.getJSONArray("completedDepthBatches");
+                for (int index = 0; index < completed.length(); index++) {
+                    var item = completed.getJSONObject(index);
+                    var accepted = ro.atf.chess.ExternalEngineAnalysis.batch(measured, measuredPly, item.toString());
+                    if (ro.atf.chess.ExternalEngineAnalysis.rebind(observed.match(), observed.ply(), accepted).equals(observed.batch())) found = true;
+                }
+            }
+            compare("Original completed UCI evidence binds " + observed.name(), true, found);
+        }
+
+        Activity activity = startActivitySync(new Intent(getTargetContext(), AnalysisActivity.class)
+                .putExtra("line", game.checkpoint()).putExtra("ply", 2).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        try {
+            waitForIdleSync();
+            var shown = (MatchAnalysisView) activity.findViewById(R.id.match_analysis);
+            long deadline = SystemClock.uptimeMillis() + 90000;
+            boolean[] ready = {false};
+            do {
+                runOnMainSync(() -> ready[0] = shown != null && shown.bulb().isEnabled());
+                if (ready[0]) break;
+                SystemClock.sleep(100);
+            } while (SystemClock.uptimeMillis() < deadline);
+            compare("The real manual-board UI receives a completed engine recommendation", true, ready[0]);
+            Move[] suggested = {null};
+            runOnMainSync(() -> { shown.bulb().performClick(); suggested[0] = shown.revealedMove(); });
+            compare("The displayed hint is a legal move from the displayed game frame", true,
+                    suggested[0] != null && game.position().legalMoves().contains(suggested[0]));
+            var board = findBoard(viewsOf(activity));
+            compare("The actual analysis board is laid out", true, board != null && !screenBounds(board).isEmpty());
+            captureFrame("stockfish-analysis", "The actual device frame shows the board and rendered engine analysis", image ->
+                    allBoardCornersRendered(image, board) && hasColor(image, shown, shown.getCurrentTextColor(), 8));
+            receipt.putString("stockfishUiMove", suggested[0].uci());
+        } finally { runOnMainSync(activity::finish); }
+
+        var result = new org.json.JSONObject().put("schema", 1).put("runId", runId).put("phase", phase)
+                .put("scope", "ACTUAL_PACKAGED_STOCKFISH_AND_MANUAL_UI").put("startedAtMillis", started)
+                .put("reviewCheckpoint", reviewSource.checkpoint())
+                .put("review", new org.json.JSONObject(review.external().json())).put("journals", raw);
+        var hints = new org.json.JSONArray();
+        for (var observed : observations) hints.put(new org.json.JSONObject().put("name", observed.name())
+                .put("checkpoint", observed.match().checkpoint()).put("ply", observed.ply()).put("batch", new org.json.JSONObject(observed.batch().json())));
+        result.put("observations", hints);
+        var assertions = new org.json.JSONObject();
+        for (String key : receipt.keySet()) if (key.startsWith("check_") || key.startsWith("capture_")) assertions.put(key, receipt.getString(key));
+        result.put("nativeAssertions", assertions);
+        File directory = externalFrames ? getTargetContext().getExternalFilesDir(null) : getTargetContext().getFilesDir();
+        if (directory == null) throw new IOException("The native evidence directory is absent");
+        File file = new File(directory, "j7-stockfish-" + runId + ".json");
+        try (var stream = new FileOutputStream(file)) { stream.write(result.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8)); }
+        receipt.putString("stockfishEvidence", file.getName());
+        receipt.putString("stockfishEvidenceSha256", captureDigest(file));
+        receipt.putString("stockfishAssertions", Integer.toString(comparisons));
+    }
+
+    private record StockfishObservation(String name, ChessMatch match, int ply, ro.atf.chess.ExternalEngineAnalysis.Batch batch) { }
+
+    private void stockfishHint(ro.atf.chess.StockfishCoaching owner, String name, ChessMatch match, int ply,
+                               List<StockfishObservation> observed) {
+        var hint = owner.hint(match, ply);
+        var batch = hint.external().orElseThrow(() -> new AssertionError("A native hint cannot qualify Stockfish"));
+        compare(name + " uses the pinned packaged Android engine", true,
+                batch.provider().providerID().startsWith("stockfish-19.0.1-android-lite-") && "19.0.1".equals(batch.provider().version()));
+        compare(name + " preserves the complete history and clocks", ro.atf.chess.ExternalEngineAnalysis.context(match, ply), batch.context());
+        compare(name + " has a positive completed depth", true, batch.depth() > 0);
+        compare(name + " has only legal offered roots", true,
+                batch.lines().stream().allMatch(line -> match.positionAt(ply).legalMoves().contains(line.root())));
+        hint.revealNext(); Move move = hint.revealedMove();
+        compare(name + " applies the same recommendation by destination tap", move, hint.moveForTap(match.positionAt(ply), -1, move.to()));
+        compare(name + " replays the observed PV without a native leaf estimate", true,
+                hint.preview(match.positionAt(ply)).orElseThrow().estimate().isEmpty());
+        observed.add(new StockfishObservation(name, match, ply, batch));
+    }
+
+    private static byte[] stockfishRead(File file) throws IOException {
+        if (file.length() <= 0 || file.length() > 8 * 1_048_576) throw new IOException("Unexpected native journal size");
+        var out = new java.io.ByteArrayOutputStream();
+        try (var in = new FileInputStream(file)) {
+            byte[] buffer = new byte[8192];
+            for (int size; (size = in.read(buffer)) >= 0;) {
+                if (out.size() + size > 8 * 1_048_576) throw new IOException("Native journal exceeds its bound");
+                out.write(buffer, 0, size);
+            }
+        }
+        return out.toByteArray();
+    }
+
+    private static String stockfishSha(byte[] bytes) throws NoSuchAlgorithmException {
+        var result = new StringBuilder();
+        for (byte value : MessageDigest.getInstance("SHA-256").digest(bytes)) result.append(String.format(Locale.ROOT, "%02x", value & 255));
+        return result.toString();
     }
 
     private void checkSourceSizedReplay() throws Exception {
@@ -3888,7 +4045,7 @@ public final class BoardSanity extends Instrumentation {
         try (var output = new FileOutputStream(file)) {
             if (!image.compress(Bitmap.CompressFormat.PNG, 100, output)) throw new IOException("PNG write failed");
         }
-        if (phase.startsWith("analysis-compact-") || "analysis-prepare".equals(phase) || "manual-analysis".equals(phase) || "tactics-explanation".equals(phase)
+        if ("stockfish-only".equals(phase) || phase.startsWith("analysis-compact-") || "analysis-prepare".equals(phase) || "manual-analysis".equals(phase) || "tactics-explanation".equals(phase)
                 || "training-finish".equals(phase) || "puzzle-mate-replay".equals(phase) || "puzzle-danger".equals(phase)
                 || "puzzle-ux".equals(phase) || "active-match-restore".equals(phase) || "pending-bot-restore".equals(phase)
                 || sourceReplayPhase() || "open-replay-rotation".equals(phase) || talkBackReview() || phase.startsWith(COMPACT_REPLAY)) {

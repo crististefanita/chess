@@ -244,6 +244,7 @@ async function mountAnalysis(openingState, locale = 'en') {
         events: new Map(),
         addEventListener(name, action) { this.events.set(name, action); },
         createElement(tag) { return Object.assign(new Element(tag), { ownerDocument: document }); },
+        createElementNS(namespace, tag) { return Object.assign(new Element(tag), { ownerDocument: document, namespace }); },
     };
     root.ownerDocument = document;
     const commands = [];
@@ -298,6 +299,24 @@ test('Analysis places evaluation to the left and all history controls in APK ord
     assert.equal(details.children.includes(replayToolbar), false);
     assert.equal(replayToolbar.children[2].hidden, true);
     assert.match(replayToolbar.children[1].textContent, /Step 0 of 4 · e7 → e5/);
+});
+
+test('Analysis bulb is a muted outline until a recommendation is revealed', async () => {
+    const opening = frame(1, 0, { analysis: true, history: [], promotions: [], hint: { count: 0 } });
+    const { root, view, setFrame } = await mountAnalysis(opening);
+    const toolbar = root.children.find(item => item.className?.includes('analysis-study-toolbar'));
+    const bulb = toolbar.children.at(-1);
+    const icon = bulb.children[0];
+    assert.equal(icon.tag, 'svg');
+    assert.equal(icon.namespace, 'http://www.w3.org/2000/svg');
+    assert.equal(icon.attributes.get('aria-hidden'), 'true');
+    assert.match(icon.children[0].attributes.get('d'), /M9 18h6/);
+    assert.equal(bulb.attributes.get('aria-pressed'), false);
+    assert.equal(bulb.attributes.get('aria-label'), 'Show AI variation');
+    setFrame({ ...opening, hint: { count: 3, move: 'e2e4', number: 1 } });
+    await view.seek(0);
+    assert.equal(bulb.attributes.get('aria-pressed'), true);
+    assert.equal(bulb.attributes.get('aria-label'), 'Show next AI variation');
 });
 
 test('Analysis uses the AI match capture trays at the selected ply and clears them in replay', async () => {

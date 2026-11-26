@@ -2,7 +2,9 @@
 
 ## Pe scurt
 
-Analiza partidei agregă comparații native. Referințele Stockfish și delta statică a redării au proveniență separată: [harta surselor analizei](analysis-sources.md).
+[Contractul Lite cerut](../feedback/stockfish-web.md) stabilește Stockfish drept furnizor pentru analiza completă și intermediară, bară și grafic pe ambele platforme. Nu amestecați furnizori sau rădăcini la adâncimi diferite. Baseline-ul de mai jos nu afirmă calificarea livrării Android Lite; APK/RAG păstrează acceptarea distinctă.
+
+Analiza partidei agregă comparații complete Stockfish Lite pe Web și Android. Arhivele vechi păstrează sursa. Referințele deschiderilor și delta statică a redării au proveniență separată: [harta surselor](analysis-sources.md) · [Validare și jurnale Web](../../web/stockfish.md).
 
 - **Domeniu.** `GameReview` calculează categoriile, precizia și variantele jucate și recomandate pentru redare. Elo cere o partidă încheiată eligibilă. [Calculul](../../chess-core/src/main/java/ro/atf/chess/GameReview.java)
 - **Probe.** `GameReviewTest` verifică formulele, `GameReviewTimelineTest` verifică legalitatea redării, iar `GameReviewGraphParityTest` verifică navigarea între interfețe.
@@ -34,6 +36,8 @@ flowchart LR
 - Indexul ECO identifică ultima poziție denumită, inclusiv dacă poziția a fost atinsă prin transpoziție. Separat, marchează prefixul de mutări care urmează efectiv o linie de carte. O mutare din acel prefix primește categoria **De carte** doar dacă pierde sub 100‰ față de recomandare. [Indexul ECO](../../chess-core/src/main/java/ro/atf/chess/OpeningIndex.java)
 
 ## Evaluarea unei semimutări
+
+- **Comparații Stockfish.** Înainte de fiecare mutare păstrați FEN inițial și istoricul complet. Comparați recomandarea liberă și rădăcina jucată la cea mai mare adâncime comună încheiată, același build și politică. Doar rândurile exacte complete sunt admise; lotul incomplet, comparația lipsă sau PV ilegală blochează review-ul complet. Păstrați CP/mat, WDL, noduri, adâncime selectivă și timp. Plafonul cerut și lungimea PV nu sunt lucru efectiv sau adâncime încheiată. Android respectă același contract, fără fallback Native.
 
 - O semimutare este mutarea unei singure culori. Înaintea fiecăreia, motorul recuperează poziția și istoricul. La rădăcina căutării identifică mutările care duc imediat la remiză automată prin material, repetiție sau numărul de semimutări fără pion ori captură. Analiza compară cea mai bună variantă găsită și mutarea jucată la aceeași adâncime finalizată. Căutarea pornește de la trei semimutări și încearcă să ajungă la șase, cu extensie tactică și un buget ordinar de 85.000 de noduri suplimentare pe poziție. Dacă o iterație depășește bugetul, rămâne rezultatul iterației precedente. [Căutarea](../../chess-core/src/main/java/ro/atf/chess/TacticalAnalysis.java) · [Configurația](../../chess-core/src/main/resources/game-review.yaml)
 

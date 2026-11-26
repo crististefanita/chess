@@ -369,6 +369,13 @@ public final class MatchStore {
         return preferences.edit().putString(archiveKey(id, "review"), review).remove(archiveKey(id, REVIEW_BOOKMARK)).commit();
     }
 
+    /** Explicit external reanalysis; native save-once behavior remains in saveReviewRecord. */
+    boolean saveExternalReviewRecord(String id, ChessMatch match, String review, String digest) {
+        if (!matchesArchivedCheckpoint(id, match) || !validReview(match, review, digest)) return false;
+        if (GameReviewCodec.decodeLine(match, review, digest).external() == null) return false;
+        return preferences.edit().putString(archiveKey(id, "review"), review).remove(archiveKey(id, REVIEW_BOOKMARK)).commit();
+    }
+
     boolean saveReviewBookmark(String id, ChessMatch match, Snapshot snapshot, String digest) {
         if (!matchesArchivedCheckpoint(id, match) || !validReview(match, readArchiveText(id, "review"), digest)) return false;
         String encoded = GameReviewBookmark.encode(id, match, snapshot, digest);

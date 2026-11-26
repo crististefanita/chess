@@ -25,6 +25,27 @@ final class WebAnalysisStudy {
     private MatchHint hint;
     private MatchEvaluation evaluation;
     private final WebHintReplay replay = new WebHintReplay();
+    private boolean externalMode;
+    private boolean revealExternal;
+
+    String prepareExternal(String action, String value, int index, String saved, String option) {
+        externalMode = true;
+        String state = command(action, value, index, saved, option);
+        if ("hint".equals(action) && hint == null) revealExternal = true;
+        var context = analysis && hint == null && study.result() == Result.IN_PROGRESS
+                ? ExternalEngineAnalysis.context(study.line(), study.ply()) : null;
+        return "{\"state\":" + state + ",\"revision\":" + revision + ",\"request\":" + (context == null ? "null" : context.json()) + "}";
+    }
+
+    String applyExternal(int expectedRevision, String key, String result) {
+        if (!externalMode || study == null || !analysis || expectedRevision != revision
+                || !ExternalEngineAnalysis.context(study.line(), study.ply()).contextKey().equals(key)) return state(null);
+        var observed = ExternalEngineAnalysis.batch(study.line(), study.ply(), result);
+        WebExternalAnalysis.requireCurrent(observed.provider());
+        hint = MatchHint.external(study.position(), observed); evaluation = hint.evaluation(study.position());
+        if (revealExternal) hint.revealNext(); revealExternal = false; replay.close();
+        return state(null);
+    }
 
     String command(String action, String value, int index, String saved, String option) {
         if ("resume".equals(action) || entry == null && !"open".equals(action)) resume(saved);
@@ -116,6 +137,7 @@ final class WebAnalysisStudy {
         evaluation = null;
         replay.close();
         revision++;
+        revealExternal = false;
     }
 
     private void tap(int square) {
@@ -140,6 +162,7 @@ final class WebAnalysisStudy {
 
     private void evaluate() {
         if (!analysis || hint != null || study.result() != Result.IN_PROGRESS) return;
+        if (externalMode) return;
         hint = study.hint();
         evaluation = hint.evaluation(study.position());
     }
@@ -160,7 +183,10 @@ final class WebAnalysisStudy {
                 + ",\"promotions\":" + json(promotions, WebBoardState::move) + ",\"analysis\":" + analysis
                 + ",\"evaluation\":" + evaluationState() + ",\"hint\":" + hintState() + ",\"preview\":" + replay.state()
                 + ",\"checkpoint\":" + quote(study.line().checkpoint()) + ",\"continuation\":" + quote(continuation)
-                + ",\"saved\":" + quote(bookmark()) + "}";
+                + ",\"saved\":" + quote(bookmark())
+                + (externalMode ? ",\"contextKey\":" + quote(ExternalEngineAnalysis.context(study.line(), study.ply()).contextKey())
+                    + ",\"pending\":" + (analysis && hint == null && study.result() == Result.IN_PROGRESS)
+                    + ",\"engine\":" + (hint == null ? "null" : hint.external().map(batch -> batch.provider().json()).orElse("null")) : "") + "}";
     }
 
     private String bookmark() {
@@ -173,7 +199,8 @@ final class WebAnalysisStudy {
         if (study.result() != Result.IN_PROGRESS) {
             return WebBoardState.terminalEvaluation(study.result());
         }
-        return WebBoardState.evaluation(evaluation);
+        return hint != null && hint.external().isPresent() ? WebExternalAnalysis.evaluation(study.position(), hint.external().orElseThrow())
+                : WebBoardState.evaluation(evaluation);
     }
 
     private String hintState() {

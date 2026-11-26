@@ -8,3 +8,11 @@ lib/*.pom -text
 release/*/reports/analysis-compact-execution.json -text
 
 release/*/reports/documentation-pair.txt -text
+
+# Preserve the independently pinned Stockfish loader, WASM and licence bytes.
+web/src/main/web/stockfish/** -text whitespace=cr-at-eol
+android/app/src/main/jniLibs/** -text
+android/app/src/main/assets/stockfish/*.nnue -text
+android/app/src/main/assets/stockfish/*.tar.gz -text
+android/app/src/main/assets/stockfish/** -text whitespace=cr-at-eol
+android/app/src/main/assets/stockfish/source/*.patch -whitespace

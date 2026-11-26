@@ -100,6 +100,27 @@ test('Packaging refuses a missing entry asset and leaves previously published ru
     assert.equal(await readFile(join(site, 'index.html'), 'utf8'), originalIndex);
 });
 
+test('Nested engine assets retain binary identity, adjacent loader routes and immutable addresses', async t => {
+    const { source, engine, site } = await fixture(t);
+    const vendor = join(source, 'stockfish');
+    await mkdir(vendor);
+    const wasm = Buffer.from([0, 97, 115, 109, 1, 0, 0, 0, 13, 10, 255]);
+    await writeFile(join(vendor, 'engine.wasm'), wasm);
+    await writeFile(join(vendor, 'engine.js'), '/* pinned loader\r\n */\r\n');
+    await writeFile(join(vendor, 'COPYING.txt'), 'Licence bytes\r\n');
+    const first = await packageWeb(source, engine, site);
+    const runtime = await runtimeDirectory(site);
+    assert.deepEqual(await readFile(join(runtime, 'stockfish', 'engine.wasm')), wasm);
+    assert.equal(await readFile(join(runtime, 'stockfish', 'engine.js'), 'utf8'), '/* pinned loader\r\n */\r\n');
+    assert.equal(await readFile(join(runtime, 'stockfish', 'COPYING.txt'), 'utf8'), 'Licence bytes\r\n');
+    assert.equal(new URL('./engine.wasm', pathToFileURL(join(runtime, 'stockfish', 'engine.js'))).href,
+        pathToFileURL(join(runtime, 'stockfish', 'engine.wasm')).href);
+    assert.equal(await packageWeb(source, engine, site), first);
+    await writeFile(join(vendor, 'engine.wasm'), Buffer.from([...wasm, 1]));
+    assert.notEqual(await packageWeb(source, engine, site), first);
+    assert.deepEqual(await readFile(join(runtime, 'stockfish', 'engine.wasm')), wasm);
+});
+
 test('Git staging with autocrlf preserves qualified engine bytes and the runtime manifest', async t => {
     const { source, engine, site } = await fixture(t);
     await writeFile(engine, 'export const workerReady = true;\r\n');

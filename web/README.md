@@ -2,9 +2,9 @@
 
 ## Pe scurt
 
-Workerul consumă referințele Stockfish 19 ale deschiderilor ca date YAML; rulează motorul Java nativ pentru analiza live și Analiza partidei. [Sursele și convențiile scorurilor](../docs/board/analysis-sources.md)
+Chess Lab împarte regulile Java, catalogul și starea partidelor între Android și TeaVM. Web folosește [Stockfish pentru indicii și analiză](stockfish.md); fiecare adaptor deține interacțiuni, randare, navigare și stocare. Android folosește transportul Lite nativ fixat independent pentru analiza calculată.
 
-Chess Lab rulează același motor Java pe Android și în workerul TeaVM. Fiecare adaptor răspunde de interacțiuni, randare, navigare și stocare locală.
+Referințele memorate ale deschiderilor rămân separate de căutările Web Stockfish live. [Surse și convenții ale scorurilor](../docs/board/analysis-sources.md)
 
 - [Matricea APK–Web](parity.md) enumeră comportamentul comun și dovezile necesare pe fiecare platformă.
 - [Build și verificare](#build-și-verificare) compară pachetul Web generat cu JVM-ul.

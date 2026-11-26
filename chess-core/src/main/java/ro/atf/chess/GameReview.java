@@ -13,7 +13,10 @@ import ro.atf.chess.ChessPosition.Side;
 
 /** Local analysis of the recorded line, with independent scores for both sides. */
 public record GameReview(List<Turn> turns, Opening opening, int bookPlies, int initialWhitePoints,
-                         Player white, Player black) {
+                         Player white, Player black, ExternalEngineAnalysis.Review external) {
+    public GameReview(List<Turn> turns, Opening opening, int bookPlies, int initialWhitePoints, Player white, Player black) {
+        this(turns, opening, bookPlies, initialWhitePoints, white, black, null);
+    }
     public enum Grade { BOOK, FORCED, BRILLIANT, GREAT, BEST, EXCELLENT, GOOD, INACCURACY, MISTAKE, MISS, BLUNDER }
     public record GradeCount(Grade grade, int human, int ai) { }
 
@@ -46,6 +49,40 @@ public record GameReview(List<Turn> turns, Opening opening, int bookPlies, int i
     }
 
     public GameReview { turns = List.copyOf(turns); }
+
+    /** Builds a review from matched external observations, without native search or invented proof. */
+    public static GameReview external(ChessMatch match, ExternalEngineAnalysis.Review observations) {
+        // Revalidate records supplied directly by a Java caller, as well as serialized browser observations.
+        observations = ExternalEngineAnalysis.review(match, observations.json());
+        var book = OpeningIndex.CURRENT.recognize(match);
+        var white = new PlayerStats(); var black = new PlayerStats(); var turns = new ArrayList<Turn>();
+        int initial = 500;
+        for (var observed : observations.turns()) {
+            int ply = observed.ply(); var board = match.positionAt(ply - 1); var move = match.moveAt(ply);
+            int best = observed.free().best().expectedPoints(), actual = observed.played().best().expectedPoints();
+            int loss = Math.max(0, best - actual); var side = board.turn();
+            boolean bookMove = ply <= book.bookPlies() && loss < GameReviewPolicy.CURRENT.classification.bookLoss();
+            // No native verified-depth, sacrifice or exhaustive-mate claim is inferred from an engine depth.
+            Grade grade = classify(bookMove, board.legalMoves().size() == 1, move.equals(observed.free().best().root()),
+                    0, best, actual, best, 0, turns.isEmpty() ? 0 : turns.get(turns.size() - 1).loss(), false);
+            if (ply == 1) initial = side == Side.WHITE ? best : 1000 - best;
+            turns.add(new Turn(ply, side, move, grade, best, actual, loss, side == Side.WHITE ? actual : 1000 - actual,
+                    observed.free().depth(), observed.free().best().pv(), observed.played().best().pv(), 0, null));
+            (side == Side.WHITE ? white : black).add(grade, loss);
+        }
+        if (observations.rated() && match.result() == ChessMatch.Result.IN_PROGRESS)
+            throw new IllegalArgumentException("Finish the game before estimating its rating");
+        boolean rated = observations.rated() && !(match.setup().level() == MatchSetup.Level.HARD && HardMaster.usesA());
+        var policy = GameReviewPolicy.CURRENT;
+        var opponent = policy.opponentRatings.get(match.setup().level());
+        var human = match.setup().humanSide();
+        var humanStats = human == Side.WHITE ? white : black;
+        var humanRating = rated ? estimate(match.result(), human, humanStats.choices, opponent, policy.minimumRatedMoves) : Optional.<Rating>empty();
+        var botRating = rated ? Optional.of(opponent) : Optional.<Rating>empty();
+        return new GameReview(turns, book.opening(), book.bookPlies(), initial,
+                white.finish(human == Side.WHITE ? humanRating : botRating),
+                black.finish(human == Side.BLACK ? humanRating : botRating), observations);
+    }
 
     public static GameReview analyze(ChessMatch match, IntConsumer progress) {
         if (match.result() == ChessMatch.Result.IN_PROGRESS) throw new IllegalArgumentException("Finish the game before reviewing it");

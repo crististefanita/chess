@@ -238,6 +238,7 @@
           <div id="review-menu" class="review-menu" hidden>
             <button id="review-on-board" type="button">Show on board</button>
             <button id="continue-review" type="button" hidden>Continue from here</button>
+            <button id="reanalyze-stockfish" type="button" hidden>Reanalyze with Stockfish</button>
           </div>
         </div>
         <p id="turn" class="visually-hidden"></p>
@@ -246,6 +247,7 @@
       </section>
       <div id="review-details" class="review-details">
         <section id="review-summary" class="review-summary" aria-labelledby="review-graph-label">
+          <p id="review-provider"></p>
           <p id="review-opening" hidden></p>
           <p id="review-graph-label">Evaluation by move · White above the center</p>
           <div id="review-graph-plot" class="review-graph-plot">

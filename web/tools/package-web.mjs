@@ -1,7 +1,8 @@
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { verifyStockfishPackage } from './verify-stockfish.mjs';
 
 const entry = 'game-review.mjs';
 const engine = 'chess-engine.mjs';
@@ -25,12 +26,22 @@ async function writeImmutable(path, bytes) {
 
 export async function packageWeb(source, engineFile, site) {
     const files = new Map([[engine, await readFile(engineFile)]]);
-    for (const file of await readdir(source, { withFileTypes: true })) {
-        if (file.name === 'index.html') continue;
-        if (!file.isFile() || files.has(file.name)) throw new Error('Invalid Web asset: ' + file.name);
-        const bytes = await readFile(join(source, file.name));
-        files.set(file.name, /\.(mjs|css)$/.test(file.name) ? Buffer.from(lf(bytes.toString('utf8'))) : bytes);
+    async function collect(directory, prefix = '') {
+        for (const file of await readdir(directory, { withFileTypes: true })) {
+            if (!prefix && file.name === 'index.html') continue;
+            const name = prefix + file.name;
+            if (/[\r\n\\]/.test(file.name) || file.isSymbolicLink()) throw new Error('Invalid Web asset: ' + name);
+            if (file.isDirectory()) {
+                await collect(join(directory, file.name), name + '/');
+                continue;
+            }
+            if (!file.isFile() || files.has(name)) throw new Error('Invalid Web asset: ' + name);
+            const bytes = await readFile(join(directory, file.name));
+            files.set(name, /\.(mjs|css)$/.test(name) ? Buffer.from(lf(bytes.toString('utf8'))) : bytes);
+        }
     }
+    await collect(source);
+    if (files.has('stockfish-client.mjs')) verifyStockfishPackage(files);
 
     const names = [...files.keys()].sort();
     const manifest = names.map(name => sha256(files.get(name)) + '  ' + name + '\n').join('');
@@ -47,7 +58,11 @@ export async function packageWeb(source, engineFile, site) {
 
     const runtime = join(site, address);
     await mkdir(runtime, { recursive: true });
-    for (const name of names) await writeImmutable(join(runtime, name), files.get(name));
+    for (const name of names) {
+        const destination = join(runtime, name);
+        await mkdir(dirname(destination), { recursive: true });
+        await writeImmutable(destination, files.get(name));
+    }
     await writeFile(join(site, '.gitattributes'), '* -text\n');
     await writeFile(join(site, '.nojekyll'), '');
     await writeFile(join(site, 'index.html'), page);

@@ -47,6 +47,7 @@ public final class MatchHint {
     private final List<Theory> theory;
     private final CoachingProof.Work proof;
     private final Reference reference;
+    private ExternalEngineAnalysis.Batch external;
     private int index = -1;
 
     public MatchHint(List<TacticalAnalysis.Variation> lines) {
@@ -86,6 +87,22 @@ public final class MatchHint {
         return new MatchHint(position,search.lines(),search.comparison(),List.of(),search.proof());
     }
 
+    /** Publishes only the legal, exact external PVs and their original engine score. */
+    public static MatchHint external(ChessPosition position, ExternalEngineAnalysis.Batch observed) {
+        if (!position.sameForRepetition(ChessPosition.fromFen(observed.context().rootFen())))
+            throw new IllegalArgumentException("External hint belongs to another board");
+        var best = observed.best();
+        var offered = observed.lines().stream().filter(line -> line.rank() == 1
+                || best.mate() != null && best.mate().equals(line.mate())
+                || best.cp() != null && line.cp() != null && Math.abs(best.cp() - line.cp()) <= 60
+                    && Math.abs(best.expectedPoints() - line.expectedPoints()) <= 50).limit(3).collect(java.util.stream.Collectors.toList());
+        var hint = new MatchHint(position, offered.stream().map(ExternalEngineAnalysis.Line::variation).collect(java.util.stream.Collectors.toList()), null);
+        hint.external = observed;
+        return hint;
+    }
+
+    public Optional<ExternalEngineAnalysis.Batch> external() { return Optional.ofNullable(external); }
+
     public Optional<CoachingProof.Work> proof(){return Optional.ofNullable(proof);}
 
     static MatchHint study(ChessPosition position) {
@@ -116,6 +133,7 @@ public final class MatchHint {
         if (reference != null) return matches(position)
                 ? new MatchEvaluation(TacticalAnalysis.Ending.HORIZON, reference.whiteCentipawns(), 0) : null;
         if (count() == 0) return null;
+        if (external != null) return matches(position) ? external.best().evaluation(position.turn()) : null;
         if(!theory.isEmpty())return MatchEvaluation.forTheory(position);
         return proof==null?MatchEvaluation.forPosition(position,first()):MatchEvaluation.from(position.turn(),first());
     }
@@ -129,6 +147,7 @@ public final class MatchHint {
         var selected = revealed();
         if (selected == null || !matches(position) || HintPreview.open(position, selected).isEmpty()) return Optional.empty();
         if (reference != null) return Optional.of(new Playback(lines, reference.depth(), selected.move(), lines));
+        if (external != null) return Optional.of(new Playback(lines, 0, selected.move(), lines));
         if (comparison == null) return Optional.of(singleLine(selected));
 
         var playable = new ArrayList<TacticalAnalysis.Variation>();

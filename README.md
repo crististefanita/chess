@@ -1,6 +1,8 @@
 # Chess Lab
 
-Chess Lab permite partide de șah cu AI, rezolvarea problemelor și studiul deschiderilor pe Android și în browser. Un motor Java comun deține jocul legal, analiza și starea de învățare; adaptoarele de platformă le prezintă, iar instrumentele de testare și livrare fac auditabile comportamentul și artefactele livrate.
+Chess Lab permite partide cu AI, probleme și studiul deschiderilor pe Android și în browser. Codul Java comun deține jocul legal și starea învățării. Analiza calculată folosește Stockfish Lite pe Web și Android; adversarul mută cu motorul Native independent. Adaptoarele prezintă jocul, iar testele și livrarea fac auditabile comportamentul și artefactele.
+
+[Contractul analizei](docs/feedback/stockfish-web.md) guvernează indiciile, bara și Analiza partidei pe ambele platforme. Îmbunătățirea Native Hard are un [protocol A/B și Elo](docs/testing/hard-ab-elo.md) separat. Downloadul de mai jos rămâne ultimul APK publicat; prototipul Lite nu este un release nou calificat.
 
 <a id="play"></a>
 <a id="jocul"></a>
@@ -50,6 +52,8 @@ flowchart LR
 
 - Diagrama urmărește comenzile la execuție. Workerul Web conține motorul compilat cu TeaVM; nu apelează un JVM la distanță pentru a decide mutările legale.
 - Motorul deține regulile, căutarea, interpretarea catalogului și contractele salvărilor. Preferințele Android și stocarea browserului integrează acele contracte pe platformele proprii.
+Analiza calculată are propriul furnizor Stockfish Lite: [surse, opțiuni și verificări](web/stockfish.md).
+
 - O aserțiune JVM sau de worker demonstrează o tranziție de stare. Pixelii nativi, layoutul browserului, accesibilitatea și restartul procesului cer proba de platformă corespunzătoare. [Atlasul arhitecturii](docs/architecture.md)
 
 </details>
@@ -58,7 +62,7 @@ flowchart LR
 |---|---|---|
 | [chess-core](chess-core/src/main) | Reguli, poziții, căutare, cataloage YAML și progres pe identități stabile. | [Tabla și învățarea](docs/board/README.md) · [Evaluarea AI](docs/board/ai-quality.md) |
 | [android](android/app/src/main) | Meniuri, tablă, accesibilitate și adaptorul nativ de persistență. | [Verificări Android](docs/testing/README.md) |
-| [web](web) | UI browser, stocare locală și integrarea workerului de motor. | [Build Web și paritate](web/README.md) |
+| [web](web) | UI browser, stocare locală și integrarea workerului de motor. | [Build Web și paritate](web/README.md) · [Stockfish](web/stockfish.md) |
 | [atf-tests](atf-tests) | Componente JVM, guvernanță și publicarea recepțiilor de platformă. | [Strategia de testare](docs/testing/README.md) |
 | [release-tools](release-tools/src/main) | Selecția ghidurilor afectate, identitatea candidatului, calificare și porți de publicare. | [Proces de livrare](docs/release/README.md) |
 | Dependențe | Artefacte ATF versionate, scopuri Maven și proveniență. | [Indexul local al bibliotecilor](lib/README.md) |

@@ -36,6 +36,24 @@ public final class ChessWebEngine {
     }
 
     @JSExport
+    public static String prepareExternalStudyAnalysis(String feature, String action, String value, int index, String saved, String option, String locale) {
+        return switch (feature) {
+            case "openings" -> OPENINGS.prepareExternal(action, value, index, saved, option.isEmpty() ? locale : option);
+            case "analysis" -> ANALYSIS.prepareExternal(action, value, index, saved, option);
+            default -> throw new IllegalArgumentException("Unknown external analysis feature");
+        };
+    }
+
+    @JSExport
+    public static String applyExternalStudyAnalysis(String feature, int revision, String key, String result) {
+        return switch (feature) {
+            case "openings" -> OPENINGS.applyExternal(revision, key, result);
+            case "analysis" -> ANALYSIS.applyExternal(revision, key, result);
+            default -> throw new IllegalArgumentException("Unknown external analysis feature");
+        };
+    }
+
+    @JSExport
     public static String normalizePlayerName(String name) { return PlayerProfile.normalize(name, ChessWebEngine::normalizeNfc); }
 
     @JSBody(params = "name", script = "return name.normalize('NFC');")
@@ -96,7 +114,11 @@ public final class ChessWebEngine {
 
     @JSExport
     public static String saveArchiveReview(String id, String checkpoint, String review, String digest) {
-        if (!GAME.matches().saveReviewRecord(id, ChessMatch.restore(checkpoint), review, digest)) {
+        var match = ChessMatch.restore(checkpoint);
+        var decoded = GameReviewCodec.decodeLine(match, review, digest);
+        boolean saved = decoded.external() == null ? GAME.matches().saveReviewRecord(id, match, review, digest)
+                : GAME.matches().saveExternalReviewRecord(id, match, review, digest);
+        if (!saved) {
             throw new IllegalArgumentException("The analysis cannot be saved for this archived match");
         }
         return openArchiveReview(id, digest);
@@ -156,6 +178,16 @@ public final class ChessWebEngine {
     @JSExport
     public static String openMatchAnalysis(String checkpoint, int ply, int revision) {
         return MATCH_ANALYSIS.open(checkpoint, ply, revision);
+    }
+
+    @JSExport
+    public static String prepareExternalMatchAnalysis(String checkpoint, int ply, int revision) {
+        return MATCH_ANALYSIS.prepareExternal(checkpoint, ply, revision);
+    }
+
+    @JSExport
+    public static String applyExternalMatchAnalysis(int revision, String key, String result) {
+        return MATCH_ANALYSIS.applyExternal(revision, key, result);
     }
 
     @JSExport
@@ -219,6 +251,47 @@ public final class ChessWebEngine {
         // A supplied journal is an aggregation contract; invalid or incomplete work must not silently recalculate.
         if (journal == null) GameReview.prepare(match, work, ply -> progress.onPly(ply, match.ply()));
         return GameReviewCodec.encode(GameReview.aggregate(match, work, rated), digest);
+    }
+
+    @JSExport
+    public static String prepareExternalReview(String checkpoint, String digest) {
+        var match = externalReviewMatch(checkpoint, digest);
+        if (match.ply() == 0) throw new IllegalArgumentException("Play a move before reviewing the line");
+        var root = ExternalEngineAnalysis.context(match, match.ply());
+        var requests = new StringBuilder("[");
+        for (int ply = 0; ply < match.ply(); ply++) {
+            if (ply > 0) requests.append(',');
+            String context = ExternalEngineAnalysis.context(match, ply).json();
+            requests.append(context, 0, context.length() - 1).append(",\"reviewPly\":").append(ply + 1)
+                    .append(",\"played\":").append(ExternalEngineAnalysis.quote(match.moveAt(ply + 1).uci())).append('}');
+        }
+        return "{\"contextKey\":" + ExternalEngineAnalysis.quote(root.contextKey()) + ",\"requests\":" + requests.append(']') + "}";
+    }
+
+    @JSExport
+    public static String applyExternalReview(String checkpoint, String digest, String observations) {
+        var match = externalReviewMatch(checkpoint, digest);
+        var reviewed = ExternalEngineAnalysis.review(match, observations);
+        WebExternalAnalysis.requireCurrent(reviewed.provider());
+        return GameReviewCodec.encode(GameReview.external(match, reviewed), digest);
+    }
+
+    @JSExport
+    public static boolean validateExternalReviewTurn(String checkpoint, int ply, String freeJson, String playedJson) {
+        var match = ChessMatch.restore(checkpoint);
+        if (ply < 1 || ply > match.ply()) throw new IllegalArgumentException("Invalid review turn");
+        var free = ExternalEngineAnalysis.batch(match, ply - 1, freeJson);
+        var played = ExternalEngineAnalysis.batch(match, ply - 1, playedJson);
+        WebExternalAnalysis.requireCurrent(free.provider());
+        if (!free.provider().equals(played.provider()) || free.depth() != played.depth()
+                || !played.best().root().equals(match.moveAt(ply))) throw new IllegalArgumentException("Unmatched review turn");
+        return true;
+    }
+
+    private static ChessMatch externalReviewMatch(String checkpoint, String digest) {
+        var match = ChessMatch.restore(checkpoint);
+        if (!GameReviewCodec.checkpointDigest(match).equals(digest)) throw new IllegalArgumentException("External review checkpoint identity differs");
+        return match;
     }
 
     @JSFunctor

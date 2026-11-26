@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -44,9 +45,9 @@ class ChessWebParityPublication {
         check.same("Historical root worker and engine aliases remain a complete pair",
                 Files.isRegularFile(site.resolve(worker.getFileName())),
                 Files.isRegularFile(site.resolve(engine.getFileName())));
-        check.same("The current entry loads the worker relative to its versioned runtime", true,
-                Files.readString(runtime.resolve("game-review.mjs"))
-                        .contains("new URL('./engine-worker.mjs', import.meta.url)"));
+        check.same("The current entry uses its versioned broker and the broker resolves the Java worker beside it", true,
+                Files.readString(runtime.resolve("game-review.mjs")).contains("from './stockfish-broker.mjs'")
+                        && Files.readString(runtime.resolve("stockfish-broker.mjs")).contains("new URL('./engine-worker.mjs', import.meta.url)"));
         check.same("The versioned worker loads its engine from the same runtime", true,
                 Files.readString(worker).contains("\"./chess-engine.mjs\""));
         check.same("The runtime directory identifies the complete asset manifest",
@@ -180,7 +181,11 @@ class ChessWebParityPublication {
         check.same("The packaged worker reports every automation observation", 3 * cases.size() + 3, rows.size());
     }
 
-    @Test void packagedWorkerProjectsInlineMatchAnalysis(Checks check) throws Exception {
+    /** Optional retired-provider search benchmark. Mandatory Native numeric cases run in MatchAnalysisParityTest;
+     * production Web coaching is qualified with real Stockfish in ChessWebStockfishTransportTest. */
+    @Test
+    @EnabledIfSystemProperty(named = "chess.web.nativeCompatibility", matches = "true")
+    void packagedWorkerProjectsInlineMatchAnalysis(Checks check) throws Exception {
         String configured = System.getProperty("chess.web.bundle", "");
         check.same("The packaged worker is supplied for inline match analysis", true, !configured.isBlank());
         Path root = ProjectRoot.locate();
@@ -265,12 +270,12 @@ class ChessWebParityPublication {
         check.same("Every index module and stylesheet exists in the same content-addressed runtime", List.of(), invalid);
     }
 
-    private static String runtimeDigest(Path runtime) throws IOException, NoSuchAlgorithmException {
+    static String runtimeDigest(Path runtime) throws IOException, NoSuchAlgorithmException {
         var manifest = new StringBuilder();
-        try (var entries = Files.list(runtime)) {
-            var files = entries.sorted(Comparator.comparing(path -> path.getFileName().toString())).toList();
+        try (var entries = Files.walk(runtime)) {
+            var files = entries.filter(Files::isRegularFile).sorted(Comparator.comparing(path -> runtime.relativize(path).toString().replace('\\', '/'))).toList();
             for (Path file : files) {
-                manifest.append(sha256(Files.readAllBytes(file))).append("  ").append(file.getFileName()).append('\n');
+                manifest.append(sha256(Files.readAllBytes(file))).append("  ").append(runtime.relativize(file).toString().replace('\\', '/')).append('\n');
             }
         }
         return sha256(manifest.toString().getBytes(StandardCharsets.UTF_8));
@@ -285,7 +290,9 @@ class ChessWebParityPublication {
         String scope = selection.length == 0 ? script : script + " " + String.join(" ", selection);
         var process = new ProcessBuilder(command).redirectOutput(stdout.toFile()).redirectError(stderr.toFile()).start();
         try {
-            if (!process.waitFor(55, TimeUnit.SECONDS)) {
+            // Native search compatibility is not a latency benchmark. Keep its CPU/node
+            // policy unchanged and bound the whole subprocess separately from UCI timers.
+            if (!process.waitFor(180, TimeUnit.SECONDS)) {
                 throw new IOException("Timed out waiting for the TeaVM worker: " + scope);
             }
             if (process.exitValue() != 0) {
@@ -293,7 +300,11 @@ class ChessWebParityPublication {
             }
             return Files.readString(stdout, StandardCharsets.UTF_8);
         } finally {
-            if (process.isAlive()) process.destroyForcibly();
+            if (process.isAlive()) {
+                process.descendants().forEach(ProcessHandle::destroyForcibly);
+                process.destroyForcibly();
+                process.waitFor(10, TimeUnit.SECONDS);
+            }
         }
     }
 

@@ -5,13 +5,22 @@
 Registrul păstrează lacunele și criteriile deschise. [Ghidul tablei](../board/README.md)
 descrie comportamentul, iar [catalogul edițiilor](../../release/README.md) indică dovezile publicate.
 
+Diagnosticele Native Hard păstrează propriul motor și oracol. [Contractul Stockfish Lite cerut](stockfish-web.md) acoperă fiecare indiciu calculat, bară și review pe Web și Android. Candidatul păstrează acceptarea separată a componentelor, runtime-ului nativ și Web-ului servit; dovezile curente și lucrul restant aparțin furnizorului.
+
+Parcurgeți [prioritățile Native curente](hard.md) prin [protocolul A/B, audit și Elo](../testing/hard-ab-elo.md). Rândurile Native vechi rămân diagnostice legate de sursă; nu sunt defecte Stockfish observate nou și nu sunt toate sarcini P1 curente. Schimbarea profesorului nu închide mecanisme Native sau creează Elo nou.
+
 [Revizuirea mutărilor între suite](../testing/README.md#schimbarea-testelor-față-de-o-bază-git) descrie baza Git și dovezile de acoperire.
 
 - [Porțile și lucrul rămas pentru Hard A experimental](hard.md)
 - [Forță nativă și comparații indiciu/analiză](#pierderi-native-din-partide-încheiate-și-martori-de-frontieră)
 - [Transferul ordonării învățate încă necesar](hard-learning.md)
 - [Paritate APK/Web și dovezi randate](web-parity.md)
+- [Indicii Stockfish, analiză și integrarea review-ului salvat pe Web](stockfish-web.md)
 - [Culorile analizei, acțiunea de final și reutilizarea calculului (WEB-06)](web-parity.md#web-06--culorile-acțiunea-de-final-și-reutilizarea-analizei)
+
+## Registrul diagnostic Native păstrat
+
+Severitățile descriu investigația Native inițială. Sunt martori ai mecanismelor și regresiilor curente, nu 29 de sarcini P1 simultane. Folosiți prioritățile [Hard](hard.md) și [matricea Lite](stockfish-web.md) pentru pasul următor; păstrați martorii valizi fără a numi defectele Native vechi regresii Stockfish.
 
 | Prioritate | Zonă | Observație | Criteriu de închidere |
 |---|---|---|---|

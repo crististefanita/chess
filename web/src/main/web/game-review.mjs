@@ -17,7 +17,9 @@ import { matchListOpponent } from './match-list-row.mjs';
 import { attachOptionsMenu, followOptionsMenu } from './options-menu.mjs';
 import { createReviewImport } from './review-import.mjs';
 import { matchReviewActionState, reviewGradeTone } from './review-presentation.mjs';
-import { createReviewProgressStore, createReviewCollection, reviewProgressKey } from './review-progress.mjs';
+import { createReviewProgressStore, createReviewCollection } from './review-progress.mjs';
+import { createEngineWorker, disposeStockfishBroker } from './stockfish-broker.mjs';
+import { stockfishLabel } from './stockfish-label.mjs';
 
 const storageKey = 'chesslab.game-review.v1';
 const ledgerKey = 'chesslab.match-ledger.v1';
@@ -28,7 +30,8 @@ const studyRoutes = {
     analysis: ['home-analysis', createAnalysisStudy],
 };
 const botDelayMillis = 650;
-const reviewWorkStore = createReviewProgressStore(localStorage, () => [...savedMatches, ...finishedMatches].map(row => row.id));
+const reviewProgressKey = 'chesslab.review-work.stockfish19.lite-single.v1';
+const reviewWorkStore = createReviewProgressStore(localStorage, () => [...savedMatches, ...finishedMatches].map(row => row.id), { key: reviewProgressKey });
 const reviewCollection = createReviewCollection({ load: id => reviewWorkStore.load(id), compute: computeReviewWork,
     save: (request, work, expected) => {
         const write = () => !otherTabChanged && localStorage.getItem(ledgerKey) === storedLedger && reviewWorkStore.save(request, work, expected);
@@ -53,7 +56,7 @@ const words = {
         bestLine: 'Show recommended line', hideLine: 'Hide recommended line', linePrevious: 'Previous line step', lineNext: 'Next line step',
         'new-local': 'New local game', 'new-ai': 'New AI game', 'match-history': 'Game history',
         'continue-match': 'Continue from here', 'continue-title': 'Continue from here', 'confirm-continue': 'Continue',
-        'continue-review': 'Continue from here',
+        'continue-review': 'Continue from here', 'reanalyze-stockfish': 'Reanalyze with Stockfish',
         'cancel-continue': 'Cancel', 'automatic-label': 'Keep AI replies enabled',
         emptySaved: 'No saved games.', emptyFinished: 'No finished games.',
         noFreeSlot: 'All saved game slots are in use. Finish a saved game before continuing this result.',
@@ -104,7 +107,7 @@ const words = {
         linePrevious: 'Pasul anterior al variantei', lineNext: 'Pasul următor al variantei',
         'new-local': 'Partidă locală nouă', 'new-ai': 'Partidă nouă cu AI', 'match-history': 'Istoricul partidei',
         'continue-match': 'Continuă de aici', 'continue-title': 'Continuă de aici', 'confirm-continue': 'Continuă',
-        'continue-review': 'Continuă de aici',
+        'continue-review': 'Continuă de aici', 'reanalyze-stockfish': 'Reanalizează cu Stockfish',
         'cancel-continue': 'Anulează', 'automatic-label': 'Păstrează replicile AI',
         emptySaved: 'Nu ai partide salvate.', emptyFinished: 'Nu ai partide încheiate.',
         noFreeSlot: 'Toate locurile sunt ocupate. Încheie o partidă salvată pentru a continua acest rezultat.',
@@ -173,7 +176,8 @@ const score = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
 const gameDate = new Intl.DateTimeFormat(locale, { dateStyle: 'short', timeStyle: 'short' });
 const listRoutes = new Set(['saved', 'finished']);
 const localSetup = { mode: 'LOCAL', humanSide: 'WHITE', level: 'BASIC' };
-const worker = new Worker(new URL('./engine-worker.mjs', import.meta.url), { type: 'module' });
+const worker = createEngineWorker();
+window.addEventListener('pagehide', disposeStockfishBroker);
 const pending = new Map();
 let serial = 0;
 let engineFailed = false;
@@ -232,7 +236,7 @@ for (const id of ['archive-label', 'why', 'why-title', 'played', 'recommended', 
     'side-label', 'level-label', 'white-choice', 'black-choice', 'random-choice', 'start-ai', 'cancel-setup',
     'retry-bot', 'open-saved',
     'open-finished', 'return-menu', 'new-local', 'new-ai', 'continue-match', 'continue-title', 'confirm-continue',
-    'cancel-continue', 'automatic-label', 'archive-review-back', 'continue-review', 'review-close', 'reopen-review', 'review-on-board']) {
+    'cancel-continue', 'automatic-label', 'archive-review-back', 'continue-review', 'review-close', 'reopen-review', 'review-on-board', 'reanalyze-stockfish']) {
     find(id).textContent = words[id];
 }
 for (const id of ['movement', 'previous', 'next', 'close-why', 'review-actions', 'next-key']) find(id).setAttribute('aria-label', words[id]);
@@ -268,7 +272,7 @@ const inlineMatchAnalysis = bindInlineMatchAnalysis({
         promotionMoves = [];
         renderMatch();
     },
-    createWorker: () => new Worker(new URL('./engine-worker.mjs', import.meta.url), { type: 'module' }),
+    createWorker: () => createEngineWorker(),
 });
 
 worker.addEventListener('message', ({ data }) => {
@@ -515,6 +519,10 @@ function render() {
     find('why-actions').hidden = !explaining || (!archiveReviewId && !analysisReview);
     reviewImport.show(mode, Boolean(archive), Boolean(liveReviewOrigin));
     if (!visibleReview) return;
+    const legacyReview = view.engine?.providerID === 'native' && Boolean(view.reviewCheckpoint);
+    find('review-provider').textContent = stockfishLabel(view.engine) || 'Chess Lab';
+    find('reanalyze-stockfish').hidden = !legacyReview;
+    find('why-actions').hidden = !explaining || (!archiveReviewId && !analysisReview && !legacyReview);
     find('title').textContent = explaining ? words['why-title'] : words.title;
     document.title = `Chess Lab · ${find('title').textContent}`;
     container.dataset.archiveId = archiveReviewId ?? '';
@@ -534,7 +542,8 @@ function render() {
     find('best-line').setAttribute('aria-pressed', recommended);
     find('best-line').setAttribute('aria-label', recommended ? words.hideLine : words.bestLine);
     find('next-key').disabled = !view.nextKey;
-    find('review-actions').hidden = !archiveReviewId && !analysisReview;
+    find('review-actions').hidden = !archiveReviewId && !analysisReview && !legacyReview;
+    find('review-on-board').hidden = !archiveReviewId && !analysisReview;
     find('continue-review').hidden = analysisReview ? !view.canContinueStudy : !archiveReviewId || !view.canContinue;
     drawExplanation(view);
     drawHistory(view);
@@ -976,7 +985,7 @@ async function runBotTurn(waiting, signal) {
 }
 
 async function computeBotTurn(checkpoint, signal) {
-    const job = new Worker(new URL('./engine-worker.mjs', import.meta.url), { type: 'module' });
+    const job = createEngineWorker();
     let cancel;
     try {
         return await new Promise((resolve, reject) => {
@@ -1120,7 +1129,7 @@ async function runReviewAnalysis(snapshot, openComputedReview, rated = false) {
         }
         if (analysis !== waiting || match !== snapshot || mode !== route) return;
     }
-    const job = new Worker(new URL('./engine-worker.mjs', import.meta.url), { type: 'module' });
+    const job = createEngineWorker();
     analysis = job;
     scheduleBot();
     const id = String(++serial);
@@ -1162,7 +1171,7 @@ function reviewWorkRequest(snapshot) {
 
 function computeReviewWork(request) {
     return new Promise((resolve, reject) => {
-        const job = new Worker(new URL('./engine-worker.mjs', import.meta.url), { type: 'module' });
+        const job = createEngineWorker();
         const id = String(++serial);
         const fail = error => { job.terminate(); reject(error); };
         job.addEventListener('error', fail);
@@ -1245,8 +1254,8 @@ function leaveStudy() {
     if (studyRoutes[route]) find(studyRoutes[route][0]).focus();
 }
 
-function computeStudyReview(checkpoint) {
-    const job = new Worker(new URL('./engine-worker.mjs', import.meta.url), { type: 'module' });
+function computeStudyReview(checkpoint, rated = false) {
+    const job = createEngineWorker();
     const id = String(++serial);
     const progress = find('study-progress');
     progress.removeAttribute('value');
@@ -1271,7 +1280,7 @@ function computeStudyReview(checkpoint) {
                 progress.value = data.progress;
             } else finish(null, data.archive);
         });
-        job.postMessage({ id, type: 'review-analyze', checkpoint, rated: false });
+        job.postMessage({ id, type: 'review-analyze', checkpoint, rated });
     });
 }
 
@@ -1556,6 +1565,30 @@ find('review-actions').addEventListener('click', event => {
 });
 find('why-actions').addEventListener('click', event => {
     if (!busy) setReviewMenu(find('review-menu').hidden, event.currentTarget);
+});
+find('reanalyze-stockfish').addEventListener('click', () => {
+    if (busy || studyAnalysis || view?.engine?.providerID !== 'native' || !view.reviewCheckpoint) return;
+    const snapshot = view;
+    const archiveId = archiveReviewId;
+    const reviewMode = mode;
+    setReviewMenu(false);
+    void exclusive(async () => {
+        const result = await computeStudyReview(snapshot.reviewCheckpoint, snapshot.rated === true);
+        if (!result || mode !== reviewMode || view !== snapshot) return;
+        const source = normalizeArchive(result);
+        if (source.checkpoint !== snapshot.reviewCheckpoint) throw new Error('Reanalysis checkpoint changed');
+        if (!archiveId && reviewMode !== 'study-review' && archive) source.id = archive.id;
+        if (archiveId) {
+            const response = await call('archive-review-save', { archiveId, checkpoint: source.checkpoint, review: source.review });
+            if (response.outcome !== 'OPENED' || !await commitArchiveReview(response, archiveId)) throw new Error('Archive reanalysis was not saved');
+        } else if (reviewMode === 'study-review') {
+            view = (await call('study-review-open', { archive: source, blackBelow: snapshot.blackBelow, ply: snapshot.ply })).view;
+            render();
+        } else {
+            const response = await call('review-open', { archive: source });
+            if (!await commit(response.view, source)) throw new Error('Reanalysis was not saved');
+        }
+    }, words.analysisFailure);
 });
 find('review-on-board').addEventListener('click', () => {
     if (mode === 'study-review' && studyReturn?.route === 'analysis' && view && !busy) {

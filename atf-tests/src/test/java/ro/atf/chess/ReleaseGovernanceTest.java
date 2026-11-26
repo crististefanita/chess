@@ -462,6 +462,18 @@ class ReleaseGovernanceTest {
                 decision(() -> ReleaseRag.retrieve(folder, List.of("android/app/build.gradle"))));
     }
 
+    @Test void ragRoutesWebStockfishChangesToPinnedEngineEvidence(Checks check) throws IOException {
+        var paths = List.of("web/src/main/web/stockfish-analysis.mjs", "web/tests/analysis-study.test.mjs",
+                "web/tests/stockfish-analysis.test.mjs", "web/tests/stockfish-integration.test.mjs",
+                "web/tests/stockfish-presentation.test.mjs", "web/stockfish.md");
+        var inventory = ReleaseRag.inspect(ProjectRoot.locate(), paths);
+        check.same("Every changed Stockfish source, fixture and guide has an explicit RAG owner", paths, inventory.covered());
+        check.same("The Stockfish routes leave no unresolved paths", List.of(), inventory.needsReview());
+        check.same("The route cites protocol, real-WASM and separate browser checks",
+                List.of("web/stockfish.md|## Verificare|ChessWebStockfishTransportTest, node --test web/tests/stockfish*.test.mjs with the pinned WASM, and a separate Browser MCP rendered check"),
+                inventory.citations().stream().map(item -> item.path() + "|" + item.heading() + "|" + item.check()).toList());
+    }
+
     @Test void ragSelectsDocumentationAndAuditChecksBeforeDistribution(Checks check) throws IOException {
         Path root = ProjectRoot.locate();
         var citations = ReleaseRag.inspect(root, List.of("docs/testing/README.md", "docs/release/README.md",

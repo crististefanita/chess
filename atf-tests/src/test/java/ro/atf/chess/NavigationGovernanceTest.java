@@ -117,17 +117,16 @@ class NavigationGovernanceTest {
         check.same("Changing away from AI analysis clears retained values", true, analysis.contains("cache.clear()"));
     }
 
-    @Test void androidMatchHistoryReadsTheBoundCacheBeforeSearchingAndClearsItOnClose(Checks check) throws IOException {
+    @Test void androidMatchHistoryUsesTheExternalOwnerAndReleasesItOnClose(Checks check) throws IOException {
         String analysis = Files.readString(ProjectRoot.locate().resolve("android/app/src/main/java/ro/atf/chess/android/MatchAnalysisView.java"));
-        check.same("Native history looks up the exact checkpoint and ply", true,
-                analysis.contains("analysisCache.find(matchCheckpoint, ply)"));
-        check.same("A native cache hit uses the retained source object for the playable hint", true,
-                analysis.contains("shownPosition = cached == null ? position : cached.position()"));
-        check.same("Only evaluated native analysis is retained", true,
-                analysis.contains("if (matchCheckpoint != null && evaluation != null)")
-                        && analysis.contains("analysisCache.remember(matchCheckpoint, ply, position, analyzed)"));
-        check.same("Closing the native view releases retained analysis", true,
-                analysis.contains("void close()") && analysis.contains("analysisCache.clear()"));
+        check.same("History forwards the exact match and selected ply to its external owner", true,
+                analysis.contains("owner.hint(match, ply)") && analysis.contains("String checkpoint = match.checkpoint()"));
+        check.same("A playable hint retains the actual displayed source object", true,
+                analysis.contains("shownPosition = position") && analysis.contains("position == shownPosition"));
+        check.same("An external hint is shown only after checking its observation and evaluation", true,
+                analysis.contains("analyzed.external().isEmpty() || evaluation == null"));
+        check.same("Closing the native view releases its worker and engine owner", true,
+                analysis.contains("void close()") && analysis.contains("closeCoaching();") && analysis.contains("worker.shutdownNow()"));
     }
 
     private static String source(String name) throws IOException {

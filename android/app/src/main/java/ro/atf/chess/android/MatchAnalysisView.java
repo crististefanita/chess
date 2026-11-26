@@ -13,17 +13,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.function.IntSupplier;
 import ro.atf.chess.AnalysisLine;
 import ro.atf.chess.ChessMatch;
 import ro.atf.chess.ChessPosition;
 import ro.atf.chess.ChessPosition.Move;
 import ro.atf.chess.MatchEvaluation;
-import ro.atf.chess.MatchAnalysisCache;
 import ro.atf.chess.MatchHint;
 import ro.atf.chess.OpeningCatalog;
-import ro.atf.chess.OpeningReference;
+import ro.atf.chess.StockfishCoaching;
 import ro.atf.chess.QuestHint;
 import ro.atf.chess.TacticalAnalysis;
 import ro.atf.chess.ReplayCheckpoint;
@@ -37,8 +35,8 @@ final class MatchAnalysisView extends TextView {
     private final IntSupplier sourceBoardSide;
     private final Runnable renderBoard;
     private final Runnable recommendationReady;
-    private final MatchAnalysisCache analysisCache = new MatchAnalysisCache();
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
+    private StockfishCoaching coaching;
     private ChessPosition shownPosition;
     private double shownTerminal = Double.NaN;
     private MatchHint hint;
@@ -100,72 +98,71 @@ final class MatchAnalysisView extends TextView {
         double terminal = match.result() != ChessMatch.Result.IN_PROGRESS && ply == match.ply()
                 ? MatchEvaluation.terminalWhiteShare(match.result()) : Double.NaN;
         String checkpoint = match.checkpoint();
-        show(match.positionAt(ply), () -> match.hintAt(ply), terminal,
-                "MATCH|" + checkpoint + "|" + ply, checkpoint, ply);
-    }
-
-    void show(ChessPosition position) {
-        String board = java.util.stream.IntStream.range(0, 64).mapToObj(square -> String.valueOf(position.pieceAt(square)))
-                .collect(java.util.stream.Collectors.joining(","));
-        String legal = position.legalMoves().stream().map(Move::uci).sorted().collect(java.util.stream.Collectors.joining(" "));
-        show(position, () -> MatchHint.analyze(position), Double.NaN, "POSITION|" + position.turn() + "|" + board + "|" + legal);
+        show(match, ply, terminal, "MATCH|" + checkpoint + "|" + ply);
     }
 
     void showOpening(OpeningCatalog.Opening opening, int ply) {
-        show(opening.positionAt(ply), () -> OpeningReference.analyze(opening, ply), Double.NaN,
-                "OPENING|" + opening.id() + "|" + ply);
+        show(CoachingPresentation.opening(opening, ply), ply, Double.NaN, "OPENING|" + opening.id() + "|" + ply,
+                opening.positionAt(ply));
     }
 
     void show(AnalysisLine line) {
         double terminal = line.result() == ChessMatch.Result.IN_PROGRESS
                 ? Double.NaN : MatchEvaluation.terminalWhiteShare(line.result());
-        show(line.position(), line::hint, terminal, "STUDY|" + line.line().checkpoint() + "|" + line.ply());
+        show(line.line(), line.ply(), terminal, "STUDY|" + line.line().checkpoint() + "|" + line.ply());
     }
 
-    private void show(ChessPosition position, Supplier<MatchHint> search, double terminal, String source) {
-        show(position, search, terminal, source, null, -1);
+    private void show(ChessMatch match, int ply, double terminal, String source) {
+        show(match, ply, terminal, source, match.positionAt(ply));
     }
 
-    private void show(ChessPosition position, Supplier<MatchHint> search, double terminal, String source,
-                      String matchCheckpoint, int ply) {
+    private void show(ChessMatch match, int ply, double terminal, String source, ChessPosition position) {
+        // Keep the exact displayed board, even when its external history was rebuilt from an authored lesson.
         if (position == shownPosition && Double.compare(terminal, shownTerminal) == 0 && source.equals(shownSource)) return;
         var restoring = pendingRestoration;
-        var cached = matchCheckpoint == null ? null : analysisCache.find(matchCheckpoint, ply).orElse(null);
         cancel();
         pendingRestoration = restoring != null && restoring.source().equals(source) ? restoring : null;
         shownSource = source;
-        shownPosition = cached == null ? position : cached.position();
+        shownPosition = position;
         shownTerminal = terminal;
-        if (cached != null) {
-            hint = cached.hint();
-            shownEvaluation = hint.evaluation(shownPosition);
-            if (shownEvaluation != null) {
-                displayReady(request);
-                return;
-            }
-            hint = null;
+        if (position.legalMoves().isEmpty() || !Double.isNaN(terminal)) {
+            setText(R.string.match_analysis_ended);
+            evaluationBar.setWhiteShare(terminal);
+            return;
         }
         setText(R.string.match_analysis_pending);
         setContentDescription(null);
         int currentRequest = request;
+        if (coaching == null) coaching = AndroidStockfish.coaching(getContext());
+        var owner = coaching;
         pending = worker.submit(() -> {
-            var analyzed = search.get();
-            var evaluation = analyzed.evaluation(position);
-            post(() -> {
-                if (request != currentRequest) return;
-                pending = null;
-                if (matchCheckpoint != null && evaluation != null)
-                    analysisCache.remember(matchCheckpoint, ply, position, analyzed);
-                if (evaluation == null) {
-                    boolean incomplete=analyzed.proof().filter(p->!p.complete()).isPresent();
-                    setText(incomplete?R.string.match_analysis_incomplete:R.string.match_analysis_ended);
-                    evaluationBar.setWhiteShare(terminal);
-                    return;
-                }
-                hint = analyzed;
-                shownEvaluation = evaluation;
-                displayReady(currentRequest);
-            });
+            try {
+                var observed = owner.hint(match, ply);
+                var analyzed = CoachingPresentation.bind(position, observed);
+                var evaluation = analyzed.evaluation(position);
+                if (analyzed.external().isEmpty() || evaluation == null)
+                    throw new IllegalStateException("Stockfish returned no complete observation");
+                post(() -> {
+                    if (request != currentRequest) return;
+                    pending = null;
+                    hint = analyzed;
+                    shownEvaluation = evaluation;
+                    displayReady(currentRequest);
+                });
+            } catch (java.util.concurrent.CancellationException cancelled) {
+                // Only this view's owner is cancelled; another screen's engine is unaffected.
+            } catch (RuntimeException | LinkageError failure) {
+                android.util.Log.e("MatchAnalysis", "Stockfish analysis unavailable", failure);
+                post(() -> {
+                    if (request != currentRequest) return;
+                    pending = null;
+                    shownSource = null; // A later render can retry this exact position.
+                    setText(R.string.match_analysis_failed);
+                    setContentDescription(getText());
+                    evaluationBar.setWhiteShare(Double.NaN);
+                    updateBulb();
+                });
+            }
         });
     }
 
@@ -196,7 +193,10 @@ final class MatchAnalysisView extends TextView {
         setClickable(false);
         evaluationBar.setWhiteShare(Double.NaN);
         updateBulb();
-        if (pending != null) pending.cancel(true);
+        if (pending != null) {
+            pending.cancel(true);
+            closeCoaching();
+        }
         pending = null;
     }
 
@@ -215,6 +215,7 @@ final class MatchAnalysisView extends TextView {
     void suspend() {
         String state = savedState();
         cancel();
+        closeCoaching();
         restoreState(state);
     }
 
@@ -255,7 +256,7 @@ final class MatchAnalysisView extends TextView {
         var revealed = hint.revealed();
         var theory = hint.revealedTheory();
         var evaluation = shownEvaluation;
-        evaluationBar.setWhiteShare(evaluation.whiteShare());
+        evaluationBar.setWhiteShare(CoachingPresentation.whiteShare(hint, shownPosition));
         String score = switch (evaluation.ending()) {
             case CHECKMATE -> context.getString(R.string.match_analysis_mate,
                     leadingColor(evaluation.whiteMateMoves()), Math.abs(evaluation.whiteMateMoves()));
@@ -338,7 +339,7 @@ final class MatchAnalysisView extends TextView {
         var current = hint;
         if (current == null || preview != null) return;
         current.playback(position).ifPresent(playback ->
-                rememberPreview(HintPreviewDialog.show(getContext(), position, playback, evaluationBar.blackBelow(), notation,
+                rememberPreview(HintPreviewDialog.show(getContext(), position, playback, current.external().orElseThrow(), evaluationBar.blackBelow(), notation,
                         sourceBoardSide.getAsInt(), shownSource, hint.revealedMove().uci(), hint.number(), restored)));
     }
 
@@ -352,7 +353,12 @@ final class MatchAnalysisView extends TextView {
 
     void close() {
         cancel();
-        analysisCache.clear();
-        worker.shutdown();
+        closeCoaching();
+        worker.shutdownNow();
+    }
+
+    private void closeCoaching() {
+        if (coaching != null) coaching.close();
+        coaching = null;
     }
 }

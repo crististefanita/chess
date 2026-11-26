@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
+import { installNativeAnalysisReference } from './support/native-analysis-reference.mjs';
 
 const [worker, fixture] = process.argv.slice(2);
 assert.ok(worker && fixture, 'Supply the packaged worker and the shared automation fixture');
@@ -12,7 +13,7 @@ globalThis.self = {
         if (!Object.hasOwn(message, 'progress')) reply(message);
     }
 };
-await import(pathToFileURL(worker));
+await installNativeAnalysisReference(pathToFileURL(worker));
 
 async function call(type, data = {}) {
     const id = ++nextId;

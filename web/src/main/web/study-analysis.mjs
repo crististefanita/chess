@@ -1,5 +1,6 @@
 import { attachOptionsMenu } from './options-menu.mjs';
 import { rememberBoardSize } from './study-board-size.mjs';
+import { stockfishLabel } from './stockfish-label.mjs';
 import { renderLinePosition } from './line-navigation.mjs';
 import { renderMatchCaptures } from './match-captures.mjs';
 
@@ -67,13 +68,15 @@ function pawns(centipawns, locale) {
 export function analysisScore(evaluation, locale) {
     const words = copy[language(locale)];
     if (!evaluation) return words.pending;
+    const engineLabel = stockfishLabel(evaluation.engine);
+    const source = engineLabel ? engineLabel + ' · ' : '';
     if (evaluation.ending === 'FINISHED') return words.finished;
     if (evaluation.ending === 'STALEMATE') return words.results.STALEMATE;
     if (evaluation.ending === 'CHECKMATE') {
-        return sideName(words, evaluation.mate > 0 ? 'WHITE' : 'BLACK') + ' · ' + words.mate(Math.abs(evaluation.mate));
+        return source + sideName(words, evaluation.mate > 0 ? 'WHITE' : 'BLACK') + ' · ' + words.mate(Math.abs(evaluation.mate));
     }
     const value = evaluation.centipawns;
-    return pawns(value, locale) + ' · ' + (value === 0 ? words.balanced : sideName(words, value > 0 ? 'WHITE' : 'BLACK'));
+    return source + pawns(value, locale) + ' · ' + (value === 0 ? words.balanced : sideName(words, value > 0 ? 'WHITE' : 'BLACK'));
 }
 
 export function analysisHintDescription(hint, locale) {
@@ -83,6 +86,17 @@ export function analysisHintDescription(hint, locale) {
     const move = hint.move.slice(0, 2) + (locale === 'ro' ? ' la ' : ' to ') + hint.move.slice(2, 4);
     const promotion = hint.move.length === 5 ? ' ' + words.pieces[hint.move[4]] : '';
     return words.hintVariant(hint.number, hint.count) + '. ' + move + promotion + (family ? '. ' + family : '') + '.';
+}
+
+function outlineBulb(document) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('focusable', 'false');
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', 'M9 18h6m-5 3h4m-5-6.2a7 7 0 1 1 6 0c-.8.7-1.3 1.7-1.5 3.2h-3c-.2-1.5-.7-2.5-1.5-3.2Z');
+    svg.append(path);
+    return svg;
 }
 
 export function renderAnalysisMeter(meter, fill, evaluation, blackBelow, locale) {
@@ -103,6 +117,14 @@ export function renderAnalysisMeter(meter, fill, evaluation, blackBelow, locale)
 
 export function renderAnalysisEvidence(target, preview, rootSide, locale, proofButton) {
     const words = copy[language(locale)];
+    if (preview.kind === 'ENGINE') {
+        const sign = (preview.rootSide ?? rootSide) === 'BLACK' ? -1 : 1;
+        const score = Number.isFinite(preview.mate) ? words.mate(Math.abs(preview.mate))
+            + ' · ' + sideName(words, sign * preview.mate > 0 ? 'WHITE' : 'BLACK')
+            : Number.isFinite(preview.centipawns) ? pawns(sign * preview.centipawns, locale) : words.pending;
+        target.textContent = (stockfishLabel(preview.engine) || 'Stockfish 19') + ' · ' + words.depth(preview.depth) + ' · ' + score;
+        return;
+    }
     if (preview.kind === 'THEORY') {
         target.textContent = preview.name[language(locale)] + ' · ' + preview.eco + ' · '
             + (preview.idea?.[language(locale)] ?? words.genericTheory);
@@ -110,7 +132,7 @@ export function renderAnalysisEvidence(target, preview, rootSide, locale, proofB
     }
     const evidence = [];
     if (preview.depth > 0) evidence.push(words.depth(preview.depth));
-    if (preview.initialCp !== null) evidence.push(pawns(preview.initialCp, locale) + ' → ' + pawns(preview.finalCp, locale)
+    if (Number.isFinite(preview.initialCp) && Number.isFinite(preview.finalCp)) evidence.push(pawns(preview.initialCp, locale) + ' → ' + pawns(preview.finalCp, locale)
         + ' · Δ ' + pawns(preview.finalCp - preview.initialCp, locale));
     if (preview.decisive) {
         const proof = preview.decisive;
@@ -336,7 +358,9 @@ export function createAnalysisStudy({ root, locale, call, home, board, openRevie
         playback.hidden = true;
         const next = button(words.next, () => void seek((state.preview ?? state).ply + 1), '›');
         const latest = button(words.latest, () => void seek((state.preview ?? state).total), '»');
-        const hint = button(words.hint, () => void request('hint'), '💡');
+        const hint = button(words.hint, () => void request('hint'), '');
+        hint.className += ' analysis-study-hint-button';
+        hint.append(outlineBulb(document));
         const replay = button(words.preview, async () => {
             if ((await request('preview'))?.preview) backButton.focus();
         });

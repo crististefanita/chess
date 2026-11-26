@@ -57,6 +57,8 @@ Vezi [sursele analizei și liniile selectabile](analysis-sources.md) pentru scor
 
 - **Sursă măsurată.** Stockfish 19, adâncime 16, un fir, hash de 16 MiB și MultiPV 3, cu partidă nouă și hash gol pentru fiecare prefix. YAML-ul consemnează amprenta binarului. Sunt evaluări de referință cu orizont limitat, fără pretenții de scor universal sau creștere a forței native.
 - **Un singur rezultat.** Bara și cel mult trei continuări legale folosesc aceeași intrare și adâncime finalizată. Se păstrează doar mutările la cel mult 40 cp de lider. Mutarea scrisă în lecție nu devine automat cea mai bună mutare măsurată. Referința nu are recepție nativă de dovadă forțată.
+- **Variația adversarului.** Partidele AI noi folosesc aceleași rădăcini Stockfish memorate pentru prefixul exact, rotite pseudoaleator cu ordinalul salvat. Suprascrierile verificate au prioritate; istoricele neacoperite păstrează teoria și căutarea. Fără proces Stockfish live pentru mutarea adversarului, iar salvările vechi păstrează alegerea deterministă. Java și YAML comune aliniază Web/APK.
+
 - **Delta.** Scorurile sunt din perspectiva albului: cp curent minus cp al prefixului precedent; delta inițială este zero. Rotirea tablei sau alegerea negrului nu inversează convenția. Ambele adaptoare afișează **Ref. Δ** și expun producătorul/adâncimea.
 - **Regenerare.** Exportă prefixele catalogului cu [ExportOpeningReferenceInputs](../../scripts/ExportOpeningReferenceInputs.java), apoi rulează [generate-opening-reference.cjs](../../scripts/generate-opening-reference.cjs) cu fișierul de prefixe, binarul Stockfish 19, YAML-ul rezultat și jurnalul UCI brut. Păstrează jurnalele în afara checkout-ului. [Dovezi de componentă](../testing/README.md#componente-pentru-reutilizarea-analizei)
 

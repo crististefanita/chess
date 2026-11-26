@@ -1,0 +1,84 @@
+import groovy.json.JsonSlurper
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
+
+def pinnedStockfish = [
+    // Qualified build recipe output; each ABI is independently pinned.
+    'arm64-v8a': [machine:183, sha:'35254c2d02a2891b2b9c9d1b87bf327f49420b3558ef294c83c91b75fd65a894'],
+    'x86_64': [machine:62, sha:'39406bfa7bfb8845961d85bebe228a30781e1e1a56efc2b1f3f73186a36b8935'],
+    'armeabi-v7a': [machine:40, sha:'4eb00bff96f97e1f529cefe9cf4c05198941efc75af05c56f6bc8664f240049b']
+]
+def fileSha = { File source ->
+    def digest = MessageDigest.getInstance('SHA-256')
+    source.withInputStream { input ->
+        byte[] buffer = new byte[65536]
+        int read
+        while ((read = input.read(buffer)) != -1) digest.update(buffer, 0, read)
+    }
+    digest.digest().encodeHex().toString()
+}
+def requireCondition = { boolean condition, String message -> if (!condition) throw new GradleException(message) }
+
+tasks.register('verifyStockfishPackage') {
+    inputs.files(fileTree('src/main/assets/stockfish'), fileTree('src/main/jniLibs'), rootProject.file('tools/Build-Stockfish.ps1'))
+    doLast {
+        File assets = file('src/main/assets/stockfish')
+        def manifest = new JsonSlurper().parse(new File(assets, 'manifest.json'))
+        requireCondition(manifest.buildStatus == 'BUILT_AND_PINNED', 'Stockfish Lite is NOT_BUILT: native compilation and real ABI pins remain pending; FULL fallback is forbidden')
+        requireCondition(pinnedStockfish.values().every { it.sha != null }, 'Stockfish Lite ABI pins have not been built and reviewed')
+        requireCondition(manifest.schema == 1 && manifest.version == '19.0.1' && manifest.flavor == 'lite' && manifest.sourceCommit == '0d5dd7944f88c817c07a26bc4fb1905d5f9c46d6', 'Stockfish Lite source identity mismatch')
+        requireCondition(manifest.minSdk == 26 && manifest.elfPageAlignment == 16384 && manifest.ndkVersion == '30.0.16248370', 'Stockfish build policy mismatch')
+        def pins = [
+            'nn-61e7af4bb97d.nnue': '61e7af4bb97d51eeeb25d322916f86513b5cd3a827ce189c98c6e31946f99e5b',
+            'stockfish-js-19.0.1-lite-source.tar.gz': 'e5289a920554bf0069a6601c228e81d957c00522bb31c4343588dc5d7d251879',
+            'COPYING.txt': '0b383d5a63da644f628d99c33976ea6487ed89aaa59f0b3257992deac1171e6b',
+            'AUTHORS': 'f81e7d74c350626766382ec67fa262c38cda00cb8b501790f95cdebb526006c1'
+        ]
+        pins.each { name, sha -> requireCondition(fileSha(new File(assets, name)) == sha, "Stockfish asset checksum mismatch: $name") }
+        requireCondition(manifest.network.path == 'nn-61e7af4bb97d.nnue' && manifest.network.sha256 == pins['nn-61e7af4bb97d.nnue'] && manifest.network.bytes == 1166381, 'Lite NNUE pin mismatch')
+        requireCondition(manifest.sourceArchive.path == 'stockfish-js-19.0.1-lite-source.tar.gz' && manifest.sourceArchive.sha256 == pins['stockfish-js-19.0.1-lite-source.tar.gz'] && manifest.sourceArchive.bytes == 426352, 'Corresponding-source pin mismatch')
+        requireCondition(manifest.sourcePatch.path == 'source/native-main-unique-ptr.patch' && manifest.sourcePatch.scope == 'NATIVE_ONLY_UNIQUE_PTR_ENTRY_CORRECTION'
+                && manifest.sourcePatch.sha256 == 'e5b023f014e4644dbcbf87a328ff8cd897530877621e8a5b2a4626f9f16236ef'
+                && manifest.sourcePatch.bytes == 236 && fileSha(new File(assets, manifest.sourcePatch.path)) == manifest.sourcePatch.sha256, 'Disclosed native-entry GPL patch mismatch')
+        requireCondition(fileSha(new File(assets, 'source/Build-Stockfish.ps1')) == fileSha(rootProject.file('tools/Build-Stockfish.ps1')), 'Packaged build recipe is stale')
+        requireCondition(manifest.binaries.collect { it.abi }.sort() == pinnedStockfish.keySet().toList().sort(), 'Stockfish ABI inventory mismatch')
+        manifest.binaries.each { binary ->
+            def pin = pinnedStockfish[binary.abi]
+            File executable = file("src/main/jniLibs/${binary.abi}/libstockfish.so")
+            requireCondition(binary.path == "${binary.abi}/libstockfish.so" && binary.providerID == "stockfish-19.0.1-android-lite-${binary.abi}" && binary.sha256 == pin.sha && fileSha(executable) == pin.sha && executable.length() == binary.bytes, "Stockfish executable pin mismatch: ${binary.abi}")
+            byte[] data = executable.bytes
+            def elf = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN)
+            requireCondition(elf.getInt(0) == 0x464c457f && data[5] == 1 && elf.getShort(16) == 3 && elf.getShort(18) == pin.machine, 'Expected a little-endian ELF PIE executable of the declared ABI')
+            boolean wide = data[4] == 2
+            requireCondition(wide || data[4] == 1, 'Unsupported ELF class')
+            long entry = wide ? elf.getLong(24) : Integer.toUnsignedLong(elf.getInt(24))
+            int ph = wide ? (int)elf.getLong(32) : elf.getInt(28)
+            int size = Short.toUnsignedInt(elf.getShort(wide ? 54 : 42))
+            int count = Short.toUnsignedInt(elf.getShort(wide ? 56 : 44))
+            int api = -1, loads = 0
+            boolean interpreter = false
+            for (int index = 0; index < count; index++) {
+                int at = ph + index * size, type = elf.getInt(at)
+                long offset = wide ? elf.getLong(at + 8) : Integer.toUnsignedLong(elf.getInt(at + 4))
+                long address = wide ? elf.getLong(at + 16) : Integer.toUnsignedLong(elf.getInt(at + 8))
+                long length = wide ? elf.getLong(at + 32) : Integer.toUnsignedLong(elf.getInt(at + 16))
+                long align = wide ? elf.getLong(at + 48) : Integer.toUnsignedLong(elf.getInt(at + 28))
+                if (type == 1) { requireCondition(align >= 16384 && offset % 16384 == address % 16384, 'Stockfish ELF LOAD is not 16 KB aligned'); loads++ }
+                if (type == 3) interpreter = true
+                if (type == 4) {
+                    int note = (int)offset
+                    while (note + 12 <= offset + length) {
+                        int names = elf.getInt(note), description = elf.getInt(note + 4), noteType = elf.getInt(note + 8)
+                        int desc = note + 12 + ((names + 3) & ~3)
+                        if (noteType == 1 && names == 8 && new String(data, note + 12, 8, StandardCharsets.US_ASCII) == 'Android\u0000') api = elf.getInt(desc)
+                        note = desc + ((description + 3) & ~3)
+                    }
+                }
+            }
+            requireCondition(api == 26 && loads > 0 && interpreter && entry != 0, 'Stockfish API 26/PIE executable contract failed')
+        }
+    }
+}
+tasks.named('preBuild').configure { dependsOn tasks.named('verifyStockfishPackage') }
