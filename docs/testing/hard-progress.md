@@ -4,6 +4,8 @@
 
 [Open feedback](../feedback/hard.md) · [Measurement protocol](hard-ab-elo.md) · [Stockfish Lite ownership](../feedback/stockfish-web.md)
 
+Treat root correctness and the explanation's continuation as separate gates. The [checked-frontier study](native-forcing-frontier.md) captures a winning Native first move followed by an unclosed queen offer; a first-choice PASS alone cannot close that mechanism. Preserve the stored counterexample without requiring future engines to repeat its bad PV.
+
 ## Working baseline
 
 Start from current main and identify every experimental copy. A3 changes only exact-key construction from board occupancy; it changes no budget, repertoire, evaluation or move. Speed confirmation and playing-strength improvement are separate outcomes. [Initial A3 qualification and rejected experiments](hard-current-variants.md)

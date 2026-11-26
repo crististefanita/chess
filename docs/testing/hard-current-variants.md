@@ -4,6 +4,8 @@
 
 [A/B and Elo protocol](hard-ab-elo.md) · [Current feedback](../feedback/hard.md)
 
+The subsequent [checked-frontier study](native-forcing-frontier.md) reproduces the leaf defect, rejects two further integrations and retains root-only versus complete-line evidence separately. Its results do not replace this frozen speed experiment's scope.
+
 This round's baseline is `65a29ab023a6a1da11a0da1b3476da717bee5baf`. The public selector is `LEGACY`; its existing adaptive configuration allows 100k–200k additional nodes. This counter excludes the shared H3 search. Repertoire and policies remain identical between the parent and each copy.
 
 ## Speed

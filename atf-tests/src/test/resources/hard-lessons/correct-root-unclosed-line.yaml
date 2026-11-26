@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "scope": "STORED_REFERENCE_LINE_COUNTEREXAMPLE_NOT_A_CURRENT_PV_REQUIREMENT_OR_RUNTIME_MOVE_OVERRIDE",
+  "sourceLedgerSha256": "767d6b7d240ae4762cc878a5fde51e2edca45d48d72d4e272904f539211365b6",
+  "cases": [
+    {
+      "id": "training-021-stage-2",
+      "initialFen": "3r4/6k1/3q4/5ppQ/8/6R1/6PK/8 w - - 0 44",
+      "history": [
+        "h5g5",
+        "g7f7"
+      ],
+      "acceptedRoot": "g5g7",
+      "storedNativePv": [
+        "g5g7",
+        "f7e8",
+        "g7g8",
+        "e8d7",
+        "g8d8"
+      ],
+      "visibleQueenRecapture": "d7d8"
+    },
+    {
+      "id": "training-021-stage-2-mirror",
+      "initialFen": "8/6pk/6r1/8/5PPq/3Q4/6K1/3R4 b - - 0 44",
+      "history": [
+        "h4g4",
+        "g2f2"
+      ],
+      "acceptedRoot": "g4g2",
+      "storedNativePv": [
+        "g4g2",
+        "f2e1",
+        "g2g1",
+        "e1d2",
+        "g1d1"
+      ],
+      "visibleQueenRecapture": "d2d1"
+    }
+  ]
+}
