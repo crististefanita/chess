@@ -613,7 +613,8 @@ verifică **Deschideri** după schimbare, cu partida, profilul și progresul pă
 
 | Probă | Contract urmărit |
 |---|---|
-| `PuzzleChromeLayoutTest` | Antet pe două rânduri, scor și controale la spațiu restrâns. Săgețile și becul sunt centrate sub tabla pătrată, cu ținte de 48 dp. |
+| `PuzzleChromeLayoutTest` | Înălțimea scorului compact la 280/320 dp, trecerea măsurată la unul sau două rânduri și ținte de 48 dp păstrate în subsol. |
+| `PuzzleChromePresentationComponentTest` | Trunchierea scorului, pictograma becului compactă și țintele de 48 dp neschimbate în adaptoarele Android/Web. |
 | Sanity Android cu `-PuzzleUxOnly` | Verifică toate cele șase capitole în română și engleză. Deschide opțiunile, întoarce tabla și revine cu progresul păstrat. Controlează geometria tablei și blocarea comenzilor la limite, în timpul unei replici sau înainte de rezolvare. |
 
 - Rulați `-PuzzleUxOnly -PuzzleLanguage ro` pe 720 × 1280 la 320 dpi și `-PuzzleUxOnly -PuzzleLanguage en` pe 1080 × 1920 la 440 dpi, ambele la font 1,3×. Publicați cele șase puncte de control ale fiecărei rulări cu `AndroidSanityPublication#publishPuzzleUxSanity`.
