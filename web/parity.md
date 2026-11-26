@@ -48,6 +48,14 @@ Web coaching uses the pinned Stockfish engine for in-game hints, the manual boar
     git ls-tree -r --full-tree "$SITE_COMMIT" | sha256sum
     ```
 
+   Before removing temporary static branches or tags, retain the qualified static
+   commit in both `main` and `main_RO` history. For this generated tree only, use
+   `git merge --strategy=ours --no-ff --allow-unrelated-histories <SITE_COMMIT>`
+   and require the source tree ID to be identical before and after the merge.
+   Source changes still require an ordinary merge. The publication request keeps
+   the same static SHA and manifest; no special publication branch or tag is
+   required once both remote primary branches retain that ancestry.
+
 4. Open **Play in browser**. Verify the declared versioned files and reload with the cache intact. Check checkpoint resumption and offline play after the first load; an open tab may keep the previous runtime until it reloads.
 5. Record the source revision, deployed static commit, runtime hash, and Extent receipts. Verify the served bytes independently of the browser cache.
 
