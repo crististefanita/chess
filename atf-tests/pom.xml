@@ -10,6 +10,11 @@
     <artifactId>chess-tests</artifactId>
     <dependencies>
         <dependency>
+            <groupId>ro.atf</groupId>
+            <artifactId>chess-release-tools</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
             <version>2.2</version>
@@ -55,17 +60,6 @@
         <sourceDirectory>../chess-core/src/main/java</sourceDirectory>
         <resources><resource><directory>../chess-core/src/main/resources</directory></resource></resources>
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.6.1</version>
-                <executions><execution>
-                    <id>release-tools</id>
-                    <phase>generate-sources</phase>
-                    <goals><goal>add-source</goal></goals>
-                    <configuration><sources><source>../release-tools/src/main/java</source></sources></configuration>
-                </execution></executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

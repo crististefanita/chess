@@ -74,7 +74,7 @@ class SignedSourceReplayReceiptTest {
 
     @Test void projectSigningRecordIsRelativeAndContainsNoPlaintextPassword(Checks check) throws Exception {
         Path root = ProjectRoot.locate();
-        Path directory = root.resolve(".atf-signing");
+        Path directory = root.resolve("release-tools/.atf-signing");
         try (var files = Files.list(directory)) {
             check.same("The signing record contains no build artifacts, temporary certificates or logs",
                     java.util.Set.of(".gitignore", "README.md", "identity.json", "certificate.der", "chesslab-release.p12", "password.dpapi"),
@@ -90,7 +90,7 @@ class SignedSourceReplayReceiptTest {
                 .digest(Files.readAllBytes(directory.resolve("certificate.der"))));
         check.same("The public certificate binds the protected identity", certificate, manifest.path("certificateSha256").asText());
         check.same("The explicitly changed signer declares a clean installation", true, manifest.path("cleanInstallRequired").asBoolean());
-        var initializer = Files.readString(root.resolve("scripts/Initialize-J7Signing.ps1"));
+        var initializer = Files.readString(root.resolve("release-tools/scripts/Initialize-J7Signing.ps1"));
         check.same("Project storage is explicit; legacy external records remain supported", true,
                 initializer.contains("[switch]$ProjectIdentity") && initializer.contains("infrastructure/signing")
                         && initializer.contains("IsPathRooted($record.store)") && initializer.contains("[switch]$StartNewIdentity"));

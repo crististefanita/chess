@@ -32,7 +32,7 @@ Check the available version in the README from `origin/main`. If the local branc
 2. Select the version from the 0.x series. A fix increments the patch, and a new feature or contract change increments the minor version. Align `versionName`, `versionCode`, the Maven version, and the APK name. In `release/index.json`, `currentVersion` is the current release, and `versions` contains the current release followed by one previous release for comparison. The candidate remains separate until publication. [Release catalog](../../release/README.md)
 3. Update the notes and affected guides on both branches. Move confirmed rules from feedback into the owning guide. In `main` use **Play** and **Published Release**. In `main_RO` use **Jocul** and **Ediția publicată**. Place the APK and browser links under the play heading in that order. Place the GitHub notes below the architecture. [Bilingual documentation](#bilingual-documentation) · [Web publication](../../web/parity.md#publishing-the-link)
 4. Create the candidate commit in a clean Git worktree in TMP. Declare the SHA of the review baseline, a distinct ancestor of the candidate. Run DocumentationGovernanceTest, ReleaseGovernanceTest, ExtentGovernanceTest, TestChangeReview, and ReleaseGate preflight before signing. Keep the reports and Git review receipt. Enable the AI probes when the diff affects the engine or corpus. [JVM suites](../testing/README.md#jvm-suites) · [Test changes](../testing/README.md#test-changes-against-a-git-baseline)
-5. Load the identity by dot-sourcing `scripts/Initialize-J7Signing.ps1`; an existing encrypted project record is detected automatically. For a new key after a published release, use `-StartNewIdentity` explicitly. The script rejects implicit rotation and protects the key with ACL and DPAPI. Build the APK and Android tests with Gradle, then verify the signature, `versionCode`, and compatibility through `scripts/verify-signing-continuity.ps1`. Run the flow that covers the change on the emulator and keep the installed APK hash and Extent report. If the signing identity changed and the emulator still has the old release, preserve the installation containing valuable data. A sanity APK with a different `applicationId` supplies supplementary evidence and cannot qualify the distribution binary.
+5. Load the identity by dot-sourcing `release-tools/scripts/Initialize-J7Signing.ps1`; an existing encrypted project record is detected automatically. For a new key after a published release, use `-StartNewIdentity` explicitly. The script rejects implicit rotation and protects the key with ACL and DPAPI. Build the APK and Android tests with Gradle, then verify the signature, `versionCode`, and compatibility through `release-tools/scripts/verify-signing-continuity.ps1`. Run the flow that covers the change on the emulator and keep the installed APK hash and Extent report. If the signing identity changed and the emulator still has the old release, preserve the installation containing valuable data. A sanity APK with a different `applicationId` supplies supplementary evidence and cannot qualify the distribution binary.
 6. Run `ChessComponentSuite` and Game Review sanity under the same qualification ID. Pass the APK, commit, raw receipt directories, and Extent reports through `ReleaseGate qualification`. Check the expandable comparisons and captures for their steps in Extent. For a change to Opening theory or **Why?**, add the compact probe at a 1.3× font scale in RO and EN for the same APK and commit. [Shared replay](../testing/README.md#shared-replay-on-a-compact-screen) [Extent audit criteria](../testing/README.md#extent-reporting)
 7. After signing and qualification, push the candidate tag without rewriting history and publish the GitHub asset. Keep `currentVersion`, the comparison list, and the main README on the latest verified release until the new asset exists. Then promote the catalog and README on both branches. Keep only the new and immediately preceding releases on GitHub Releases and locally. Retire the other releases and folders after the new asset and README route pass verification. Keep the Git tags.
 8. Read the README from `main` on GitHub and download the APK from the displayed URL. Use `ReleaseGate publication` to verify the tag, channel, HTTP status, byte count, SHA-256, and CRC. Save the evidence, push the reports commit, and repeat the download from the final version of the README.
@@ -48,22 +48,26 @@ Check the available version in the README from `origin/main`. If the local branc
 
 - In the checkout, current-release governance recalculates HTML fingerprints for strict qualification and checks Android receipts against the source, APK, and total assertion count. Report and receipt paths must stay within the release folder.
 
+## Release module
+
+The [release-tools module](../../release-tools/README.md) owns the Java gates, delivery adapters and protected signing record. Build its JAR before invoking CLI commands; `atf-tests` consumes that artifact through Maven. ATF integration tests remain in their audited suites. The game build and qualified APK identity remain unchanged.
+
 ## Local published release
 
 Publication also delivers the current edition to the developer checkout's `release/` directory. A successful remote download alone does not complete this local handoff. The working source may contain parallel experiments and must remain untouched.
 
 - Pin the publication commit from the live branch, separately from the APK's qualified producer. Read the catalog and original report bytes from that immutable Git tree.
 - Keep **only the current edition** in this local projection, including the complete signed APK, Extent, receipts and edition README. The tracked publication catalog can retain its previous comparison edition; this local projection has its own `PUBLISHED_RELEASE_CHECKOUT` index.
-- Run [the synchronizer](../../scripts/sync-published-release.ps1) from the verified publication worktree. It checks qualification, tag identity, README route, both download receipts, APK size, digest and ZIP CRC before replacing anything.
+- Run [the synchronizer](../../release-tools/scripts/sync-published-release.ps1) from the verified publication worktree. It checks qualification, tag identity, README route, both download receipts, APK size, digest and ZIP CRC before replacing anything.
 - Stage outside both checkouts under `C:\work\sah`. Preserve a prior local directory there for recovery, check for concurrent changes, then replace only the destination `release/`. Repeating an identical sync returns `UNCHANGED`.
 - Finish with `ReleaseGate local-delivery`. Missing, changed or extra files fail the gate. `local-sync.yaml` identifies the publication commit, qualified producer and exact inventory; it does not qualify experimental working source. The generated APK and this local receipt stay outside Git.
 
 ```powershell
 git fetch origin
 $publication = git rev-parse origin/main_RO
-$destination = 'C:\work\1\atf_j7\release'
+$destination = Join-Path $developmentCheckout 'release'
 $work = 'C:\work\sah\studii\release-sync'
-./scripts/sync-published-release.ps1 -PublicationCommit $publication -Destination $destination `
+./release-tools/scripts/sync-published-release.ps1 -PublicationCommit $publication -Destination $destination `
   -WorkRoot $work -Apk $verifiedApk -Classpath $releaseClasspath
 java -cp $releaseClasspath ro.atf.chess.release.ReleaseGate local-delivery . $publication $destination $verifiedApk
 ```
@@ -100,7 +104,7 @@ that explains the evidence, rather than rewriting a qualified artifact.
 Build the two worktrees sequentially when their Maven local repository is shared: root bootstrap installs the ATF binaries and Windows may lock a JAR already loaded by the other JVM. Independent target directories do not isolate that repository. Parallel builds require independently prepared local repositories and verified library provenance.
 
 ```powershell
-java -cp atf-tests/target/classes ro.atf.chess.release.ReleaseGate documentation-pair . $enCommit $roCommit
+java -cp release-tools/target/classes ro.atf.chess.release.ReleaseGate documentation-pair . $enCommit $roCommit
 git push --atomic origin "${enCommit}:refs/heads/main" "${roCommit}:refs/heads/main_RO"
 ```
 
@@ -159,7 +163,7 @@ Dot-source the script in the build session to load `J7_SIGNING_STORE` and `J7_SI
   verify the gate.
 
   Chess also keeps the explicitly requested encrypted project record in
-  [`.atf-signing`](../../.atf-signing/README.md). An existing directory is loaded
+  [`.atf-signing`](../../release-tools/.atf-signing/README.md). An existing directory is loaded
   automatically; `-ProjectIdentity -StartNewIdentity` provisions a missing one
   only after explicit approval of the signing transition. Paths in its manifest
   are relative. The PKCS12 password stays DPAPI-protected for the original
@@ -185,7 +189,7 @@ release, and Extent controls.
 ```powershell
 mvn test "-Dtest=ChessGovernanceSuite" "-Dchess.extent=$governanceExtent"
 mvn test "-Dtest=TestChangeReview" "-Dchess.testChanges.base=$reviewBase" "-Dchess.extent=$testChangeExtent"
-java -cp atf-tests/target/classes ro.atf.chess.release.ReleaseGate preflight atf-tests/target/surefire-reports . $reviewBase
+java -cp release-tools/target/classes ro.atf.chess.release.ReleaseGate preflight atf-tests/target/surefire-reports . $reviewBase
 ```
 
 - Run the suites from the same TMP checkout and choose fresh report paths.
@@ -201,7 +205,7 @@ mvn -pl atf-tests -am test "-Dtest=ChessComponentSuite" "-Dsurefire.failIfNoSpec
   "-Dchess.extent=$componentExtent" "-Dchess.qualification.commit=$commit" "-Dchess.qualification.runId=$runId"
   # Move the suite's Surefire receipts to $componentReceipts before Android publication.
   # Run signed sanity with -SourceCommit $commit -QualificationRunId $runId.
-java -cp atf-tests/target/classes ro.atf.chess.release.ReleaseGate qualification `
+java -cp release-tools/target/classes ro.atf.chess.release.ReleaseGate qualification `
   $version $commit $apk $componentReceipts $componentExtent $nativeRun $nativeExtent
 ```
 
@@ -303,9 +307,9 @@ If the release also changes the board or hints, run the analysis flow with `-Ana
 - After publication, run verification with the existing GitHub authentication in Git Credential Manager. The output directory is fresh and stays in TMP.
 
 ```powershell
-./scripts/verify-authenticated-download.ps1 -Repository crististefanita/chess `
+./release-tools/scripts/verify-authenticated-download.ps1 -Repository crististefanita/chess `
   -Version <version> -CandidateCommit <sha> -QualifiedApk <qualified-apk> `
-  -Classes <tmp-checkout>/atf-tests/target/classes -OutputDirectory <new-tmp-directory>
+  -OutputDirectory <new-external-study-directory>
 ```
 
 ## Advisory Context
@@ -318,7 +322,7 @@ After compilation, call `ReleaseRag` from the TMP copy with the source root and 
 
 ```powershell
 $paths = @(git -C $checkout diff --name-only $previousTag $candidateCommit)
-java -cp "$scratch/atf-tests/target/classes" ro.atf.chess.release.ReleaseRag $scratch @paths
+java -cp "$scratch/release-tools/target/classes" ro.atf.chess.release.ReleaseRag $scratch @paths
 ```
 
 - Pass the paths from the Git checkout to the command in TMP. RAG reports each as `COVERED` or `NEEDS_REVIEW`, including mixed lists.

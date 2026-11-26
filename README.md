@@ -71,7 +71,7 @@ flowchart LR
 
 ### Source composition and evidence
 
-These areas are not five Maven modules. The [root POM](pom.xml) declares only `atf-tests`; its POM compiles the engine and adds the release-tool sources, while Android and Web have their own build entry points.
+The [root POM](pom.xml) declares two Maven modules: `release-tools` produces the release library and CLI, and `atf-tests` consumes that artifact. Android and Web keep their own build entry points.
 
 ```mermaid
 %%{init: {"theme":"neutral","themeVariables":{"fontSize":"15px"},"themeCSS":".edgeLabel, .edgeLabel p { font-size: 12px !important; } .node rect { rx: 6px; ry: 6px; }","flowchart":{"curve":"linear","nodeSpacing":24,"rankSpacing":20,"padding":6},"sequence":{"mirrorActors":false,"messageMargin":24}}}%%
@@ -87,7 +87,7 @@ flowchart LR
     Source -->|Gradle packages| Android
     Source -->|TeaVM compiles| Worker
     Source -->|Maven compiles| Tests
-    Tools -->|Maven adds sources| Tests
+    Tools -->|provides its JAR| Tests
     Receipts -->|publish verified observations| Tests
     Tests -->|records assertions| Extent
     Android -->|candidate identity| Gate
@@ -98,7 +98,7 @@ flowchart LR
 <summary>Legend — builds, reports and acceptance scope</summary>
 
 - **Gradle** declares `:app` and includes `chess-core/src/main/java` and `chess-core/src/main/resources` in the Android build.
-- **Maven** declares only `atf-tests`, compiling `chess-core/src/main/java` and `release-tools/src/main/java` and loading `chess-core/src/main/resources`.
+- **Maven** declares `release-tools` and `atf-tests`; it compiles `release-tools/src/main/java` into an independent JAR. The consumer compiles `chess-core/src/main/java` and loads `chess-core/src/main/resources`.
 - **ATF libraries** supply `atf-reporting` and `atf-test-kit` with `test` scope. [Test POM](atf-tests/pom.xml) · [Android Gradle](android/app/build.gradle)
 - The Web build prepares the same catalog resources for TeaVM. Worker parity compares actual packaged behavior with JVM expectations; it is an explicit check, not an inference from source sharing.
 - Extent records the selected assertions and imported platform evidence. Missing, foreign or incomplete receipts must not become accepted device/browser results.

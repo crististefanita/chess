@@ -1,4 +1,92 @@
 testChanges:
+  - id: CHESS-RELEASE-MODULE-1
+    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    from: pom.xml
+    replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseModuleLayoutTest.java
+    test: ro.atf.chess.ReleaseModuleLayoutTest#reactorConsumesOneIndependentReleaseArtifact
+    contract: "Extract the release JAR and delivery adapters; preserve signer identity, immutable evidence and independent game builds"
+    allowDelete: false
+
+  - id: CHESS-RELEASE-MODULE-2
+    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    from: atf-tests/pom.xml
+    replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseModuleLayoutTest.java
+    test: ro.atf.chess.ReleaseModuleLayoutTest#reactorConsumesOneIndependentReleaseArtifact
+    contract: "Extract the release JAR and delivery adapters; preserve signer identity, immutable evidence and independent game builds"
+    allowDelete: false
+
+  - id: CHESS-RELEASE-MODULE-3
+    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    from: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/DocumentationGovernanceTest.java
+    test: ro.atf.chess.DocumentationGovernanceTest#projectReadmeArchitectureMatchesTheExecutableBuild
+    contract: "Extract the release JAR and delivery adapters; preserve signer identity, immutable evidence and independent game builds"
+    allowDelete: false
+
+  - id: CHESS-RELEASE-MODULE-4
+    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    from: atf-tests/src/test/java/ro/atf/chess/ProjectDocumentationIdentityTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ProjectDocumentationIdentityTest.java
+    test: ro.atf.chess.ProjectDocumentationIdentityTest#activeGuidesUseTheCurrentRepositoryIdentity
+    contract: "Extract the release JAR and delivery adapters; preserve signer identity, immutable evidence and independent game builds"
+    allowDelete: false
+
+  - id: CHESS-RELEASE-MODULE-5
+    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    from: atf-tests/src/test/java/ro/atf/chess/PublishedReleaseArchiveTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/PublishedReleaseArchiveTest.java
+    test: ro.atf.chess.PublishedReleaseArchiveTest#ragSelectsLocalDeliveryVerificationForPublicationChanges
+    contract: "Extract the release JAR and delivery adapters; preserve signer identity, immutable evidence and independent game builds"
+    allowDelete: false
+
+  - id: CHESS-RELEASE-MODULE-6
+    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    from: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java
+    test: ro.atf.chess.ReleaseGovernanceTest#signingRecoveryUsesTheProtectedIdentityAndExplicitlyGatesRotation
+    contract: "Extract the release JAR and delivery adapters; preserve signer identity, immutable evidence and independent game builds"
+    allowDelete: false
+
+  - id: CHESS-RELEASE-MODULE-7
+    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    from: atf-tests/src/test/java/ro/atf/chess/SignedSourceReplayReceiptTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/SignedSourceReplayReceiptTest.java
+    test: ro.atf.chess.SignedSourceReplayReceiptTest#projectSigningRecordIsRelativeAndContainsNoPlaintextPassword
+    contract: "Extract the release JAR and delivery adapters; preserve signer identity, immutable evidence and independent game builds"
+    allowDelete: false
+
+  - id: CHESS-RELEASE-MODULE-8
+    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    from: scripts/Initialize-J7Signing.ps1
+    replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseModuleLayoutTest.java
+    test: ro.atf.chess.ReleaseModuleLayoutTest#reactorConsumesOneIndependentReleaseArtifact
+    contract: "Extract the release JAR and delivery adapters; preserve signer identity, immutable evidence and independent game builds"
+    allowDelete: true
+
+  - id: CHESS-RELEASE-MODULE-9
+    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    from: scripts/verify-signing-continuity.ps1
+    replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseModuleLayoutTest.java
+    test: ro.atf.chess.ReleaseModuleLayoutTest#reactorConsumesOneIndependentReleaseArtifact
+    contract: "Extract the release JAR and delivery adapters; preserve signer identity, immutable evidence and independent game builds"
+    allowDelete: true
+
+  - id: CHESS-RELEASE-MODULE-10
+    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    from: scripts/verify-authenticated-download.ps1
+    replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseModuleLayoutTest.java
+    test: ro.atf.chess.ReleaseModuleLayoutTest#reactorConsumesOneIndependentReleaseArtifact
+    contract: "Extract the release JAR and delivery adapters; preserve signer identity, immutable evidence and independent game builds"
+    allowDelete: true
+
+  - id: CHESS-RELEASE-MODULE-11
+    base: "371c41ee428a7a2a9461702be8751025759aa52b"
+    from: scripts/sync-published-release.ps1
+    replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseModuleLayoutTest.java
+    test: ro.atf.chess.ReleaseModuleLayoutTest#reactorConsumesOneIndependentReleaseArtifact
+    contract: "Extract the release JAR and delivery adapters; preserve signer identity, immutable evidence and independent game builds"
+    allowDelete: true
+
   - id: CHESS-LOCAL-RELEASE-DELIVERY
     base: "45b1196bf10afb0b44935713efad93b4d2a16d4d"
     from: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java

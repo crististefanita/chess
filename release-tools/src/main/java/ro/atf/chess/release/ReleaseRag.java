@@ -214,15 +214,18 @@ public final class ReleaseRag {
             new Route(".gitattributes", "lib/README.md", "## Provenance", "PlatformLibraryProvenanceTest"),
             new Route("library-provenance.json", "lib/README.md", "## Provenance", "PlatformLibraryProvenanceTest"),
             new Route("release/", "docs/release/README.md", "## Local published release", "PublishedReleaseArchiveTest and PublishedReleaseArchive verify"),
-            new Route("scripts/sync-published-release.ps1", "docs/release/README.md", "## Local published release", "PublishedReleaseArchiveTest and PublishedReleaseArchive verify"),
+            new Route("release-tools/scripts/sync-published-release.ps1", "docs/release/README.md", "## Local published release", "PublishedReleaseArchiveTest and PublishedReleaseArchive verify"),
             new Route("release-tools/src/main/java/ro/atf/chess/release/PublishedReleaseArchive.java", "docs/release/README.md",
                     "## Local published release", "PublishedReleaseArchiveTest and PublishedReleaseArchive verify"),
+            new Route("release-tools/pom.xml", "release-tools/README.md", "## Responsibilities", "ReleaseModuleLayoutTest and module JAR packaging"),
+            new Route("release-tools/scripts/", "release-tools/README.md", "## Responsibilities", "ReleaseModuleLayoutTest, SignedSourceReplayReceiptTest and ReleaseGovernanceTest"),
+            new Route("release-tools/.atf-signing/", "docs/release/README.md", "## Signing Identity and Clean Installation", "ReleaseModuleLayoutTest and signer continuity"),
             new Route("docs/release/", RELEASE.document(), RELEASE.heading(), RELEASE.check()),
             new Route("release/", RELEASE.document(), RELEASE.heading(), RELEASE.check()),
             new Route("scripts/", RELEASE.document(), RELEASE.heading(), RELEASE.check()),
-            new Route("scripts/Initialize-J7Signing.ps1", "docs/release/README.md", "## Signing Identity and Clean Installation",
+            new Route("release-tools/scripts/Initialize-J7Signing.ps1", "docs/release/README.md", "## Signing Identity and Clean Installation",
                     "ReleaseGovernanceTest and ReleaseGate signing-continuity"),
-            new Route("scripts/verify-signing-continuity.ps1", "docs/release/README.md", "## Signing Identity and Clean Installation",
+            new Route("release-tools/scripts/verify-signing-continuity.ps1", "docs/release/README.md", "## Signing Identity and Clean Installation",
                     "ReleaseGovernanceTest and ReleaseGate signing-continuity"),
             new Route("scripts/verify-tactics.cjs", "docs/board/quest-curation.md", "## Tactical Training and verification set",
                     "verify-tactics.cjs and chess.js 1.4.0"),
@@ -352,7 +355,8 @@ public final class ReleaseRag {
 
     public static void main(String[] args) throws IOException {
         if (args.length < 2) throw new IllegalArgumentException("Usage: ReleaseRag <source-root> <changed-path>...");
-        var inventory = inspect(Path.of(args[0]), List.of(args).subList(1, args.length));
+        Path sourceRoot = ReleaseWorkspace.locate(Path.of(args[0])).root();
+        var inventory = inspect(sourceRoot, List.of(args).subList(1, args.length));
         var citations = inventory.citations();
         System.out.println("ADVISORY_ONLY | Qualification and publication are NOT_RUN by this command.");
         if (inventory.documentationPairRequired()) {
@@ -365,7 +369,7 @@ public final class ReleaseRag {
         for (var item : citations) {
             System.out.printf("%s:%d %s%n  SHA-256 %s%n  Verify %s%n", item.path(), item.line(), item.heading(), item.sha256(), item.check());
             if (item.path().equals(RELEASE.document()) && item.heading().equals(RELEASE.heading())) {
-                for (String step : workflow(Path.of(args[0]))) System.out.println(step);
+                for (String step : workflow(sourceRoot)) System.out.println(step);
             }
         }
     }

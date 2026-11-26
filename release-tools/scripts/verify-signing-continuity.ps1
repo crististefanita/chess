@@ -8,7 +8,9 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$projectRoot = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
+. (Join-Path $PSScriptRoot 'ReleaseWorkspace.ps1')
+$workspace = Get-ChessReleaseWorkspace -ScriptDirectory $PSScriptRoot
+$projectRoot = $workspace.ProjectRoot
 $apkPath = [IO.Path]::GetFullPath($Apk)
 $baselinePath = if ($BaselineQualification) {
     if ([IO.Path]::IsPathRooted($BaselineQualification)) { $BaselineQualification }
@@ -46,7 +48,7 @@ $baseline = Get-Content -Raw -LiteralPath $baselinePath | ConvertFrom-Json
 $previousFingerprint = [string]$baseline.signingCertificateSha256
 if (!$previousFingerprint) { $previousFingerprint = [string]$baseline.certificateSha256 }
 if (!$previousFingerprint) { throw 'The published baseline has no recorded signing certificate fingerprint.' }
-$classes = Join-Path $projectRoot 'atf-tests/target/classes'
+$classes = Get-ChessReleaseClasspath -ModuleRoot $workspace.ModuleRoot
 $java = (Get-Command java -CommandType Application).Source
 $result = @(& $java -cp $classes ro.atf.chess.release.ReleaseGate signing-continuity `
     $previousFingerprint $candidateFingerprint $Mode 2>&1)

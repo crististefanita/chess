@@ -21,7 +21,16 @@ import java.util.regex.Pattern;
 public final class GitTestChanges {
     private static final Pattern COMMIT = Pattern.compile("[0-9a-f]{40}|[0-9a-f]{64}");
     private static final Set<String> CONFIGURATION = Set.of(
-            "android/app/build.gradle", "android/settings.gradle", "scripts/run-android-sanity.ps1");
+            "android/app/build.gradle", "android/settings.gradle", "scripts/run-android-sanity.ps1",
+            "scripts/Initialize-J7Signing.ps1",
+            "release-tools/scripts/Initialize-J7Signing.ps1",
+            "scripts/verify-signing-continuity.ps1",
+            "release-tools/scripts/verify-signing-continuity.ps1",
+            "scripts/verify-authenticated-download.ps1",
+            "release-tools/scripts/verify-authenticated-download.ps1",
+            "scripts/sync-published-release.ps1",
+            "release-tools/scripts/sync-published-release.ps1",
+            "release-tools/scripts/ReleaseWorkspace.ps1");
     private static final List<String> PATHS = List.of("atf-tests/src/test/", "android/app/src/androidTest/",
             "pom.xml", ":(glob)**/pom.xml", "android/app/build.gradle", "android/settings.gradle",
             "scripts/run-android-sanity.ps1");
@@ -141,7 +150,7 @@ public final class GitTestChanges {
             }
             return null;
         });
-        Thread.ofVirtual().start(inputWriter);
+        Thread.ofPlatform().daemon().name("chess-git-input").start(inputWriter);
         try {
             if (!process.waitFor(20, TimeUnit.SECONDS)) throw new IOException("Git timed out during " + args[0]);
             byte[] bytes = output.get(5, TimeUnit.SECONDS);
@@ -171,7 +180,7 @@ public final class GitTestChanges {
                 return input.readAllBytes();
             }
         });
-        Thread.ofVirtual().start(task);
+        Thread.ofPlatform().daemon().name("chess-git-drain").start(task);
         return task;
     }
 }

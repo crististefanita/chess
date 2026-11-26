@@ -154,7 +154,7 @@ class PublishedReleaseArchiveTest {
     }
 
     @Test void ragSelectsLocalDeliveryVerificationForPublicationChanges(Checks check) throws Exception {
-        var result = ReleaseRag.inspect(ProjectRoot.locate(), List.of("release/index.json", "scripts/sync-published-release.ps1",
+        var result = ReleaseRag.inspect(ProjectRoot.locate(), List.of("release/index.json", "release-tools/scripts/sync-published-release.ps1",
                 "release-tools/src/main/java/ro/atf/chess/release/PublishedReleaseArchive.java"));
         check.same("Every delivery change cites the local synchronization gate", true,
                 result.citations().stream().anyMatch(row -> row.check().contains("PublishedReleaseArchiveTest") && row.check().contains("PublishedReleaseArchive verify")));
