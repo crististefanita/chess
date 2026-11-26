@@ -18,3 +18,5 @@
 | [RAG context](rag.txt) · [signing](signing-transition.json) | Advisory selection, review of new routes and upgrade compatibility. |
 
 Partial Android work currently reuses RAM; persistence after process death remains in feedback. Extent preserves original bytes and assertions, including captures. No Native Elo gain is claimed.
+
+[Release retention](release-retention.json) keeps 0.17.1 and 0.16.2; historical tags remain available.

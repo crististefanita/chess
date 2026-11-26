@@ -13,7 +13,7 @@ Stockfish Lite owns calculated hints, the evaluation bar and interim/final Game 
 
 The bar's WDL expected score is not a human win probability or Elo. A longer PV is not a deeper completed search or stronger play. [Source conventions](../board/analysis-sources.md)
 
-## Implemented candidate
+## Verified edition
 
 - Live opening-variety and completed-MultiPV changes are retained in the integration candidate. Both adapters cap visible recommendations at three; an interrupted deeper batch retains the latest full exact cohort.
 - Web ships the independently pinned Lite loader/WASM and a distinct Lite journal namespace. New Lite journals cannot inherit old Full observations. Older archives retain their source.
@@ -26,13 +26,14 @@ The bar's WDL expected score is not a human win probability or Elo. A longer PV 
 
 | Priority | Gap | Closure evidence |
 |---|---|---|
-| P0 | Current platform and publication acceptance | Identified signed APK on the emulator and served Lite Web bundle through Browser MCP, with original assertions, UCI, source/build identity and captures. A build or a Full predecessor's report is insufficient. |
 | P1 | Android durable partial review work | Persist and revalidate completed per-ply free/played observations after process death. Current Android RAM reuse and durable completed reviews are separate scopes. Verify missing work, branches, failed writes, history/provider changes and final aggregation. |
 | P1 | Offline study recorder | Retain actual Lite observations before each White/Black move, the actual Native decision and the complete final review. Do not retrospectively rename reconstructed hints as observed. |
 | P1 | Lite quality calibration | Compare fresh independent contexts and sacrifices/recaptures with a separately identified stronger teacher; record CP/mate/WDL disagreements and uncertainty. Package size does not establish Full-equivalent strength or Native Elo. |
 | P2 | Lifecycle and rendering matrix | Complete RO/EN enlarged-text rotation, open replay restoration and cancellation/restart observations on the signed APK and served Web artifact. Components establish their own scope. |
 
 ## Evidence and promotion
+
+[Edition 0.17.1](../../release/0.17.1/reports/README.md) closes the identified acceptance: 735 components, 67 native assertions on the exact APK, Web review and three tabs observed through MCP, and complete downloads from the main README on both channels. The manual scope is explicit; the broader rendering matrix and P1 work above remain open.
 
 Keep build, raw UCI, original receipts and self-contained Extent under `C:\work\sah`. The current integration study is `studii/2026-11-26-stockfish-lite-release`; older `.studii/stockfish-lite-web` and `.studii/stockfish-android-build` handoffs remain historical input, including failed Full installs and pre-patch native compilation. They are not Lite qualification.
 

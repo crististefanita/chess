@@ -1,0 +1,23 @@
+{
+  "historicalTags": [
+    {
+      "tag": "v0.16.1",
+      "sha": "6b958f5a7ef8fed3f441a0983a4d5f812a61aa8a"
+    },
+    {
+      "tag": "v0.17.0",
+      "sha": "8cdaeb910ed572c0c8a459c2f548aede27a97c8a"
+    }
+  ],
+  "retiredReleaseTags": [
+    "v0.16.1",
+    "v0.17.0"
+  ],
+  "tagsDeleted": false,
+  "status": "PASS",
+  "observedUtc": "2026-11-26T11:06:42.8313054Z",
+  "kept": [
+    "v0.17.1",
+    "v0.16.2"
+  ]
+}
