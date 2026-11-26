@@ -1,4 +1,44 @@
 testChanges:
+  - id: CHESS-STOCKFISH-TRANSPORT-FIXTURES
+    base: "65a29ab023a6a1da11a0da1b3476da717bee5baf"
+    from: atf-tests/src/test/java/ro/atf/chess/ChessWebStockfishTransportTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ChessWebStockfishTransportTest.java
+    test: ro.atf.chess.ChessWebStockfishTransportTest#compiledPortsRunTheRealShippedEngine
+    contract: "Keep the source assertion inventory synchronized with the native Stockfish protocol fixtures"
+    allowDelete: false
+
+  - id: CHESS-OPENING-REFERENCE-ROOTS
+    base: "65a29ab023a6a1da11a0da1b3476da717bee5baf"
+    from: atf-tests/src/test/java/ro/atf/chess/OpeningReferenceComponentTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/OpeningReferenceComponentTest.java
+    test: ro.atf.chess.OpeningReferenceComponentTest#opponentRootsAreTheStoredCloseStockfishLinesForThatExactHistory
+    contract: "Use measured Stockfish roots only for the exact opening history and legal board, never a transposition"
+    allowDelete: false
+
+  - id: CHESS-OPENING-VARIETY-ROOTS
+    base: "65a29ab023a6a1da11a0da1b3476da717bee5baf"
+    from: atf-tests/src/test/java/ro/atf/chess/OpeningVarietyTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/OpeningVarietyTest.java
+    test: ro.atf.chess.OpeningVarietyTest#coveredOpponentChoicesRotateOnlyAmongMeasuredStockfishRoots
+    contract: "Rotate only among eligible measured roots, preserve exact-prefix restrictions and profile overrides"
+    allowDelete: false
+
+  - id: CHESS-TEAVM-JAVA17-COLLECTION-API
+    base: "65a29ab023a6a1da11a0da1b3476da717bee5baf"
+    from: atf-tests/src/test/java/ro/atf/chess/TeaVmPortabilityGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/TeaVmPortabilityGovernanceTest.java
+    test: ro.atf.chess.TeaVmPortabilityGovernanceTest#governanceRejectsCollectionMethodsOutsideTheTeaVmJava17Target
+    contract: "Reject Java 21 sequenced collection methods from Java 17 TeaVM-reachable sources"
+    allowDelete: false
+
+  - id: CHESS-STOCKFISH-RAG-ROUTES
+    base: "65a29ab023a6a1da11a0da1b3476da717bee5baf"
+    from: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java
+    replacement: atf-tests/src/test/java/ro/atf/chess/ReleaseGovernanceTest.java
+    test: ro.atf.chess.ReleaseGovernanceTest#ragRoutesWebStockfishChangesToPinnedEngineEvidence
+    contract: "Route Web Stockfish source, protocol fixtures and guide to the pinned-WASM verification contract and separate Browser MCP observation"
+    allowDelete: false
+
   - id: CHESS-MATCH-OPENING-FIXTURE-EN
     base: "d202d0764829626f84ae78e4a789c3d39480108c"
     from: atf-tests/src/test/java/ro/atf/chess/MatchAnalysisParityTest.java

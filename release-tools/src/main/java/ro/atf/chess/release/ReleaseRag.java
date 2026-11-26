@@ -64,6 +64,12 @@ public final class ReleaseRag {
             uiMenus("web/src/main/web/options-menu.mjs"),
             uiMenus("web/src/main/web/study-analysis.mjs"),
             uiMenus("web/src/main/web/study-analysis.css"),
+            webStockfish("web/src/main/web/stockfish-analysis.mjs"),
+            webStockfish("web/tests/analysis-study.test.mjs"),
+            webStockfish("web/tests/stockfish-analysis.test.mjs"),
+            webStockfish("web/tests/stockfish-integration.test.mjs"),
+            webStockfish("web/tests/stockfish-presentation.test.mjs"),
+            webStockfish("web/stockfish.md"),
             hintPresentation("android/app/src/main/java/ro/atf/chess/android/HintPreviewDialog.java"),
             hintPresentation("android/app/src/main/java/ro/atf/chess/android/AnalysisReplayDialog.java"),
             new Route("chess-core/", "docs/testing/README.md", "## Engine and projection", "ChessComponentTest and QuestCatalogTest"),
@@ -234,6 +240,11 @@ public final class ReleaseRag {
     private static Route hintPresentation(String path) {
         return new Route(path, "docs/testing/README.md", "### Menu and hint parity",
                 "HintReplayPresentationTest, HintPreviewTest, GameReviewLayoutTest and Android compact RO/EN at 130%");
+    }
+
+    private static Route webStockfish(String path) {
+        return new Route(path, "web/stockfish.md", "## Verification",
+                "ChessWebStockfishTransportTest, node --test web/tests/stockfish*.test.mjs with the pinned WASM, and a separate Browser MCP rendered check");
     }
 
     private static Route testChanges(String path) {
