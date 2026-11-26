@@ -49,8 +49,8 @@ The selective arm passes the twelve existing component methods, retains every ac
 | Case | Independent H17/H19 result | Consequence |
 |---|---|---|
 | training-056 | Candidate Rxc7 estimates a draw; the parent Nxc7 retains the win | Genuine regression; protect the actual accepted continuation in components. |
-| training-091 | Candidate Qh2 loses at least 520 per-mille; Rf8 retains the win | Genuine regression; inspect the free defense and completed frontier. |
-| training-096 | Candidate Nd5 estimates a loss; Rh4 retains the win | Genuine regression; the local target gains cannot erase it. |
+| training-091 | Candidate Bxh2+ loses at least 520 per-mille; Rf8 retains the win | Genuine regression; inspect the free defense and completed frontier. |
+| training-096 | Candidate Nd5 estimates a loss; Qxh4 retains the win | Genuine regression; the local target gains cannot erase it. |
 | tactic-003, training-040 | Different authored move, same winning WDL estimate at both horizons | Strict-route mismatch, not demonstrated playing degradation. Conversion and an explicitly curated alternate route are still needed. |
 | training-060 | The old Kxg2 reference estimates a loss; candidate e4 retains the win | A corrupted reference cannot become a golden answer. |
 
@@ -61,6 +61,8 @@ Do not simply substitute a seven-ply line and weaken the existing closed +200 ma
 `HardLateContinuationTest` isolates all 26 stored contexts and rejects changed run, stage, clock, WDL and safety cap. `NativeContinuationRouteTest` makes actual Native calls for the three independently sound route guards. `MaterialRegressionTest` distinguishes the three real regressions, the two healthy alternatives and the losing reference; it also replays the primary source and verifies both protected rook invasions. No test requires a future engine to repeat a stored bad choice. These fixtures are test-only knowledge, not runtime FEN-to-move overrides.
 
 ## Next intervention and promotion
+
+The [selective repair follow-up](hard-selective-repair.md) has now repaired the three continuations in an external corroborated-veto copy while keeping all eight first-key recoveries and improving complete routes to 1,193. It preserves the original study's failed verdicts; the new copy's transfer and paired Elo must be assessed separately.
 
 Keep selective replay as the most useful **unqualified integration candidate**: +8 first keys and +2 complete authored routes, but three confirmed playing regressions. Isolate the first wrong evaluation in training-056/091/096 with free replies at a common horizon before adding another global budget or another remembered position. Preserve its existing recoveries and the original rook/queen controls. Treat the checking-parent bypass as a limited hypothesis, not a soundness theorem.
 

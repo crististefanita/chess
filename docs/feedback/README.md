@@ -11,9 +11,11 @@ Work the [current Native priorities](hard.md) through the [A/B, game-audit and E
 
 Follow the [ordered improvement steps](../testing/hard-progress.md): audit compatibility, A3 confirmation, a cause-level playing repair, excluded-family transfer and paired Elo. Completed repairs belong in technical documentation; retained diagnostic failures do not all remain active ToDo items.
 
+The [current selective repair](../testing/hard-selective-repair.md) retains eight recovered first keys and repairs three real continuation regressions in an external copy. Its complete catalog is 1,222 keys / 1,193 routes; the fixed paired match remains a separate diagnostic measurement. Use [Hard's current priorities](hard.md) for qualification, rather than reopening every retained diagnostic below.
+
 [Reviewing test moves between suites](../testing/README.md#test-changes-against-a-git-baseline) describes the Git baseline and coverage evidence.
 
-- [Experimental Hard A gates and remaining work](hard.md)
+- [Current Native Hard gates and remaining work](hard.md)
 - [Native strength and hint/review comparisons](#finished-game-native-losses-and-frontier-controls)
 - [Learned-ordering transfer still needed](hard-learning.md)
 - [APK/Web parity and rendered evidence](web-parity.md)
