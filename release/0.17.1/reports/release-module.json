@@ -1,0 +1,93 @@
+{
+  "status": "PASS",
+  "scope": "Release module extraction and delivery infrastructure; existing APK unchanged",
+  "en": {
+    "commit": "688085f72bd33529fb91ef2e8288fda26a7ab6b3",
+    "tests": 79,
+    "extentSha256": "ba7250453c8b73ba9b672d116c88ebf93f02cb6d76893fa31c9cb94eadcec5f2",
+    "reviewSha256": "e6ecde870fddffc3eabcaa6f0fd1b339c06b47178a3ca0b206196cf75a3699c3",
+    "identityRelocation": {
+      "status": "PASS",
+      "language": "en",
+      "directoryAclUnchanged": true,
+      "checks": [
+        {
+          "file": "chesslab-release.p12",
+          "bytesUnchanged": true,
+          "aclUnchanged": true
+        },
+        {
+          "file": "password.dpapi",
+          "bytesUnchanged": true,
+          "aclUnchanged": true
+        },
+        {
+          "file": "certificate.der",
+          "bytesUnchanged": true,
+          "aclUnchanged": true
+        },
+        {
+          "file": "identity.json",
+          "bytesUnchanged": true,
+          "aclUnchanged": true
+        }
+      ]
+    }
+  },
+  "ro": {
+    "commit": "15b4851d6a614761a93a6326e823dfe7e5f91d42",
+    "tests": 79,
+    "extentSha256": "4bbeb07504ff49a6eb3b8332c1e903e9eda3a8536b3114e78a10ec6894a02759",
+    "reviewSha256": "6724b2ec8a5b050117c8152d8a577c57d28568712cacafa843eafdc666175ddc",
+    "identityRelocation": {
+      "status": "PASS",
+      "language": "ro",
+      "directoryAclUnchanged": true,
+      "checks": [
+        {
+          "file": "chesslab-release.p12",
+          "bytesUnchanged": true,
+          "aclUnchanged": true
+        },
+        {
+          "file": "password.dpapi",
+          "bytesUnchanged": true,
+          "aclUnchanged": true
+        },
+        {
+          "file": "certificate.der",
+          "bytesUnchanged": true,
+          "aclUnchanged": true
+        },
+        {
+          "file": "identity.json",
+          "bytesUnchanged": true,
+          "aclUnchanged": true
+        }
+      ]
+    }
+  },
+  "jar": {
+    "status": "PASS",
+    "artifactSha256": "4a5b70579f0674556f6122b174e1e549608bb4ffc403b7845e14cbe1d98d4740",
+    "entryCount": 52,
+    "privatePayloadAbsent": true,
+    "gamePayloadAbsent": true,
+    "relativeDependency": "lib/snakeyaml-2.2.jar",
+    "cli": "PASS",
+    "moduleRootRag": "PASS"
+  },
+  "signing": {
+    "schemaVersion": 1,
+    "previousVersion": "0.17.1",
+    "previousCertificateSha256": "e49cc581c12594496e0b2b911aba9a09d04893c661f1ad5316d00377dc8a7772",
+    "candidateVersion": "0.17.1",
+    "candidateCertificateSha256": "e49cc581c12594496e0b2b911aba9a09d04893c661f1ad5316d00377dc8a7772",
+    "installMode": "UPGRADE",
+    "result": "UPGRADE_COMPATIBLE",
+    "apkSha256": "cb46d0f5cca5e4caa88cb014c68c696be70c0818e8b74d57e9c68b28655db58d",
+    "observedUtc": "2026-11-26T18:49:36.1735404Z"
+  },
+  "ioBefore": "FAIL Git timed out during hash-object\r\nelapsedMs=20250",
+  "ioAfter": "PASS bytes=41\r\nelapsedMs=631"
+}

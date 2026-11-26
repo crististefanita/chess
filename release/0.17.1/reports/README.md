@@ -18,6 +18,7 @@
 | [Context RAG](rag.txt) · [semnătură](signing-transition.json) | Selecție consultativă, revizuirea rutelor noi și compatibilitate pentru upgrade. |
 | [Livrare locală EN](local-delivery-en.html) · [RO](local-delivery-ro.html) · [identitate](local-delivery-checks.json) | 66 de verificări per limbă, inclusiv șapte controale ale arhivei cu ediția curentă. Calificarea APK-ului existent rămâne separată. |
 | [RAG livrare EN](local-delivery-rag-en.txt) · [RO](local-delivery-rag-ro.txt) | Regăsirea consultativă efectivă selectează predarea locală și verificarea sa obligatorie. |
+| [Modul release EN](release-module-en.html) · [RO](release-module-ro.html) · [identitate](release-module.json) | 79 de verificări per limbă; JAR independent, scripturi mutate, Git cu un singur fir purtător și semnatar neschimbat. [Dovadă revizie EN](release-module-review-en.html) · [RO](release-module-review-ro.html). Nu este calificare nouă de APK. |
 
 Jurnalele parțiale Android au reutilizare în RAM; persistența lor după oprirea procesului rămâne în feedback. Rapoartele Extent păstrează octeții și aserțiunile originale, inclusiv capturile. Nu este declarat un câștig Elo Native.
 

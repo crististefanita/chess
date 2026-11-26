@@ -39,8 +39,10 @@ Construiește într-un worktree extern sub `C:\work\sah`, cu propriul repository
 
 ```powershell
 mvn -pl release-tools -am package
-java -jar release-tools/target/chess-release-tools-0.17.1-SNAPSHOT.jar links README.md
-java -cp release-tools/target/chess-release-tools-0.17.1-SNAPSHOT.jar ro.atf.chess.release.ReleaseRag release-tools pom.xml
+$version = ([xml](Get-Content -Raw pom.xml)).project.version
+$releaseJar = "release-tools/target/chess-release-tools-$version.jar"
+java -jar $releaseJar links README.md
+java -cp $releaseJar ro.atf.chess.release.ReleaseRag release-tools pom.xml
 ```
 
 Adaptoarele PowerShell rezolvă checkout-ul după markerii structurii, independent de directorul curent sau un număr fix de părinți. Pot folosi automat modulul compilat și `target/lib`; classpath-ul explicit rămâne acceptat. Rulează componentele ATF din rădăcină cu `-pl atf-tests -am`. [Selectarea suitei](../docs/testing/README.md#suite-jvm)
