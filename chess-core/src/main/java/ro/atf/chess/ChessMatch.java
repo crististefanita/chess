@@ -21,6 +21,7 @@ public final class ChessMatch {
     private static final String SETUP_FORMAT = "3|";
     private static final String DECISION_FORMAT = "4|";
     private static final String OPENING_FORMAT = "5|";
+    private static final String NAMED_SETUP_FORMAT = "6|";
     private static final MatchSetup DEFAULT_SETUP = new MatchSetup(Side.WHITE, MatchSetup.Level.BASIC, false);
     private final List<ChessPosition> positions;
     private final List<Move> moves;
@@ -165,7 +166,7 @@ public final class ChessMatch {
 
     ChessMatch withAnalysis(boolean enabled) {
         if (analysisEnabled() == enabled) return this;
-        return new ChessMatch(positions, moves, quietPlies, new MatchSetup(setup.humanSide(), setup.level(), enabled), decision, openingChoice);
+        return new ChessMatch(positions, moves, quietPlies, setup.withAnalysis(enabled), decision, openingChoice);
     }
 
     private static boolean resetsQuietCount(ChessPosition position, Move move) {
@@ -185,10 +186,7 @@ public final class ChessMatch {
     }
 
     public String checkpoint() {
-        String prefix = setup.humanSide() == Side.WHITE && setup.level() == MatchSetup.Level.BASIC
-                ? analysisEnabled() ? ANALYSIS_FORMAT : FORMAT
-                : SETUP_FORMAT + setup.humanSide().name() + "|" + setup.level().name() + "|" + (analysisEnabled() ? "1|" : "0|");
-        var encoded = new StringBuilder(prefix);
+        var encoded = new StringBuilder(checkpointSetupPrefix());
         for (int index = 0; index < moves.size(); index++) {
             if (index > 0) encoded.append(' ');
             encoded.append(moves.get(index).uci());
@@ -197,11 +195,24 @@ public final class ChessMatch {
         return decision == null ? payload : DECISION_FORMAT + decision.name() + "|" + payload;
     }
 
+    private String checkpointSetupPrefix() {
+        if (!setup.opponentName().equals(MatchOpponentName.forLevel(setup.level()))) {
+            return NAMED_SETUP_FORMAT + setup.humanSide().name() + "|" + setup.level().name() + "|"
+                    + (analysisEnabled() ? "1|" : "0|") + setup.opponentName() + "|";
+        }
+        if (setup.humanSide() == Side.WHITE && setup.level() == MatchSetup.Level.BASIC) {
+            return analysisEnabled() ? ANALYSIS_FORMAT : FORMAT;
+        }
+        return SETUP_FORMAT + setup.humanSide().name() + "|" + setup.level().name() + "|"
+                + (analysisEnabled() ? "1|" : "0|");
+    }
+
     public static ChessMatch restore(String checkpoint) {
         if (checkpoint.startsWith(OPENING_FORMAT)) {
             var fields = checkpoint.split("\\|", 3);
             if (fields.length != 3 || !fields[1].matches("[1-9][0-9]{0,18}")
-                    || !(fields[2].startsWith(FORMAT) || fields[2].startsWith(ANALYSIS_FORMAT) || fields[2].startsWith(SETUP_FORMAT))) {
+                    || !(fields[2].startsWith(FORMAT) || fields[2].startsWith(ANALYSIS_FORMAT)
+                            || fields[2].startsWith(SETUP_FORMAT) || fields[2].startsWith(NAMED_SETUP_FORMAT))) {
                 throw new IllegalArgumentException("Invalid opening checkpoint");
             }
             long choice = Long.parseLong(fields[1]);
@@ -217,6 +228,15 @@ public final class ChessMatch {
                 throw new IllegalArgumentException("Decision does not belong to this position");
             }
             return original.finish(decision);
+        }
+        if (checkpoint.startsWith(NAMED_SETUP_FORMAT)) {
+            String[] fields = checkpoint.split("\\|", 6);
+            if (fields.length != 6 || !(fields[3].equals("0") || fields[3].equals("1"))) {
+                throw new IllegalArgumentException("Invalid named match setup checkpoint");
+            }
+            var setup = new MatchSetup(Side.valueOf(fields[1]), MatchSetup.Level.valueOf(fields[2]),
+                    fields[3].equals("1"), fields[4]);
+            return replay(start(setup), fields[5]);
         }
         if (checkpoint.startsWith(SETUP_FORMAT)) {
             String[] fields = checkpoint.split("\\|", -1);

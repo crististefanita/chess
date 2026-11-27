@@ -105,7 +105,7 @@ public final class MatchListActivity extends LocalizedActivity {
     }
 
     private String rowTitle(MatchListEntry entry) {
-        String opponent = MatchLabels.opponentName(entry.opponent());
+        String opponent = MatchLabels.botName(this, entry.opponentName(), entry.opponent());
         return entry.slot() > 0 ? getString(R.string.match_saved_title, entry.slot(), opponent)
                 : getString(R.string.match_finished_title, opponent);
     }

@@ -21,17 +21,20 @@ test('AI name and level are adjacent to their captures across orientation and hi
     assert.equal(matchSeatLabels({ ...ai, result: 'WHITE_WINS', sideToMove: 'BLACK' }, 'Ana', words).top.active, false);
 });
 
-test('all three AI identities match native names without a browser or emulator', async () => {
+test('AI names and level remain adjacent to captures without a browser or emulator', async () => {
     const core = await readFile(new URL('../../chess-core/src/main/java/ro/atf/chess/MatchOpponentName.java', import.meta.url), 'utf8');
     const native = await readFile(new URL('../../android/app/src/main/java/ro/atf/chess/android/MatchLabels.java', import.meta.url), 'utf8');
+    const activity = await readFile(new URL('../../android/app/src/main/java/ro/atf/chess/android/ChessActivity.java', import.meta.url), 'utf8');
     const worker = await readFile(new URL('../src/main/java/ro/atf/chess/WebChessGame.java', import.meta.url), 'utf8');
     for (const [level, name] of [['BASIC', 'Alex'], ['ADVANCED', 'Mira'], ['HARD', 'Atlas']]) {
         assert.match(core, new RegExp(`case ${level} -> "${name}"`));
         assert.equal(matchSeatLabels({ ...ai, level, opponentName: name }, 'Ana', words).top.name,
             `${name} · AI ${words.levels[level]}`);
     }
-    assert.match(native, /return MatchOpponentName\.forLevel\(level\)/);
-    assert.match(worker, /"opponentName\\":.*MatchOpponentName\.forLevel/);
+    assert.match(native, /botName\(Context context, String opponentName, MatchSetup\.Level level\)/);
+    assert.match(activity, /botName\(match\.setup\(\)\)/);
+    assert.match(worker, /quote\(match\.setup\(\)\.opponentName\(\)\)/);
+    assert.match(core, /public static String random\(IntUnaryOperator draw\)/);
 });
 
 test('localized seat descriptions and long names retain a fixed board row', async () => {

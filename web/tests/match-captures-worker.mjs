@@ -23,7 +23,9 @@ async function request(type, data = {}) {
 
 let state = await request('ledger-open', { ledger: null, legacy: {} });
 state = await request('match-open', { setup: { mode: 'AI', humanSide: 'WHITE', level: 'BASIC', analysis: false } });
-assert.equal(state.match.opponentName, 'Alex');
+assert.equal(typeof state.match.opponentName, 'string');
+assert.ok(state.match.opponentName.length > 0, 'a new AI match records an opponent identity');
+const opponentName = state.match.opponentName;
 console.log(`opponent-name\t${state.match.opponentName}`);
 for (let index = 0; index < fixture.moves.length; index++) {
     const type = index % 2 === 0 ? 'match-play' : 'match-bot-apply';
@@ -43,5 +45,5 @@ const saved = state.ledger;
 await request('ledger-open', { ledger: saved });
 state = await request('match-open', { route: 'AI' });
 assert.deepEqual(state.match.captures, { top: last.bottom, bottom: last.top });
-assert.equal(state.match.opponentName, 'Alex', 'the named AI player survives reload');
+assert.equal(state.match.opponentName, opponentName, 'the selected AI identity survives reload');
 console.log(`restored\t${JSON.stringify(state.match.captures)}`);

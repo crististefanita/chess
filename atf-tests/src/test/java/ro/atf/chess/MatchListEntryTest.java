@@ -20,8 +20,8 @@ class MatchListEntryTest {
         var match = ChessMatch.start(new MatchSetup(Side.WHITE, Level.ADVANCED, false)).play(Move.fromUci("e2e4"));
         var dated = MatchListEntry.saved(3, match, STARTED);
         var legacy = MatchListEntry.saved(3, match, 0);
-        check.same("A saved row describes one recorded move against the chosen opponent", List.of(3, Level.ADVANCED, 1, Status.IN_PROGRESS),
-                List.of(dated.slot(), dated.opponent(), dated.moves(), dated.status()));
+        check.same("A saved row describes the recorded opponent, level and move count", List.of(3, Level.ADVANCED, "Mira", 1, Status.IN_PROGRESS),
+                List.of(dated.slot(), dated.opponent(), dated.opponentName(), dated.moves(), dated.status()));
         check.same("The starting timestamp is retained", List.of(STARTED, true), List.of(dated.timestamp(), dated.hasTimestamp()));
         check.same("A legacy save still displays its opponent and moves", List.of(Level.ADVANCED, 1, false),
                 List.of(legacy.opponent(), legacy.moves(), legacy.hasTimestamp()));

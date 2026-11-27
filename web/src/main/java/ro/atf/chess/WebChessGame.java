@@ -38,8 +38,8 @@ final class WebChessGame {
         if (newMode != null) {
             GameOrigin choice = GameOrigin.valueOf(newMode);
             var match = choice == GameOrigin.LOCAL ? ChessMatch.start()
-                    : matches().prepareAiMatch(new MatchSetup(ColorChoice.valueOf(colorChoice).resolve(WebChessGame::randomBlack),
-                            Level.valueOf(level), analysis));
+                    : matches().prepareAiMatch(MatchSetup.randomized(ColorChoice.valueOf(colorChoice).resolve(WebChessGame::randomBlack),
+                            Level.valueOf(level), analysis, WebChessGame::randomOpponentIndex));
             return startMatch(match, choice);
         }
         if (route != null) return resumeMode(GameOrigin.valueOf(route));
@@ -256,7 +256,7 @@ final class WebChessGame {
                 + ",\"sideToMove\":" + quote(position.turn().name()) + ",\"checkpoint\":" + quote(checkpoint)
                 + ",\"reviewCheckpoint\":" + quote(raw) + ",\"mode\":" + quote(mode.name())
                 + ",\"humanSide\":" + quote(match.setup().humanSide().name()) + ",\"level\":" + quote(match.setup().level().name())
-                + ",\"opponentName\":" + quote(MatchOpponentName.forLevel(match.setup().level()))
+                + ",\"opponentName\":" + quote(match.setup().opponentName())
                 + ",\"analysisEnabled\":" + match.analysisEnabled()
                 + ",\"automatic\":" + session.automatic() + ",\"manualUsed\":" + manualUsed + ",\"rated\":" + (isAi && !manualUsed)
                 + ",\"manualAiTurn\":" + manualAiTurn + ",\"automation\":{\"visible\":" + showAutomation
@@ -310,4 +310,7 @@ final class WebChessGame {
 
     @JSBody(script = "return Math.random() < 0.5;")
     private static native boolean randomBlack();
+
+    @JSBody(params = "bound", script = "return Math.floor(Math.random() * bound);")
+    private static native int randomOpponentIndex(int bound);
 }

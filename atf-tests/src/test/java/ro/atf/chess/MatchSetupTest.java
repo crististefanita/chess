@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import ro.atf.chess.ChessPosition.Move;
 import ro.atf.chess.ChessPosition.Side;
 import ro.atf.chess.MatchSetup.ColorChoice;
 import ro.atf.chess.MatchSetup.Level;
@@ -62,6 +63,44 @@ class MatchSetupTest {
                 ChessMatch.restore("2|analysis|e2e4").setup());
         check.rejects("A malformed saved analysis option is rejected", IllegalArgumentException.class,
                 () -> ChessMatch.restore("3|BLACK|HARD|yes|e2e4"));
+    }
+
+    @Test void randomizedOpponentIdentityIsChosenOnceAndSurvivesSaveAndResume(Checks check) {
+        var draws = new AtomicInteger();
+        var setup = MatchSetup.randomized(Side.WHITE, Level.HARD, true, bound -> {
+            check.same("The random source receives the bounded roster size", MatchOpponentName.choices().size(), bound);
+            draws.incrementAndGet();
+            return 5;
+        });
+        check.same("A new match receives the selected random identity", "Nika", setup.opponentName());
+        check.same("Basic, Advanced and Hard can share the same independent name roster", true,
+                MatchOpponentName.choices().contains(setup.opponentName()));
+        var match = ChessMatch.start(setup, 7).play(Move.fromUci("e2e4"));
+        var restored = ChessMatch.restore(match.checkpoint());
+        check.same("The named checkpoint keeps identity and opening choice with the match", List.of("Nika", 1, true, 7L),
+                List.of(restored.setup().opponentName(), restored.ply(), restored.analysisEnabled(), restored.openingChoice()));
+        check.same("Changing analysis does not regenerate the match identity", "Nika", restored.withAnalysis(false).setup().opponentName());
+
+        var preferences = new MemoryPreferences();
+        var store = store(preferences);
+        check.same("The named match is committed to the saved-games slot", true,
+                store.startMatch(1, match, false, MatchStore.GameOrigin.AI, false, false));
+        var reopened = store(preferences);
+        var saved = reopened.readSavedMatch(1);
+        var row = MatchListEntry.saved(1, saved, reopened.startedAt(1));
+        check.same("Saved list, resumed game and persisted checkpoint use the same name", List.of("Nika", "Nika", match.checkpoint()),
+                List.of(row.opponentName(), saved.setup().opponentName(), saved.checkpoint()));
+        var finished = ChessMatch.start(setup, 7).play(Move.fromUci("f2f3")).play(Move.fromUci("e7e5"))
+                .play(Move.fromUci("g2g4")).play(Move.fromUci("d8h4"));
+        check.same("The completed match is archived without losing the chosen name", true,
+                reopened.saveMatch(1, finished, false, MatchStore.GameOrigin.AI, false, false));
+        var archive = reopened.archivedMatches().getFirst();
+        check.same("Finished list, archived checkpoint and reopened archive retain the identity", List.of("Nika", "Nika", "Nika"),
+                List.of(MatchListEntry.finished(archive).opponentName(), archive.match().setup().opponentName(),
+                        store(preferences).readArchivedMatch(archive.id()).match().setup().opponentName()));
+        check.same("One identity is drawn at match creation only", 1, draws.get());
+        check.rejects("A checkpoint cannot inject an invalid opponent identity", IllegalArgumentException.class,
+                () -> ChessMatch.restore("6|WHITE|HARD|0|Bad_Name|"));
     }
 
     @Test void theThreeLevelsReachDifferentCompletedHorizonsOnTheSamePosition(Checks check) {

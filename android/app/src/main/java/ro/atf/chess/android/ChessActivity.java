@@ -262,7 +262,8 @@ public final class ChessActivity extends BackNavigableActivity {
         menu.findViewById(R.id.match_start).setOnClickListener(view -> {
             var color = MatchSetup.ColorChoice.values()[colors.getSelectedItemPosition()];
             var level = MatchSetup.Level.values()[levels.getSelectedItemPosition()];
-            newMatch(new MatchSetup(color.resolve(ThreadLocalRandom.current()::nextBoolean), level, analysis.isChecked()));
+            newMatch(MatchSetup.randomized(color.resolve(ThreadLocalRandom.current()::nextBoolean), level,
+                    analysis.isChecked(), bound -> ThreadLocalRandom.current().nextInt(bound)));
         });
         menu.findViewById(R.id.setup_home).setOnClickListener(view -> showMenu());
         setContentView(menu);
@@ -859,7 +860,7 @@ public final class ChessActivity extends BackNavigableActivity {
             if (!snapshot.analysisEnabled() || snapshot.ply() == 0) return;
             cancelBot();
             reviewDialog = GameReviewDialog.showLine(this, snapshot, bot, this::notation, GameReviewDialog.Mode.LIVE_MATCH,
-                    blackBelow, humanName(), botName(snapshot.setup().level()), this::reviewMatch, this::confirmContinuation, () -> {
+                    blackBelow, humanName(), botName(snapshot.setup()), this::reviewMatch, this::confirmContinuation, () -> {
                         reviewDialog = null;
                         scheduleBot();
                     });
@@ -869,7 +870,7 @@ public final class ChessActivity extends BackNavigableActivity {
         boolean manualUsed = archivedMatch == null ? store.matches().matchManualUsed(matchSlot) : archivedMatch.manualUsed();
         if (completedReview == null) completedReview = store.matches().readReview(id, snapshot);
         reviewDialog = GameReviewDialog.showPrepared(this, snapshot, completedReview, reviewWorker, this::notation, manualUsed, blackBelow, humanName(),
-                botName(match.setup().level()), result -> {
+                botName(match.setup()), result -> {
                     if (match == snapshot) completedReview = result;
                     if (store.matches().hasArchived(id) && !store.matches().saveReview(id, snapshot, result)) showSaveError();
                 }, store.matches().readReviewBookmark(id, snapshot), bookmark -> {
@@ -939,7 +940,7 @@ public final class ChessActivity extends BackNavigableActivity {
         String id = archivedMatch == null ? store.matches().archivedId(matchSlot) : archivedMatch.id();
         AnalysisActivity.open(this, match, reviewedPly < 0 ? match.ply() : reviewedPly, blackBelow,
                 id, archivedMatch == null ? store.matches().matchManualUsed(matchSlot) : archivedMatch.manualUsed(),
-                humanName(), botName(match.setup().level()));
+                humanName(), botName(match.setup()));
     }
 
     private void offerMatchDraw() {
@@ -1233,15 +1234,15 @@ public final class ChessActivity extends BackNavigableActivity {
     }
 
     private void renderMatchPlayer(TextView label, Side side, boolean active) {
-        String name = side == match.setup().humanSide() ? humanName() : botName(match.setup().level());
+        String name = side == match.setup().humanSide() ? humanName() : botName(match.setup());
         String color = getString(BoardView.sideLabel(side));
         label.setText(active ? "●  " + name : name);
         label.setTextColor(active ? PROGRESS : PRIMARY);
         label.setContentDescription(getString(R.string.match_seat_description, name, active ? getString(R.string.to_move, color) : color));
     }
 
-    private String botName(MatchSetup.Level level) {
-        return MatchLabels.botName(this, level);
+    private String botName(MatchSetup setup) {
+        return MatchLabels.botName(this, setup.opponentName(), setup.level());
     }
 
     private void renderProgress() {
