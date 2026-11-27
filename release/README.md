@@ -6,7 +6,7 @@ The catalog identifies the available release and where to verify its evidence.
 
 ## Published Release
 
-[`index.json`](index.json) identifies the current release and retains the immediately preceding release for comparison. The main README points only to the current release.
+[`index.json`](index.json) identifies the current release and retains the immediately preceding release as offline historical comparison evidence. GitHub retains only the current release and version tag; the comparison receipts do not promise a second available download. The main README points only to the current release.
 
 | Role | Version | Evidence |
 |---|---|---|
@@ -17,7 +17,7 @@ The catalog identifies the available release and where to verify its evidence.
 
 - The GitHub Release distributes the APK. The release directory holds the
   notes, Extent reports, receipts, and RAG context.
-- Find retired releases in Git commits and tags.
+- Find retired source identities in their original receipts and Git history; obsolete release and deployment tags are removed.
 - After promotion, verify the download from the `main` README and save
   the evidence alongside the release.
 

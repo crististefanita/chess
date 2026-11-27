@@ -34,7 +34,7 @@ Check the available version in the README from `origin/main`. If the local branc
 4. Create the candidate commit in a clean Git worktree in TMP. Declare the SHA of the review baseline, a distinct ancestor of the candidate. Run DocumentationGovernanceTest, ReleaseGovernanceTest, ExtentGovernanceTest, TestChangeReview, and ReleaseGate preflight before signing. Keep the reports and Git review receipt. Enable the AI probes when the diff affects the engine or corpus. [JVM suites](../testing/README.md#jvm-suites) · [Test changes](../testing/README.md#test-changes-against-a-git-baseline)
 5. Load the identity by dot-sourcing `release-tools/scripts/Initialize-J7Signing.ps1`; an existing encrypted project record is detected automatically. For a new key after a published release, use `-StartNewIdentity` explicitly. The script rejects implicit rotation and protects the key with ACL and DPAPI. Build the APK and Android tests with Gradle, then verify the signature, `versionCode`, and compatibility through `release-tools/scripts/verify-signing-continuity.ps1`. Run the flow that covers the change on the emulator and keep the installed APK hash and Extent report. If the signing identity changed and the emulator still has the old release, preserve the installation containing valuable data. A sanity APK with a different `applicationId` supplies supplementary evidence and cannot qualify the distribution binary.
 6. Run `ChessComponentSuite` and Game Review sanity under the same qualification ID. Pass the APK, commit, raw receipt directories, and Extent reports through `ReleaseGate qualification`. Check the expandable comparisons and captures for their steps in Extent. For a change to Opening theory or **Why?**, add the compact probe at a 1.3× font scale in RO and EN for the same APK and commit. [Shared replay](../testing/README.md#shared-replay-on-a-compact-screen) [Extent audit criteria](../testing/README.md#extent-reporting)
-7. After signing and qualification, push the candidate tag without rewriting history and publish the GitHub asset. Keep `currentVersion`, the comparison list, and the main README on the latest verified release until the new asset exists. Then promote the catalog and README on both branches. Keep only the new and immediately preceding releases on GitHub Releases and locally. Retire the other releases and folders after the new asset and README route pass verification. Keep the Git tags.
+7. After signing and qualification, push the candidate tag without rewriting history and publish the GitHub asset. Keep `currentVersion`, the comparison list, and the main README on the latest verified release until the new asset exists. Then promote the catalog and README on both branches. GitHub retains only the current release and its version tag after complete download verification. The catalog's preceding comparison is offline historical evidence, not a second active GitHub release. Before retiring temporary Web refs, retain the qualified static commit in both primary histories. Preserve the active Pages deployment; remove only completed obsolete deployments after verifying the served bytes. Record retired identities under the external study directory.
 8. Read the README from `main` on GitHub and download the APK from the displayed URL. Use `ReleaseGate publication` to verify the tag, channel, HTTP status, byte count, SHA-256, and CRC. Save the evidence, push the reports commit, and repeat the download from the final version of the README.
 9. Synchronize the current published edition into the developer checkout and pass `ReleaseGate local-delivery` before reporting completion. [Local published release](#local-published-release)
 
@@ -127,8 +127,12 @@ dispatch with the same site commit and tree digest. Do not rerun failed jobs
 within the same workflow run: a second upload can create two `github-pages`
 artifacts and make deployment ambiguous. Confirm the served index and runtime
 assets against the qualified Git blobs.
-Permanent branches are limited to `main` and `main_RO`. Keep Git tags of
-published editions and deployed site bundles. [Web publication](../../web/parity.md#publishing-the-link)
+Permanent branches are limited to `main` and `main_RO`. Keep only the current
+release tag. Qualified Web commits remain reachable through both primary
+histories, without extra deployment tags. Keep the active Pages deployment and
+leave pending/in-progress deployments untouched during cleanup. Historical
+comparison receipts keep their original bytes and full source SHA; use that SHA
+instead of a retired tag. [Web publication](../../web/parity.md#publishing-the-link)
 
 ## Strict Exception for Installing the Exact APK
 
@@ -321,7 +325,7 @@ Historical citations retain the fingerprints published with their releases.
 After compilation, call `ReleaseRag` from the TMP copy with the source root and affected paths:
 
 ```powershell
-$paths = @(git -C $checkout diff --name-only $previousTag $candidateCommit)
+$paths = @(git -C $checkout diff --name-only $previousSource $candidateCommit)
 java -cp "$scratch/release-tools/target/classes" ro.atf.chess.release.ReleaseRag $scratch @paths
 ```
 
