@@ -6,9 +6,11 @@
 
 The [current calibration](current-profile-calibration.md) measures all three profiles and authored puzzle routes, with original-prefix technical continuations and explicit quality failures. Use its scope before interpreting a newer Elo point as an algorithmic gain.
 
-The [continuation copies](hard-continuation-copies.md) qualify the next intervention: preserve selective replay's recoveries, repair three genuine regressions and correct the source/goal mismatch in training-060. A benchmark reference must be independently validated before it becomes a learning target.
+The [continuation copies](hard-continuation-copies.md) distinguish three genuine playing regressions from an invalid curriculum reference. The selective successor preserves its recoveries and repairs the three regressions; the separate [training-060 curation](training-060-curation.md) now closes the source/goal mismatch without changing Native play or weakening the material objective. A benchmark reference must be independently validated before it becomes a learning target.
 
 The [selective repair](hard-selective-repair.md) retains all eight first-key gains and repairs the three actual continuations in an experimental corroborated-veto copy. Its catalog reaches 1,222 keys / 1,193 routes. The completed 100-pair match measures Delta Elo **+204.17 [95% +136.97 to +260.49]**, with 140 wins / 18 draws / 37 losses / 5 unfinished and zero audit failures. Mean extra work is 5.45 times main. A 24-source preliminary transfer has only one extra confirmation; wider mechanism activity and explicit policy integration remain necessary. The separate typed-bound child saves 2.64% extra work on all 2,219 matched catalog contexts but inherits no playing result.
+
+The [cache successor](hard-cache-reuse.md) has its own matched enable/disable comparison. Keep its corrected proof-memory boundary, scoped work/CPU results and paired measurement distinct from the earlier strength claim. The frozen curriculum predates the corrected training-060 line; do not inflate progress by silently regrading old receipts.
 
 Treat root correctness and the explanation's continuation as separate gates. The [checked-frontier study](native-forcing-frontier.md) captures a winning Native first move followed by an unclosed queen offer; a first-choice PASS alone cannot close that mechanism. Preserve the stored counterexample without requiring future engines to repeat its bad PV.
 

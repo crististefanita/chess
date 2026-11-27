@@ -2,13 +2,15 @@
 
 ## Overview
 
-Choose the lowest test level that can observe the change. Build from a copy of the source in TMP.
+Choose the lowest test level that can observe the change. Build from an isolated source copy with an external build root.
 
 - [Measured Native Hard status](hard-status.md) separates all-defense mate proofs, material conversion and the paired Elo snapshot.
 - [Native Hard A/B and Elo](hard-ab-elo.md) governs the next speed/strength children, per-move Stockfish observations, new-family puzzle transfer and pair-aware rating comparisons. It keeps algorithm, budget and time-control experiments separate.
 - [Checked-frontier evidence](native-forcing-frontier.md) separates correct first moves from unclosed Native PVs, with portable captured Stockfish references and negative component tests.
 - [Current three-profile calibration](current-profile-calibration.md) reports the original 300-game cohort, puzzle routes, technical continuations, uncertainty and separate integrity/quality verdicts.
 - [Six-copy continuation study](hard-continuation-copies.md) separates budget, horizon and reuse experiments; teacher-confirmed gains, true regressions and a corrupted curriculum reference have distinct gates.
+- [Decision-local cache reuse](hard-cache-reuse.md) separates typed-cache correctness, generated work, scoped CPU cost and the corrected paired measurement; imported evidence is not another Native execution.
+- [Training-060 curation](training-060-curation.md) preserves source/progress while verifying the real promotion payoff, with portable raw teacher proof and negative components.
 - [JVM suites](#jvm-suites) check rules, adapters, and governance without an emulator.
 - [Android sanity](#android-sanity) and [Web parity](#web-engine-parity) cover rendering, lifecycle, and real assistive technology when needed.
 - [Extent evidence](#extent-reporting) ties assertions to the run. [Qualification](../release/README.md#qualification-and-publication) governs promotion.

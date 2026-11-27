@@ -20,6 +20,8 @@ Stockfish combines trained NNUE evaluation, incremental updates, ordered alpha-b
 
 The implementation references are Stockfish 19's [search and quiescence](https://github.com/official-stockfish/Stockfish/blob/sf_19/src/search.cpp), [transposition types](https://github.com/official-stockfish/Stockfish/blob/sf_19/src/tt.h) and [move ordering](https://github.com/official-stockfish/Stockfish/blob/sf_19/src/movepick.cpp). They are reading targets, not evidence that their constants, reductions or pruning are safe in J7. Quiescence forbids stand pat while in check; a bounded answer is not an exact score. Preserve sound sacrifices and legal quiet evasions. Do not repeat the rejected forcing-everywhere probe under a new name.
 
+The second idea now has a [measured decision-local cache child](hard-cache-reuse.md): 8.98% less extra work on the frozen catalog and 22.13% on 24 source-held-out decisions, with scope-limited serial CPU observations. A real promotion-proof memory defect was reproduced and repaired in a separate v2 freeze. The corrected paired measurement remains separate; the known training-090 moderate loss stays visible.
+
 The first baseline already has a component oracle: [NativeMinimaxWindowTest](../../atf-tests/src/test/java/ro/atf/chess/NativeMinimaxWindowTest.java) independently enumerates every legal branch in small H1-H3 trees, using the declared shared leaf evaluator. Full PVS/alpha-beta, null-window boundaries, strict wins versus ties and warmed full searches must agree with it. The separate retained H5 witnesses protect the actual three continuation contexts. These checks do not establish a trained evaluator or an Elo improvement.
 
 ## First bound-only prototype

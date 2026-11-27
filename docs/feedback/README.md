@@ -13,6 +13,8 @@ Follow the [ordered improvement steps](../testing/hard-progress.md): audit compa
 
 The [current selective repair](../testing/hard-selective-repair.md) retains eight recovered first keys and repairs three real continuation regressions in an external copy. Its catalog is 1,222 keys / 1,193 routes; the completed 100-pair match measures Delta Elo +204.17 [95% +136.97 to +260.49], at 5.45 times the mean extra-node work. The measurement ToDo is closed; policy integration and broader mechanism activity remain open. The separate typed-bound child's 2.64% catalog work saving has no inherited Elo. Use [Hard's current priorities](hard.md), rather than reopening every retained diagnostic below.
 
+The [training-060 source/payoff correction](../testing/training-060-curation.md) closes HARD-08 with the same ID/progress and closed +200 objective. Its longer verified line changes curriculum continuation counts; retained engine benchmarks keep their original catalog identity.
+
 [Reviewing test moves between suites](../testing/README.md#test-changes-against-a-git-baseline) describes the Git baseline and coverage evidence.
 
 - [Current Native Hard gates and remaining work](hard.md)

@@ -4,7 +4,7 @@
 
 ## Result and scope
 
-The new external `veto` copy repairs training-056/091/096 while retaining all eight first-key recoveries. On all 1,238 current authored routes it reaches **1,222 first keys and 1,193 complete routes**, versus main's **1,214 / 1,188** and the original selective copy's **1,222 / 1,190**. No accepted first key is lost. The three remaining strict route losses are the previously independently classified healthy alternatives in tactic-003/training-040 and the poisoned training-060 payoff; their meanings have not changed.
+The new external `veto` copy repairs training-056/091/096 while retaining all eight first-key recoveries. On all 1,238 authored routes **frozen before the training-060 curation**, it reaches **1,222 first keys and 1,193 complete routes**, versus main's **1,214 / 1,188** and the original selective copy's **1,222 / 1,190**. No accepted first key is lost. The three remaining strict route losses are the independently classified healthy alternatives in tactic-003/training-040 and the former poisoned training-060 payoff. The separate [curriculum correction](training-060-curation.md) now closes that data defect; these frozen measurements are not silently regraded as the revised longer line.
 
 These are consumed catalog results, separate from the completed **100-pair / 200-game** candidate–main measurement below. Neither establishes every free defense or automatically promotes an engine. The runtime selector on main remains unchanged until a separate integration decision.
 
@@ -67,7 +67,7 @@ Mean extra work is **5.45 times** the reference. This is evidence of a stronger,
 
 The source-bound `output/extent.html` retains all original failed arms alongside the successful measurement and audit; it is not an all-green promotion report. `output/paired-elo.json`, `output/league-final-audit.json`, `league/complete.json` and every PGN/Native journal remain bound to the same run. Interrupted prefixes were replayed before exact resume; no game was replaced or silently awarded a result. These rating journals lack complete Lite hints/reviews and remain excluded from learning admission.
 
-The separate typed-bound copy was **not** the contestant. Its matched catalog choices and node saving cannot inherit this Delta Elo. Wider mechanism-active transfer, explicit production policy/default compatibility and the training-060 curriculum defect remain open before adoption.
+The separate typed-bound copy was **not** the contestant. Its matched catalog choices and node saving cannot inherit this Delta Elo. Wider mechanism-active transfer and explicit production policy/default compatibility remain open before adoption. The independently corrected training-060 curriculum is separate from this playing qualification.
 
 ## Component and evidence contracts
 
