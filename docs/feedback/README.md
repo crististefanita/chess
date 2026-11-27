@@ -11,7 +11,7 @@ Work the [current Native priorities](hard.md) through the [A/B, game-audit and E
 
 Follow the [ordered improvement steps](../testing/hard-progress.md): audit compatibility, A3 confirmation, a cause-level playing repair, excluded-family transfer and paired Elo. Completed repairs belong in technical documentation; retained diagnostic failures do not all remain active ToDo items.
 
-The [current selective repair](../testing/hard-selective-repair.md) retains eight recovered first keys and repairs three real continuation regressions in an external copy. Its complete catalog is 1,222 keys / 1,193 routes; the fixed paired match remains a separate diagnostic measurement. Use [Hard's current priorities](hard.md) for qualification, rather than reopening every retained diagnostic below.
+The [current selective repair](../testing/hard-selective-repair.md) retains eight recovered first keys and repairs three real continuation regressions in an external copy. Its catalog is 1,222 keys / 1,193 routes; the completed 100-pair match measures Delta Elo +204.17 [95% +136.97 to +260.49], at 5.45 times the mean extra-node work. The measurement ToDo is closed; policy integration and broader mechanism activity remain open. The separate typed-bound child's 2.64% catalog work saving has no inherited Elo. Use [Hard's current priorities](hard.md), rather than reopening every retained diagnostic below.
 
 [Reviewing test moves between suites](../testing/README.md#test-changes-against-a-git-baseline) describes the Git baseline and coverage evidence.
 

@@ -6,7 +6,7 @@
 
 The new external `veto` copy repairs training-056/091/096 while retaining all eight first-key recoveries. On all 1,238 current authored routes it reaches **1,222 first keys and 1,193 complete routes**, versus main's **1,214 / 1,188** and the original selective copy's **1,222 / 1,190**. No accepted first key is lost. The three remaining strict route losses are the previously independently classified healthy alternatives in tactic-003/training-040 and the poisoned training-060 payoff; their meanings have not changed.
 
-These are consumed catalog results, not an Elo estimate, a proof of every free defense, or a promoted engine. The runtime selector on main remains unchanged until a separate integration decision. The fixed 100-pair candidate–main campaign is a **diagnostic, non-promoting** measurement under the existing protocol; retain its final paired confidence interval and unfinished games before any strength conclusion.
+These are consumed catalog results, separate from the completed **100-pair / 200-game** candidate–main measurement below. Neither establishes every free defense or automatically promotes an engine. The runtime selector on main remains unchanged until a separate integration decision.
 
 ## Cause and intervention
 
@@ -33,7 +33,7 @@ Before production adoption, extract the nomination and confirmation settings int
 | Mandatory next-horizon pair, 2M total | Repairs all three and passes 11 critical methods, but loses required recovered keys including tactic-073 and training-110 | Failed arm stopped early; preserve completed ledger rows without claiming a full catalog. |
 | Forcing pair, 2M total | Repairs 056/091, misses 096 and loses three recovered first keys on the 17-case focus | Reject. Closing captures alone does not solve the quiet continuation. |
 | Forcing plus adjacent confirmation, 2M total | Repairs the three guards but loses recovered keys, including training-026/076 | Failed arm stopped early. |
-| Corroborated veto, 3M total | Keeps all eight keys, repairs the three continuations; full catalog 1,222 / 1,193 | Best current experimental integration candidate; Elo and broader admission evidence remain separate. |
+| Corroborated veto, 3M total | Keeps all eight keys, repairs the three continuations; full catalog 1,222 / 1,193; measured paired Delta Elo +204.17 | Best measured experimental playing candidate. The work increase and remaining integration/transfer gates below remain explicit. |
 | Typed-bound challenger, same 3M total | Same 1,222 / 1,193 on the full catalog; all 2,219 matched contexts retain the same root, with 2.64% fewer extra nodes | Separate efficiency prototype. Focused 53-context saving is 8.28%; do not extrapolate it to general speed or inherit veto's paired Elo. [Contracts and evidence](hard-stockfish-lessons.md#first-bound-only-prototype). |
 
 The 17-case focused comparison has 9/17 keys and 5/17 complete routes on main, 17/17 and 10/17 on original selective, and **17/17 and 13/17** on the corroborated copy. Do not report those consumed cases as independent transfer.
@@ -48,6 +48,27 @@ All **102** H17/H19 teacher phases completed. The candidate introduced no new lo
 
 The reused teacher driver's original completion receipt retained consumed-study boilerplate. Its raw receipt is preserved; `output/transfer-grade.json` explicitly records the corrected scope from the frozen source, actual histories, IDs and raw position commands. No phase or old verdict was relabelled as a different observation.
 
+## Fixed paired measurement
+
+The frozen campaign completed **100 starts with both colors, 200 actual Native games**. Independent chess.js replay checked every recorded position and terminal/capped outcome with **zero audit failures**. The corroborated-veto child scored **140 wins, 18 draws, 37 losses and 5 unfinished games** against frozen main. A capped unfinished game is not a draw.
+
+Resolved-only **Delta Elo is +204.17**, with a pair-bootstrap 95% interval of **+136.97 to +260.49**. The start pair is the sampling unit; 20,000 resamples use the declared seed. Unfinished all-loss/all-win sensitivity is **+186.25 to +209.91**, and the additional conservative bounded-pair interval is **+77.11 to +393.21**. The censored midpoint, **+197.87**, is descriptive rather than a replacement for unfinished outcomes. These intervals describe the frozen benchmark; opening-related families limit broader extrapolation. Do not add this difference to an old anchor and label the result an independently calibrated absolute Elo.
+
+| Actual decision cost | Frozen main | Corroborated veto |
+|---|---|---|
+| Actual Native calls | 9,645 | 9,698 |
+| Mean charged extra nodes | 95,683 | 521,245 |
+| p95 charged extra nodes | 200,000 | 1,468,170 |
+| Maximum charged extra nodes | 200,000 | 3,000,000 |
+| Median completed depth | 5 | 6 |
+| Observed search p95 | 1,714 ms | 9,217 ms |
+
+Mean extra work is **5.45 times** the reference. This is evidence of a stronger, more expensive policy, not an equal-work algorithmic gain. The earlier equal-ceiling budget-only controls failed to reproduce its protected puzzle result, but they did not receive this match. Isolating the mechanism's playing contribution still needs its own declared A/B. Both arms exclude shared H3 under `LEGACY_EXTRA`; no exact-context replay was charged as a new search. Elapsed times include concurrent VM scheduling and interruptions, so they qualify neither serial speed, equal-time strength nor Android performance.
+
+The source-bound `output/extent.html` retains all original failed arms alongside the successful measurement and audit; it is not an all-green promotion report. `output/paired-elo.json`, `output/league-final-audit.json`, `league/complete.json` and every PGN/Native journal remain bound to the same run. Interrupted prefixes were replayed before exact resume; no game was replaced or silently awarded a result. These rating journals lack complete Lite hints/reviews and remain excluded from learning admission.
+
+The separate typed-bound copy was **not** the contestant. Its matched catalog choices and node saving cannot inherit this Delta Elo. Wider mechanism-active transfer, explicit production policy/default compatibility and the training-060 curriculum defect remain open before adoption.
+
 ## Component and evidence contracts
 
 - `NativeContinuationRouteTest` makes actual Native calls at all three retained histories; main passes, the old selective copy fails, and the new corroborated copy passes.
@@ -59,4 +80,4 @@ The reused teacher driver's original completion receipt retained consumed-study 
 
 Evidence root: `C:\work\sah`; collection `.studii/selective-repair/`. Its README indexes frozen recipes, original ATF component reports, raw teacher phases, Native ledgers, preflight failures, paired campaign and outcome bindings. Concurrent elapsed times are diagnostic; no general serial speed improvement, Android qualification, APK or release is claimed here.
 
-The playing snapshots originate at `45b1196`. Live sync through `3707753` added release-module controls and puzzle chrome changes, with no changes to the playing classes or policies used by the frozen comparison. Recheck that boundary before any later integration; do not silently relabel a different Native baseline.
+The playing snapshots originate at `45b1196`. Live sync through `008b7a9` changes only `MatchEvaluation` and `PuzzleChromeLayout` in the core source tree; Native playing classes and policy resources used by the comparison remain unchanged. Recheck that boundary before any later integration; do not silently relabel a different Native baseline.
