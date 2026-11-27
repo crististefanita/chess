@@ -37,9 +37,16 @@ final class WebChessGame {
         }
         if (newMode != null) {
             GameOrigin choice = GameOrigin.valueOf(newMode);
-            var match = choice == GameOrigin.LOCAL ? ChessMatch.start()
-                    : matches().prepareAiMatch(MatchSetup.randomized(ColorChoice.valueOf(colorChoice).resolve(WebChessGame::randomBlack),
-                            Level.valueOf(level), analysis, WebChessGame::randomOpponentIndex));
+            ChessMatch match;
+            if (choice == GameOrigin.LOCAL) {
+                match = ChessMatch.start();
+            } else {
+                int replacedSlot = matches.slotForNewMatch();
+                var setup = MatchSetup.randomized(ColorChoice.valueOf(colorChoice).resolve(WebChessGame::randomBlack),
+                        Level.valueOf(level), analysis, WebChessGame::randomOpponentIndex,
+                        matches.usedAiOpponentNamesExcept(replacedSlot));
+                match = matches.prepareAiMatch(setup);
+            }
             return startMatch(match, choice);
         }
         if (route != null) return resumeMode(GameOrigin.valueOf(route));

@@ -1,5 +1,7 @@
 package ro.atf.chess;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntUnaryOperator;
@@ -21,7 +23,12 @@ public record MatchSetup(Side humanSide, Level level, boolean analysisEnabled, S
     }
 
     public static MatchSetup randomized(Side humanSide, Level level, boolean analysisEnabled, IntUnaryOperator draw) {
-        return new MatchSetup(humanSide, level, analysisEnabled, MatchOpponentName.random(draw));
+        return randomized(humanSide, level, analysisEnabled, draw, List.of());
+    }
+
+    public static MatchSetup randomized(Side humanSide, Level level, boolean analysisEnabled, IntUnaryOperator draw,
+                                        Collection<String> usedNames) {
+        return new MatchSetup(humanSide, level, analysisEnabled, MatchOpponentName.random(draw, usedNames));
     }
 
     public MatchSetup withAnalysis(boolean enabled) {

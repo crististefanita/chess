@@ -103,6 +103,73 @@ class MatchSetupTest {
                 () -> ChessMatch.restore("6|WHITE|HARD|0|Bad_Name|"));
     }
 
+    @Test void newAiMatchesAcrossLevelsKeepDistinctNamesAfterStoreRecreation(Checks check) {
+        var preferences = new MemoryPreferences();
+        var store = store(preferences);
+        var legacyBasic = new MatchSetup(Side.WHITE, Level.BASIC, false);
+        check.same("Two retained Basic matches can share their old fallback identity", true,
+                store.startMatch(1, ChessMatch.start(legacyBasic), false, MatchStore.GameOrigin.AI, false, false)
+                        && store.startMatch(2, ChessMatch.start(legacyBasic), false, MatchStore.GameOrigin.AI, false, false));
+
+        int firstSlot = store.slotForNewMatch();
+        var firstSetup = MatchSetup.randomized(Side.WHITE, Level.BASIC, false, bound -> 0,
+                store.usedAiOpponentNamesExcept(firstSlot));
+        var firstMatch = store.prepareAiMatch(firstSetup);
+        check.same("First new identity avoids every other active AI match", false, firstSetup.opponentName().equals("Alex"));
+        check.same("First new match is saved", true,
+                store.startMatch(firstSlot, firstMatch, false, MatchStore.GameOrigin.AI, false, false));
+
+        int secondSlot = store.slotForNewMatch();
+        var secondSetup = MatchSetup.randomized(Side.WHITE, Level.BASIC, false, bound -> 0,
+                store.usedAiOpponentNamesExcept(secondSlot));
+        var secondMatch = store.prepareAiMatch(secondSetup);
+        check.same("Second Basic match receives a distinct retained identity", false,
+                firstSetup.opponentName().equals(secondSetup.opponentName()));
+        check.same("Second name also avoids the legacy fallback", false, secondSetup.opponentName().equals("Alex"));
+        check.same("Second new match is saved", true,
+                store.startMatch(secondSlot, secondMatch, false, MatchStore.GameOrigin.AI, false, false));
+
+        int advancedSlot = store.slotForNewMatch();
+        var advancedSetup = MatchSetup.randomized(Side.WHITE, Level.ADVANCED, false, bound -> 0,
+                store.usedAiOpponentNamesExcept(advancedSlot));
+        var advancedMatch = store.prepareAiMatch(advancedSetup);
+        check.same("Advanced uses the same random roster without reusing a live name", false,
+                List.of(firstSetup.opponentName(), secondSetup.opponentName()).contains(advancedSetup.opponentName()));
+        check.same("Advanced match is saved", true,
+                store.startMatch(advancedSlot, advancedMatch, false, MatchStore.GameOrigin.AI, false, false));
+
+        int hardSlot = store.slotForNewMatch();
+        var hardSetup = MatchSetup.randomized(Side.WHITE, Level.HARD, false, bound -> 0,
+                store.usedAiOpponentNamesExcept(hardSlot));
+        var hardMatch = store.prepareAiMatch(hardSetup);
+        check.same("Hard uses the same random roster without reusing a live name", false,
+                List.of(firstSetup.opponentName(), secondSetup.opponentName(), advancedSetup.opponentName())
+                        .contains(hardSetup.opponentName()));
+        check.same("Every new difficulty draws from the shared randomized roster", true,
+                List.of(firstSetup.opponentName(), secondSetup.opponentName(), advancedSetup.opponentName(), hardSetup.opponentName())
+                        .stream().allMatch(MatchOpponentName.choices()::contains));
+        check.same("Hard match is saved", true,
+                store.startMatch(hardSlot, hardMatch, false, MatchStore.GameOrigin.AI, false, false));
+
+        var refreshed = store(preferences);
+        var firstSaved = refreshed.readSavedMatch(firstSlot);
+        var secondSaved = refreshed.readSavedMatch(secondSlot);
+        var advancedSaved = refreshed.readSavedMatch(advancedSlot);
+        var hardSaved = refreshed.readSavedMatch(hardSlot);
+        check.same("Store recreation preserves the names and selected level for all three AI profiles",
+                List.of(firstSetup.opponentName(), secondSetup.opponentName(), advancedSetup.opponentName(),
+                        hardSetup.opponentName(), Level.BASIC, Level.BASIC, Level.ADVANCED, Level.HARD),
+                List.of(firstSaved.setup().opponentName(), secondSaved.setup().opponentName(),
+                        advancedSaved.setup().opponentName(), hardSaved.setup().opponentName(),
+                        firstSaved.setup().level(), secondSaved.setup().level(), advancedSaved.setup().level(),
+                        hardSaved.setup().level()));
+        check.same("All three new AI profiles and the second Basic match have unique saved names", 4,
+                java.util.Set.of(firstSaved.setup().opponentName(), secondSaved.setup().opponentName(),
+                        advancedSaved.setup().opponentName(), hardSaved.setup().opponentName()).size());
+        check.same("A replacement slot's own old identity is not treated as a collision",
+                false, refreshed.usedAiOpponentNamesExcept(firstSlot).contains(firstSaved.setup().opponentName()));
+    }
+
     @Test void theThreeLevelsReachDifferentCompletedHorizonsOnTheSamePosition(Checks check) {
         var position = ChessPosition.fromFen("4k3/8/8/7p/P7/8/8/4K3 w - - 0 1");
         var depths = java.util.Arrays.stream(Level.values())

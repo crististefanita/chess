@@ -262,8 +262,10 @@ public final class ChessActivity extends BackNavigableActivity {
         menu.findViewById(R.id.match_start).setOnClickListener(view -> {
             var color = MatchSetup.ColorChoice.values()[colors.getSelectedItemPosition()];
             var level = MatchSetup.Level.values()[levels.getSelectedItemPosition()];
+            int replacedSlot = store.matches().slotForNewMatch();
             newMatch(MatchSetup.randomized(color.resolve(ThreadLocalRandom.current()::nextBoolean), level,
-                    analysis.isChecked(), bound -> ThreadLocalRandom.current().nextInt(bound)));
+                    analysis.isChecked(), bound -> ThreadLocalRandom.current().nextInt(bound),
+                    store.matches().usedAiOpponentNamesExcept(replacedSlot)));
         });
         menu.findViewById(R.id.setup_home).setOnClickListener(view -> showMenu());
         setContentView(menu);

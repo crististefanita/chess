@@ -90,12 +90,12 @@ Color, difficulty, and automation belong to the saved match slot. Changing the n
 
 MatchCaptures supplies the top and bottom capture rows from the selected history ply and board orientation. Both adapters use the same 48-unit `ChessPieceArtwork` silhouettes. Web matches the APK's capture-specific painter: silhouette only, the same light/dark fill and outline, and an icon scaled to 82% of the caption text. It groups repeated pieces, shows +N for material advantage, and keeps empty rows mounted so bot replies and history navigation never move the board. The board continues to use its separate detailed piece rendering.
 
-Each new AI match draws one display name from the shared opponent roster, independently of difficulty. The name is stored in that match's checkpoint; Saved and Finished rows, reloads, continuations, and both adapters keep the same identity. Old checkpoints retain their established level-based names. The APK and Web show the opponent's name with **AI + level** beside that player's captured pieces and in Saved/Finished rows, while the profile name appears beside the human captures. In compact windows both fit within the reserved seat row; wider windows stack each name above its captures. With the evaluation rail visible, the seat content follows the same board-column offset. The rows stay mounted through flip, history, and reload, so their content never changes the board's square position. Long names truncate visually but remain complete in the accessible label and title.
+Each new AI match draws one display name from the shared roster that is not already assigned to another active AI match, independently of difficulty. The name is stored in that match's checkpoint; Saved and Finished rows, reloads, continuations, and both adapters keep the same identity. Old checkpoints retain their established level-based names. The APK and Web show the opponent's name with **AI + level** beside that player's captured pieces and in Saved/Finished rows, while the profile name appears beside the human captures. In compact windows both fit within the reserved seat row; wider windows stack each name above its captures. With the evaluation rail visible, the seat content follows the same board-column offset. The rows stay mounted through flip, history, and reload, so their content never changes the board's square position. Long names truncate visually but remain complete in the accessible label and title.
 
 <details>
 <summary>Setup, local preferences, and reload probe</summary>
 
-- **New game vs computer** opens the same choices as Android, with White, Black, or Random and the Basic, Advanced, and Hard levels. Each adapter chooses color and opponent name once at game creation and stores both with the level in the checkpoint.
+- **New game vs computer** opens the same choices as Android, with White, Black, or Random and the Basic, Advanced, and Hard levels. Each adapter chooses color and an opponent name not already used by another active AI match, then stores both with the level in the checkpoint. Concurrent matches at the same level therefore keep distinct names across resume and browser refresh; legacy checkpoints keep their level-based fallback names.
 - The browser saves the current turn before displaying the move and schedules a search after the 650 ms pause when automatic replies are enabled. After reload, the position and saved automation determine whether an AI reply follows.
 - The worker rejects stale revisions, and an already saved reply leaves the player to move.
 
@@ -181,7 +181,7 @@ The lists separate active slots from archived results. The selected ply and cont
 <summary>Storage, history, and browser proof</summary>
 
 - **Saved games** shows only active matches. **Finished games** shows only archived results.
-- Both lists use `MatchStore` and keep at most ten entries each, newest first. The UI displays the date, ply count, and profile.
+- Both lists use `MatchStore` and keep at most ten entries each, newest first. The UI displays the date, ply count, and profile; AI rows retain the opponent's chosen name and level.
 - In an AI match, the result is from the player's perspective.
 
 - The board arrows change the displayed position. **Continue from here** asks for confirmation and keeps moves through the selected position.

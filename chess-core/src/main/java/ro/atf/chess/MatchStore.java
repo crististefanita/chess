@@ -2,7 +2,10 @@ package ro.atf.chess;
 
 import java.time.Clock;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.LongSupplier;
 import java.util.function.Supplier;
@@ -82,6 +85,17 @@ public final class MatchStore {
 
     public List<Integer> savedMatchSlots() {
         return MatchSlots.newestFirst(slot -> readSavedMatch(slot) != null, this::matchCreationOrder);
+    }
+
+    /** Names reserved by active AI matches, excluding the slot that a new match will replace. */
+    public Set<String> usedAiOpponentNamesExcept(int replacedSlot) {
+        var names = new HashSet<String>();
+        for (int slot : savedMatchSlots()) {
+            if (slot == replacedSlot || matchOrigin(slot) != GameOrigin.AI) continue;
+            var match = readSavedMatch(slot);
+            if (match != null) names.add(match.setup().opponentName());
+        }
+        return Collections.unmodifiableSet(names);
     }
 
     private long matchCreationOrder(int slot) { return preferences.getLong(MatchSlots.key(MATCH_CREATION, slot), slot); }
