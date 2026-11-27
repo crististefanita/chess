@@ -134,7 +134,10 @@ quests:
     fen: "8/6p1/4p3/2K1p3/1P5p/7P/4kPP1/8 b - - 2 36"
     solution: e2f2
     difficulty: 21
-    payoff-line: e2f2 b4b5 f2g2
+    # First 7 plies: original Lichess solution. Remaining 20: independently
+    # reviewed continuation through both promotions to a closed +200 payoff.
+    payoff-line: e2f2 b4b5 e5e4 b5b6 e4e3 b6b7 e3e2 b7b8q e2e1q b8b2 f2g1 b2g7 e6e5 g7h6 e1f2 c5d5 f2d4 d5c6 d4f4 h6d6 g1g2 c6b5 g2h3 b5a5 f4e4 d6d2 h3g3
+    lesson: PROMOTION
   # Lichess 00xxi · rating 1539 · deflection · https://lichess.org/game/XrLtoaW5/black#136
   - id: training-107
     fen: "5r2/7P/5K2/8/2P2k2/P7/8/8 w - - 1 69"

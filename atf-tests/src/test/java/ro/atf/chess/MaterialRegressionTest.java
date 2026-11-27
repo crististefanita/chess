@@ -86,6 +86,8 @@ class MaterialRegressionTest {
         var independent = witness("training-060");
         check.same("The original source continues with the independently winning pawn race",
                 independent.rejected(), api.path("puzzle").path("solution").get(2).asText());
+        check.same("The corrected public payoff now uses the independently winning continuation",
+                independent.rejected(), quest.playerMove(1).uci());
         var position = quest.position();
         for (var move : api.path("puzzle").path("solution")) position = position.play(ChessPosition.Move.fromUci(move.asText()));
         check.same("The actual source reaches the protected promotion threat", ChessPosition.Kind.PAWN, position.pieceAt(BoardSquare.parse("e2")).kind());
