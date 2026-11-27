@@ -34,6 +34,7 @@ Before production adoption, extract the nomination and confirmation settings int
 | Forcing pair, 2M total | Repairs 056/091, misses 096 and loses three recovered first keys on the 17-case focus | Reject. Closing captures alone does not solve the quiet continuation. |
 | Forcing plus adjacent confirmation, 2M total | Repairs the three guards but loses recovered keys, including training-026/076 | Failed arm stopped early. |
 | Corroborated veto, 3M total | Keeps all eight keys, repairs the three continuations; full catalog 1,222 / 1,193 | Best current experimental integration candidate; Elo and broader admission evidence remain separate. |
+| Typed-bound challenger, same 3M total | Same 1,222 / 1,193 on the full catalog; all 2,219 matched contexts retain the same root, with 2.64% fewer extra nodes | Separate efficiency prototype. Focused 53-context saving is 8.28%; do not extrapolate it to general speed or inherit veto's paired Elo. [Contracts and evidence](hard-stockfish-lessons.md#first-bound-only-prototype). |
 
 The 17-case focused comparison has 9/17 keys and 5/17 complete routes on main, 17/17 and 10/17 on original selective, and **17/17 and 13/17** on the corroborated copy. Do not report those consumed cases as independent transfer.
 
