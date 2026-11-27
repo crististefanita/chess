@@ -9,7 +9,7 @@ test('Saved and finished rows render every AI level and the local opponent in bo
     ]) {
         assert.equal(matchListOpponent({ mode: 'LOCAL' }, labels), labels['open-match']);
         for (const level of ['BASIC', 'ADVANCED', 'HARD']) {
-            assert.equal(matchListOpponent({ mode: 'AI', level }, labels), `AI · ${labels.levels[level]}`);
+            assert.equal(matchListOpponent({ mode: 'AI', level, opponentName: 'Nika' }, labels), `Nika · AI ${labels.levels[level]}`);
         }
     }
 });
@@ -17,4 +17,5 @@ test('Saved and finished rows render every AI level and the local opponent in bo
 test('A malformed saved AI level fails explicitly instead of leaving a stale menu visible', () => {
     const labels = { 'open-match': 'Local game', levels: { BASIC: 'Basic' } };
     assert.throws(() => matchListOpponent({ mode: 'AI', level: 'UNKNOWN' }, labels), /Unsupported AI level/);
+    assert.throws(() => matchListOpponent({ mode: 'AI', level: 'BASIC' }, labels), /Missing saved AI opponent name/);
 });

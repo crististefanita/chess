@@ -226,7 +226,8 @@ final class WebChessGame {
         if (rows.length() > 1) rows.append(',');
         rows.append("{\"slot\":").append(entry.slot()).append(",\"id\":").append(quote(id)).append(",\"mode\":").append(quote(mode.name()))
                 .append(",\"humanSide\":").append(quote(match.setup().humanSide().name()))
-                .append(",\"level\":").append(quote(entry.opponent().name())).append(",\"ply\":").append(entry.moves())
+                .append(",\"level\":").append(quote(entry.opponent().name()))
+                .append(",\"opponentName\":").append(quote(entry.opponentName())).append(",\"ply\":").append(entry.moves())
                 .append(",\"status\":").append(quote(entry.status().name())).append(",\"result\":").append(quote(match.result().name()))
                 .append(",\"reviewed\":").append(entry.reviewed())
                 .append(",\"timestamp\":").append(entry.timestamp()).append('}');
