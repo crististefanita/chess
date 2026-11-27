@@ -36,7 +36,7 @@ This is a **new baseline**, not a measured candidate Delta Elo or proof of impro
 | Advanced | 1,114 | 1,067 | 1,977 |
 | Hard | 1,214 | 1,188 | 2,198 |
 
-For Hard, all 1,000 mate exercises complete on the authored routes. Material exercises complete **188/238**: tactics 87/100, training 79/114 and intermezzo 22/24. Fifty exercises remain incomplete. The benchmark calls the ordinary opponent before reading the quest verdict; it does not supply a mate objective, solution or next defense to the search. Full-route success here means the catalog's authored defense, **not every free alternative defense**. Separate all-defense proofs retain their original scope in [Hard status](hard-status.md).
+For Hard, all 1,000 mate exercises complete on the authored routes. Material exercises complete **188/238**: tactics 87/100, training 79/114 and intermezzo 22/24. Fifty exercises remain incomplete. These are the pinned **pre-curation** route counts; the later [training-060 correction](training-060-curation.md) keeps its ID/key but changes its payoff length. A new dataset needs an identified replay before claiming current totals. The benchmark calls the ordinary opponent before reading the quest verdict; it does not supply a mate objective, solution or next defense to the search. Full-route success here means the catalog's authored defense, **not every free alternative defense**. Separate all-defense proofs retain their original scope in [Hard status](hard-status.md).
 
 ## Collector failures and technical continuation
 

@@ -51,7 +51,9 @@ class Training060TablebaseTest {
         check.same("The actual requested-position category is a White loss, not a blessed loss", "loss", raw.path("category").asText());
         check.same("Signed DTZ and precise DTZ agree; DTM is a separate distance", List.of(-8, -8, -58),
                 List.of(raw.path("dtz").asInt(), raw.path("precise_dtz").asInt(), raw.path("dtm").asInt()));
-        check.same("The current quiet clock leaves enough plies for the next guaranteed zeroing", true, 4 + 8 < 100);
+        check.same("The current quiet clock leaves enough plies for the next guaranteed zeroing", true,
+                Integer.parseInt(proof.path("requestFen").asText().split(" ")[4])
+                        + Math.abs(raw.path("precise_dtz").asInt()) < 100);
         check.same("All twenty-five legal White replies are in the original authoritative response", 25, raw.path("moves").size());
         for (var reply : raw.path("moves")) {
             check.same("After White " + reply.path("uci").asText() + ", side-to-move Black retains the exact win",
