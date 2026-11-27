@@ -18,6 +18,14 @@ The new extension was discovered with unrestricted Stockfish 19. After freezing 
 
 The portable `hard-lessons/training-060-payoff-proof.json` retains the plan, engine identity, actual histories/clocks, free/forced root roles, exact score/WDL, full PVs, raw UCI, per-phase digests and native completion. Its pin uses parsed JSON semantics so Git LF/CRLF transport preserves the evidence; altered facts remain rejected. Original raw-byte digests stay bound to the external actual receipts. The original losing-reference witness remains immutable; its historical failure is not relabelled as a current accepted answer.
 
+## Exact final-position confirmation
+
+Independent replay reaches the six-piece FEN `8/8/8/K3p3/4q2p/6k1/3Q4/8 w - - 4 50`. A separate request to the authoritative [Lichess Syzygy API](https://tablebase.lichess.ovh/standard?fen=8%2F8%2F8%2FK3p3%2F4q2p%2F6k1%2F3Q4%2F8%20w%20-%20-%204%2050) returns **loss for side-to-move White**, `dtz=-8`, `precise_dtz=-8` and `dtm=-58`. All 25 legal White moves appear in the response and lead to a side-to-move Black win. The first DTZ-optimal defense is `Qc3+`. The quiet clock is four plies, leaving ample room for the next zeroing event; this is a win/loss result rather than a blessed loss.
+
+The [API contract](https://github.com/lichess-org/lila-tablebase#http-api) distinguishes DTZ from distance to mate. Its separate DTZ mainline independently replays 22 legal plies to Black checkmate, with the first zeroing at ply eight and maximum quiet clock eleven. That is a verified DTZ-selected line, not a claim of forced mate in 22 against mate-distance-optimal defense.
+
+`hard-lessons/training-060-final-syzygy.json` pins the actual response and request context by JSON meaning. [Training060TablebaseTest](../../atf-tests/src/test/java/ro/atf/chess/Training060TablebaseTest.java) adds two offline components for the complete FEN/clocks, legal reply inventory, exact category and DTZ, LF/CRLF transport and changed-FEN/category/distance negatives. This confirms only the final six-piece position; the earlier high-material race and its free replies retain their distinct H17/H19 teacher scope. No initial-position tablebase proof or Native Elo gain is inferred.
+
 ## Component and upgrade contracts
 
 [Training060PayoffTest](../../atf-tests/src/test/java/ro/atf/chess/Training060PayoffTest.java) checks:
