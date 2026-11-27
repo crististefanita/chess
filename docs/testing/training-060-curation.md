@@ -16,7 +16,7 @@ The [original Lichess 0470w response](https://lichess.org/api/puzzle/0470w), its
 
 The new extension was discovered with unrestricted Stockfish 19. After freezing it, an independent repeat audited **all 27 actual moves at H17 and H19**, each against free legal replies at the same horizon. All **54 comparisons** retain the free teacher WDL; **58 actual raw phases** cover the free roots plus separate forced roots when needed. Every requested horizon completed. The Black choices retain the teacher-estimated win; White's defenses retain the same estimated result as the free choice. These are completed-horizon engine estimates, not a tablebase proof or a Native Elo improvement.
 
-The portable `hard-lessons/training-060-payoff-proof.json` retains the plan, engine identity, actual histories/clocks, free/forced root roles, exact score/WDL, full PVs, raw UCI, per-phase digests and native completion. The original losing-reference witness remains immutable; its historical failure is not relabelled as a current accepted answer.
+The portable `hard-lessons/training-060-payoff-proof.json` retains the plan, engine identity, actual histories/clocks, free/forced root roles, exact score/WDL, full PVs, raw UCI, per-phase digests and native completion. Its pin uses parsed JSON semantics so Git LF/CRLF transport preserves the evidence; altered facts remain rejected. Original raw-byte digests stay bound to the external actual receipts. The original losing-reference witness remains immutable; its historical failure is not relabelled as a current accepted answer.
 
 ## Component and upgrade contracts
 
@@ -25,7 +25,7 @@ The portable `hard-lessons/training-060-payoff-proof.json` retains the plan, eng
 - Stable ID/FEN/key/order and the authentic seven-ply prefix before the labelled extension.
 - A legal hint at every solver stage, pending-defense restart and exact next-board alignment.
 - Both promotions, no premature solve, the final +200 board and every immediate legal defense.
-- Rejection of the former `Kxg2` finish, foreign runs, substituted positions/clocks/moves, missing horizons and invented WDL.
+- Rejection of the former `Kxg2` finish, foreign runs, substituted positions/clocks/moves, missing horizons and invented WDL; equivalent LF/CRLF JSON remains portable.
 - Existing solved IDs, the original award exactly once, the unsolved first-stage prefix and safe fallback from an obsolete saved finish.
 
 The full material-catalog tests continue to audit all published payoff lines with the existing +200 threshold. They also retain the independent short-horizon key proofs. No opponent search, coaching provider, global objective, scoring or collection size changes as part of this curation.

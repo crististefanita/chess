@@ -4,6 +4,7 @@ import atf.testkit.AtfComponentTest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,12 +26,31 @@ class Training060PayoffTest {
     private static JsonNode fixture() throws Exception {
         try (var input = Training060PayoffTest.class.getResourceAsStream("/hard-lessons/training-060-payoff-proof.json")) {
             if (input == null) throw new IOException("Missing payoff teacher proof");
-            byte[] bytes = input.readAllBytes();
-            if (!HardLeagueAudit.digest(bytes).equals("36d94b58d1febdbb8d1aefda6b2811691bdab4976df6798215bbe16edd7abc22")) {
-                throw new IllegalArgumentException("Changed original payoff proof");
-            }
-            return LearningGameAudit.mapper().readTree(bytes);
+            return readProof(input.readAllBytes());
         }
+    }
+
+    private static JsonNode readProof(byte[] bytes) throws IOException {
+        var root = LearningGameAudit.mapper().readTree(bytes);
+        if (!HardLeagueAudit.digest(root.toString().getBytes(StandardCharsets.UTF_8))
+                .equals("387ae9d963c736f203b37a647be9db59ae38ff9dd2dda359061bd309b1590de8")) {
+            throw new IllegalArgumentException("Changed original payoff proof");
+        }
+        return root;
+    }
+
+    @Test void proofPinSurvivesLfAndCrlfButRejectsChangedMeaning(Checks check) throws Exception {
+        String encoded;
+        try (var input = Training060PayoffTest.class.getResourceAsStream("/hard-lessons/training-060-payoff-proof.json")) {
+            encoded = new String(input.readAllBytes(), StandardCharsets.UTF_8).replace("\r\n", "\n");
+        }
+        check.same("Native LF and Windows CRLF preserve the same pinned teacher evidence",
+                readProof(encoded.getBytes(StandardCharsets.UTF_8)),
+                readProof(encoded.replace("\n", "\r\n").getBytes(StandardCharsets.UTF_8)));
+        var changed = (ObjectNode) fixture();
+        changed.put("runId", "foreign-run");
+        check.rejects("Whitespace normalization cannot admit changed teacher facts", IllegalArgumentException.class,
+                () -> readProof(LearningGameAudit.mapper().writeValueAsBytes(changed)));
     }
 
     @Test void preservesTheSourceIdFenKeyRankAndOriginalSevenPlies(Checks check) throws Exception {
