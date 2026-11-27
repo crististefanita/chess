@@ -34,7 +34,7 @@ Versiunea disponibilă se verifică în README-ul din `origin/main`. Dacă ramur
 4. Creați commitul candidat în worktree-ul Git curat din TMP. Declarați SHA-ul bazei de revizuire, strămoș distinct al candidatului. Rulați DocumentationGovernanceTest, ReleaseGovernanceTest, ExtentGovernanceTest, TestChangeReview și ReleaseGate preflight înainte de semnare. Păstrați rapoartele și recepția reviziei Git. Activați probele AI când diff-ul afectează motorul sau corpusul. [Suitele JVM](../testing/README.md#suite-jvm) · [Schimbarea testelor](../testing/README.md#schimbarea-testelor-față-de-o-bază-git)
 5. Încărcați identitatea prin dot-sourcing `release-tools/scripts/Initialize-J7Signing.ps1`; o înregistrare criptată existentă în proiect este detectată automat. Pentru o cheie nouă după o ediție publicată, folosiți explicit `-StartNewIdentity`; scriptul refuză rotația implicită și protejează cheia cu ACL și DPAPI. Construiți APK-ul și testele Android cu Gradle, verificați semnătura, `versionCode` și compatibilitatea prin `release-tools/scripts/verify-signing-continuity.ps1`. Rulați pe emulator parcursul potrivit schimbării și păstrați hash-ul APK-ului instalat și Extent-ul. Dacă semnarea s-a rotit și emulatorul păstrează ediția veche, nu dezinstalați instalarea cu date valoroase pentru a forța testul. Un APK sanity cu alt `applicationId` este suplimentar și nu califică binarul distribuibil.
 6. Rulați `ChessComponentSuite` și sanity Game Review sub același ID de calificare. Treceți APK-ul, commitul, directoarele recepțiilor brute și rapoartele Extent prin `ReleaseGate qualification`. Verificați în Extent comparațiile extensibile și capturile din pașii lor. Pentru o schimbare în Teoria deschiderilor sau **De ce?**, adăugați proba compactă la font 1,3× în RO și EN pe același APK și commit. [Redarea comună](../testing/README.md#redare-comună-pe-ecran-compact) [Criterii de audit Extent](../testing/README.md#raportare-extent)
-7. După semnare și calificare, împingeți tagul candidat fără a rescrie istoricul și publicați asset-ul GitHub. Păstrați `currentVersion`, lista de comparație și README-ul principal pe ultima ediție verificată până când asset-ul nou există. Apoi promovați catalogul și README-ul în ambele ramuri. Păstrați în GitHub Release și local doar ediția nouă și ediția imediat anterioară; retrageți celelalte release-uri și dosare după ce noul asset și ruta din README au trecut verificarea. Nu ștergeți tagurile Git.
+7. După semnare și calificare, împingeți tagul candidat fără a rescrie istoricul și publicați asset-ul GitHub. Păstrați `currentVersion`, lista de comparație și README-ul principal pe ultima ediție verificată până când asset-ul nou există. Apoi promovați catalogul și README-ul în ambele ramuri. GitHub păstrează numai ediția curentă și tagul ei după verificarea descărcării complete. Comparația anterioară din catalog este dovadă istorică offline, nu al doilea release activ pe GitHub. Înaintea retragerii referințelor Web temporare, păstrați commitul static calificat în ambele istorice principale. Păstrați deployment-ul Pages activ; ștergeți numai deployment-urile vechi încheiate după verificarea octeților serviți. Înregistrați identitățile retrase în studiul extern.
 8. Citiți README-ul din `main` pe GitHub și descărcați APK-ul de la URL-ul afișat. Verificați prin `ReleaseGate publication` tagul, canalul, statusul HTTP, octeții, SHA-256 și CRC. Salvați dovezile, împingeți commitul cu rapoartele și repetați descărcarea de pe versiunea finală a README-ului.
 9. Sincronizați ediția publicată curentă în checkout-ul de dezvoltare și treceți `ReleaseGate local-delivery` înainte de a declara procesul încheiat. [Ediția publicată în checkout-ul local](#ediția-publicată-în-checkout-ul-local)
 
@@ -128,8 +128,12 @@ manuală nouă cu același commit al site-ului și aceeași amprentă a arborelu
 Nu reluați joburile eșuate în aceeași execuție: un al doilea upload poate crea
 două artefacte `github-pages` și face deployul ambiguu. Comparați indexul și
 resursele servite cu obiectele Git calificate.
-Ramurile permanente sunt `main` și `main_RO`. Păstrați tagurile Git ale
-edițiilor publicate și pachetelor Web servite. [Publicarea Web](../../web/parity.md#publicarea-linkului)
+Ramurile permanente sunt `main` și `main_RO`. Păstrați numai tagul ediției
+curente. Commiturile Web calificate rămân accesibile prin ambele istorice
+principale, fără taguri suplimentare de deployment. Păstrați deployment-ul Pages
+activ și nu atingeți rulările în așteptare sau în curs. Recepțiile istorice de
+comparație își păstrează octeții originali și SHA-ul complet al sursei; folosiți
+acel SHA în locul tagului retras. [Publicarea Web](../../web/parity.md#publicarea-linkului)
 
 ## Excepție strictă pentru instalarea APK-ului exact
 
@@ -318,7 +322,7 @@ documentului. Citările istorice păstrează amprentele publicate la ediția lor
 După compilare, apelați `ReleaseRag` din copia TMP cu rădăcina sursei și căile afectate:
 
 ```powershell
-$paths = @(git -C $checkout diff --name-only $previousTag $candidateCommit)
+$paths = @(git -C $checkout diff --name-only $previousSource $candidateCommit)
 java -cp "$scratch/release-tools/target/classes" ro.atf.chess.release.ReleaseRag $scratch @paths
 ```
 

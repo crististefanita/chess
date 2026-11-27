@@ -6,7 +6,7 @@ Catalogul indică ediția disponibilă și locul unde pot fi verificate dovezile
 
 ## Ediția publicată
 
-[`index.json`](index.json) identifică versiunea curentă și păstrează imediat după ea o singură ediție anterioară pentru comparație. README-ul principal indică numai ediția curentă.
+[`index.json`](index.json) identifică versiunea curentă și păstrează imediat după ea o singură ediție anterioară ca dovadă istorică offline de comparație. GitHub păstrează numai release-ul curent și tagul lui; recepțiile comparației nu promit a doua descărcare disponibilă. README-ul principal indică numai ediția curentă.
 
 | Rol | Versiune | Dovezi |
 |---|---|---|
@@ -17,7 +17,7 @@ Catalogul indică ediția disponibilă și locul unde pot fi verificate dovezile
 
 - Release-ul GitHub distribuie APK-ul. Dosarul ediției păstrează notele,
   rapoartele Extent, recepțiile și contextul RAG.
-- Pentru edițiile retrase, consultați commiturile și tagurile Git.
+- Pentru sursele retrase, consultați identitățile originale din recepții și istoricul Git; tagurile vechi de release și deployment sunt eliminate.
 - După promovare, verificați descărcarea din README-ul de pe `main` și
   păstrați dovada lângă ediție.
 

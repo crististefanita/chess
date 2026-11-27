@@ -12,4 +12,4 @@ Această corecție aliniază titlul Analizei partidei cu celelalte antete și î
 
 ## Instalare
 
-[APK-ul semnat](https://github.com/crististefanita/chess/releases/download/v0.16.2/ChessLab-0.16.2.apk) este legat și din [README-ul principal](../../README.md#jocul). [Indexul dovezilor](reports/README.md) consemnează calificarea și verificarea descărcării.
+Ediția este păstrată numai pentru comparație istorică offline. Release-ul și tagul ei GitHub sunt retrase. Folosiți [README-ul principal](../../README.md#jocul) pentru APK-ul semnat curent. [Indexul dovezilor](reports/README.md) păstrează recepțiile originale ale calificării și descărcării.
